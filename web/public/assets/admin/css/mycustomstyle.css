@@ -1,0 +1,32 @@
+.width30{
+    width:30%;
+}
+.float_right{
+    float:  right !important;
+}
+.custom_img{
+    width:150px;
+    height: 150px;
+}
+.card_title_center{
+    width: 100%;
+    text-align: center !important;
+}
+thead.custom_thead {
+    background-color: #001424 !important;
+    color: #daa96b !important;
+}
+thead.custom_thead th {
+    vertical-align: middle;
+    text-align: center;
+}
+.card {
+    width: 100% !important;
+}
+div.alert.alert-success.msg,
+div.alert.alert-danger.msg {
+    width: 100% !important;
+}
+table.table.table-bordered.table-hover tbody tr td {
+    vertical-align: middle;
+}
