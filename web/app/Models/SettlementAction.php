@@ -6,6 +6,7 @@ use Illuminate\Database\Eloquent\Model;
 
 class SettlementAction extends Model
 {
+
     protected $fillable = [
         'settlement_id',
         'action_date',
