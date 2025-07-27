@@ -8,7 +8,7 @@ use Illuminate\Database\Eloquent\SoftDeletes;
 class SubAction extends Model
 {
     use SoftDeletes;
-    protected $table = '';
+    protected $table = 'sub_actions';
     protected $guarded = [];
 
     public function addedby()

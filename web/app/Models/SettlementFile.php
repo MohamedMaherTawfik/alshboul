@@ -6,12 +6,8 @@ use Illuminate\Database\Eloquent\Model;
 
 class SettlementFile extends Model
 {
-    protected $fillable = [
-        'settlement_action_id',
-        'file_path',
-        'created_by',
-        'updated_by',
-    ];
+    protected $table = 'settlement_files';
+    protected $guarded = [];
 
     public function settlementAction()
     {

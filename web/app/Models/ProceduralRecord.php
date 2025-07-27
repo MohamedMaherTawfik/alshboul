@@ -7,6 +7,7 @@ use App\Models\User;
 
 class ProceduralRecord extends Model
 {
+    protected $table = 'procedural_redords';
     protected $fillable = [
         'executive_case_id',
         'session_date',

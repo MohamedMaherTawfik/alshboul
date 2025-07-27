@@ -8,12 +8,8 @@ use App\Models\User;
 class ProceduralFile extends Model
 {
 
-    protected $fillable = [
-        'procedural_record_id',
-        'file_path',
-        'created_by',
-        'updated_by',
-    ];
+
+    protected $guarded = [];
 
     public function proceduralRecord()
     {

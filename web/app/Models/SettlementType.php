@@ -6,11 +6,8 @@ use Illuminate\Database\Eloquent\Model;
 
 class SettlementType extends Model
 {
-    protected $table = 'settlements';
-    protected $fillable = [
-        'name_ar',
-        'name_en',
-    ];
+    protected $table = 'settlement_types';
+    protected $guarded = [];
 
     public function settlements()
     {

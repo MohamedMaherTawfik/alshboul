@@ -8,6 +8,7 @@ use Illuminate\Database\Eloquent\SoftDeletes;
 class MainAction extends Model
 {
     use SoftDeletes;
+    protected $table = 'main_action';
     protected $guarded = [];
 
     public function client()

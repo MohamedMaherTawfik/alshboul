@@ -6,19 +6,8 @@ use Illuminate\Database\Eloquent\Model;
 
 class SettlementAction extends Model
 {
-
-    protected $fillable = [
-        'settlement_id',
-        'action_date',
-        'type',
-        'action',
-        'notes',
-        'next_action',
-        'next_action_date',
-        'created_by',
-        'updated_by',
-    ];
-
+    protected $table = 'settlement_actions';
+    protected $guarded = [];
     public function settlement()
     {
         return $this->belongsTo(Settlement::class);
