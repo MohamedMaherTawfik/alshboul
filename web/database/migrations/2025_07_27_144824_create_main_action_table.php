@@ -24,6 +24,7 @@ return new class extends Migration {
             $table->string('end_date')->nullable();
             $table->foreignIdFor(User::class, 'added_by')->constrained()->cascadeOnDelete();
             $table->foreignIdFor(User::class, 'updated_by')->constrained()->cascadeOnDelete();
+            $table->string('deleted_at')->nullable();
             $table->timestamps();
         });
     }

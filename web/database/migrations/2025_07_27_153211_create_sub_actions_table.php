@@ -21,6 +21,7 @@ return new class extends Migration {
             $table->foreignIdFor(User::class, 'executed_by')->constrained()->cascadeOnDelete();
             $table->foreignIdFor(User::class, 'added_by')->constrained()->cascadeOnDelete();
             $table->foreignIdFor(User::class, 'updated_by')->constrained()->cascadeOnDelete();
+            $table->string('deleted_at')->nullable();
             $table->boolean('status')->default(false);
             $table->timestamps();
         });

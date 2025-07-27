@@ -19,7 +19,6 @@ class DatabaseSeeder extends Seeder
             'email' => 'admin',
             'password' => bcrypt('admin'),
             'role' => 'superadmin',
-            'added_by' => 'programmer',
             'active' => true,
             'date' => time(),
         ]);
