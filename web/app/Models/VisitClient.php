@@ -7,6 +7,7 @@ use Illuminate\Database\Eloquent\Model;
 class VisitClient extends Model
 {
 
+    protected $table = 'visit_clients';
     protected $guarded = [];
     public function client()
     {
