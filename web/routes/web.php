@@ -61,7 +61,7 @@ Route::group(['middleware' => ['setLanguage']], function () {
 
     // Auth Routes
     Route::get('/login', [AuthLoginController::class, 'showLoginForm'])->name('login1');
-    Route::post('/login', [AuthLoginController::class, 'login']);
+    Route::post('/login', [AuthLoginController::class, 'login'])->name('loginclient');
     Route::get('/register', [RegisterController::class, 'showRegistrationForm'])->name('register');
     Route::post('/register', [RegisterController::class, 'register']);
     Route::post('/logout', [AuthLoginController::class, 'logout'])->name('logout');
@@ -140,8 +140,8 @@ Route::group(['prefix' => 'admin', 'middleware' => ['auth', 'check_role:superadm
     Route::post('/users/{id}', [UserController::class, 'update'])->name('user.update');
     Route::delete('/user/delete', [UserController::class, 'destroy'])->name('user.delete');
     Route::get('/user/{id}/restore', [UserController::class, 'restore'])->name('user.restore');
-  
-  Route::get('/agreements', [AgreementController::class, 'index'])->name('agreement.index');
+
+    Route::get('/agreements', [AgreementController::class, 'index'])->name('agreement.index');
     Route::get('/agreements/create', [AgreementController::class, 'create'])->name('agreement.create');
     Route::post('/agreements', [AgreementController::class, 'store'])->name('agreement.store');
     Route::get('/agreements/{id}/edit', [AgreementController::class, 'edit'])->name('agreement.edit');
@@ -150,7 +150,7 @@ Route::group(['prefix' => 'admin', 'middleware' => ['auth', 'check_role:superadm
     Route::get('/agreements/deleted', [AgreementController::class, 'indexDelete'])->name('agreement.indexDelete');
     Route::get('/agreement/{id}/restore', [AgreementController::class, 'restore'])->name('agreement.restore');
     Route::get('/agreements/{id}', [AgreementController::class, 'show'])->name('agreement.show');
-  
+
     Route::get('/settlements', [SettlementController::class, 'index'])->name('settlement.index');
     Route::get('/settlements/create', [SettlementController::class, 'create'])->name('settlement.create');
     Route::post('/settlements', [SettlementController::class, 'store'])->name('settlement.store');
@@ -162,7 +162,7 @@ Route::group(['prefix' => 'admin', 'middleware' => ['auth', 'check_role:superadm
     Route::get('/settlements/{id}', [SettlementController::class, 'show'])->name('settlement.show');
 
 
-   Route::get('/executive-cases/type/{id}', [ExecutiveCaseController::class, 'index'])->name('executive-case.index');
+    Route::get('/executive-cases/type/{id}', [ExecutiveCaseController::class, 'index'])->name('executive-case.index');
     Route::get('/executive-cases/type/{id}/create', [ExecutiveCaseController::class, 'create'])->name('executive-case.create');
     Route::post('/executive-cases', [ExecutiveCaseController::class, 'store'])->name('executive-case.store');
     Route::get('/executive-cases/{id}/edit', [ExecutiveCaseController::class, 'edit'])->name('executive-case.edit');
@@ -179,16 +179,16 @@ Route::group(['prefix' => 'admin', 'middleware' => ['auth', 'check_role:superadm
     Route::get('/procedural-records/{id}/edit', [ProceduralRecordController::class, 'edit'])->name('procedural-record.edit');
     Route::get('/procedural-records/{id}/show/{case_id?}', [ProceduralRecordController::class, 'show'])->name('procedural-record.show');
 
-  
-    Route::get('/chat/admin/{userId?}', [Message::class, 'index'])->name('chat.with');
-      Route::get('/chat/lawyer/{userId?}', [Message::class, 'index2'])->name('chat.with1');
-        Route::get('/chat/user/{userId?}', [Message::class, 'index3'])->name('chat.with2');
 
- Route::get('/settlement-actions/{settlement_id}', [SettlementActionController::class, 'index'])->name('settlement-action.list');
-Route::get('/settlement-actions/{settlement_id}/create', [SettlementActionController::class, 'create'])->name('settlement-action.create');
-Route::get('/settlement-actions/{id}/edit', [SettlementActionController::class, 'edit'])->name('settlement-action.edit');
-Route::get('/settlement-actions/{settlement_id}/deleted', [SettlementActionController::class, 'deleted'])->name('settlement-action.deleted');
-Route::get('/settlement-actions/{id}/show', [SettlementActionController::class, 'show'])->name('settlement-action.show');
+    Route::get('/chat/admin/{userId?}', [Message::class, 'index'])->name('chat.with');
+    Route::get('/chat/lawyer/{userId?}', [Message::class, 'index2'])->name('chat.with1');
+    Route::get('/chat/user/{userId?}', [Message::class, 'index3'])->name('chat.with2');
+
+    Route::get('/settlement-actions/{settlement_id}', [SettlementActionController::class, 'index'])->name('settlement-action.list');
+    Route::get('/settlement-actions/{settlement_id}/create', [SettlementActionController::class, 'create'])->name('settlement-action.create');
+    Route::get('/settlement-actions/{id}/edit', [SettlementActionController::class, 'edit'])->name('settlement-action.edit');
+    Route::get('/settlement-actions/{settlement_id}/deleted', [SettlementActionController::class, 'deleted'])->name('settlement-action.deleted');
+    Route::get('/settlement-actions/{id}/show', [SettlementActionController::class, 'show'])->name('settlement-action.show');
 
 
     Route::get('/notifications/{id}/read', function ($id) {
@@ -273,7 +273,5 @@ Route::group(['prefix' => 'admin', 'middleware' => 'guest'], function () {
 });
 Route::group(['prefix' => 'user', 'middleware' => 'guest'], function () {
     Route::get('/login', [UserLoginController::class, 'showLogin'])->name('login.user');
-    Route::POST('login', [UserLoginController::class, 'login'])->name('user.login');
+    Route::post('/login', [UserLoginController::class, 'login'])->name('user.login');
 });
-
-// Welcome Page Route

@@ -131,6 +131,15 @@
                                 <small id="helpId" class="text-muted text-danger">{{ $message }}</small>
                             @enderror
                         </div>
+
+                        <div class="form-group col-md-4">
+                            <label for=""> رقم الهاتف</label>
+                            <input type="text" name="phone" value="{{ old('phone') }}" class="form-control"
+                                placeholder="">
+                            @error('phone')
+                                <small id="helpId" class="text-muted text-danger">{{ $message }}</small>
+                            @enderror
+                        </div>
                         <div class="form-group col-md-4">
                             <label for=""> كلمة المرور</label>
                             <input type="password" name="password" value="{{ old('password') }}" class="form-control"

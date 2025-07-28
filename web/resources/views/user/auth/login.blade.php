@@ -23,7 +23,7 @@
 <body class="hold-transition login-page">
     <div class="login-box">
         <div class="login-logo">
-            <a href="{{ route('login.user') }}"><b>شمول للمحاماة</b></a>
+            <a href="{{ route('login.user') }}"><b>الشبول للمحاماة</b></a>
         </div>
         <!-- /.login-logo -->
 
@@ -37,17 +37,17 @@
                 @endif
                 <p class="login-box-msg">تسجيل الدخول الوكيل </p>
 
-                <form action="{{ route('user.login') }}" method="post">
+                <form action="{{ route('user.login') }}" method="POST">
                     @csrf
                     <div class="mb-3 input-group">
-                        <input type="text" class="form-control" name="username" placeholder="اسم المستخدم">
+                        <input type="text" class="form-control" name="email" placeholder="البريد الالكتروني">
                         <div class="input-group-append">
                             <div class="input-group-text">
                                 <span class="fas fa-user"></span>
                             </div>
                         </div>
                     </div>
-                    @error('username')
+                    @error('email')
                         <p class="text-danger">{{ $message }}</p>
                     @enderror
                     <div class="mb-3 input-group">

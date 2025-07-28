@@ -57,10 +57,15 @@ class LawyerController extends Controller
             'cv_file' => 'nullable|file|mimes:pdf,doc,docx|max:2048',
         ]);
 
+        // dd($request->all());
+
         $user = new User();
+        $user->name = $request->username;
         $user->username = $request->username;
+        $user->phone = $request->phone;
         $user->password = bcrypt($request->password);
         $user->email = $request->email;
+        $user->address = $request->address;
         $user->date = now();
         $user->role = 'Lawyer';
         $user->added_by = Auth::id();

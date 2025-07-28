@@ -21,21 +21,21 @@ class Message extends Controller
 
     public function index1($userId = null)
     {
-        $users = User::where('id', '!=', Auth::id())-whereIn('role', ['superadmin', 'admin'])->get(); // استثناء المستخدم الحالي
+        $users = User::where('id', '!=', Auth::id())->whereIn('role', ['superadmin', 'admin'])->get(); // استثناء المستخدم الحالي
         $selectedUser = $userId ? User::find($userId) : null;
 
         return view('user.Message.index', compact('users', 'selectedUser'));
     }
-  public function index2($userId = null)
+    public function index2($userId = null)
     {
-        $users = User::where('id', '!=', Auth::id())->where('role','Lawyer')->get(); // استثناء المستخدم الحالي
+        $users = User::where('id', '!=', Auth::id())->where('role', 'Lawyer')->get(); // استثناء المستخدم الحالي
         $selectedUser = $userId ? User::find($userId) : null;
 
         return view('admin.Message.index', compact('users', 'selectedUser'));
     }
- public function index3($userId = null)
+    public function index3($userId = null)
     {
-        $users = User::where('id', '!=', Auth::id())->where('role','User')->get(); // استثناء المستخدم الحالي
+        $users = User::where('id', '!=', Auth::id())->where('role', 'User')->get(); // استثناء المستخدم الحالي
         $selectedUser = $userId ? User::find($userId) : null;
 
         return view('admin.Message.index', compact('users', 'selectedUser'));

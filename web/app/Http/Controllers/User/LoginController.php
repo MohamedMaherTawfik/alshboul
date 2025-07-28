@@ -4,9 +4,7 @@ namespace App\Http\Controllers\User;
 
 use App\Http\Controllers\Controller;
 use App\Http\Requests\LoginRequest;
-use App\Models\Admin;
 use App\Models\VisitClient;
-use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
 
 class LoginController extends Controller
@@ -21,7 +19,8 @@ class LoginController extends Controller
     }
     public function login(LoginRequest $request)
     {
-        if (Auth::guard('web')->attempt(['username' => $request->input('username'), 'password' => $request->input('password')])) {
+        $validated = $request->validated();
+        if (Auth::guard('web')->attempt($validated)) {
             $clientid = Auth::user()->client->id;
             VisitClient::create(
                 [
@@ -38,6 +37,6 @@ class LoginController extends Controller
     public function logout()
     {
         Auth::logout();
-        return redirect()->route('login.user');
+        return redirect('/login');
     }
 }

@@ -42,13 +42,14 @@ class ClientController extends Controller
      */
     public function create()
     {
-        return view('admin.Client.create');
+        $users = User::where('role', 'user')->get();
+        return view('admin.Client.create', compact('users'));
     }
 
     /**
      * Store a newly created resource in storage.
      */
-     public function store(Request $request)
+    public function store(Request $request)
     {
         $request->validate([
             'name' => 'required',
@@ -71,13 +72,13 @@ class ClientController extends Controller
         $client->company_national_number = $request->company_national_number ?? null;
         $client->national_id = $request->national_id;
         $client->nationality = $request->nationality;
-        $client->user_id =  $request->user_id;
+        $client->user_id = $request->user_id;
         $client->added_by = Auth::id();
         $client->save();
 
         return redirect()->route('client.index')->with('success', 'تم إضافة البيانات بنجاح');
     }
-  
+
     public function store1(Request $request)
     {
         $request->validate([

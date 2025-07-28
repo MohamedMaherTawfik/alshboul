@@ -40,14 +40,14 @@
                 <form action="{{ route('admin.login') }}" method="post">
                     @csrf
                     <div class="mb-3 input-group">
-                        <input type="text" class="form-control" name="username" placeholder="اسم المستخدم">
+                        <input type="text" class="form-control" name="email" placeholder="اسم المستخدم">
                         <div class="input-group-append">
                             <div class="input-group-text">
                                 <span class="fas fa-user"></span>
                             </div>
                         </div>
                     </div>
-                    @error('username')
+                    @error('email')
                         <p class="text-danger">{{ $message }}</p>
                     @enderror
                     <div class="mb-3 input-group">

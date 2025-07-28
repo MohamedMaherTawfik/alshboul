@@ -22,20 +22,7 @@ class User extends Authenticatable
 
     protected $dates = ['deleted_at'];
 
-    protected $fillable = [
-        'email',
-      	'name',
-        'password',
-        'username',
-        'added_by',
-        'updated_by',
-        'active',
-        'date',
-        'delete_reason',
-        'deleted_at',
-        'role'
-
-    ];
+    protected $guarded = [];
     public function addedby()
     {
         return $this->belongsTo(User::class, 'added_by');
