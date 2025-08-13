@@ -10,6 +10,7 @@ class Client extends Model
 {
     use SoftDeletes, Notifiable;
 
+    protected $table = 'clients';
     protected $dates = ['deleted_at'];
 
     protected $guarded = [];
@@ -24,7 +25,7 @@ class Client extends Model
     }
     public function user()
     {
-        return $this->belongsTo(User::class);
+        return $this->belongsTo(User::class, 'user_id');
     }
     public function visits()
     {

@@ -21,7 +21,7 @@
 
 
                     <div class="row">
-                         <div class="form-group col-md-4">
+                        <div class="form-group col-md-4">
                             <label for=""> اسم المشترك </label>
                             <input type="text" name="name" value="{{ old('name') }}" class="form-control"
                                 placeholder="">
@@ -56,10 +56,11 @@
                         <div class="form-group col-md-4">
                             <label for="الحالة">نوع المستخدم</label>
                             <select class="form-control" name="role">
-                                <option value="User" {{ old('role') == 'User' ? 'selected' : '' }}>وكيل</option>
+                                <option value="user" {{ old('role') == 'user' ? 'selected' : '' }}>وكيل</option>
                                 <option value="Lawyer" {{ old('role') == 'Lawyer' ? 'selected' : '' }}>محامي</option>
                                 <option value="admin" {{ old('role') == 'admin' ? 'selected' : '' }}>أدمن</option>
-                                <option value="superadmin" {{ old('role') == 'superadmin' ? 'selected' : '' }}>سوبر أدمن</option>
+                                <option value="superadmin" {{ old('role') == 'superadmin' ? 'selected' : '' }}>سوبر أدمن
+                                </option>
                             </select>
                             @error('active')
                                 <small id="helpId" class="text-muted text-danger">{{ $message }}</small>

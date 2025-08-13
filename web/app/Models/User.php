@@ -33,7 +33,7 @@ class User extends Authenticatable
     }
     public function client()
     {
-        return $this->hasMany(Client::class);
+        return $this->hasMany(Client::class, 'user_id');
     }
     /**
      * The attributes that should be hidden for serialization.
@@ -58,4 +58,15 @@ class User extends Authenticatable
 
         ];
     }
+
+    public function lawyer()
+    {
+        return $this->hasOne(Lawyer::class, 'user_id');
+    }
+
+    public function user()
+    {
+        return $this->hasMany(archives::class, 'user_id');
+    }
+
 }

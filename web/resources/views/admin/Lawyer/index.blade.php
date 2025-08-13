@@ -30,7 +30,6 @@
 
                         </thead>
                         <tbody>
-
                             @foreach ($data as $info)
                                 <tr>
                                     <td>{{ $info->id }}</td>
@@ -38,11 +37,7 @@
                                     <td>{{ $info->address }}</td>
                                     <td>{{ $info->phone }}</td>
                                     <td>
-                                        @if ($info->user->active == 1)
-                                            مفعل
-                                        @else
-                                            معطل
-                                        @endif
+                                        {{ optional($info->user)->active == 1 ? 'مفعل' : 'معطل' }}
                                     </td>
                                     <td>{{ $info->addedby->username }}</td>
                                     <td>
@@ -52,7 +47,10 @@
                                             لم يتم التعديل
                                         @endif
                                     </td>
-                                    <td>{{ $info->user->date }}</td>
+
+                                    <td>
+                                        {{ optional($info->user)->date ? optional($info->user)->date : 'غير محدد' }}
+                                    </td>
                                     <td>
                                         <a href="{{ route('lawyer.edit', $info->id) }}" class="btn btn-warning">تعديل</a>
                                         <a href="#" data-id="{{ $info->id }}" data-toggle="modal"

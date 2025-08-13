@@ -17,7 +17,7 @@ class ClientController extends Controller
      */
     public function index()
     {
-        $data = Client::orderBy('id', 'desc')->get();
+        $data = Client::with('user')->orderBy('id', 'desc')->get();
         return view('admin.Client.index', compact('data'));
     }
     public function visit()
@@ -28,13 +28,12 @@ class ClientController extends Controller
     public function action()
     {
         $data2 = Client::all();
-
         return view('admin.Client.Action', compact('data2'));
     }
     public function indexDelete()
     {
         $data = Client::onlyTrashed()->get();
-        return view('admin.Client.index-delete', compact('data'));
+        return redirect()->back()->with(['error' => 'عفواً لا توجد بيانات']);
     }
 
     /**
@@ -62,8 +61,6 @@ class ClientController extends Controller
             'company_national_number' => 'nullable|string',
         ]);
 
-
-
         $client = new Client();
         $client->name = $request->name;
         $client->phone = $request->phone;
@@ -73,7 +70,7 @@ class ClientController extends Controller
         $client->national_id = $request->national_id;
         $client->nationality = $request->nationality;
         $client->user_id = $request->user_id;
-        $client->added_by = Auth::id();
+        $client->added_by = $request->added_by;
         $client->save();
 
         return redirect()->route('client.index')->with('success', 'تم إضافة البيانات بنجاح');
@@ -180,20 +177,22 @@ class ClientController extends Controller
      */
     public function destroy(Request $request)
     {
-
-
         $client = Client::findOrFail($request->id);
+
         if (!$client) {
             return redirect()->back()->with(['error' => 'عفواً لا توجد بيانات']);
         }
+
         $request->validate([
             'reason' => 'required|string',
         ]);
         $client->updated_by = Auth::id();
         $client->delete_reason = $request->reason;
         $client->save();
-
-        $user = User::findOrFail($client->user_id);
+        $user = User::where('id', $client->user_id)->first();
+        if (!$user) {
+            return redirect()->back()->with(['error' => 'عفواً لا توجد بيانات']);
+        }
         $user->updated_by = Auth::id();
         $user->delete_reason = $request->reason;
         $user->active = 0;
@@ -204,7 +203,6 @@ class ClientController extends Controller
     }
     public function destroy1(Request $request)
     {
-
 
         $action = MainAction::findOrFail($request->id);
         if (!$action) {

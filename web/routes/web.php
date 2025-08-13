@@ -1,4 +1,5 @@
 <?php
+use App\Http\Controllers\Admin\ArchiveController;
 use App\Http\Controllers\Admin\SettlementController;
 use App\Http\Controllers\Admin\AboutUsController;
 use App\Http\Controllers\Admin\AgreementController;
@@ -190,6 +191,14 @@ Route::group(['prefix' => 'admin', 'middleware' => ['auth', 'check_role:superadm
     Route::get('/settlement-actions/{settlement_id}/deleted', [SettlementActionController::class, 'deleted'])->name('settlement-action.deleted');
     Route::get('/settlement-actions/{id}/show', [SettlementActionController::class, 'show'])->name('settlement-action.show');
 
+    Route::get('/archives/system', [ArchiveController::class, 'index'])->name('archive.index');
+    Route::get('/archives/system/main', [ArchiveController::class, 'createMain'])->name('archive.main.create');
+    Route::post('/archives/system/main', [ArchiveController::class, 'storeMain'])->name('archive.main.store');
+    Route::get('/archives/system/sub-main/{id}', [ArchiveController::class, 'createSubMain'])->name('archive.subMain.create');
+    Route::post('/archives/system/sub-main', [ArchiveController::class, 'storeSubMain'])->name('archive.subMain.store');
+    Route::get('/archives/system/create', [ArchiveController::class, 'create'])->name('archive.create');
+    Route::post('/archives/system/create', [ArchiveController::class, 'store'])->name('archive.store');
+    Route::get('/archives/reports', [ArchiveController::class, 'index1'])->name('archive.reports');
 
     Route::get('/notifications/{id}/read', function ($id) {
         $notification = Auth::user()->notifications()->where('id', $id)->first();

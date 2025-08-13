@@ -19,7 +19,8 @@ scratch. This page gets rid of all links and provides the needed markup only.
     <link rel="stylesheet" href="{{ asset('assets/admin/fonts/SansPro/SansPro.min.css') }} ">
     <link rel="stylesheet" href="{{ asset('assets/admin/css/bootstrap_rtl-v4.2.1/bootstrap.min.css') }} ">
     <link rel="stylesheet" href="{{ asset('assets/admin/css/bootstrap_rtl-v4.2.1/custom_rtl.css') }} ">
-  <link rel="stylesheet" href="{{ asset('assets/admin/css/mycustomstyle.css') }}?v={{ filemtime(public_path('assets/admin/css/mycustomstyle.css')) }}">
+    <link rel="stylesheet"
+        href="{{ asset('assets/admin/css/mycustomstyle.css') }}?v={{ filemtime(public_path('assets/admin/css/mycustomstyle.css')) }}">
 
     @yield('css')
 </head>
@@ -53,6 +54,12 @@ scratch. This page gets rid of all links and provides the needed markup only.
     <script src="{{ asset('assets/admin/plugins/bootstrap/js/bootstrap.bundle.min.js') }}"></script>
     <!-- AdminLTE App -->
     <script src="{{ asset('assets/admin/dist/js/adminlte.min.js') }}"></script>
+    <!-- Popper.js -->
+    <script src="https://cdn.jsdelivr.net/npm/@popperjs/core@2.11.8/dist/umd/popper.min.js"></script>
+
+    <!-- Bootstrap 5 JS -->
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.min.js"></script>
+
     <script>
         setTimeout(function() {
             let messages = document.querySelectorAll('.msg');

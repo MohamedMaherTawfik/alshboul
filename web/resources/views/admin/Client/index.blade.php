@@ -6,6 +6,31 @@
     <a href="{{ route('client.index') }}"> موكلين</a>
 @endsection
 @section('content')
+    {{-- Success Message --}}
+    @if (session('success'))
+        <div class="p-4 mb-4 text-green-800 bg-green-100 rounded-lg">
+            {{ session('success') }}
+        </div>
+    @endif
+
+    {{-- Failure / General Error Message --}}
+    @if (session('error'))
+        <div class="p-4 mb-4 text-red-800 bg-red-100 rounded-lg">
+            {{ session('error') }}
+        </div>
+    @endif
+
+    {{-- Validation Errors (multiple) --}}
+    @if ($errors->any())
+        <div class="p-4 mb-4 text-red-800 bg-red-100 rounded-lg">
+            <ul class="list-disc ps-5">
+                @foreach ($errors->all() as $error)
+                    <li>{{ $error }}</li>
+                @endforeach
+            </ul>
+        </div>
+    @endif
+
     <div class="col-12">
         <div class="card">
             <div class="card-header">
@@ -38,11 +63,13 @@
                                     <td>{{ $info->address }}</td>
                                     <td>{{ $info->phone }}</td>
                                     <td>
-                                        @if ($info->user->active == 1)
+
+                                        @if (optional($info->user)->active == 1)
                                             مفعل
                                         @else
                                             معطل
                                         @endif
+
                                     </td>
                                     <td>{{ $info->addedby->username }}</td>
                                     <td>
@@ -52,7 +79,10 @@
                                             لم يتم التعديل
                                         @endif
                                     </td>
-                                    <td>{{ $info->user->date }}</td>
+
+                                    <td>
+                                        {{ optional($info->user)->created_at ? optional($info->user)->created_at : 'غير محدد' }}
+                                    </td>
                                     <td>
                                         <a href="{{ route('client.edit', $info->id) }}" class="btn btn-warning">تعديل</a>
                                         <a href="#" data-id="{{ $info->id }}" data-toggle="modal"

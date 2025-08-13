@@ -8,7 +8,7 @@ use Illuminate\Notifications\Notifiable;
 
 class Lawyer extends Model
 {
-    use SoftDeletes,Notifiable;
+    use SoftDeletes, Notifiable;
     protected $dates = ['deleted_at'];
 
     protected $guarded = [];
@@ -23,6 +23,6 @@ class Lawyer extends Model
     }
     public function user()
     {
-        return $this->belongsTo(User::class);
+        return $this->belongsTo(User::class, 'user_id');
     }
 }

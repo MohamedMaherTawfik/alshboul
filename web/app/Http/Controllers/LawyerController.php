@@ -16,7 +16,7 @@ class LawyerController extends Controller
      */
     public function index()
     {
-        $data = Lawyer::orderBy('id', 'desc')->get();
+        $data = Lawyer::with('user', 'addedby', 'updateby')->orderBy('id', 'desc')->get();
         return view('admin.Lawyer.index', compact('data'));
     }
     public function indexDelete()
