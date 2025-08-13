@@ -21,7 +21,7 @@ return new class extends Migration {
             $table->string('password');
             $table->foreignIdFor(User::class, 'added_by')->nullable()->constrained()->cascadeOnDelete();
             $table->foreignIdFor(User::class, 'updated_by')->nullable()->constrained()->cascadeOnDelete();
-            $table->date('date');
+            $table->string('date')->nullable();
             $table->string('role')->nullable();
             $table->tinyInteger('active')->default(1);
             $table->rememberToken();
