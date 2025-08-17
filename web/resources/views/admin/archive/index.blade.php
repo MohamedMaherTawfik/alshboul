@@ -6,6 +6,7 @@
     <a href="{{ route('archive.index') }}">الأرشيف</a>
 @endsection
 @section('content')
+
     <div class="container-fluid">
         <!-- زر الإضافة و زر عرض الكل في سطر واحد -->
         <div class="d-flex flex-wrap gap-3 align-items-center mb-4">
@@ -107,6 +108,7 @@
                         <th>الوصف</th>
                         <th>ملاحظات</th>
                         <th>تاريخ الإنشاء</th>
+                        <th>العمليات</th>
                     </tr>
                 </thead>
                 <tbody>
@@ -115,7 +117,7 @@
                             <tr data-sub-menu-id="{{ $archive->archivesSubMenues->id ?? '' }}">
                                 <td>{{ $loop->iteration }}</td>
                                 <td>{{ $archive->user->name ?? 'غير معروف' }}</td>
-                                <td>{{ $archive->mainCategory->name ?? 'لا يوجد' }}</td>
+                                <td>{{ $archive->archivesSubMenues->archivesMainMenues->name ?? 'لا يوجد' }}</td>
                                 <td>{{ $archive->archivesSubMenues->name ?? 'لا يوجد' }}</td>
                                 <td>{{ $archive->name }}</td>
                                 <td>
@@ -128,14 +130,34 @@
                                         <span class="text-muted">لا يوجد ملف</span>
                                     @endif
                                 </td>
-                                <td>{{ Str::limit($archive->description, 50, '...') }}</td>
-                                <td>{{ Str::limit($archive->notes, 50, '...') }}</td>
+                                <td>{{ Str::limit($archive->description ?? 'لا يوجد', 50, '...') }}</td>
+                                <td>{{ Str::limit($archive->notes ?? 'لا يوجد', 50, '...') }}</td>
+
                                 <td>{{ $archive->created_at->format('Y-m-d | H:i') }}</td>
+                                <td>
+                                    <!-- زر تعديل -->
+                                    <a href="{{ route('archive.edit', $archive) }}" class="text-primary ml-2 me-2">
+                                        <i class="fas fa-edit fa-lg"></i>
+                                    </a>
+
+                                    @if (Auth::user()->role == 'superadmin')
+                                        <!-- زر حذف -->
+                                        <form action="{{ route('archive.destroy', $archive) }}" method="POST"
+                                            class="d-inline">
+                                            @csrf
+                                            @method('DELETE')
+                                            <button type="submit" class="btn btn-link text-danger p-0 m-0"
+                                                onclick="return confirm('هل أنت متأكد من الحذف؟')">
+                                                <i class="fas fa-trash-alt fa-lg"></i>
+                                            </button>
+                                        </form>
+                                    @endif
+                                </td>
                             </tr>
                         @endforeach
                     @else
                         <tr>
-                            <td colspan="9" class="text-center text-muted">لا توجد بيانات في الأرشيف.</td>
+                            <td colspan="10" class="text-center text-muted">لا توجد بيانات في الأرشيف.</td>
                         </tr>
                     @endif
                 </tbody>

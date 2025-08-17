@@ -196,8 +196,13 @@ Route::group(['prefix' => 'admin', 'middleware' => ['auth', 'check_role:superadm
     Route::post('/archives/system/main', [ArchiveController::class, 'storeMain'])->name('archive.main.store');
     Route::get('/archives/system/sub-main/{id}', [ArchiveController::class, 'createSubMain'])->name('archive.subMain.create');
     Route::post('/archives/system/sub-main', [ArchiveController::class, 'storeSubMain'])->name('archive.subMain.store');
-    Route::get('/archives/system/create', [ArchiveController::class, 'create'])->name('archive.create');
-    Route::post('/archives/system/create', [ArchiveController::class, 'store'])->name('archive.store');
+    Route::get('/archives/system/create/archive', [ArchiveController::class, 'create'])->name('archive.create');
+    Route::post('/archives/system/create/archive', [ArchiveController::class, 'store'])->name('archive.store');
+    Route::get('/archives/system/{archive}/edit', [ArchiveController::class, 'edit'])->name('archive.edit');
+    Route::post('/archives/system/{archive}/update', [ArchiveController::class, 'update'])->name('archive.update');
+    Route::delete('/archives/system/{archive}/delete', [ArchiveController::class, 'destroy'])->name('archive.destroy');
+    Route::get('/archives/system/archives/indexdelete/', [ArchiveController::class, 'deletedArchive'])->name('archive.indexDelete');
+    Route::post('/archives/system/archives/indexdelete/{archive}/restore', [ArchiveController::class, 'restore'])->name('archive.restore');
     Route::get('/archives/reports', [ArchiveController::class, 'index1'])->name('archive.reports');
 
     Route::get('/notifications/{id}/read', function ($id) {

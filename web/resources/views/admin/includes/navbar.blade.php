@@ -134,6 +134,7 @@
                     <a class="dropdown-item" href="{{ route('agreement.indexDelete') }}">الاتفاقيات</a>
                     <a class="dropdown-item" href="{{ route('executive-case.indexDelete') }}">القضايا التنفيذية</a>
                     <a class="dropdown-item" href="{{ route('settlement.indexDelete') }}">التسويات </a>
+                    <a class="dropdown-item" href="{{ route('archive.indexDelete') }}">الارشيف </a>
                 </div>
             </li>
 

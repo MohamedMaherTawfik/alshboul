@@ -18,8 +18,9 @@ return new class extends Migration {
             $table->foreignIdFor(archivesSubMenues::class, 'sub_menu_id')->constrained()->onDelete('cascade');
             $table->string('name');
             $table->string('file');
-            $table->text('description');
-            $table->string('notes');
+            $table->text('description')->nullable();
+            $table->string('notes')->nullable();
+            $table->boolean('active')->default(1);
             $table->timestamps();
         });
     }

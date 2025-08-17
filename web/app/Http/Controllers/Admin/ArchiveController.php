@@ -3,6 +3,8 @@
 namespace App\Http\Controllers\Admin;
 
 use App\Http\Controllers\Controller;
+use App\Http\Requests\archiveRequest;
+use App\Http\Requests\archiveUpdateRequest;
 use App\Models\archives;
 use App\Models\archivesMainMenues;
 use App\Models\archivesSubMenues;
@@ -11,7 +13,7 @@ class ArchiveController extends Controller
 {
     public function index()
     {
-        $archives = archives::get();
+        $archives = archives::where('active', 1)->get();
         $mains = archivesMainMenues::get();
         return view('admin.archive.index', compact('archives', 'mains'));
     }
@@ -25,7 +27,39 @@ class ArchiveController extends Controller
     public function create()
     {
         $archivesSubMenues = archivesSubMenues::get();
-        return view('admin.archive.create', compact('archivesSubMenues'));
+        return view('admin.archive.createArchive', compact('archivesSubMenues'));
+    }
+
+    public function store(archiveRequest $request)
+    {
+        $validated = $request->validated();
+        if ($request->hasFile('file')) {
+            $validated['file'] = $request->file('file')->store('archives', 'public');
+        }
+        $archive = archives::create($validated);
+        return redirect()->route('archive.index')->with('success', 'تم الحفظ بنجاح');
+    }
+
+    public function edit(archives $archive)
+    {
+        $archivesSubMenues = archivesSubMenues::get();
+        return view('admin.archive.edit', compact('archive', 'archivesSubMenues'));
+    }
+
+    public function update(archiveUpdateRequest $request, archives $archive)
+    {
+        $validated = $request->validated();
+        if ($request->hasFile('file')) {
+            $validated['file'] = $request->file('file')->store('archives', 'public');
+        }
+        $archive->update($validated);
+        return redirect()->route('archive.index')->with('success', 'تم التعديل بنجاح');
+    }
+
+    public function destroy(archives $archive)
+    {
+        $archive->update(['active' => 0]);
+        return redirect()->route('archive.index')->with('success', ' تم الحذف بنجاح و نقل الي المحذوفات');
     }
 
     public function createMain()
@@ -58,4 +92,15 @@ class ArchiveController extends Controller
     }
 
 
+    public function deletedArchive()
+    {
+        $archives = archives::where('active', 0)->get();
+        return view('admin.archive.indexDeleted', compact('archives'));
+    }
+
+    public function restore(archives $archive)
+    {
+        $archive->update(['active' => 1]);
+        return redirect()->route('archive.index')->with('success', 'تم التعديل بنجاح');
+    }
 }
