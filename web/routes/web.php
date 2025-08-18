@@ -206,6 +206,7 @@ Route::group(['prefix' => 'admin', 'middleware' => ['auth', 'check_role:superadm
     Route::get('/archives/reports', [ArchiveController::class, 'index1'])->name('archive.reports');
     Route::get('/archives/reports/search', [ArchiveController::class, 'search'])->name('archive.reports.search');
 
+
     Route::get('/notifications/{id}/read', function ($id) {
         $notification = Auth::user()->notifications()->where('id', $id)->first();
         if ($notification) {

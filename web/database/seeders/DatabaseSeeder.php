@@ -26,6 +26,7 @@ class DatabaseSeeder extends Seeder
             'date' => time(),
         ]);
         $this->call(ClientSeeder::class);
+        $this->call(LawyerSeeder::class);
 
 
     }

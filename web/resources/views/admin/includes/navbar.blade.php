@@ -137,20 +137,35 @@
                     <a class="dropdown-item" href="{{ route('archive.indexDelete') }}">الارشيف </a>
                 </div>
             </li>
-
+            {{--
             <li class="nav-item dropdown">
-                <a class="nav-link dropdown-toggle {{ request()->is('admin/*archive*') ? 'active' : '' }}"
+                <a class="nav-link dropdown-toggle {{ request()->is('admin/*Mission*') ? 'active' : '' }}"
                     href="#" id="deletedItemsMenu" role="button" data-toggle="dropdown" aria-haspopup="true"
                     aria-expanded="false">
-                    الأرشيف
+                    المهام
                 </a>
                 <div class="dropdown-menu dropdown-menu-right" aria-labelledby="deletedItemsMenu">
-                    <a class="dropdown-item" href="{{ route('archive.index') }}">نظام الارشفه</a>
-                    <a class="dropdown-item" href="{{ route('archive.reports') }}">تقارير الارشفه</a>
-                    <a class="dropdown-item" href="{{ route('archive.main.create') }}"> اضافه قوائم رئيسيه</a>
-
+                    <a class="dropdown-item" href="{{ route('mission.add') }}">اضافه مهمه</a>
+                    <a class="dropdown-item" href="{{ route('mission.finished') }}">المهام المنجزه</a>
+                    <a class="dropdown-item" href="{{ route('mission.unfinished') }}">المهام الغير منجزه </a>
                 </div>
-            </li>
+            </li> --}}
+
+            @if (Auth::user()->role == 'superadmin')
+                <li class="nav-item dropdown">
+                    <a class="nav-link dropdown-toggle {{ request()->is('admin/*archive*') ? 'active' : '' }}"
+                        href="#" id="deletedItemsMenu" role="button" data-toggle="dropdown"
+                        aria-haspopup="true" aria-expanded="false">
+                        الأرشيف
+                    </a>
+                    <div class="dropdown-menu dropdown-menu-right" aria-labelledby="deletedItemsMenu">
+                        <a class="dropdown-item" href="{{ route('archive.index') }}">نظام الارشفه</a>
+                        <a class="dropdown-item" href="{{ route('archive.reports') }}">تقارير الارشفه</a>
+                        <a class="dropdown-item" href="{{ route('archive.main.create') }}"> اضافه قوائم رئيسيه</a>
+
+                    </div>
+                </li>
+            @endif
 
             <!-- زر تسجيل الخروج -->
             <li class="nav-item">

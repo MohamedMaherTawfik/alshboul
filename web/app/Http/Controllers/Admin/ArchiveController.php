@@ -20,7 +20,9 @@ class ArchiveController extends Controller
     {
         $archives = archives::where('active', 1)->get();
         $mains = archivesMainMenues::get();
-        return view('admin.archive.index', compact('archives', 'mains'));
+        $subs = archivesSubMenues::get();
+        $clients = Client::get();
+        return view('admin.archive.index', compact('archives', 'mains', 'subs', 'clients'));
     }
 
     public function index1()
@@ -104,8 +106,9 @@ class ArchiveController extends Controller
     {
         archivesSubMenues::create([
             'name' => request()->name,
-            'added_by' => request()->user_id,
-            'main_menu_id' => request()->main_menu_id
+            'added_by' => Auth::user()->id,
+            'document_number' => request()->document_number,
+            'main_menu_id' => request()->main_id
         ]);
         return redirect()->route('archive.index')->with('success', 'تم الحفظ بنجاح');
     }
