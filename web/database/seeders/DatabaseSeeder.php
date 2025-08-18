@@ -19,11 +19,14 @@ class DatabaseSeeder extends Seeder
             'username' => 'admin',
             'email' => 'admin',
             'password' => bcrypt('admin'),
-            'address'=>'Mansoura elteera street 6 building',
+            'address' => 'Mansoura elteera street 6 building',
             'role' => 'superadmin',
             'phone' => '123456789',
             'active' => true,
             'date' => time(),
         ]);
+        $this->call(ClientSeeder::class);
+
+
     }
 }

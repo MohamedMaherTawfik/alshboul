@@ -8,6 +8,11 @@ use App\Http\Requests\archiveUpdateRequest;
 use App\Models\archives;
 use App\Models\archivesMainMenues;
 use App\Models\archivesSubMenues;
+use App\Models\Client;
+use App\Models\User;
+use Illuminate\Http\Request;
+use Illuminate\Support\Facades\Auth;
+use Illuminate\Support\Facades\Hash;
 
 class ArchiveController extends Controller
 {
@@ -27,7 +32,9 @@ class ArchiveController extends Controller
     public function create()
     {
         $archivesSubMenues = archivesSubMenues::get();
-        return view('admin.archive.createArchive', compact('archivesSubMenues'));
+        $archiveMainMenues = archivesMainMenues::get();
+        $clients = Client::get();
+        return view('admin.archive.createArchive', compact('archivesSubMenues', 'archiveMainMenues', 'clients'));
     }
 
     public function store(archiveRequest $request)
@@ -43,7 +50,9 @@ class ArchiveController extends Controller
     public function edit(archives $archive)
     {
         $archivesSubMenues = archivesSubMenues::get();
-        return view('admin.archive.edit', compact('archive', 'archivesSubMenues'));
+        $archiveMainMenues = archivesMainMenues::get();
+        $clients = Client::get();
+        return view('admin.archive.edit', compact('archive', 'archivesSubMenues', 'archiveMainMenues', 'clients'));
     }
 
     public function update(archiveUpdateRequest $request, archives $archive)
@@ -56,10 +65,18 @@ class ArchiveController extends Controller
         return redirect()->route('archive.index')->with('success', 'تم التعديل بنجاح');
     }
 
-    public function destroy(archives $archive)
+    public function destroy(Request $request, archives $archive)
     {
-        $archive->update(['active' => 0]);
-        return redirect()->route('archive.index')->with('success', ' تم الحذف بنجاح و نقل الي المحذوفات');
+        $request->validate([
+            'email' => 'required',
+            'password' => 'required',
+        ]);
+        $user = Auth::user();
+        if ($user->email === $request->email && Hash::check($request->password, $user->password)) {
+            $archive->update(['active' => 0]);
+            return redirect()->route('archive.index')->with('success', 'تم الاضافه الي سله المحذوفات');
+        }
+        abort(401, 'Unauthorized Action !');
     }
 
     public function createMain()

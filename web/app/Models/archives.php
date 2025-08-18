@@ -18,4 +18,14 @@ class archives extends Model
     {
         return $this->belongsTo(archivesSubMenues::class, 'sub_menu_id');
     }
+
+    public function client()
+    {
+        return $this->belongsTo(Client::class, 'client_id');
+    }
+
+    public function archiveMenues()
+    {
+        return $this->hasMany(archives::class, 'main_menu_id');
+    }
 }

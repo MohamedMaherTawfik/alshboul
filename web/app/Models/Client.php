@@ -31,4 +31,9 @@ class Client extends Model
     {
         return $this->hasMany(VisitClient::class);
     }
+
+    public function archives()
+    {
+        return $this->hasMany(archives::class);
+    }
 }

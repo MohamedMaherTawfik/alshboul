@@ -94,19 +94,34 @@
             </ul>
         </div>
 
+        <!-- خانات البحث -->
+        <div class="row g-3 mb-3">
+            <div class="col-md-3">
+                <input type="text" id="searchMainMenu" class="form-control" placeholder="بحث بالقائمة الرئيسية">
+            </div>
+            <div class="col-md-3">
+                <input type="text" id="searchSubMenu" class="form-control" placeholder="بحث بالقائمة الفرعية">
+            </div>
+            <div class="col-md-3">
+                <input type="text" id="searchClient" class="form-control" placeholder="بحث باسم الموكل">
+            </div>
+            <div class="col-md-3">
+                <input type="text" id="searchAnother" class="form-control" placeholder="بحث بأطراف أخرى">
+            </div>
+        </div>
         <!-- الجدول -->
         <div class="table-responsive">
             <table class="table table-bordered table-striped text-center" id="archive-table">
                 <thead class="table-dark">
                     <tr>
-                        <th>#</th>
+                        <th>رقم الوثيقه</th>
                         <th>اسم المُنشئ</th>
                         <th>القائمة الرئيسية</th>
                         <th>القائمة الفرعية</th>
-                        <th>الاسم</th>
+                        <th>اسم الموكل</th>
+                        <th>اطراف اخري</th>
                         <th>الملف</th>
-                        <th>الوصف</th>
-                        <th>ملاحظات</th>
+                        <th>الوصف الدقيق للمستند</th>
                         <th>تاريخ الإنشاء</th>
                         <th>العمليات</th>
                     </tr>
@@ -119,7 +134,8 @@
                                 <td>{{ $archive->user->name ?? 'غير معروف' }}</td>
                                 <td>{{ $archive->archivesSubMenues->archivesMainMenues->name ?? 'لا يوجد' }}</td>
                                 <td>{{ $archive->archivesSubMenues->name ?? 'لا يوجد' }}</td>
-                                <td>{{ $archive->name }}</td>
+                                <td>{{ $archive->client->name }}</td>
+                                <td>{{ Str::limit($archive->another_names ?? 'لا يوجد', 50, '...') }}</td>
                                 <td>
                                     @if ($archive->file)
                                         <a href="{{ asset('storage/' . $archive->file) }}" target="_blank"
@@ -130,10 +146,9 @@
                                         <span class="text-muted">لا يوجد ملف</span>
                                     @endif
                                 </td>
-                                <td>{{ Str::limit($archive->description ?? 'لا يوجد', 50, '...') }}</td>
                                 <td>{{ Str::limit($archive->notes ?? 'لا يوجد', 50, '...') }}</td>
 
-                                <td>{{ $archive->created_at->format('Y-m-d | H:i') }}</td>
+                                <td>{{ $archive->time }}</td>
                                 <td>
                                     <!-- زر تعديل -->
                                     <a href="{{ route('archive.edit', $archive) }}" class="text-primary ml-2 me-2">
@@ -142,15 +157,53 @@
 
                                     @if (Auth::user()->role == 'superadmin')
                                         <!-- زر حذف -->
-                                        <form action="{{ route('archive.destroy', $archive) }}" method="POST"
-                                            class="d-inline">
-                                            @csrf
-                                            @method('DELETE')
-                                            <button type="submit" class="btn btn-link text-danger p-0 m-0"
-                                                onclick="return confirm('هل أنت متأكد من الحذف؟')">
-                                                <i class="fas fa-trash-alt fa-lg"></i>
-                                            </button>
-                                        </form>
+                                        <!-- زرار الحذف -->
+                                        <button type="button" class="btn btn-link text-danger p-0 m-0"
+                                            data-bs-toggle="modal" data-bs-target="#confirmDeleteModal{{ $archive->id }}">
+                                            <i class="fas fa-trash-alt fa-lg"></i>
+                                        </button>
+
+                                        <!-- مودال التأكيد -->
+                                        <div class="modal fade" id="confirmDeleteModal{{ $archive->id }}" tabindex="-1"
+                                            aria-labelledby="confirmDeleteModalLabel{{ $archive->id }}"
+                                            aria-hidden="true">
+                                            <div class="modal-dialog">
+                                                <div class="modal-content">
+                                                    <form action="{{ route('archive.destroy', $archive) }}" method="POST">
+                                                        @csrf
+                                                        @method('DELETE')
+                                                        <div class="modal-header">
+                                                            <h5 class="modal-title"
+                                                                id="confirmDeleteModalLabel{{ $archive->id }}">تأكيد الحذف
+                                                            </h5>
+                                                            <button type="button" class="btn-close" data-bs-dismiss="modal"
+                                                                aria-label="إغلاق"></button>
+                                                        </div>
+                                                        <div class="modal-body">
+                                                            <p>من فضلك أدخل بريدك الإلكتروني وكلمة المرور للتأكيد.</p>
+                                                            <div class="mb-3">
+                                                                <label for="text" class="form-label">البريد
+                                                                    الإلكتروني</label>
+                                                                <input type="text" name="email" class="form-control"
+                                                                    required />
+                                                            </div>
+                                                            <div class="mb-3">
+                                                                <label for="password" class="form-label">كلمة
+                                                                    المرور</label>
+                                                                <input type="password" name="password"
+                                                                    class="form-control" required />
+                                                            </div>
+                                                        </div>
+                                                        <div class="modal-footer">
+                                                            <button type="button" class="btn btn-secondary"
+                                                                data-bs-dismiss="modal">إلغاء</button>
+                                                            <button type="submit" class="btn btn-danger">تأكيد
+                                                                الحذف</button>
+                                                        </div>
+                                                    </form>
+                                                </div>
+                                            </div>
+                                        </div>
                                     @endif
                                 </td>
                             </tr>
@@ -189,3 +242,48 @@
         });
     </script>
 @endsection
+
+<script>
+    document.addEventListener("DOMContentLoaded", function() {
+        const searchMainMenu = document.getElementById("searchMainMenu");
+        const searchSubMenu = document.getElementById("searchSubMenu");
+        const searchClient = document.getElementById("searchClient");
+        const searchAnother = document.getElementById("searchAnother");
+
+        const table = document.getElementById("archive-table");
+        const rows = table.getElementsByTagName("tr");
+
+        function filterTable() {
+            const mainMenuValue = searchMainMenu.value.toLowerCase();
+            const subMenuValue = searchSubMenu.value.toLowerCase();
+            const clientValue = searchClient.value.toLowerCase();
+            const anotherValue = searchAnother.value.toLowerCase();
+
+            for (let i = 1; i < rows.length; i++) { // نبدأ من 1 عشان نتخطى الـ header
+                const cells = rows[i].getElementsByTagName("td");
+                if (cells.length > 0) {
+                    const mainMenu = cells[2].textContent.toLowerCase(); // القائمة الرئيسية
+                    const subMenu = cells[3].textContent.toLowerCase(); // القائمة الفرعية
+                    const client = cells[4].textContent.toLowerCase(); // اسم الموكل
+                    const another = cells[5].textContent.toLowerCase(); // اطراف اخرى
+
+                    if (
+                        mainMenu.includes(mainMenuValue) &&
+                        subMenu.includes(subMenuValue) &&
+                        client.includes(clientValue) &&
+                        another.includes(anotherValue)
+                    ) {
+                        rows[i].style.display = "";
+                    } else {
+                        rows[i].style.display = "none";
+                    }
+                }
+            }
+        }
+
+        searchMainMenu.addEventListener("keyup", filterTable);
+        searchSubMenu.addEventListener("keyup", filterTable);
+        searchClient.addEventListener("keyup", filterTable);
+        searchAnother.addEventListener("keyup", filterTable);
+    });
+</script>

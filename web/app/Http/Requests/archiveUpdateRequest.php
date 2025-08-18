@@ -22,11 +22,15 @@ class archiveUpdateRequest extends FormRequest
     public function rules(): array
     {
         return [
-            'name' => 'nullable',
-            'sub_menu_id' =>'nullable',
+            'sub_menu_id' => 'nullable',
             'notes' => 'nullable',
             'user_id' => 'nullable',
             'file' => 'nullable',
+            'main_menu_id' => 'nullable',
+            'time' => 'nullable',
+            'another_names' => 'nullable',
+            'client_id' => 'nullable',
+
         ];
     }
 }

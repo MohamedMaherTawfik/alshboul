@@ -22,11 +22,14 @@ class archiveRequest extends FormRequest
     public function rules(): array
     {
         return [
-            'name' => 'required',
             'sub_menu_id' => 'required',
             'notes' => 'nullable',
             'user_id' => 'required',
             'file' => 'required',
+            'main_menu_id' => 'required',
+            'time' => 'required',
+            'another_names' => 'nullable',
+            'client_id' => 'required',
         ];
     }
 }

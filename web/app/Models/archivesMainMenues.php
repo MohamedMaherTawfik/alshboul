@@ -24,4 +24,9 @@ class archivesMainMenues extends Model
     {
         return $this->belongsTo(User::class, 'updated_by');
     }
+
+    public function archives()
+    {
+        return $this->hasMany(archives::class, 'main_menu_id');
+    }
 }
