@@ -120,10 +120,11 @@
             </div>
 
             <!-- زر عرض الكل -->
-            <button class="btn btn-outline-secondary mr-2 d-flex align-items-center filter-btn">
+            <a href="{{ route('archive.index') }}"
+                class="btn btn-outline-secondary mr-2 d-flex align-items-center filter-btn">
                 <i class="fas fa-list ml-2 me-2"></i>
                 عرض الكل
-            </button>
+            </a>
         </div>
 
         <!-- قائمة الفلاتر (القوائم الفرعية كأزرار فلترة) -->

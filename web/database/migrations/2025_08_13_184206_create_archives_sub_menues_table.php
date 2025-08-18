@@ -18,7 +18,7 @@ return new class extends Migration {
             $table->foreignIdFor(User::class, 'updated_by')->nullable()->constrained()->onDelete('cascade');
             $table->foreignIdFor(archivesMainMenues::class, 'main_menu_id')->nullable()->constrained()->onDelete('cascade');
             $table->string('name');
-            $table->string('document_number');
+            $table->string('document_number')->unique();
             $table->timestamps();
         });
     }
