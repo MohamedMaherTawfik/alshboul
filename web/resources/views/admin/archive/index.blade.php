@@ -218,29 +218,7 @@
         </div>
     </div>
 
-    <!-- JavaScript للفلترة -->
-    <script>
-        document.addEventListener('DOMContentLoaded', function() {
-            const filterButtons = document.querySelectorAll('.filter-btn');
-            const tableRows = document.querySelectorAll('#archive-table tbody tr');
 
-            filterButtons.forEach(button => {
-                button.addEventListener('click', function() {
-                    const subMenuId = this.getAttribute('data-sub-menu'); // فارغ = عرض الكل
-
-                    tableRows.forEach(row => {
-                        const rowSubMenuId = row.getAttribute('data-sub-menu-id');
-
-                        if (subMenuId === '' || rowSubMenuId === subMenuId) {
-                            row.style.display = ''; // اعرض
-                        } else {
-                            row.style.display = 'none'; // اخفِ
-                        }
-                    });
-                });
-            });
-        });
-    </script>
 @endsection
 
 <script>
@@ -285,5 +263,29 @@
         searchSubMenu.addEventListener("keyup", filterTable);
         searchClient.addEventListener("keyup", filterTable);
         searchAnother.addEventListener("keyup", filterTable);
+    });
+</script>
+
+<!-- JavaScript للفلترة -->
+<script>
+    document.addEventListener('DOMContentLoaded', function() {
+        const filterButtons = document.querySelectorAll('.filter-btn');
+        const tableRows = document.querySelectorAll('#archive-table tbody tr');
+
+        filterButtons.forEach(button => {
+            button.addEventListener('click', function() {
+                const subMenuId = this.getAttribute('data-sub-menu'); // فارغ = عرض الكل
+
+                tableRows.forEach(row => {
+                    const rowSubMenuId = row.getAttribute('data-sub-menu-id');
+
+                    if (subMenuId === '' || rowSubMenuId === subMenuId) {
+                        row.style.display = ''; // اعرض
+                    } else {
+                        row.style.display = 'none'; // اخفِ
+                    }
+                });
+            });
+        });
     });
 </script>

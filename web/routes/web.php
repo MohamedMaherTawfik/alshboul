@@ -204,6 +204,7 @@ Route::group(['prefix' => 'admin', 'middleware' => ['auth', 'check_role:superadm
     Route::get('/archives/system/archives/indexdelete/', [ArchiveController::class, 'deletedArchive'])->name('archive.indexDelete');
     Route::post('/archives/system/archives/indexdelete/{archive}/restore', [ArchiveController::class, 'restore'])->name('archive.restore');
     Route::get('/archives/reports', [ArchiveController::class, 'index1'])->name('archive.reports');
+    Route::get('/archives/reports/search', [ArchiveController::class, 'search'])->name('archive.reports.search');
 
     Route::get('/notifications/{id}/read', function ($id) {
         $notification = Auth::user()->notifications()->where('id', $id)->first();

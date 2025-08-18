@@ -122,4 +122,36 @@ class ArchiveController extends Controller
         $archive->update(['active' => 1]);
         return redirect()->route('archive.index')->with('success', 'تم التعديل بنجاح');
     }
+
+    public function search(Request $request)
+    {
+        $query = archives::query();
+
+        // فلترة بالتاريخ
+        if ($request->filled('from_date')) {
+            $query->whereDate('time', '>=', $request->from_date);
+        }
+        if ($request->filled('to_date')) {
+            $query->whereDate('time', '<=', $request->to_date);
+        }
+
+        // فلترة بالقسم الرئيسي
+        if ($request->filled('main_menu_id')) {
+            $query->whereHas('archivesSubMenues', function ($q) use ($request) {
+                $q->where('main_menu_id', $request->main_menu_id);
+            });
+        }
+
+        // فلترة بالقسم الفرعي
+        if ($request->filled('sub_menu_id')) {
+            $query->where('sub_menu_id', $request->sub_menu_id);
+        }
+
+        $archives = $query->latest()->get();
+
+        $archiveMainMenues = archivesMainMenues::all();
+        $archivesSubMenues = archivesSubMenues::all();
+        return view('admin.archive.index1', compact('archives', 'archiveMainMenues', 'archivesSubMenues'));
+
+    }
 }
