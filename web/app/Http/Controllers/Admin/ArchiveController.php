@@ -26,7 +26,9 @@ class ArchiveController extends Controller
     public function index1()
     {
         $archives = archives::get();
-        return view('admin.archive.index1', compact('archives'));
+        $archiveMainMenues = archivesMainMenues::get();
+        $archivesSubMenues = archivesSubMenues::get();
+        return view('admin.archive.index1', compact('archives', 'archiveMainMenues', 'archivesSubMenues'));
     }
 
     public function create()

@@ -22,7 +22,7 @@ class LawyerController extends Controller
     public function indexDelete()
     {
         $data = Lawyer::onlyTrashed()->get();
-        return view('admin.lawyer.indexDelete', compact('data'));
+        return view('admin.Lawyer.indexDelete', compact('data'));
     }
 
     /**
