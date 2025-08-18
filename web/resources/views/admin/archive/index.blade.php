@@ -9,7 +9,7 @@
 <style>
     /* تكبير حجم القوائم الرئيسية */
     .main-menu-btn {
-        font-size: 38px !important;
+        font-size: 25px !important;
         padding: 0.75rem 1.5rem !important;
         font-weight: bold;
         border: none;
@@ -155,7 +155,7 @@
                         <!-- زر القائمة الرئيسية -->
                         <button class="btn btn-{{ $color }} main-menu-btn py-3 px-4" type="button"
                             id="dropdown{{ $main->id }}" aria-expanded="false"
-                            style="font-size: 38px; border: none; outline: none;">
+                            style="font-size: 25px; border: none; outline: none;">
                             {{ $main->name }}
                         </button>
 
