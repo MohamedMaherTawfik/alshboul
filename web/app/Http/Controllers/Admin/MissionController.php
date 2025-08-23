@@ -97,4 +97,16 @@ class MissionController extends Controller
         return view('admin.missions.deleted', compact('missions'));
     }
 
+    public function myMissions()
+    {
+        $lawyerId = Auth::id(); // لو المحامي بيسجل دخول بنفس جدول Lawyer
+
+        $myMissions = Missions::where('is_done', 0)
+            ->where(function ($query) use ($lawyerId) {
+                $query->where('first_lawyer_id', $lawyerId)
+                    ->orWhere('second_lawyer_id', $lawyerId);
+            })
+            ->get();
+        return view('admin.missions.myMissions', compact('myMissions'));
+    }
 }

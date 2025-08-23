@@ -211,6 +211,7 @@ Route::group(['prefix' => 'admin', 'middleware' => ['auth', roleMiddleware::clas
     Route::get('/missions/deleted', [MissionController::class, 'deletedMissions'])->name('mission.indexDelete');
     Route::post('/missions/{mission}/restore', [MissionController::class, 'restore'])->name('mission.restore');
     Route::get('/missions/{mission}/show', [MissionController::class, 'show'])->name('mission.show');
+    Route::get('/missions/show/me', [MissionController::class, 'myMissions'])->name('me.missions.show');
 
     Route::get('/notifications/{id}/read', function ($id) {
         $notification = Auth::user()->notifications()->where('id', $id)->first();

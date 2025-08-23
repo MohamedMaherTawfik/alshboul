@@ -1,5 +1,11 @@
 @php
     $message = \App\Models\Message::where('receiver_id', Auth::id())->where('seen', '0')->count();
+    $lawyerId = Auth::user()->id;
+    $missionsCount = \App\Models\Missions::where('is_done', 0)
+        ->where(function ($query) use ($lawyerId) {
+            $query->where('first_lawyer_id', $lawyerId)->orWhere('second_lawyer_id', $lawyerId);
+        })
+        ->count();
 @endphp
 <nav class="navbar navbar-expand-lg navbar-dark bg-dark">
     <a class="navbar-brand d-flex align-items-center" href="{{ route('admin.dashboard') }}">
@@ -14,6 +20,13 @@
         <a href='{{ route('show.notification') }}' class="badge badge-danger position-absolute"
             style="top: -5px; right: -10px; font-size: 12px;">
             {{ $message }}
+        </a>
+    </div>
+    <div class="position-relative ml-3">
+        <i class="fas fa-clipboard-list text-white fa-lg"></i>
+        <a href="{{ route('me.missions.show') }}" class="badge badge-danger position-absolute"
+            style="top: -5px; right: -10px; font-size: 12px;">
+            {{ $missionsCount }}
         </a>
     </div>
     <button class="navbar-toggler" type="button" data-toggle="collapse" data-target="#navbarMenu"
