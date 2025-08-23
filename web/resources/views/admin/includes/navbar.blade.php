@@ -135,9 +135,10 @@
                     <a class="dropdown-item" href="{{ route('executive-case.indexDelete') }}">القضايا التنفيذية</a>
                     <a class="dropdown-item" href="{{ route('settlement.indexDelete') }}">التسويات </a>
                     <a class="dropdown-item" href="{{ route('archive.indexDelete') }}">الارشيف </a>
+                    <a class="dropdown-item" href="{{ route('mission.indexDelete') }}">المهام </a>
                 </div>
             </li>
-            {{--
+
             <li class="nav-item dropdown">
                 <a class="nav-link dropdown-toggle {{ request()->is('admin/*Mission*') ? 'active' : '' }}"
                     href="#" id="deletedItemsMenu" role="button" data-toggle="dropdown" aria-haspopup="true"
@@ -149,7 +150,7 @@
                     <a class="dropdown-item" href="{{ route('mission.finished') }}">المهام المنجزه</a>
                     <a class="dropdown-item" href="{{ route('mission.unfinished') }}">المهام الغير منجزه </a>
                 </div>
-            </li> --}}
+            </li>
 
             @if (Auth::user()->role == 'superadmin')
                 <li class="nav-item dropdown">

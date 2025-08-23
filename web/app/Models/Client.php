@@ -36,4 +36,9 @@ class Client extends Model
     {
         return $this->hasMany(archives::class);
     }
+
+    public function missions()
+    {
+        return $this->hasMany(Missions::class);
+    }
 }

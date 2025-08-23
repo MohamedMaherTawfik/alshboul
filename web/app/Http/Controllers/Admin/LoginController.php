@@ -18,7 +18,6 @@ class LoginController extends Controller
     }
     public function login(LoginRequest $request)
     {
-        // dd(request()->all());
         if (Auth::guard('web')->attempt(['email' => $request->input('email'), 'password' => $request->input('password')])) {
             return redirect()->route('admin.dashboard');
         } else {

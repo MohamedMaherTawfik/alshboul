@@ -74,6 +74,8 @@ scratch. This page gets rid of all links and provides the needed markup only.
     </script>
 
     @yield('script')
+    <script src="https://unpkg.com/alpinejs@3.x.x/dist/cdn.min.js" defer></script>
+
 </body>
 
 </html>

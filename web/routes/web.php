@@ -1,5 +1,6 @@
 <?php
 use App\Http\Controllers\Admin\ArchiveController;
+use App\Http\Controllers\Admin\MissionController;
 use App\Http\Controllers\Admin\SettlementController;
 use App\Http\Controllers\Admin\AboutUsController;
 use App\Http\Controllers\Admin\AgreementController;
@@ -16,6 +17,7 @@ use App\Http\Controllers\ClientRequestController;
 use App\Http\Controllers\LawyerController;
 use App\Http\Controllers\ProfileController;
 use App\Http\Controllers\UserController;
+use App\Http\Middleware\roleMiddleware;
 use App\Models\User;
 use App\Http\Controllers\Message;
 use App\Http\Controllers\Admin\MoveBarController;
@@ -72,16 +74,6 @@ Route::get('/user', function () {
 
     return view('user.auth.login');
 });
-// Route::get('/', function () {
-//     if (Auth::check()) {
-//         if (Auth::user()->role == 'superadmin') {
-//             return redirect()->route('admin.dashboard');
-//         } elseif (Auth::user()->role == 'User') {
-//             return redirect()->route('user.dashboard');
-//         }
-//     }
-//     return view('admin.auth.login');
-// });
 
 
 
@@ -93,7 +85,7 @@ Route::middleware('auth')->group(function () {
 });
 
 
-Route::group(['prefix' => 'admin', 'middleware' => ['auth', 'check_role:superadmin']], function () {
+Route::group(['prefix' => 'admin', 'middleware' => ['auth', roleMiddleware::class]], function () {
     Route::get('/dashboard', [DashboardController::class, 'index'])->name('admin.dashboard');
     Route::get('/logout', [LoginController::class, 'logout'])->name('admin.logout');
 
@@ -206,6 +198,16 @@ Route::group(['prefix' => 'admin', 'middleware' => ['auth', 'check_role:superadm
     Route::get('/archives/reports', [ArchiveController::class, 'index1'])->name('archive.reports');
     Route::get('/archives/reports/search', [ArchiveController::class, 'search'])->name('archive.reports.search');
 
+    Route::get('/missions/add', [MissionController::class, 'create'])->name('mission.add');
+    Route::post('/missions/add', [MissionController::class, 'store'])->name('mission.store');
+    Route::get('/missions/finished', [MissionController::class, 'index'])->name('mission.finished');
+    Route::get('/missions/unfinished', [MissionController::class, 'index1'])->name('mission.unfinished');
+    Route::post('/missions/finished/{mission}/finished', [MissionController::class, 'finished'])->name('mission.unfinished.finished');
+    Route::post('/missions/unfinished/{mission}/unfinished', [MissionController::class, 'unfinished'])->name('mission.finished.unfinished');
+    Route::delete('/missions/{mission}/delete', [MissionController::class, 'destroy'])->name('mission.delete');
+    Route::get('/missions/deleted', [MissionController::class, 'deletedMissions'])->name('mission.indexDelete');
+    Route::post('/missions/{mission}/restore', [MissionController::class, 'restore'])->name('mission.restore');
+    Route::get('/missions/{mission}/show', [MissionController::class, 'show'])->name('mission.show');
 
     Route::get('/notifications/{id}/read', function ($id) {
         $notification = Auth::user()->notifications()->where('id', $id)->first();
