@@ -177,6 +177,9 @@ Route::group(['prefix' => 'admin', 'middleware' => ['auth', roleMiddleware::clas
     Route::get('/chat/lawyer/{userId?}', [Message::class, 'index2'])->name('chat.with1');
     Route::get('/chat/user/{userId?}', [Message::class, 'index3'])->name('chat.with2');
 
+    Route::get('/show/user', [Message::class, 'showNotifications'])->name('show.notification');
+    Route::post('/notifications/read/{message}', [Message::class, 'readMessage'])->name('show.notification.read');
+
     Route::get('/settlement-actions/{settlement_id}', [SettlementActionController::class, 'index'])->name('settlement-action.list');
     Route::get('/settlement-actions/{settlement_id}/create', [SettlementActionController::class, 'create'])->name('settlement-action.create');
     Route::get('/settlement-actions/{id}/edit', [SettlementActionController::class, 'edit'])->name('settlement-action.edit');

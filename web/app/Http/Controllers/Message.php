@@ -23,70 +23,39 @@ class Message extends Controller
     {
         $users = User::where('id', '!=', Auth::id())->whereIn('role', ['superadmin', 'admin'])->get(); // استثناء المستخدم الحالي
         $selectedUser = $userId ? User::find($userId) : null;
-
         return view('user.Message.index', compact('users', 'selectedUser'));
     }
     public function index2($userId = null)
     {
-        $users = User::where('id', '!=', Auth::id())->where('role', 'Lawyer')->get(); // استثناء المستخدم الحالي
+        $users = User::where('id', '!=', Auth::id())->where('role', 'lawyer')->get(); // استثناء المستخدم الحالي
         $selectedUser = $userId ? User::find($userId) : null;
 
         return view('admin.Message.index', compact('users', 'selectedUser'));
     }
     public function index3($userId = null)
     {
-        $users = User::where('id', '!=', Auth::id())->where('role', 'User')->get(); // استثناء المستخدم الحالي
+        $users = User::where('id', '!=', Auth::id())->where('role', 'user')->get(); // استثناء المستخدم الحالي
         $selectedUser = $userId ? User::find($userId) : null;
 
         return view('admin.Message.index', compact('users', 'selectedUser'));
     }
 
 
-    /**
-     * Show the form for creating a new resource.
-     */
-    public function create()
+    public function showNotifications()
     {
-        //
+        $notifications = \App\Models\Message::where('receiver_id', Auth::id())->where('seen', 0)->get();
+        return view('admin.Message.show', compact('notifications'));
     }
 
-    /**
-     * Store a newly created resource in storage.
-     */
-    public function store(Request $request)
+    public function readMessage(\App\Models\Message $message)
     {
-        //
+        if ($message->receiver_id == Auth::id()) {
+            $message->seen = 1;
+            $message->save();
+            return redirect()->back()->with('success', 'تم تعليم الإشعار كمقروء.');
+        }
+
+        return abort(403);
     }
 
-    /**
-     * Display the specified resource.
-     */
-    public function show(string $id)
-    {
-        //
-    }
-
-    /**
-     * Show the form for editing the specified resource.
-     */
-    public function edit(string $id)
-    {
-        //
-    }
-
-    /**
-     * Update the specified resource in storage.
-     */
-    public function update(Request $request, string $id)
-    {
-        //
-    }
-
-    /**
-     * Remove the specified resource from storage.
-     */
-    public function destroy(string $id)
-    {
-        //
-    }
 }
