@@ -1,4 +1,5 @@
 @php
+    use App\Models\CaseType;
     $message = \App\Models\Message::where('receiver_id', Auth::id())->where('seen', '0')->count();
     $lawyerId = Auth::user()->id;
     $missionsCount = \App\Models\Missions::where('is_done', 0)
@@ -6,6 +7,7 @@
             $query->where('first_lawyer_id', $lawyerId)->orWhere('second_lawyer_id', $lawyerId);
         })
         ->count();
+    $cases = CaseType::get();
 @endphp
 <nav class="navbar navbar-expand-lg navbar-dark bg-dark">
     <a class="navbar-brand d-flex align-items-center" href="{{ route('admin.dashboard') }}">
@@ -36,13 +38,12 @@
 
     <div class="collapse navbar-collapse" id="navbarMenu">
         <ul class="navbar-nav ml-auto">
-            @if (auth()->check())
+            @if (Auth::check())
                 <li class="nav-item">
                     <a class="nav-link" href="#">{{ Auth::user()->username }}</a>
                 </li>
             @endif
 
-            <!-- إعدادات الموقع -->
             <!-- إعدادات الموقع -->
             <li class="nav-item dropdown">
                 <a class="nav-link dropdown-toggle {{ request()->is('admin/about*') || request()->is('admin/move-bars*') || request()->is('admin/casetypes*') || request()->is('admin/social-links*') || request()->is('admin/sliders*') ? 'active' : '' }}"
@@ -73,6 +74,26 @@
                     <a class="dropdown-item" href="{{ route('client.visit') }}">زيارات الموكلين</a>
                 </div>
             </li>
+
+            <li class="nav-item dropdown">
+                <a class="nav-link dropdown-toggle {{ request()->is('admin/casetypes*') | request()->is('admin/cases*') ? 'active' : '' }}"
+                    href="#" id="executiveCaseDropdown" role="button" data-toggle="dropdown" aria-haspopup="true"
+                    aria-expanded="false">
+                    جميع القضايا
+                </a>
+                <div class="dropdown-menu dropdown-menu-right" aria-labelledby="executiveCaseDropdown">
+                    <a href="{{ route('cases.all') }}" class="dropdown-item">جميع القضايا المسجله</a>
+                    <hr>
+                    <a href="{{ route('cases.search') }}" class="dropdown-item">بحث تاريخ الجلسات </a>
+                    <hr>
+                    @foreach ($cases as $case)
+                        <a class="dropdown-item" href="{{ route('casetypes.show', $case) }}">
+                            {{ $case->name }}</a>
+                    @endforeach
+
+                </div>
+            </li>
+
             <li class="nav-item dropdown">
                 <a class="nav-link dropdown-toggle {{ request()->is('admin/executive-case*') | request()->is('admin/procedural-records*') ? 'active' : '' }}"
                     href="#" id="executiveCaseDropdown" role="button" data-toggle="dropdown" aria-haspopup="true"
@@ -175,6 +196,12 @@
                     <a class="dropdown-item" href="{{ route('mission.add') }}">اضافه مهمه</a>
                     <a class="dropdown-item" href="{{ route('mission.finished') }}">المهام المنجزه</a>
                     <a class="dropdown-item" href="{{ route('mission.unfinished') }}">المهام الغير منجزه </a>
+
+                    <hr style="font-weight: bold">
+
+                    <a class="dropdown-item" href="{{ route('mission.add') }}">تقارير المحامي</a>
+                    <a class="dropdown-item" href="{{ route('mission.finished') }}">المهام المنجزه</a>
+
                 </div>
             </li>
 

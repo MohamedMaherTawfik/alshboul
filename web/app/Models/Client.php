@@ -41,4 +41,9 @@ class Client extends Model
     {
         return $this->hasMany(Missions::class);
     }
+
+    public function cases()
+    {
+        return $this->hasMany(cases::class);
+    }
 }

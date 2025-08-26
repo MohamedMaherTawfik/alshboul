@@ -3,6 +3,7 @@
 namespace App\Http\Controllers\Admin;
 
 use App\Http\Controllers\Controller;
+use App\Models\cases;
 use App\Models\CaseType;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\DB;
@@ -16,6 +17,12 @@ class CaseTypeController extends Controller
     {
         $data = CaseType::select("*")->orderby('id', 'DESC')->paginate(10);
         return view('admin.CaseTypes.index', compact('data'));
+    }
+
+    public function show(CaseType $casetype)
+    {
+        $cases = cases::where('requested_case_id', $casetype->id)->get();
+        return view('admin.CaseTypes.show', compact('casetype', 'cases'));
     }
 
     /**
@@ -34,16 +41,18 @@ class CaseTypeController extends Controller
         try {
             $data = $request->all();
 
-            // Handle image upload
             if ($request->hasFile('image')) {
                 $image = $request->file('image');
                 $imageName = time() . '.' . $image->getClientOriginalExtension();
                 $image->move(public_path('uploads/case_types'), $imageName);
                 $data['image'] = 'uploads/case_types/' . $imageName;
             }
-
             DB::beginTransaction();
-            CaseType::create($data);
+            CaseType::create([
+                'name' => $data['name'],
+                'image' => $data['image'],
+                'description' => $data['description'] ?? '',
+            ]);
             DB::commit();
             return redirect()->route('casetypes.index')->with(['success' => 'تم اضافة نوع القضية بنجاح']);
         } catch (\Exception $th) {
@@ -120,4 +129,6 @@ class CaseTypeController extends Controller
             return redirect()->back()->with(['error' => 'عفواً حدث خطأ' . $th->getMessage()])->withInput();
         }
     }
+
+
 }

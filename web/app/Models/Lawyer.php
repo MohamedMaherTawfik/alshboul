@@ -46,4 +46,9 @@ class Lawyer extends Model
     {
         return $this->hasMany(SubmitfinishedMission::class, 'second_lawyer_id');
     }
+
+    public function courseSessions()
+    {
+        return $this->hasMany(court_session_date::class);
+    }
 }

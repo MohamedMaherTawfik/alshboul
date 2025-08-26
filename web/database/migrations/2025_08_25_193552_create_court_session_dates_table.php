@@ -1,0 +1,37 @@
+<?php
+
+use App\Models\cases;
+use App\Models\Lawyer;
+use App\Models\User;
+use Illuminate\Database\Migrations\Migration;
+use Illuminate\Database\Schema\Blueprint;
+use Illuminate\Support\Facades\Schema;
+
+return new class extends Migration {
+    /**
+     * Run the migrations.
+     */
+    public function up(): void
+    {
+        Schema::create('court_session_dates', function (Blueprint $table) {
+            $table->id();
+            $table->foreignIdFor(cases::class)->nullable()->constrained()->cascadeOnDelete();
+            $table->string('date')->nullable();
+            $table->string('facts')->nullable();
+            $table->string('file')->nullable();
+            $table->string('type')->nullable();
+            $table->foreignIdFor(Lawyer::class)->nullable()->constrained()->cascadeOnDelete();
+            $table->foreignIdFor(User::class)->nullable()->constrained()->cascadeOnDelete();
+            $table->text('note')->nullable();
+            $table->timestamps();
+        });
+    }
+
+    /**
+     * Reverse the migrations.
+     */
+    public function down(): void
+    {
+        Schema::dropIfExists('court_session_dates');
+    }
+};

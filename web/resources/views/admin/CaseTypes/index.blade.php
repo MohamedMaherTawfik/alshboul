@@ -19,28 +19,15 @@
                         <thead class="custom_thead">
                             <th>#</th>
                             <th>الاسم بالعربية</th>
-                            <th>الاسم بالإنجليزية</th>
                             <th>الوصف بالعربية</th>
-                            <th>الوصف بالإنجليزية</th>
-                            <th>الصورة</th>
                             <th>التحكم</th>
                         </thead>
                         <tbody>
                             @foreach ($data as $info)
                                 <tr>
                                     <td>{{ $info->id }}</td>
-                                    <td>{{ $info->name_ar }}</td>
-                                    <td>{{ $info->name_en }}</td>
-                                    <td>{{ Str::limit($info->description_ar, 50) }}</td>
-                                    <td>{{ Str::limit($info->description_en, 50) }}</td>
-                                    <td>
-                                        @if ($info->image)
-                                            <img src="{{ asset($info->image) }}" alt="Case Type Image"
-                                                style="max-width: 50px; max-height: 50px;">
-                                        @else
-                                            لا توجد صورة
-                                        @endif
-                                    </td>
+                                    <td>{{ $info->name }}</td>
+                                    <td>{{ Str::limit($info->description, 200) }}</td>
 
                                     <td>
                                         <a href="{{ route('casetypes.edit', $info->id) }}" class="btn btn-warning">تعديل</a>

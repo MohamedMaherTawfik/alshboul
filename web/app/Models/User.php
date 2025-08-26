@@ -69,4 +69,9 @@ class User extends Authenticatable
         return $this->hasMany(archives::class, 'user_id');
     }
 
+    public function search()
+    {
+        return $this->hasMany(searchIndex::class, 'user_id');
+    }
+
 }

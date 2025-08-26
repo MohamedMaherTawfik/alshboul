@@ -19,37 +19,24 @@
                     <div class="row">
                         <div class="form-group col-md-6">
                             <label for="">الاسم بالعربية</label>
-                            <input type="text" name="name_ar" value="{{ old('name_ar', $data->name_ar) }}"
-                                class="form-control" required>
-                            @error('name_ar')
+                            <input type="text" name="name" value="{{ old('name', $data->name) }}" class="form-control"
+                                required>
+                            @error('name')
                                 <small id="helpId" class="text-muted text-danger">{{ $message }}</small>
                             @enderror
                         </div>
-                        <div class="form-group col-md-6">
-                            <label for="">الاسم بالإنجليزية</label>
-                            <input type="text" name="name_en" value="{{ old('name_en', $data->name_en) }}"
-                                class="form-control" required>
-                            @error('name_en')
-                                <small id="helpId" class="text-muted text-danger">{{ $message }}</small>
-                            @enderror
-                        </div>
+
                     </div>
 
                     <div class="row">
                         <div class="form-group col-md-6">
                             <label for="">الوصف بالعربية</label>
-                            <textarea name="description_ar" class="form-control" rows="4" required>{{ old('description_ar', $data->description_ar) }}</textarea>
-                            @error('description_ar')
+                            <textarea name="description" class="form-control" rows="4" required>{{ old('description', $data->description) }}</textarea>
+                            @error('description')
                                 <small id="helpId" class="text-muted text-danger">{{ $message }}</small>
                             @enderror
                         </div>
-                        <div class="form-group col-md-6">
-                            <label for="">الوصف بالإنجليزية</label>
-                            <textarea name="description_en" class="form-control" rows="4" required>{{ old('description_en', $data->description_en) }}</textarea>
-                            @error('description_en')
-                                <small id="helpId" class="text-muted text-danger">{{ $message }}</small>
-                            @enderror
-                        </div>
+
                     </div>
 
                     <div class="row">

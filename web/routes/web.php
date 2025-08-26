@@ -1,5 +1,6 @@
 <?php
 use App\Http\Controllers\Admin\ArchiveController;
+use App\Http\Controllers\Admin\CaseController;
 use App\Http\Controllers\Admin\MissionController;
 use App\Http\Controllers\Admin\SettlementController;
 use App\Http\Controllers\Admin\AboutUsController;
@@ -226,9 +227,30 @@ Route::group(['prefix' => 'admin', 'middleware' => ['auth', roleMiddleware::clas
     Route::get('/casetypes/create', [CaseTypeController::class, 'create'])->name('casetypes.create');
     Route::post('/casetypes', [CaseTypeController::class, 'store'])->name('casetypes.store');
     Route::get('/casetypes/{id}/edit', [CaseTypeController::class, 'edit'])->name('casetypes.edit');
+    Route::get('/casetypes/{casetype}/show', [CaseTypeController::class, 'show'])->name('casetypes.show');
     Route::post('/casetypes/{id}', [CaseTypeController::class, 'update'])->name('casetypes.update');
-    Route::get('/casetypes/{id}/delete', [CaseTypeController::class, 'destroy'])->name('casetypes.destroy');
 
+    Route::get('/casetypes/createCase', [CaseController::class, 'createCase'])->name('casetypes.create.case');
+    Route::get('/casetypes/cases/all', [CaseController::class, 'allCases'])->name('cases.all');
+    Route::post('/casetypes/createCase', [CaseController::class, 'storeCase'])->name('casetypes.store.case');
+    Route::get('/casetypes/{id}/delete', [CaseTypeController::class, 'destroy'])->name('casetypes.destroy');
+    Route::get('/{case}/duration', [CaseController::class, 'duration'])->name('cases.duration');
+    Route::get('/{case}/edit', [CaseController::class, 'edit'])->name('cases.edit');
+    Route::get('/{case}/show', [CaseController::class, 'show'])->name('cases.show');
+    Route::get('/{case}/memos', [CaseController::class, 'memos'])->name('cases.memos');
+    Route::get('/cases/search', [CaseController::class, 'searchPage'])->name('cases.search');
+    Route::get('/cases/search/find', [CaseController::class, 'search'])->name('cases.search.find');
+    Route::get('/{case}/log', [CaseController::class, 'log'])->name('cases.logs');
+    Route::post('/{case}/update', [CaseController::class, 'update'])->name('cases.update');
+    Route::delete('/{case}/delete', [CaseController::class, 'destroy'])->name('cases.destroy');
+    Route::get('/{case}/add', [CaseController::class, 'add'])->name('cases.add');
+    Route::post('/{case}/add', [CaseController::class, 'storeAdd'])->name('cases.storeAdd');
+    Route::get('/{case}/settlement', [CaseController::class, 'settlement'])->name('cases.settlement');
+    Route::post('/{case}/settlement', [CaseController::class, 'storeSettlement'])->name('cases.storeSettlement');
+    Route::get('/{case}/expenses', [CaseController::class, 'expenses'])->name('cases.expenses');
+    Route::post('/{case}/expenses', [CaseController::class, 'storeExpenses'])->name('cases.storeExpenses');
+
+    Route::get('/{case}/log', [CaseController::class, 'log'])->name('log'); // سجل القضية
     // AboutUs Routes
     Route::get('/aboutus', [AboutUsController::class, 'index'])->name('aboutus.index');
     Route::get('/aboutus/create', [AboutUsController::class, 'create'])->name('aboutus.create');
