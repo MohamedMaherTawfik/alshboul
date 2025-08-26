@@ -249,26 +249,28 @@
 </style>
 
 @section('content')
-    <div class="container my-4">
+    <div class="container-fluid my-4"> {{-- خليتها container-fluid عشان تاخد العرض كامل --}}
         <div class="card shadow-lg border-0">
             <div class="card-header d-flex justify-content-between align-items-center"
-                style="background: var(--primary-color); color: #fff;">
-                <h5 class="m-0 flex-grow-1">
+                style="background: var(--primary-color); color: #fff; font-size: 1.4rem;">
+                <h5 class="m-0 flex-grow-1" style="font-size: 1.6rem; font-weight: bold;">
                     <i class="fas fa-balance-scale me-2"></i>جميع القضايا
                 </h5>
-                <a href="{{ route('casetypes.create.case') }}" class="btn btn-light btn-sm ms-auto">
+                <a href="{{ route('casetypes.create.case') }}" class="btn btn-light btn-lg ms-auto">
                     <i class="fas fa-plus"></i> انشاء قضية جديدة
                 </a>
             </div>
 
-
             <div class="card-body p-0">
                 <div class="table-responsive">
-                    <table class="table table-striped table-hover mb-0 text-center align-middle">
-                        <thead>
+                    <table class="table table-striped table-hover mb-0 text-center align-middle"
+                        style="font-size: 1.2rem; width: 100%;">
+                        <thead style="font-size: 1.3rem; font-weight: bold;">
                             <tr>
                                 <th>#</th>
                                 <th>اسم المدخل</th>
+                                <th>رقم الملف </th>
+                                <th> تاريخ الادخال</th>
                                 <th>الرقم الوطني للخصم</th>
                                 <th>رقم الدعوي</th>
                                 <th>قيمة الدعوي</th>
@@ -281,10 +283,10 @@
                                 <th>الإجراءات</th>
                             </tr>
                         </thead>
-                        <tbody>
+                        <tbody style="font-size: 1.2rem;">
                             @foreach ($cases as $case)
                                 @php
-                                    $lastSession = $case->courtSession->first(); // آخر جلسة
+                                    $lastSession = $case->courtSession->first();
                                     $hoursLeft = null;
                                     if ($lastSession && !empty($lastSession->date)) {
                                         $hoursLeft = \Carbon\Carbon::now()->diffInHours(
@@ -294,23 +296,29 @@
                                     }
                                 @endphp
                                 <tr>
-                                    <td data-label="#">{{ $loop->iteration }}</td>
-                                    <td data-label="اسم المدخل">{{ $case->added_by->name }}</td>
-                                    <td data-label="الرقم الوطني للخصم">{{ $case->opponent_national_id }}</td>
-                                    <td data-label="رقم الدعوي">{{ $case->case_number }}</td>
-                                    <td data-label="قيمة الدعوي">{{ $case->case_amount }}</td>
-                                    <td data-label="اسم المحكمة">{{ $case->court_name }}</td>
-                                    <td data-label="القاضي">{{ $case->jubge_name }}</td>
-
-                                    <td data-label="تاريخ الجلسة القادمة"
-                                        @if (!is_null($hoursLeft) && $hoursLeft <= 36 && $hoursLeft >= 0) style="color:white;background-color:red; font-weight:bold;min-width:200px;white-space:nowrap;"
-    @else
-        style="min-width:200px;white-space:nowrap;" @endif>
-                                        {{ $lastSession->date ?? 'لا يوجد تاريخ' }}
+                                    <td>{{ $loop->iteration }}</td>
+                                    <td>{{ $case->added_by->name }}</td>
+                                    <td>{{ $case->file_number }}</td>
+                                    <td>
+                                        @if ($lastSession)
+                                            {{ $lastSession->created_at->format('Y-m-d') }}
+                                        @else
+                                            <span class="text-muted">لا يوجد جلسة</span>
+                                        @endif
                                     </td>
 
-
-                                    <td data-label="المستندات">
+                                    <td>{{ $case->opponent_national_id }}</td>
+                                    <td>{{ $case->case_number }}</td>
+                                    <td>{{ $case->case_amount }}</td>
+                                    <td>{{ $case->court_name }}</td>
+                                    <td>{{ $case->jubge_name }}</td>
+                                    <td
+                                        @if (!is_null($hoursLeft) && $hoursLeft <= 36 && $hoursLeft >= 0) style="color:white;background-color:red; font-weight:bold;min-width:200px;white-space:nowrap;font-size:1.2rem;"
+                                        @else
+                                        style="min-width:200px;white-space:nowrap;font-size:1.2rem;" @endif>
+                                        {{ $lastSession->date ?? 'لا يوجد تاريخ' }}
+                                    </td>
+                                    <td>
                                         @if ($lastSession && !empty($lastSession->file))
                                             <a href="{{ asset('storage/' . $lastSession->file) }}" target="_blank"
                                                 class="btn btn-sm btn-info">عرض المستندات</a>
@@ -318,38 +326,36 @@
                                             <span class="text-muted">لا يوجد مستندات</span>
                                         @endif
                                     </td>
-
-                                    <td data-label="وقائع الدعوي">
-                                        {{ $lastSession->facts ?? 'لا توجد وقائع' }}
-                                    </td>
-
-                                    <td data-label="المدة">
-                                        <div class="dual-buttons">
-                                            <a href="#" class="btn btn-sm btn-outline-primary">المدة</a>
-                                            <a href="#" class="btn btn-sm btn-outline-secondary">المذكرات</a>
+                                    <td>{{ $lastSession->facts ?? 'لا توجد وقائع' }}</td>
+                                    <td>
+                                        <div class="dual-buttons d-flex gap-2">
+                                            <a href="{{ route('cases.duration.create', $case) }}"
+                                                class="btn btn-lg btn-outline-primary flex-fill">المدة</a>
+                                            <a href="{{ route('cases.notes.create', $case) }}"
+                                                class="btn btn-lg btn-outline-secondary flex-fill">المذكرات</a>
                                         </div>
                                     </td>
-
-                                    <td data-label="الإجراءات">
+                                    <td>
                                         <div class="d-flex flex-column gap-2">
                                             <a href="{{ route('cases.edit', $case) }}"
-                                                class="btn btn-sm btn-warning w-100">تعديل</a>
+                                                class="btn btn-lg btn-warning w-100">تعديل</a>
                                             <a href="{{ route('cases.show', $case) }}"
-                                                class="btn btn-sm btn-primary w-100">الجلسات</a>
+                                                class="btn btn-lg btn-primary w-100"> كل الجلسات</a>
                                             <form action="{{ route('cases.destroy', $case) }}" method="POST"
                                                 onsubmit="return confirm('هل أنت متأكد من الحذف؟');" class="w-100">
                                                 @csrf
                                                 @method('DELETE')
-                                                <button type="submit" class="btn btn-sm btn-danger w-100">حذف</button>
+                                                <button type="submit" class="btn btn-lg btn-danger w-100">حذف</button>
                                             </form>
                                             <a href="{{ route('cases.add', $case) }}"
-                                                class="btn btn-sm btn-success w-100">إضافة</a>
+                                                class="btn btn-lg btn-success w-100">اضافه جلسه</a>
                                             <a href="{{ route('cases.settlement', $case) }}"
-                                                class="btn btn-sm btn-info w-100">تسوية</a>
+                                                class="btn btn-lg btn-info w-100"> + تسويه </a>
                                             <a href="{{ route('cases.expenses', $case) }}"
-                                                class="btn btn-sm btn-dark w-100">المصاريف</a>
+                                                class="btn btn-lg btn-dark w-100">المصاريف</a>
                                         </div>
                                     </td>
+
                                 </tr>
                             @endforeach
                         </tbody>
@@ -358,6 +364,4 @@
             </div>
         </div>
     </div>
-    <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
-    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0-alpha1/dist/js/bootstrap.bundle.min.js"></script>
 @endsection

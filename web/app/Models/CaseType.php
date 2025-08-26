@@ -11,7 +11,7 @@ class CaseType extends Model
 
     public function suggestedCases()
     {
-        return $this->hasMany(cases::class);
+        return $this->hasMany(cases::class, 'suggested_case_id');
     }
 
     public function requestedCases()

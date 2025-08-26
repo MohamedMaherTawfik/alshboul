@@ -54,7 +54,6 @@ class ClientController extends Controller
             'name' => 'required',
             'phone' => 'required',
             'address' => 'required',
-            'user_id' => ['required', 'exists:users,id'],
             'national_id' => 'required|integer',
             'nationality' => 'required|string',
             'company_name' => 'nullable|string',
@@ -69,7 +68,7 @@ class ClientController extends Controller
         $client->company_national_number = $request->company_national_number ?? null;
         $client->national_id = $request->national_id;
         $client->nationality = $request->nationality;
-        $client->user_id = $request->user_id;
+        $client->user_id = Auth::user()->id;
         $client->added_by = $request->added_by;
         $client->save();
 

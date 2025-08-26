@@ -1,6 +1,6 @@
 @extends('layouts.admin')
-@section('title', 'المصاريف')
-@section('main_title_content', 'قائمة المصاريف')
+@section('title', 'الجلسات')
+@section('main_title_content', 'قائمة الجلسات')
 @section('title_content', 'عرض')
 @section('link_content')
     <a href="{{ route('cases.all') }}"> جميع القضايا</a>
@@ -25,6 +25,9 @@
                             <th>رقم الدعوي</th>
                             <th>المحامي</th>
                             <th>اسم الخصم</th>
+                            <th>ملاحظات</th>
+                            <th>الاجرائات</th>
+
                         </tr>
                     </thead>
                     <tbody>
@@ -33,7 +36,19 @@
                                 <td>{{ $index + 1 }}</td>
                                 <td>{{ $case->client->name ?? '-' }}</td>
                                 <td>{{ $case->court_name ?? '-' }}</td>
-                                <td>{{ $session->date ?? '-' }}</td>
+                                @php
+                                    $isLessThan48 = false;
+                                    if ($session->date) {
+                                        $date = \Carbon\Carbon::parse($session->date);
+                                        $hoursDiff = now()->diffInHours($date, false);
+                                        $isLessThan48 = $hoursDiff >= 0 && $hoursDiff <= 48;
+                                    }
+                                @endphp
+
+                                <td class="{{ $isLessThan48 ? 'text-white fw-bold' : '' }}" style="background-color: red;">
+                                    {{ $session->date ?? '-' }}
+                                </td>
+
                                 <td>{{ $session->facts ?? '-' }}</td>
                                 <td>
                                     <a href="{{ asset('storage/' . $session->file) }}" target="_blank"
@@ -42,6 +57,27 @@
                                 <td>{{ $case->case_number ?? '-' }}</td>
                                 <td>{{ $session->lawyer->name ?? '-' }}</td>
                                 <td>{{ $case->opponent_name ?? '-' }}</td>
+                                <td>{{ $session->note ?? '-' }}</td>
+                                <td>
+                                    <div class="d-flex gap-3">
+                                        <!-- زر تعديل -->
+                                        <a href="{{ route('cases.session.edit', $session) }}"
+                                            class="btn btn-primary w-100 px-4 ml-2">
+                                            تعديل
+                                        </a>
+
+                                        <!-- زر حذف -->
+                                        <form action="{{ route('cases.destroy', $session) }}" method="POST"
+                                            onsubmit="return confirm('هل أنت متأكد من الحذف؟');" class="w-100">
+                                            @csrf
+                                            @method('DELETE')
+                                            <button type="submit" class="btn btn-danger w-100 px-4">
+                                                حذف
+                                            </button>
+                                        </form>
+                                    </div>
+
+                                </td>
                             </tr>
                         @empty
                             <tr>

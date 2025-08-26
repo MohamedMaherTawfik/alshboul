@@ -107,17 +107,7 @@
                                         @endforeach
                                     </select>
                                 </div>
-                                <div class="form-group col-md-6">
-                                    <label class="form-label fw-bold">القضية المطلوبة</label>
-                                    <select name="requested_case_id" class="form-select"
-                                        style="border-radius: 10px; padding: 10px;">
-                                        <option value="{{ $case->requestedCases->id }}">{{ $case->requestedCases->name }}
-                                        </option>
-                                        @foreach (App\Models\CaseType::all() as $type)
-                                            <option value="{{ $type->id }}">{{ $type->name }}</option>
-                                        @endforeach
-                                    </select>
-                                </div>
+
                             </div>
 
                             <div class="form-group mt-4">
@@ -215,7 +205,7 @@
             <div class="text-center mt-4">
                 <button type="submit" class="btn btn-lg"
                     style="background: linear-gradient(135deg, #2c3e50 0%, #1a2530 100%); color: white; padding: 12px 40px; border-radius: 50px; font-weight: bold; box-shadow: 0 4px 8px rgba(0,0,0,0.2);">
-                    <i class="fas fa-plus-circle me-2"></i>إضافة القضية
+                    <i class="fas fa-plus-circle me-2"></i>تعديل القضية
                 </button>
             </div>
         </form>

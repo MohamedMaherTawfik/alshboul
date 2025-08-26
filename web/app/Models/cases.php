@@ -33,4 +33,19 @@ class cases extends Model
     {
         return $this->hasMany(court_session_date::class);
     }
+
+    public function subscriber()
+    {
+        return $this->belongsTo(User::class, 'subscriber_id');
+    }
+
+    public function legalPeriods()
+    {
+        return $this->hasMany(LegalPeriods::class);
+    }
+
+    public function caseNotes()
+    {
+        return $this->hasMany(CaseNotes::class);
+    }
 }

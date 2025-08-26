@@ -52,27 +52,23 @@
                     @forelse ($settlements as $settlement)
                         <tr>
                             <td>{{ $settlement->id }}</td>
-                            <td>{{ $settlement->user->name }}</td>
-                            <td>{{ $settlement->client?->name }}</td>
-                            <td>{{ $settlement->opponent_name }}</td>
-                            <td>{{ $settlement->client_national_id }}</td>
-                            <td>{{ $settlement->opponent_national_id }}</td>
-                            <td>{{ $settlement->opponent_phone }}</td>
-                            <td>{{ $settlement->address }}</td>
-                            <td>{{ $settlement->judged_for_role }}</td>
-
-                            <td>{{ $settlement->judged_against_role }}</td>
-
-
-                            <td>{{ $settlement->office_file_number }}</td>
-
-                            <td>{{ $settlement->lawsuit_number }}</td>
-                            <td>{{ $settlement->settlementType?->name_ar }}</td>
-                            <td>{{ $settlement->debt_value }}</td>
-                            <td>{{ $settlement->installment_type }}</td>
-                            <td>{{ $settlement->payment_value }}</td>
-                            <td>{{ $settlement->settlement_details }}</td>
-
+                            <td>{{ $settlement->user->name ?? 'غير متوفر' }}</td>
+                            <td>{{ $settlement->client_name ?? 'غير متوفر' }}</td>
+                            <td>{{ $settlement->opponent_name ?? 'غير متوفر' }}</td>
+                            <td>{{ $settlement->client_national_id ?? 'غير متوفر' }}</td>
+                            <td>{{ $settlement->opponent_national_id ?? 'غير متوفر' }}</td>
+                            <td>{{ $settlement->opponent_phone ?? 'غير متوفر' }}</td>
+                            <td>{{ $settlement->opponent_address ?? 'غير متوفر' }}</td>
+                            <td>{{ $settlement->client_status ?? 'غير متوفر' }}</td>
+                            <td>{{ $settlement->opponent_status ?? 'غير متوفر' }}</td>
+                            <td>{{ $settlement->file_number ?? 'غير متوفر' }}</td>
+                            <td>{{ $settlement->cases?->case_number ?? 'غير متوفر' }}</td>
+                            <td>{{ $settlement->settlement_type ?? 'غير متوفر' }}</td>
+                            <td>{{ $settlement->amount ? number_format($settlement->amount, 2) : 'غير متوفر' }}</td>
+                            <td>{{ $settlement->payment_terms ?? 'غير متوفر' }}</td>
+                            <td>{{ $settlement->payment_value ? number_format($settlement->payment_value, 2) : 'غير متوفر' }}
+                            </td>
+                            <td>{{ $settlement->notes ?? 'لا توجد ملاحظات' }}</td>
 
                             <td>
                                 <a href="{{ route('settlement.edit', $settlement->id) }}"
@@ -83,10 +79,9 @@
                                     class="btn btn-info btn-sm">
                                     <i class="fas fa-eye"></i> الاجراءات
                                 </a>
-                                      <button wire:click="toggleCommitment({{  $settlement->id}})"
-                                    class="btn
-            {{ $settlement->commitment_status === 'ملتزم' ? 'btn-success' : 'btn-danger' }}">
-                                    {{ $settlement->commitment_status ?? 'غير محدد' }}
+                                <button wire:click="toggleCommitment({{ $settlement->id }})"
+                                    class="btn {{ $settlement->obligation === 'ملتزم' ? 'btn-success' : 'btn-danger' }}">
+                                    {{ $settlement->obligation ?? 'غير محدد' }}
                                 </button>
                                 <button wire:click="confirmDelete({{ $settlement->id }})"
                                     class="btn btn-danger btn-sm">
@@ -100,6 +95,7 @@
                         </tr>
                     @endforelse
                 </tbody>
+
             </table>
             <div class="mt-3">
                 {{ $settlements->links() }}

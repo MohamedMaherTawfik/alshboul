@@ -39,7 +39,7 @@
                                     <td>
                                         {{ optional($info->user)->active == 1 ? 'مفعل' : 'معطل' }}
                                     </td>
-                                    <td>{{ $info->addedby->username }}</td>
+                                    <td>{{ $info->addedby->name }}</td>
                                     <td>
                                         @if (@isset($info->updateby->username))
                                             {{ $info->updateby->username }}

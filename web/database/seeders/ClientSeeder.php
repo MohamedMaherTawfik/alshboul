@@ -4,7 +4,6 @@ namespace Database\Seeders;
 
 use App\Models\Client;
 use App\Models\User;
-use Illuminate\Database\Console\Seeds\WithoutModelEvents;
 use Illuminate\Database\Seeder;
 use Illuminate\Support\Facades\Hash;
 
@@ -27,17 +26,21 @@ class ClientSeeder extends Seeder
                 'role' => 'client',
             ]);
 
-            Client::create([
-                'id' => $user->id,
-                'user_id' => $user->id,
-                'name' => $user->name,
-                'company_name' => "Company $i",
-                'company_national_number' => "COMP$i",
-                'national_id' => "12345678$i",
-                'nationality' => "Egyptian",
-                'phone' => $user->phone,
-                'address' => $user->address,
-            ]);
+            // هنا نعمل 3 clients لكل يوزر
+            for ($j = 1; $j <= 3; $j++) {
+                Client::create([
+                    // سيب الـ id يجي auto increment عشان ميعملش تعارض
+                    'user_id' => $user->id,
+                    'name' => $user->name . " - Client $j",
+                    'company_name' => "Company {$i}_{$j}",
+                    'company_national_number' => "COMP{$i}{$j}",
+                    'national_id' => "12345678{$i}{$j}",
+                    'nationality' => "Egyptian",
+                    'phone' => $user->phone,
+                    'address' => $user->address,
+                    'added_by' => $user->id
+                ]);
+            }
         }
     }
 }

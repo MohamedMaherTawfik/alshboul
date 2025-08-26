@@ -4,11 +4,15 @@ namespace App\Http\Controllers\Admin;
 
 use App\Http\Controllers\Controller;
 use App\Http\Requests\CaseRequest;
+use App\Models\CaseNotes;
 use App\Models\cases;
 use App\Models\CaseType;
 use App\Models\Client;
 use App\Models\court_session_date;
 use App\Models\Lawyer;
+use App\Models\LegalPeriods;
+use App\Models\Missions;
+use App\Models\Settlement;
 use App\Models\User;
 use Illuminate\Http\Request;
 
@@ -16,18 +20,19 @@ class CaseController extends Controller
 {
     public function allCases()
     {
-        $cases = Cases::with([
-            'courtSession' => function ($q) {
-                $q->orderBy('id', 'DESC');
-            }
-        ])->get();
-        return view('admin.CaseTypes.allCases', compact('cases', ));
+        $caseTypes = CaseType::with('suggestedCases')->get();
+        $today = date('Y-m-d');
+        $sixDaysLater = date('Y-m-d', strtotime('+6 days'));
+        $unfinishedMissions = Missions::where('is_done', 0)->count();
+        $durations = LegalPeriods::whereBetween('period_end', [$today, $sixDaysLater])->get();
+        $notes = CaseNotes::whereBetween('period_end', [$today, $sixDaysLater])->get();
+        return view('admin.caseTypes.allCases', compact('durations', 'caseTypes', 'durations', 'unfinishedMissions', 'notes'));
     }
 
     public function createCase(CaseType $caseType)
     {
         $clients = Client::get();
-        $users = User::get();
+        $users = User::with('client')->get();
         return view('admin.CaseTypes.createCase', compact('caseType', 'clients', 'users'));
     }
 
@@ -84,7 +89,10 @@ class CaseController extends Controller
 
     public function storeSettlement(Request $request, Cases $case)
     {
-        return redirect()->route('admin.cases.all')->with('success', 'تم تسجيل التسوية بنجاح');
+        $data = $request->except('_token', 'lawsuit_type', 'lawsuit_number');
+        $data['cases_id'] = $case->id;
+        Settlement::create($data);
+        return redirect()->route('cases.all')->with('success', 'تم تسجيل التسوية بنجاح');
     }
 
     public function expenses(Cases $case)
@@ -136,4 +144,24 @@ class CaseController extends Controller
 
         return view('admin.cases.search', compact('sessions'));
     }
+
+    public function editSession(court_session_date $session)
+    {
+        $lawers = Lawyer::get();
+        return view('admin.cases.editSession', compact('session', 'lawers'));
+    }
+
+
+    public function updateSession(Request $request, court_session_date $session)
+    {
+        $session->update($request->all());
+        return redirect()->route('cases.all')->with('success', 'تم تعديل القضية بنجاح');
+    }
+
+    public function destroySession(Cases $case)
+    {
+        $case->delete();
+        return redirect()->route('cases.all')->with('success', 'تم حذف القضية بنجاح');
+    }
+
 }

@@ -40,4 +40,9 @@ class Settlement extends Model
     {
         return $this->belongsTo(User::class, 'user_id');
     }
+
+    public function cases()
+    {
+        return $this->belongsTo(Cases::class);
+    }
 }

@@ -96,7 +96,6 @@ class LawyerSeeder extends Seeder
                 'role' => 'lawyer',
             ]);
 
-            // إنشاء السجل في جدول Lawyers
             Lawyer::create([
                 'id' => $user->id,
                 'user_id' => $user->id,

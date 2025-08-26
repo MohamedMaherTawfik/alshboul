@@ -7,357 +7,422 @@
 @endsection
 
 <style>
-    /* --- نفس التنسيقات اللي عندك بالظبط --- */
-    .action-group {
-        display: flex;
-        gap: 8px;
-        flex-wrap: wrap;
-        justify-content: center;
-        align-items: center;
-    }
-
-    .action-group .btn {
-        min-width: 75px;
-        text-align: center;
-    }
-
     :root {
-        --primary-color: #2c3e50;
-        --secondary-color: #3498db;
-        --accent-color: #e74c3c;
-        --light-bg: #f8f9fa;
+        --primary-color: #3498db;
+        --danger-color: #e74c3c;
+        --warning-color: #f39c12;
+        --success-color: #27ae60;
+        --secondary-color: #2c3e50;
+        --accent-color: #f8f9fa;
         --border-color: #dee2e6;
+        --text-muted: #6c757d;
     }
 
     body {
+        background-color: #f8f9fa;
         font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
-        background-color: #f5f7f9;
         color: #333;
     }
 
+    .header-title {
+        color: var(--secondary-color);
+        border-right: 4px solid var(--primary-color);
+        padding-right: 15px;
+        font-weight: 700;
+        font-size: 1.75rem;
+    }
+
+    .breadcrumb-item a {
+        color: var(--primary-color);
+        text-decoration: none;
+        transition: color 0.2s;
+    }
+
+    .breadcrumb-item a:hover {
+        color: #1d6fa5;
+    }
+
+    .breadcrumb-item.active {
+        color: var(--secondary-color);
+        font-weight: 500;
+    }
+
     .card {
+        border: none;
         border-radius: 12px;
-        box-shadow: 0 4px 20px rgba(0, 0, 0, 0.08);
-        overflow: hidden;
+        box-shadow: 0 4px 15px rgba(0, 0, 0, 0.08);
         margin-bottom: 2rem;
+        overflow: hidden;
     }
 
     .card-header {
-        border-bottom: 1px solid rgba(255, 255, 255, 0.15);
-        padding: 1.2rem 1.5rem;
+        background: linear-gradient(135deg, #f8f9fa 0%, #e9ecef 100%);
+        border-bottom: 1px solid var(--border-color);
+        padding: 1rem 1.5rem;
         font-weight: 600;
+        color: var(--secondary-color);
+        display: flex;
+        align-items: center;
+        gap: 10px;
     }
 
-    .table-responsive {
-        border-radius: 0 0 12px 12px;
-        overflow: hidden;
+    .section-title {
+        color: var(--primary-color);
+        font-weight: 600;
+        margin-bottom: 1.2rem;
+        padding-bottom: 0.5rem;
+        border-bottom: 2px solid var(--primary-color);
+        font-size: 1.2rem;
     }
 
-    .table {
-        margin-bottom: 0;
-        font-size: 0.9rem;
+    .case-type-card {
+        border-radius: 10px;
+        border: 1px solid var(--border-color);
+        transition: all 0.3s ease;
+        height: 100%;
+        background-color: white;
+        text-align: center;
+        padding: 1.5rem 1rem;
+        box-shadow: 0 4px 8px rgba(0, 0, 0, 0.03);
     }
 
-    .table thead th {
+    .case-type-card:hover {
+        transform: translateY(-5px);
+        box-shadow: 0 10px 25px rgba(0, 0, 0, 0.1);
+        border-color: var(--primary-color);
+    }
+
+    .case-type-count {
+        font-size: 2.2rem;
+        font-weight: 700;
+        color: var(--primary-color);
+        line-height: 1;
+    }
+
+    .case-type-name {
+        font-weight: 600;
+        color: var(--secondary-color);
+        margin: 0.5rem 0;
+    }
+
+    .text-muted-small {
+        color: var(--text-muted);
+        font-size: 0.875rem;
+    }
+
+    .table th {
         background-color: var(--primary-color);
         color: white;
         font-weight: 600;
-        padding: 1rem 0.75rem;
-        border-bottom: none;
+        text-transform: uppercase;
+        font-size: 0.85rem;
+        letter-spacing: 0.5px;
+    }
+
+    .table td,
+    .table th {
         vertical-align: middle;
+        white-space: nowrap;
     }
 
-    .table tbody td {
-        padding: 1rem 0.75rem;
-        vertical-align: middle;
-        border-color: var(--border-color);
+    .badge-count {
+        background-color: var(--primary-color);
+        color: white;
+        border-radius: 50%;
+        width: 32px;
+        height: 32px;
+        display: inline-flex;
+        align-items: center;
+        justify-content: center;
+        font-weight: 600;
+        font-size: 0.85rem;
     }
 
-    .table-hover tbody tr:hover {
-        background-color: rgba(52, 152, 219, 0.05);
+    /* Duration Status Colors */
+    .status-overdue {
+        background-color: #ffebee !important;
+        color: var(--danger-color) !important;
+        font-weight: bold;
     }
 
-    .table-striped tbody tr:nth-of-type(odd) {
-        background-color: rgba(0, 0, 0, 0.02);
+    .status-warning {
+        background-color: #fff3cd !important;
+        color: #856404;
     }
 
-    .btn {
-        font-size: 0.8rem;
+    .duration-date {
         font-weight: 500;
-        padding: 0.35rem 0.6rem;
-        border-radius: 6px;
-        transition: all 0.2s ease;
-    }
-
-    .btn-sm {
-        min-width: 65px;
-    }
-
-    .btn-outline-primary {
-        color: var(--secondary-color);
-        border-color: var(--secondary-color);
-    }
-
-    .btn-outline-primary:hover {
-        background-color: var(--secondary-color);
-        color: white;
-    }
-
-    .btn-outline-secondary {
-        color: #6c757d;
-        border-color: #6c757d;
-    }
-
-    .btn-outline-secondary:hover {
-        background-color: #6c757d;
-        color: white;
-    }
-
-    .btn-warning {
-        background-color: #f39c12;
-        border-color: #f39c12;
-        color: white;
-    }
-
-    .btn-warning:hover {
-        background-color: #e67e22;
-        border-color: #e67e22;
-    }
-
-    .btn-danger {
-        background-color: #e74c3c;
-        border-color: #e74c3c;
-    }
-
-    .btn-danger:hover {
-        background-color: #c0392b;
-        border-color: #c0392b;
-    }
-
-    .btn-success {
-        background-color: #27ae60;
-        border-color: #27ae60;
-    }
-
-    .btn-success:hover {
-        background-color: #219653;
-        border-color: #219653;
-    }
-
-    .btn-info {
-        background-color: #17a2b8;
-        border-color: #17a2b8;
-    }
-
-    .btn-info:hover {
-        background-color: #138496;
-        border-color: #138496;
     }
 
     .btn-dark {
-        background-color: #343a40;
-        border-color: #343a40;
+        background-color: var(--secondary-color);
+        border: none;
     }
 
     .btn-dark:hover {
-        background-color: #23272b;
-        border-color: #23272b;
-    }
-
-    .status-badge {
-        display: inline-block;
-        padding: 0.35em 0.65em;
-        font-size: 0.75em;
-        font-weight: 700;
-        line-height: 1;
-        text-align: center;
-        white-space: nowrap;
-        vertical-align: baseline;
-        border-radius: 0.375rem;
-    }
-
-    .badge-active {
-        background-color: rgba(46, 204, 113, 0.15);
-        color: #27ae60;
-    }
-
-    .badge-upcoming {
-        background-color: rgba(241, 196, 15, 0.15);
-        color: #f39c12;
-    }
-
-    .badge-closed {
-        background-color: rgba(108, 117, 125, 0.15);
-        color: #6c757d;
+        background-color: #1a252f;
     }
 
     .empty-state {
-        padding: 3rem 1rem;
         text-align: center;
-        color: #6c757d;
+        padding: 2rem 1rem;
+        color: var(--text-muted);
     }
 
     .empty-state i {
         font-size: 3rem;
-        margin-bottom: 1rem;
-        color: #ced4da;
+        opacity: 0.5;
     }
 
-    .dual-buttons {
-        display: flex;
-        gap: 0.3rem;
+    .empty-state p {
+        margin-top: 0.5rem;
+        font-style: italic;
     }
 
-    @media (max-width:768px) {
-        .table thead {
-            display: none;
-        }
-
-        .table tbody tr {
-            display: block;
-            margin-bottom: 1rem;
-            border: 1px solid var(--border-color);
-            border-radius: 8px;
-        }
-
-        .table tbody td {
-            display: block;
-            text-align: left;
-            position: relative;
-            padding-left: 50%;
-        }
-
-        .table tbody td:before {
-            content: attr(data-label);
-            position: absolute;
-            left: 0.75rem;
-            width: 45%;
-            padding-right: 10px;
-            font-weight: 600;
-            text-align: right;
-        }
-
-        .table {
-            width: 100% !important;
-            table-layout: auto;
-        }
-
+    @media (max-width: 768px) {
         .table-responsive {
-            width: 100% !important;
+            font-size: 0.8rem;
+        }
+
+        .case-type-count {
+            font-size: 1.75rem;
+        }
+
+        .table td,
+        .table th {
+            padding: 0.4rem 0.3rem;
+            font-size: 0.75rem;
+        }
+
+        .card-header {
+            flex-direction: column;
+            align-items: flex-start;
+            gap: 0.5rem;
+        }
+
+        .btn-sm {
+            font-size: 0.75rem;
+            padding: 0.25rem 0.5rem;
         }
     }
 </style>
 
 @section('content')
-    <div class="container my-4">
-        <div class="card shadow-lg border-0">
-            <div class="card-header d-flex justify-content-between align-items-center"
-                style="background: var(--primary-color); color: #fff;">
-                <h5 class="m-0 flex-grow-1">
-                    <i class="fas fa-balance-scale me-2"></i>جميع القضايا
-                </h5>
-                <a href="{{ route('casetypes.create.case') }}" class="btn btn-light btn-sm ms-auto">
-                    <i class="fas fa-plus"></i> انشاء قضية جديدة
-                </a>
+    <div class="container-fluid px-4 px-md-5 py-4">
+        <!-- Breadcrumb & Header -->
+        <div class="row mb-4">
+            <div class="col">
+                <h2 class="header-title">قائمة أنواع القضايا والمدد القانونية</h2>
+                <nav aria-label="breadcrumb">
+                    <ol class="breadcrumb">
+                        <li class="breadcrumb-item"><a href="{{ route('admin.dashboard') }}">الرئيسية</a></li>
+                        <li class="breadcrumb-item"><a href="{{ route('cases.all') }}">جميع القضايا</a></li>
+                        <li class="breadcrumb-item active" aria-current="page">أنواع القضايا والمدد</li>
+                    </ol>
+                </nav>
             </div>
+        </div>
+
+        <a href="{{ route('mission.unfinished') }}"
+            class="alert bg-dark text-white py-2 px-3 d-flex justify-content-between align-items-center fs-4 text-decoration-none"
+            style="width:20%;">
+            <span><i class="bi bi-exclamation-circle me-2"></i> عدد المهام الغير منجزة</span>
+            <span class="badge bg-danger fs-3">
+                {{ $unfinishedMissions }}
+            </span>
+        </a>
 
 
-            <div class="card-body p-0">
-                <div class="table-responsive">
-                    <table class="table table-striped table-hover mb-0 text-center align-middle">
-                        <thead>
+
+
+        <!-- Case Types Section -->
+        <div class="card mb-4 shadow-sm border-0">
+            <div class="card-header bg-white border-0 pt-3 pb-2">
+                <div class="d-flex justify-content-between align-items-center flex-wrap gap-2">
+                    <div>
+                        <h5 class="mb-0"><i class="bi bi-folder  me-2"></i>أنواع القضايا</h5>
+
+                    </div>
+                    <span class="badge bg-primary mr-2 fs-6 px-3 py-2">{{ $caseTypes->count() }} نوع</span>
+                </div>
+            </div>
+            <div class="card-body">
+                @if ($caseTypes->isEmpty())
+                    <div class="empty-state">
+                        <i class="bi bi-folder-x text-muted" style="font-size: 3rem;"></i>
+                        <p class="mt-2 mb-0">لا توجد أنواع قضايا مسجلة</p>
+                    </div>
+                @else
+                    <div class="row g-3">
+                        @foreach ($caseTypes as $caseType)
+                            <div class="col-6 col-sm-4 col-md-3 col-lg-2">
+                                <div class="case-type-card h-100">
+                                    <div class="case-type-count">{{ $caseType->suggestedCases->count() }}</div>
+                                    <div class="case-type-name">{{ $caseType->name }}</div>
+                                    <div class="text-muted-small">قضية</div>
+                                </div>
+                            </div>
+                        @endforeach
+                    </div>
+                @endif
+            </div>
+        </div>
+
+        <!-- Legal Durations Section -->
+        <div class="card shadow-sm border-0">
+            <div class="card-header bg-white border-0 pt-3 pb-2 d-flex flex-wrap align-items-center gap-2">
+                <h5 class="mb-0"><i class="bi bi-calendar-event me-2"></i>المدد القانونية </h5>
+                <span class="badge bg-primary fs-6 px-3 py-2">{{ $durations->count() }} مدة</span>
+                <a href="{{ route('duration.all') }}" class="btn btn-primary btn-sm ms-auto px-3 text-white">
+                    <i class="bi bi-list me-1"></i> جميع المدد
+                </a>
+
+            </div>
+            <div class="card-body">
+                <div class="table-responsive shadow-sm rounded">
+                    <table class="table table-bordered table-hover align-middle table-striped mb-0">
+                        <thead class="table-dark">
                             <tr>
-                                <th>#</th>
+                                <th>رقم القضية</th>
+                                <th>رقم الملف</th>
                                 <th>اسم المدخل</th>
-                                <th>الرقم الوطني للخصم</th>
-                                <th>رقم الدعوي</th>
-                                <th>قيمة الدعوي</th>
+                                <th>تاريخ الإدخال</th>
+                                <th>وقائع المدة</th>
+                                <th>بداية المدة</th>
+                                <th>نهاية المدة</th>
+                                <th>اسم الموكل</th>
+                                <th>اسم الخصم</th>
                                 <th>اسم المحكمة</th>
-                                <th>القاضي</th>
-                                <th>تاريخ الجلسة القادمة</th>
-                                <th>المستندات</th>
-                                <th>وقائع الدعوي</th>
-                                <th>المدة</th>
-                                <th>الإجراءات</th>
+                                <th>ملاحظات</th>
                             </tr>
                         </thead>
                         <tbody>
-                            @foreach ($cases as $case)
-                                @php
-                                    $lastSession = $case->courtSession->first(); // آخر جلسة
-                                    $hoursLeft = null;
-                                    if ($lastSession && !empty($lastSession->date)) {
-                                        $hoursLeft = \Carbon\Carbon::now()->diffInHours(
-                                            \Carbon\Carbon::parse($lastSession->date),
-                                            false,
-                                        );
-                                    }
-                                @endphp
+                            @if ($durations->isEmpty())
                                 <tr>
-                                    <td data-label="#">{{ $loop->iteration }}</td>
-                                    <td data-label="اسم المدخل">{{ $case->added_by->name }}</td>
-                                    <td data-label="الرقم الوطني للخصم">{{ $case->opponent_national_id }}</td>
-                                    <td data-label="رقم الدعوي">{{ $case->case_number }}</td>
-                                    <td data-label="قيمة الدعوي">{{ $case->case_amount }}</td>
-                                    <td data-label="اسم المحكمة">{{ $case->court_name }}</td>
-                                    <td data-label="القاضي">{{ $case->jubge_name }}</td>
-
-                                    <td data-label="تاريخ الجلسة القادمة"
-                                        @if (!is_null($hoursLeft) && $hoursLeft <= 36 && $hoursLeft >= 0) style="color:white;background-color:red; font-weight:bold;min-width:200px;white-space:nowrap;"
-    @else
-        style="min-width:200px;white-space:nowrap;" @endif>
-                                        {{ $lastSession->date ?? 'لا يوجد تاريخ' }}
-                                    </td>
-
-
-                                    <td data-label="المستندات">
-                                        @if ($lastSession && !empty($lastSession->file))
-                                            <a href="{{ asset('storage/' . $lastSession->file) }}" target="_blank"
-                                                class="btn btn-sm btn-info">عرض المستندات</a>
-                                        @else
-                                            <span class="text-muted">لا يوجد مستندات</span>
-                                        @endif
-                                    </td>
-
-                                    <td data-label="وقائع الدعوي">
-                                        {{ $lastSession->facts ?? 'لا توجد وقائع' }}
-                                    </td>
-
-                                    <td data-label="المدة">
-                                        <div class="dual-buttons">
-                                            <a href="#" class="btn btn-sm btn-outline-primary">المدة</a>
-                                            <a href="#" class="btn btn-sm btn-outline-secondary">المذكرات</a>
-                                        </div>
-                                    </td>
-
-                                    <td data-label="الإجراءات">
-                                        <div class="d-flex flex-column gap-2">
-                                            <a href="{{ route('cases.edit', $case) }}"
-                                                class="btn btn-sm btn-warning w-100">تعديل</a>
-                                            <a href="{{ route('cases.show', $case) }}"
-                                                class="btn btn-sm btn-primary w-100">الجلسات</a>
-                                            <form action="{{ route('cases.destroy', $case) }}" method="POST"
-                                                onsubmit="return confirm('هل أنت متأكد من الحذف؟');" class="w-100">
-                                                @csrf
-                                                @method('DELETE')
-                                                <button type="submit" class="btn btn-sm btn-danger w-100">حذف</button>
-                                            </form>
-                                            <a href="{{ route('cases.add', $case) }}" class="btn btn-sm btn-success w-100">
-                                                اضافه </a>
-                                            <a href="{{ route('cases.settlement', $case) }}"
-                                                class="btn btn-sm btn-info w-100">تسوية</a>
-                                            <a href="{{ route('cases.expenses', $case) }}"
-                                                class="btn btn-sm btn-dark w-100">المصاريف</a>
-                                        </div>
+                                    <td colspan="11" class="text-center text-muted py-5">
+                                        <i class="bi bi-calendar-x" style="font-size: 2rem; opacity: 0.3;"></i>
+                                        <p class="mt-2 mb-0">لا توجد مدد قانونية مسجلة</p>
                                     </td>
                                 </tr>
-                            @endforeach
+                            @else
+                                @foreach ($durations as $duration)
+                                    @php
+                                        $endDate = \Carbon\Carbon::parse($duration->period_end);
+                                        $today = \Carbon\Carbon::today();
+                                        $isOverdue = $endDate->lt($today);
+                                        $rowClass = $isOverdue ? 'status-overdue' : '';
+                                    @endphp
+                                    <tr class="{{ $rowClass }}">
+                                        <td>{{ $duration->case->case_number ?? '-' }}</td>
+                                        <td>{{ $duration->case->file_number ?? '-' }}</td>
+                                        <td>{{ $duration->user->name ?? '-' }}</td>
+                                        <td>{{ $duration->created_at?->format('Y-m-d') ?? '-' }}</td>
+                                        <td>{{ Str::limit($duration->period_facts, 50, '...') }}</td>
+                                        <td><span class="duration-date">{{ $duration->period_start ?? '-' }}</span></td>
+                                        <td>
+                                            <span class="duration-date">{{ $duration->period_end ?? '-' }}</span>
+                                            @if (!$isOverdue)
+                                                @php $daysLeft = $today->diffInDays($endDate, false); @endphp
+                                                <br>
+                                                <small class="text-muted">
+                                                    (متبقي {{ $daysLeft }} يوم{{ $daysLeft != 1 ? 'ات' : '' }})
+                                                </small>
+                                            @else
+                                                <br>
+                                                <small class="text-danger fw-bold">متأخر!</small>
+                                            @endif
+                                        </td>
+                                        <td>{{ $duration->case->client->name ?? '-' }}</td>
+                                        <td>{{ $duration->case->opponent_name ?? '-' }}</td>
+                                        <td>{{ $duration->case->court_name ?? '-' }}</td>
+                                        <td>{{ Str::limit($duration->notes, 40, '...') ?? '-' }}</td>
+                                    </tr>
+                                @endforeach
+                            @endif
+                        </tbody>
+                    </table>
+                </div>
+            </div>
+        </div>
+
+
+        <div class="mt-4">
+            <hr>
+        </div>
+        <div class="card shadow-sm border-0">
+            <div class="card-header bg-white border-0 pt-3 pb-2 d-flex flex-wrap align-items-center gap-2">
+                <h5 class="mb-0"><i class="bi bi-calendar-event me-2"></i>المذكرات القانونية </h5>
+                <span class="badge bg-primary fs-6 px-3 py-2">{{ $notes->count() }} مذكره</span>
+                <a href="{{ route('note.all') }}" class="btn btn-primary btn-sm ms-auto px-3 text-white">
+                    <i class="bi bi-list me-1"></i> جميع المذكرات
+                </a>
+
+            </div>
+            <div class="card-body">
+                <div class="table-responsive shadow-sm rounded">
+                    <table class="table table-bordered table-hover align-middle table-striped mb-0">
+                        <thead class="table-dark">
+                            <tr>
+                                <th>رقم القضية</th>
+                                <th>رقم الملف</th>
+                                <th>اسم المدخل</th>
+                                <th>تاريخ الإدخال</th>
+                                <th>وقائع المدة</th>
+                                <th>بداية المدة</th>
+                                <th>نهاية المدة</th>
+                                <th>اسم الموكل</th>
+                                <th>اسم الخصم</th>
+                                <th>اسم المحكمة</th>
+                                <th>ملاحظات</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            @if ($notes->isEmpty())
+                                <tr>
+                                    <td colspan="11" class="text-center text-muted py-5">
+                                        <i class="bi bi-calendar-x" style="font-size: 2rem; opacity: 0.3;"></i>
+                                        <p class="mt-2 mb-0">لا توجد مدد قانونية مسجلة</p>
+                                    </td>
+                                </tr>
+                            @else
+                                @foreach ($notes as $note)
+                                    @php
+                                        $endDate = \Carbon\Carbon::parse($note->period_end);
+                                        $today = \Carbon\Carbon::today();
+                                        $isOverdue = $endDate->lt($today);
+                                        $rowClass = $isOverdue ? 'status-overdue' : '';
+                                    @endphp
+                                    <tr class="{{ $rowClass }}">
+                                        <td>{{ $note->case->case_number ?? '-' }}</td>
+                                        <td>{{ $note->case->file_number ?? '-' }}</td>
+                                        <td>{{ $note->user->name ?? '-' }}</td>
+                                        <td>{{ $note->created_at?->format('Y-m-d') ?? '-' }}</td>
+                                        <td>{{ Str::limit($note->period_facts, 50, '...') }}</td>
+                                        <td><span class="note-date">{{ $note->period_start ?? '-' }}</span></td>
+                                        <td>
+                                            <span class="note-date">{{ $note->period_end ?? '-' }}</span>
+                                            @if (!$isOverdue)
+                                                @php $daysLeft = $today->diffInDays($endDate, false); @endphp
+                                                <br>
+                                                <small class="text-muted">
+                                                    (متبقي {{ $daysLeft }} يوم{{ $daysLeft != 1 ? 'ات' : '' }})
+                                                </small>
+                                            @else
+                                                <br>
+                                                <small class="text-danger fw-bold">متأخر!</small>
+                                            @endif
+                                        </td>
+                                        <td>{{ $note->case->client->name ?? '-' }}</td>
+                                        <td>{{ $note->case->opponent_name ?? '-' }}</td>
+                                        <td>{{ $duration->case->court_name ?? '-' }}</td>
+                                        <td>{{ Str::limit($duration->notes, 40, '...') ?? '-' }}</td>
+                                    </tr>
+                                @endforeach
+                            @endif
                         </tbody>
                     </table>
                 </div>
             </div>
         </div>
     </div>
-    <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
-    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0-alpha1/dist/js/bootstrap.bundle.min.js"></script>
 @endsection

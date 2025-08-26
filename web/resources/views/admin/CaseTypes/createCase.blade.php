@@ -26,28 +26,26 @@
                         </div>
                         <div class="card-body">
                             <div class="form-group mb-3">
-                                <label for="client_id" class="form-label fw-bold">الموكل</label>
-                                <select name="client_id" id="client_id" class="form-select form-select-lg" required
-                                    style="border-radius: 10px; padding: 12px;">
-                                    <option value="">-- اختر الموكل --</option>
-                                    @foreach ($clients as $client)
-                                        <option value="{{ $client->id }}">{{ $client->name }}</option>
+                                <label for="subscriber_id" class="form-label fw-bold">المشترك</label>
+                                <select name="subscriber_id" id="subscriber_id" class="form-select form-select-lg" required>
+                                    <option value="">-- اختر المشترك --</option>
+                                    @foreach ($users as $user)
+                                        <option value="{{ $user->id }}" data-name="{{ $user->name }}"
+                                            data-clients='@json($user->client)'>
+                                            {{ $user->name }}
+                                        </option>
                                     @endforeach
                                 </select>
-                                <div class="invalid-feedback">يرجى اختيار الموكل</div>
                             </div>
 
                             <div class="form-group mb-3">
-                                <label for="subscriber_id" class="form-label fw-bold">المشترك</label>
-                                <select name="subscriber_id" id="subscriber_id" class="form-select form-select-lg" required
-                                    style="border-radius: 10px; padding: 12px;">
-                                    <option value="">-- اختر المشترك --</option>
-                                    @foreach ($users as $client)
-                                        <option value="{{ $client->id }}">{{ $client->name }}</option>
-                                    @endforeach
+                                <label for="client_id" class="form-label fw-bold">الموكل</label>
+                                <select name="client_id" id="client_id" class="form-select form-select-lg" required
+                                    disabled>
+                                    <option value="">-- اختر الموكل --</option>
                                 </select>
-                                <div class="invalid-feedback">يرجى اختيار المشترك</div>
                             </div>
+
 
                             <div class="row mt-4">
                                 <div class="col-md-12">
@@ -138,11 +136,21 @@
                             <h6 class="m-0 font-weight-bold"><i class="fas fa-info-circle me-2"></i>معلومات أساسية</h6>
                         </div>
                         <div class="card-body">
+                            @php
+                                $randomNumber = rand(1000, 9999);
+                            @endphp
+
                             <div class="form-group">
-                                <label class="form-label fw-bold">رقم القضية</label>
-                                <input type="text" name="case_number" class="form-control"
-                                    placeholder="أدخل رقم القضية" style="border-radius: 10px;">
+                                <p>رقم الملف المقترح : {{ $randomNumber }}</p>
+                                <input type="hidden" name="case_number" value="{{ $randomNumber }}">
                             </div>
+
+                            <div class="form-group mt-3">
+                                <label class="form-label fw-bold"> رقم الدعوي</label>
+                                <input type="text" name="file_number" class="form-control"
+                                    style="border-radius: 10px;">
+                            </div>
+
                             <div class="form-group mt-3">
                                 <label class="form-label fw-bold">اسم المحكمة</label>
                                 <input type="text" name="court_name" class="form-control"
@@ -233,21 +241,70 @@
         }
     </style>
 
-    <script>
-        // دالة للتحقق من صحة النموذج
-        (function() {
-            'use strict'
-            var forms = document.querySelectorAll('.needs-validation')
-            Array.prototype.slice.call(forms)
-                .forEach(function(form) {
-                    form.addEventListener('submit', function(event) {
-                        if (!form.checkValidity()) {
-                            event.preventDefault()
-                            event.stopPropagation()
-                        }
-                        form.classList.add('was-validated')
-                    }, false)
-                })
-        })()
-    </script>
+
 @endsection
+
+
+<script>
+    document.addEventListener("DOMContentLoaded", function() {
+        const subscriberSelect = document.getElementById("subscriber_id");
+        const clientSelect = document.getElementById("client_id");
+
+        subscriberSelect.addEventListener("change", function() {
+            // مسح الموكلين القدام
+            clientSelect.innerHTML = '<option value="">-- اختر الموكل --</option>';
+
+            // جبت الـ option اللي معمول له اختيار
+            const selectedOption = subscriberSelect.options[subscriberSelect.selectedIndex];
+            if (!selectedOption.value) {
+                clientSelect.setAttribute("disabled", true);
+                return;
+            }
+
+            // اسم و ID المشترك
+            const subscriberId = selectedOption.value;
+            const subscriberName = selectedOption.getAttribute("data-name");
+
+            // ضيف المشترك كـ option في الموكل
+            let userOption = document.createElement("option");
+            userOption.value = subscriberId;
+            userOption.textContent = subscriberName + " (المشترك)";
+            clientSelect.appendChild(userOption);
+
+            // جبت الـ clients من data attribute
+            const clients = JSON.parse(selectedOption.getAttribute("data-clients") || "[]");
+
+            // ضيف الموكلين لو موجودين
+            if (clients.length > 0) {
+                clients.forEach(client => {
+                    let option = document.createElement("option");
+                    option.value = client.id;
+                    option.textContent = client.name;
+                    clientSelect.appendChild(option);
+                });
+            }
+
+            clientSelect.removeAttribute("disabled");
+        });
+    });
+</script>
+
+<script>
+    // دالة للتحقق من صحة النموذج
+    (function() {
+        'use strict'
+        var forms = document.querySelectorAll('.needs-validation')
+        Array.prototype.slice.call(forms)
+            .forEach(function(form) {
+                form.addEventListener('submit', function(event) {
+                    if (!form.checkValidity()) {
+                        event.preventDefault()
+                        event.stopPropagation()
+                    }
+                    form.classList.add('was-validated')
+                }, false)
+            })
+    })()
+</script>
+
+<script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>

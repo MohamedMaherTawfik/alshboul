@@ -74,4 +74,18 @@ class User extends Authenticatable
         return $this->hasMany(searchIndex::class, 'user_id');
     }
 
+    public function settlement()
+    {
+        return $this->hasMany(Settlement::class, 'user_id');
+    }
+
+    public function legapPeriod()
+    {
+        return $this->hasMany(LegalPeriods::class, 'user_id');
+    }
+
+    public function case()
+    {
+        return $this->hasMany(Cases::class, 'user_id');
+    }
 }

@@ -26,6 +26,7 @@ return new class extends Migration {
             $table->foreignIdFor(CaseType::class, 'requested_case_id')->nullable()->constrained()->onDelete('cascade');
             $table->enum('case_type', ['حقوقي', 'شرعي', 'جزائي'])->nullable();
             $table->string('case_number')->nullable();
+            $table->string('file_number')->nullable();
             $table->string('court_name')->nullable();
             $table->string('case_amount')->nullable();
             $table->string('benefit_date')->nullable();

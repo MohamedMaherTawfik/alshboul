@@ -60,6 +60,7 @@
                                 <option value="Lawyer" {{ old('role') == 'Lawyer' ? 'selected' : '' }}>محامي</option>
                                 <option value="admin" {{ old('role') == 'admin' ? 'selected' : '' }}>أدمن</option>
                                 <option value="superadmin" {{ old('role') == 'superadmin' ? 'selected' : '' }}>سوبر أدمن
+                                <option value="subscriber" {{ old('role') == 'subscriber' ? 'selected' : '' }}>مشترك
                                 </option>
                             </select>
                             @error('active')

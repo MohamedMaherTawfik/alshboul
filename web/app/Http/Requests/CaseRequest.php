@@ -30,7 +30,6 @@ class CaseRequest extends FormRequest
             'opponent_name' => 'nullable|string',
             'opponent_national_id' => 'nullable',
             'suggested_case_id' => 'required',
-            'requested_case_id' => 'nullable',
             'case_type' => 'required',
             'case_number' => 'nullable',
             'court_name' => 'nullable',
@@ -41,6 +40,7 @@ class CaseRequest extends FormRequest
             'client_description' => 'nullable',
             'general_information' => 'nullable|string',
             'private_information' => 'nullable|string',
+            'file_number' => 'nullable',
         ];
     }
 

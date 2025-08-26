@@ -1,10 +1,11 @@
 @extends('layouts.admin')
-@section('title', 'اضافه تسويه')
-@section('main_title_content', 'اضافه تسويه')
+@section('title', 'أنواع القضايا')
+@section('main_title_content', 'قائمة أنواع القضايا')
 @section('title_content', 'إضافة')
 @section('link_content')
     <a href="{{ route('cases.all') }}">جميع القضايا</a>
 @endsection
+
 <style>
     :root {
         --primary-color: #3498db;
@@ -127,22 +128,42 @@
         box-shadow: 0 0 10px rgba(0, 0, 0, 0.03);
     }
 
+    .date-input-group {
+        position: relative;
+    }
+
+    .date-input-group .form-control {
+        padding-right: 40px;
+    }
+
+    .date-input-group::after {
+        content: "\f133";
+        font-family: bootstrap-icons;
+        position: absolute;
+        top: 50%;
+        right: 15px;
+        transform: translateY(-50%);
+        color: #6c757d;
+        pointer-events: none;
+    }
+
     @media (max-width: 768px) {
         .form-section {
             padding: 1rem;
         }
     }
 </style>
+
 @section('content')
     <div class="container py-5">
         <div class="row mb-4">
             <div class="col">
-                <h2 class="header-title">اضافه تسويه</h2>
+                <h2 class="header-title">إضافة مدة قانونية</h2>
                 <nav aria-label="breadcrumb">
                     <ol class="breadcrumb">
                         <li class="breadcrumb-item"><a href="#">الرئيسية</a></li>
                         <li class="breadcrumb-item"><a href="{{ route('cases.all') }}">جميع القضايا</a></li>
-                        <li class="breadcrumb-item active" aria-current="page">إضافة تسوية</li>
+                        <li class="breadcrumb-item active" aria-current="page">إضافة مدة قانونية</li>
                     </ol>
                 </nav>
             </div>
@@ -150,110 +171,66 @@
 
         <div class="card">
             <div class="card-header">
-                <h5 class="mb-0"><i class="bi bi-file-earmark-text me-2"></i>نموذج إضافة تسوية جديدة</h5>
+                <h5 class="mb-0"><i class="bi bi-calendar-range me-2"></i>نموذج إضافة مدة قانونية جديدة</h5>
             </div>
             <div class="card-body">
-                <form action="{{ route('cases.storeSettlement', $case) }}" method="POST">
+                <form action="{{ route('cases.notes.store', $case) }}" method="POST">
                     @csrf
 
                     <!-- معلومات القضية (غير قابلة للتعديل) -->
                     <div class="form-section">
                         <h5 class="section-title"><i class="bi bi-folder me-2"></i>معلومات القضية</h5>
                         <div class="row">
-                            <div class="col-md-4 mb-3">
-                                <label for="lawsuit_type" class="form-label">نوع الدعوى</label>
-                                <input type="text" class="form-control readonly-field" id="lawsuit_type"
-                                    name="lawsuit_type" value="{{ $case->suggestedCases->name }}" readonly>
-                            </div>
-                            <div class="col-md-4 mb-3">
-                                <label for="lawsuit_number" class="form-label">رقم الدعوى</label>
-                                <input type="text" class="form-control readonly-field" id="lawsuit_number"
-                                    name="lawsuit_number" value="{{ $case->case_number }}" readonly>
-                            </div>
-                            <div class="col-md-4 mb-3">
-                                <label for="subscriber_name" class="form-label">اسم المشترك</label>
-                                <input type="text" class="form-control" id="subscriber_name"
-                                    value="{{ $case->subscriber->name }}" readonly>
-                                <input type="hidden" name="user_id" value="{{ $case->subscriber->id }}">
-                            </div>
-
-                        </div>
-                    </div>
-
-                    <!-- بيانات التسوية -->
-                    <div class="form-section">
-                        <h5 class="section-title"><i class="bi bi-card-checklist me-2"></i>بيانات التسوية</h5>
-                        <div class="row">
                             <div class="col-md-6 mb-3">
-                                <label for="obligation" class="form-label">الالتزام</label>
-                                <select class="form-select" id="obligation" name="obligation" required>
-                                    <option value="">-- اختر الالتزام --</option>
-                                    <option value="ملتزم">ملتزم</option>
-                                    <option value="غير ملتزم">غير ملتزم</option>
-                                </select>
+                                <label for="case_number" class="form-label">رقم القضية</label>
+                                <input type="text" class="form-control readonly-field" id="case_number"
+                                    name="case_number" value="{{ $case->file_number }}" readonly>
                             </div>
                             <div class="col-md-6 mb-3">
-                                <label for="opponent_phone" class="form-label">هاتف الخصم</label>
-                                <input type="text" class="form-control" id="opponent_phone" name="opponent_phone"
-                                    placeholder="أدخل هاتف الخصم">
+                                <label for="case_type" class="form-label">نوع القضية</label>
+                                <input type="text" class="form-control readonly-field" id="case_type" name="case_type"
+                                    value="{{ $case->suggestedCases->name ?? '--' }}" readonly>
                             </div>
                         </div>
-
                         <div class="row">
                             <div class="col-md-6 mb-3">
-                                <label for="client_status" class="form-label">صفة الموكل</label>
-                                <input type="text" class="form-control" id="client_status" name="client_status"
-                                    placeholder="أدخل صفة الموكل">
+                                <label for="client_name" class="form-label">الموكل</label>
+                                <input type="text" class="form-control readonly-field" id="client_name"
+                                    name="client_name" value="{{ $case->client->name ?? '--' }}" readonly>
                             </div>
                             <div class="col-md-6 mb-3">
-                                <label for="opponent_status" class="form-label">صفة الخصم</label>
-                                <input type="text" class="form-control" id="opponent_status" name="opponent_status"
-                                    placeholder="أدخل صفة الخصم">
-                            </div>
-                        </div>
-
-                        <div class="row">
-                            <div class="col-md-6 mb-3">
-                                <label for="opponent_name" class="form-label">اسم الخصم</label>
-                                <input type="text" class="form-control" id="opponent_name" name="opponent_name"
-                                    placeholder="أدخل اسم الخصم">
-                            </div>
-                            <div class="col-md-6 mb-3">
-                                <label for="client_name" class="form-label">اسم الموكل</label>
-                                <input type="text" class="form-control" id="client_name" name="client_name"
-                                    placeholder="أدخل اسم الموكل">
+                                <label for="opponent_name" class="form-label">الخصم</label>
+                                <input type="text" class="form-control readonly-field" id="opponent_name"
+                                    name="opponent_name" value="{{ $case->opponent_name ?? '--' }}" readonly>
                             </div>
                         </div>
                     </div>
 
-                    <!-- المعلومات المالية -->
+                    <!-- بيانات المدة القانونية -->
                     <div class="form-section">
-                        <h5 class="section-title"><i class="bi bi-currency-exchange me-2"></i>المعلومات المالية</h5>
+                        <h5 class="section-title"><i class="bi bi-clock-history me-2"></i>بيانات المدة القانونية</h5>
                         <div class="row">
                             <div class="col-md-6 mb-3">
-                                <label for="amount" class="form-label">المبلغ</label>
-                                <div class="input-group">
-                                    <input type="number" step="0.01" class="form-control" id="amount"
-                                        name="amount" placeholder="أدخل المبلغ">
+                                <label for="period_start" class="form-label">تاريخ بداية المدة</label>
+                                <div>
+                                    <input type="date" class="form-control datepicker" id="period_start"
+                                        name="period_start" placeholder="اختر تاريخ البداية" required>
                                 </div>
                             </div>
                             <div class="col-md-6 mb-3">
-                                <label for="payment_value" class="form-label">قيمة الدفعات</label>
-                                <div class="input-group">
-                                    <input type="number" step="0.01" class="form-control" id="payment_value"
-                                        name="payment_value" placeholder="أدخل قيمة الدفعات">
+                                <label for="period_end" class="form-label">تاريخ نهاية المدة</label>
+                                <div>
+                                    <input type="date" class="form-control datepicker" id="period_end" name="period_end"
+                                        placeholder="اختر تاريخ النهاية" required>
                                 </div>
                             </div>
                         </div>
 
                         <div class="row">
-                            <div class="col-md-6 mb-3">
-                                <label for="payment_terms" class="form-label">شروط السداد</label>
-                                <select class="form-select" id="payment_terms" name="payment_terms" required>
-                                    <option value="">-- اختر شرط السداد --</option>
-                                    <option value="شهري">شهري</option>
-                                    <option value="أسبوعي">أسبوعي</option>
-                                </select>
+                            <div class="col-12 mb-3">
+                                <label for="period_facts" class="form-label">وقائع المدة</label>
+                                <textarea class="form-control" id="period_facts" name="period_facts" rows="4"
+                                    placeholder="أدخل وقائع المدة القانونية" required></textarea>
                             </div>
                         </div>
                     </div>
@@ -264,7 +241,7 @@
                         <div class="row">
                             <div class="col-12 mb-3">
                                 <label for="notes" class="form-label">ملاحظات</label>
-                                <textarea class="form-control" id="notes" name="notes" rows="4" placeholder="أدخل الملاحظات"></textarea>
+                                <textarea class="form-control" id="notes" name="notes" rows="3" placeholder="أدخل أي ملاحظات إضافية"></textarea>
                             </div>
                         </div>
                     </div>
@@ -273,7 +250,7 @@
                     <div class="row mt-4">
                         <div class="col-12 text-start">
                             <button type="submit" class="btn btn-primary px-4">
-                                <i class="bi bi-check2-circle me-2"></i>حفظ التسوية
+                                <i class="bi bi-check2-circle me-2"></i>حفظ المذكره القانونية
                             </button>
                             <button type="reset" class="btn btn-outline-secondary px-4 me-2">
                                 <i class="bi bi-x-circle me-2"></i>إلغاء
@@ -284,5 +261,4 @@
             </div>
         </div>
     </div>
-
 @endsection

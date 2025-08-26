@@ -21,7 +21,7 @@ class CaseTypeController extends Controller
 
     public function show(CaseType $casetype)
     {
-        $cases = cases::where('requested_case_id', $casetype->id)->get();
+        $cases = cases::where('suggested_case_id', $casetype->id)->get();
         return view('admin.CaseTypes.show', compact('casetype', 'cases'));
     }
 
