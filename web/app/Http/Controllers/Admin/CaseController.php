@@ -9,6 +9,7 @@ use App\Models\CaseType;
 use App\Models\Client;
 use App\Models\court_session_date;
 use App\Models\Lawyer;
+use App\Models\User;
 use Illuminate\Http\Request;
 
 class CaseController extends Controller
@@ -26,7 +27,8 @@ class CaseController extends Controller
     public function createCase(CaseType $caseType)
     {
         $clients = Client::get();
-        return view('admin.CaseTypes.createCase', compact('caseType', 'clients'));
+        $users = User::get();
+        return view('admin.CaseTypes.createCase', compact('caseType', 'clients', 'users'));
     }
 
     public function storeCase(CaseRequest $request, CaseType $caseType)
@@ -34,7 +36,7 @@ class CaseController extends Controller
         $data = $request->validated();
         $data['added_by_id'] = auth()->user()->id;
         cases::create($data);
-        return redirect()->route('casetypes.index')->with(['success' => 'تم اضافة القضية بنجاح']);
+        return redirect()->route('cases.all')->with(['success' => 'تم اضافة القضية بنجاح']);
     }
 
     public function edit(Cases $case)

@@ -23,6 +23,7 @@ class CaseRequest extends FormRequest
     {
         return [
             'client_id' => 'required',
+            'subscriber_id' => 'nullable',
             'first_national_id' => 'nullable',
             'second_national_id' => 'nullable',
             'third_national_id' => 'nullable',

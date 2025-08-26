@@ -14,7 +14,7 @@
             <i class="fas fa-gavel me-2"></i>إضافة قضية جديدة
         </h3>
 
-        <form action="{{ route('casetypes.store.case', $caseType) }}" method="POST" class="needs-validation" novalidate>
+        <form action="{{ route('casetypes.store.case') }}" method="POST" class="needs-validation" novalidate>
             @csrf
 
             <div class="row">
@@ -22,19 +22,31 @@
                 <div class="col-md-6 mb-4">
                     <div class="card h-100 shadow-sm">
                         <div class="card-header py-3" style="background-color: #2c3e50; color: white;">
-                            <h6 class="m-0 font-weight-bold"><i class="fas fa-user me-2"></i>معلومات العميل</h6>
+                            <h6 class="m-0 font-weight-bold"><i class="fas fa-user me-2"></i>معلومات الموكل</h6>
                         </div>
                         <div class="card-body">
                             <div class="form-group mb-3">
-                                <label for="client_id" class="form-label fw-bold">العميل</label>
+                                <label for="client_id" class="form-label fw-bold">الموكل</label>
                                 <select name="client_id" id="client_id" class="form-select form-select-lg" required
                                     style="border-radius: 10px; padding: 12px;">
-                                    <option value="">-- اختر العميل --</option>
+                                    <option value="">-- اختر الموكل --</option>
                                     @foreach ($clients as $client)
                                         <option value="{{ $client->id }}">{{ $client->name }}</option>
                                     @endforeach
                                 </select>
-                                <div class="invalid-feedback">يرجى اختيار العميل</div>
+                                <div class="invalid-feedback">يرجى اختيار الموكل</div>
+                            </div>
+
+                            <div class="form-group mb-3">
+                                <label for="subscriber_id" class="form-label fw-bold">المشترك</label>
+                                <select name="subscriber_id" id="subscriber_id" class="form-select form-select-lg" required
+                                    style="border-radius: 10px; padding: 12px;">
+                                    <option value="">-- اختر المشترك --</option>
+                                    @foreach ($users as $client)
+                                        <option value="{{ $client->id }}">{{ $client->name }}</option>
+                                    @endforeach
+                                </select>
+                                <div class="invalid-feedback">يرجى اختيار المشترك</div>
                             </div>
 
                             <div class="row mt-4">
@@ -95,16 +107,6 @@
                                 <div class="form-group col-md-6">
                                     <label class="form-label fw-bold">القضية المقترحة</label>
                                     <select name="suggested_case_id" class="form-select"
-                                        style="border-radius: 10px; padding: 10px;">
-                                        <option value="">-- اختر --</option>
-                                        @foreach (App\Models\CaseType::all() as $type)
-                                            <option value="{{ $type->id }}">{{ $type->name }}</option>
-                                        @endforeach
-                                    </select>
-                                </div>
-                                <div class="form-group col-md-6">
-                                    <label class="form-label fw-bold">القضية المطلوبة</label>
-                                    <select name="requested_case_id" class="form-select"
                                         style="border-radius: 10px; padding: 10px;">
                                         <option value="">-- اختر --</option>
                                         @foreach (App\Models\CaseType::all() as $type)

@@ -342,8 +342,8 @@
                                                 @method('DELETE')
                                                 <button type="submit" class="btn btn-sm btn-danger w-100">حذف</button>
                                             </form>
-                                            <a href="{{ route('cases.add', $case) }}"
-                                                class="btn btn-sm btn-success w-100">إضافة</a>
+                                            <a href="{{ route('cases.add', $case) }}" class="btn btn-sm btn-success w-100">
+                                                اضافه </a>
                                             <a href="{{ route('cases.settlement', $case) }}"
                                                 class="btn btn-sm btn-info w-100">تسوية</a>
                                             <a href="{{ route('cases.expenses', $case) }}"

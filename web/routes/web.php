@@ -230,9 +230,9 @@ Route::group(['prefix' => 'admin', 'middleware' => ['auth', roleMiddleware::clas
     Route::get('/casetypes/{casetype}/show', [CaseTypeController::class, 'show'])->name('casetypes.show');
     Route::post('/casetypes/{id}', [CaseTypeController::class, 'update'])->name('casetypes.update');
 
-    Route::get('/casetypes/createCase', [CaseController::class, 'createCase'])->name('casetypes.create.case');
+    Route::get('/casetypes/createCase/get', [CaseController::class, 'createCase'])->name('casetypes.create.case');
     Route::get('/casetypes/cases/all', [CaseController::class, 'allCases'])->name('cases.all');
-    Route::post('/casetypes/createCase', [CaseController::class, 'storeCase'])->name('casetypes.store.case');
+    Route::post('/casetypes/createCase/store', [CaseController::class, 'storeCase'])->name('casetypes.store.case');
     Route::get('/casetypes/{id}/delete', [CaseTypeController::class, 'destroy'])->name('casetypes.destroy');
     Route::get('/{case}/duration', [CaseController::class, 'duration'])->name('cases.duration');
     Route::get('/{case}/edit', [CaseController::class, 'edit'])->name('cases.edit');
