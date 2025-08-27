@@ -67,6 +67,7 @@
                         اعدادات الادمن
                     </a>
                     <div class="dropdown-menu dropdown-menu-right" aria-labelledby="deletedItemsMenu">
+                        <a class="dropdown-item" href="{{ route('casetypes.index') }}">أنواع القضايا</a>
                         <a class="dropdown-item" href="{{ route('archive.index') }}">جميع المستخدمين الفعالين</a>
                         <a class="dropdown-item" href="{{ route('archive.index') }}">جميع المستخدمين المفصولين</a>
                         <a class="dropdown-item" href="{{ route('archive.index') }}">اداره مدد الاهمال</a>
