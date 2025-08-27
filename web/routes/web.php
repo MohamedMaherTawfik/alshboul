@@ -238,8 +238,8 @@ Route::group(['prefix' => 'admin', 'middleware' => ['auth', roleMiddleware::clas
     Route::get('/{case}/edit/editcase', [CaseController::class, 'edit'])->name('cases.edit');
     Route::get('/{case}/show/showcase', [CaseController::class, 'show'])->name('cases.show');
     Route::get('/{case}/memos/memocase', [CaseController::class, 'memos'])->name('cases.memos');
-    Route::get('/cases/search/searchCase', [CaseController::class, 'searchPage'])->name('cases.search');
-    Route::get('/cases/search/find', [CaseController::class, 'search'])->name('cases.search.find');
+    Route::get('/search/cases/searchCase', [CaseController::class, 'searchPage'])->name('cases.search');
+    Route::get('/search/cases/search/find', [CaseController::class, 'search'])->name('cases.search.find');
     Route::get('/{case}/log', [CaseController::class, 'log'])->name('cases.logs');
     Route::post('/{case}/update', [CaseController::class, 'update'])->name('cases.update');
     Route::delete('/{case}/delete', [CaseController::class, 'destroy'])->name('cases.destroy');
@@ -255,10 +255,15 @@ Route::group(['prefix' => 'admin', 'middleware' => ['auth', roleMiddleware::clas
 
 
     Route::get('/dashboard/durations/all', [DurationController::class, 'index'])->name('duration.all');
+    Route::get('/search/dashboard/durations', [DurationController::class, 'search'])->name('duration.search');
+    Route::get('/search/dashboard/durations/periods', [DurationController::class, 'search1'])->name('duration.search.go');
     Route::get('/{case}/durations/all', [DurationController::class, 'caseDurations'])->name('case.duration.all');
     Route::get('/{case}/duration/create', [DurationController::class, 'createDuration'])->name('cases.duration.create');
     Route::post('/{case}/duration/store', [DurationController::class, 'storeDuration'])->name('cases.duration.store');
 
+    Route::get('/dashboard/notes/all/', [CaseNotesController::class, 'index'])->name('note.all');
+    Route::get('/search/dashboard/notes', [CaseNotesController::class, 'search'])->name('note.search');
+    Route::get('/search/dashboard/notes/notes', [CaseNotesController::class, 'search1'])->name('note.search.go');
     Route::get('/dashboard/notes/all/', [CaseNotesController::class, 'index'])->name('note.all');
     Route::get('/{case}/notes/all', [CaseNotesController::class, 'caseNotes'])->name('case.notes.all');
     Route::get('/{case}/notes/create', [CaseNotesController::class, 'create'])->name('cases.notes.create');

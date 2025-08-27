@@ -84,8 +84,6 @@
                 <div class="dropdown-menu dropdown-menu-right" aria-labelledby="executiveCaseDropdown">
                     <a href="{{ route('cases.all') }}" class="dropdown-item">جميع القضايا المسجله</a>
                     <hr>
-                    <a href="{{ route('cases.search') }}" class="dropdown-item">بحث تاريخ الجلسات </a>
-                    <hr>
                     @foreach ($cases as $case)
                         <a class="dropdown-item" href="{{ route('casetypes.show', $case) }}">
                             {{ $case->name }}</a>
@@ -165,6 +163,19 @@
                     <a class="dropdown-item" href="{{ route('chat.with') }}">دردشة الإدارة</a>
                     <a class="dropdown-item" href="{{ route('chat.with1') }}">دردشة المحامين</a>
                     <a class="dropdown-item" href="{{ route('chat.with2') }}">دردشة المستخدمين</a>
+                </div>
+            </li>
+
+            <!-- البحث -->
+            <li class="nav-item dropdown">
+                <a class="nav-link dropdown-toggle {{ request()->is('admin/search*') ? 'active' : '' }}"
+                    href="#" data-toggle="dropdown">
+                    البحث
+                </a>
+                <div class="dropdown-menu dropdown-menu-right">
+                    <a href="{{ route('cases.search') }}" class="dropdown-item">بحث تاريخ الجلسات </a>
+                    <a href="{{ route('duration.search') }}" class="dropdown-item">بحث تاريخ المدد </a>
+                    <a href="{{ route('note.search') }}" class="dropdown-item">بحث تاريخ المذكرات </a>
                 </div>
             </li>
 

@@ -34,4 +34,23 @@ class CaseNotesController extends Controller
         $notes = CaseNotes::where('cases_id', $case->id)->get();
         return view('admin.case_notes.index', compact('notes'));
     }
+
+    public function search()
+    {
+        return view('admin.case_notes.search');
+    }
+
+    public function search1(Request $request)
+    {
+        $query = CaseNotes::query();
+
+        if ($request->filled('from_date')) {
+            $query->whereDate('period_start', '>=', $request->from_date);
+        }
+        if ($request->filled('to_date')) {
+            $query->whereDate('period_end', '<=', $request->to_date);
+        }
+        $notes = $query->latest()->get();
+        return view('admin.case_notes.search', compact('notes'));
+    }
 }

@@ -325,7 +325,7 @@
                                                 @php $daysLeft = $today->diffInDays($endDate, false); @endphp
                                                 <br>
                                                 <small class="text-muted">
-                                                    (متبقي {{ $daysLeft }} يوم{{ $daysLeft != 1 ? 'ات' : '' }})
+                                                    (متبقي {{ $daysLeft }} يوم{{ $daysLeft != 1 ? ' ' : '' }})
                                                 </small>
                                             @else
                                                 <br>
@@ -381,7 +381,7 @@
                                 <tr>
                                     <td colspan="11" class="text-center text-muted py-5">
                                         <i class="bi bi-calendar-x" style="font-size: 2rem; opacity: 0.3;"></i>
-                                        <p class="mt-2 mb-0">لا توجد مدد قانونية مسجلة</p>
+                                        <p class="mt-2 mb-0">لا توجد مذكرات قانونية مسجلة</p>
                                     </td>
                                 </tr>
                             @else
@@ -405,7 +405,7 @@
                                                 @php $daysLeft = $today->diffInDays($endDate, false); @endphp
                                                 <br>
                                                 <small class="text-muted">
-                                                    (متبقي {{ $daysLeft }} يوم{{ $daysLeft != 1 ? 'ات' : '' }})
+                                                    (متبقي {{ $daysLeft }} يوم{{ $daysLeft != 1 ? ' ' : '' }})
                                                 </small>
                                             @else
                                                 <br>
