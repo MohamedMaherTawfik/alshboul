@@ -8,6 +8,7 @@ use App\Models\Client;
 use App\Models\Lawyer;
 use App\Models\Missions;
 use App\Models\SubmitfinishedMission;
+use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
 
 class MissionController extends Controller
@@ -109,4 +110,40 @@ class MissionController extends Controller
             ->get();
         return view('admin.missions.myMissions', compact('myMissions'));
     }
+
+    public function search()
+    {
+        return view('admin.missions.search');
+    }
+
+    public function search1(Request $request)
+    {
+        $request->validate([
+            'date' => 'required|date',
+        ]);
+
+        $missions = Missions::
+            whereDate('deadline', $request->date)
+            ->where('is_done', 1)->get();
+
+        return view('admin.missions.search', compact('missions'));
+    }
+
+    public function search2()
+    {
+        return view('admin.missions.search1');
+    }
+
+    public function search3(Request $request)
+    {
+        $request->validate([
+            'date' => 'required|date',
+        ]);
+
+        $missions = Missions::
+            whereDate('deadline', $request->date)
+            ->where('is_done', 0)->get();
+        return view('admin.missions.search1', compact('missions'));
+    }
+
 }

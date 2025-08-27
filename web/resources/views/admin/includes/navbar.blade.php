@@ -176,6 +176,9 @@
                     <a href="{{ route('cases.search') }}" class="dropdown-item">بحث تاريخ الجلسات </a>
                     <a href="{{ route('duration.search') }}" class="dropdown-item">بحث تاريخ المدد </a>
                     <a href="{{ route('note.search') }}" class="dropdown-item">بحث تاريخ المذكرات </a>
+                    <a href="{{ route('mission.finished.search') }}" class="dropdown-item">بحث المهمات المنجزه </a>
+                    <a href="{{ route('mission.unfinished.search') }}" class="dropdown-item">بحث المهمات الغير منجزه
+                    </a>
                 </div>
             </li>
 
@@ -210,8 +213,8 @@
 
                     <hr style="font-weight: bold">
 
-                    <a class="dropdown-item" href="{{ route('mission.add') }}">تقارير المحامي</a>
-                    <a class="dropdown-item" href="{{ route('mission.finished') }}">المهام المنجزه</a>
+                    {{-- <a class="dropdown-item" href="{{ route('mission.add') }}">تقارير المحامي</a>
+                    <a class="dropdown-item" href="{{ route('mission.finished') }}">المهام المنجزه</a> --}}
 
                 </div>
             </li>

@@ -206,6 +206,10 @@ Route::group(['prefix' => 'admin', 'middleware' => ['auth', roleMiddleware::clas
     Route::get('/missions/add', [MissionController::class, 'create'])->name('mission.add');
     Route::post('/missions/add', [MissionController::class, 'store'])->name('mission.store');
     Route::get('/missions/finished', [MissionController::class, 'index'])->name('mission.finished');
+    Route::get('/search/missions/finished', [MissionController::class, 'search'])->name('mission.finished.search');
+    Route::get('/search/missions/finished/find', [MissionController::class, 'search1'])->name('mission.finished.search.go');
+    Route::get('/search/missions/unfinished', [MissionController::class, 'search2'])->name('mission.unfinished.search');
+    Route::get('/search/missions/unfinished/find', [MissionController::class, 'search3'])->name('mission.unfinished.search.go');
     Route::get('/missions/unfinished', [MissionController::class, 'index1'])->name('mission.unfinished');
     Route::post('/missions/finished/{mission}/finished', [MissionController::class, 'finished'])->name('mission.unfinished.finished');
     Route::post('/missions/unfinished/{mission}/unfinished', [MissionController::class, 'unfinished'])->name('mission.finished.unfinished');
