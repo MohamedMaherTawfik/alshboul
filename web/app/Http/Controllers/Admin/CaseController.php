@@ -26,7 +26,7 @@ class CaseController extends Controller
         $unfinishedMissions = Missions::where('is_done', 0)->count();
         $durations = LegalPeriods::whereBetween('period_end', [$today, $sixDaysLater])->get();
         $notes = CaseNotes::whereBetween('period_end', [$today, $sixDaysLater])->get();
-        return view('admin.caseTypes.allCases', compact('durations', 'caseTypes', 'durations', 'unfinishedMissions', 'notes'));
+        return view('admin.CaseTypes.allCases', compact('durations', 'caseTypes', 'durations', 'unfinishedMissions', 'notes'));
     }
 
     public function createCase(CaseType $caseType)
