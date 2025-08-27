@@ -55,7 +55,6 @@
                     <a class="dropdown-item" href="{{ route('sliders.index') }}">السلايدرات</a>
                     <a class="dropdown-item" href="{{ route('sociallinks.index') }}">روابط التواصل</a>
                     <a class="dropdown-item" href="{{ route('aboutus.index') }}">من نحن</a>
-                    <a class="dropdown-item" href="{{ route('casetypes.index') }}">أنواع القضايا</a>
                 </div>
             </li>
 
