@@ -37,8 +37,15 @@
                     <tbody>
                         @forelse ($durations as $duration)
                             <tr>
+                                <td>
+                                    {{ $duration->case->file_number ?? '-' }}
+                                    @if ($duration->case)
+                                        <a href="{{ route('cases.show', $duration->case) }}" class="ms-2 text-primary">
+                                            <i class="fas fa-eye"></i>
+                                        </a>
+                                    @endif
+                                </td>
                                 <td>{{ $duration->case->case_number ?? '-' }}</td>
-                                <td>{{ $duration->case->file_number ?? '-' }}</td>
                                 <td>{{ $duration->user->name ?? '-' }}</td>
                                 <td>{{ $duration->created_at?->format('Y-m-d') ?? '-' }}</td>
                                 <td>{{ $duration->period_facts ?? '-' }}</td>

@@ -256,7 +256,7 @@
                 <h5 class="m-0 flex-grow-1" style="font-size: 1.6rem; font-weight: bold;">
                     <i class="fas fa-balance-scale me-2"></i>جميع القضايا
                 </h5>
-                <a href="{{ route('casetypes.create.case') }}" class="btn btn-light btn-lg ms-auto">
+                <a href="{{ route('casetypes.create.case', request('casetype')) }}" class="btn btn-light btn-lg ms-auto">
                     <i class="fas fa-plus"></i> انشاء قضية جديدة
                 </a>
             </div>
@@ -267,9 +267,10 @@
                         style="font-size: 1.2rem; width: 100%;">
                         <thead style="font-size: 1.3rem; font-weight: bold;">
                             <tr>
-                                <th>#</th>
+                                <th>رقم الملف</th>
                                 <th>اسم المدخل</th>
-                                <th>رقم الملف </th>
+                                <th>اسم الموكل</th>
+                                <th>اسم الخصم</th>
                                 <th> تاريخ الادخال</th>
                                 <th>الرقم الوطني للخصم</th>
                                 <th>رقم الدعوي</th>
@@ -296,19 +297,16 @@
                                     }
                                 @endphp
                                 <tr>
-                                    <td>{{ $loop->iteration }}</td>
+                                    <td>{{ $case->case_number }}</td>
                                     <td>{{ $case->added_by->name }}</td>
-                                    <td>{{ $case->file_number }}</td>
+                                    <td>{{ $case->client->name }}</td>
+                                    <td>{{ $case->opponent_name }}</td>
                                     <td>
-                                        @if ($lastSession)
-                                            {{ $lastSession->created_at->format('Y-m-d') }}
-                                        @else
-                                            <span class="text-muted">لا يوجد جلسة</span>
-                                        @endif
+                                        {{ $case->created_at?->format('Y-m-d') ?? '-' }}
                                     </td>
 
                                     <td>{{ $case->opponent_national_id }}</td>
-                                    <td>{{ $case->case_number }}</td>
+                                    <td>{{ $case->file_number }}</td>
                                     <td>{{ $case->case_amount }}</td>
                                     <td>{{ $case->court_name }}</td>
                                     <td>{{ $case->jubge_name }}</td>

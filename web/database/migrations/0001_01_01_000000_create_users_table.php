@@ -18,7 +18,7 @@ return new class extends Migration {
             $table->string('name', 100);
             $table->string('phone', 100)->nullable();
             $table->string('address', )->nullable();
-            $table->string('password');
+            $table->string('password')->nullable();
             $table->foreignIdFor(User::class, 'added_by')->nullable()->constrained()->cascadeOnDelete();
             $table->foreignIdFor(User::class, 'updated_by')->nullable()->constrained()->cascadeOnDelete();
             $table->string('date')->nullable();

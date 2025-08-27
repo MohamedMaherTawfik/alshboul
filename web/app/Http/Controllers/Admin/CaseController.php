@@ -21,27 +21,24 @@ class CaseController extends Controller
     public function allCases()
     {
         $caseTypes = CaseType::with('suggestedCases')->get();
-        $today = date('Y-m-d');
-        $sixDaysLater = date('Y-m-d', strtotime('+6 days'));
         $unfinishedMissions = Missions::where('is_done', 0)->count();
-        $durations = LegalPeriods::whereBetween('period_end', [$today, $sixDaysLater])->get();
-        $notes = CaseNotes::whereBetween('period_end', [$today, $sixDaysLater])->get();
-        return view('admin.CaseTypes.allCases', compact('durations', 'caseTypes', 'durations', 'unfinishedMissions', 'notes'));
+        return view('admin.CaseTypes.allCases', compact('caseTypes', 'unfinishedMissions'));
     }
 
-    public function createCase(CaseType $caseType)
+
+    public function createCase(CaseType $case)
     {
         $clients = Client::get();
-        $users = User::with('client')->get();
-        return view('admin.CaseTypes.createCase', compact('caseType', 'clients', 'users'));
+        $users = User::with('client')->where('role', 'user')->get();
+        return view('admin.CaseTypes.createCase', compact('case', 'clients', 'users'));
     }
 
-    public function storeCase(CaseRequest $request, CaseType $caseType)
+    public function storeCase(CaseRequest $request, CaseType $case)
     {
         $data = $request->validated();
         $data['added_by_id'] = auth()->user()->id;
         cases::create($data);
-        return redirect()->route('cases.all')->with(['success' => 'تم اضافة القضية بنجاح']);
+        return redirect()->route('casetypes.show', $case)->with(['success' => 'تم اضافة القضية بنجاح']);
     }
 
     public function edit(Cases $case)

@@ -6,6 +6,7 @@ use App\Http\Controllers\Controller;
 use App\Models\CaseNotes;
 use App\Models\cases;
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\Auth;
 
 class CaseNotesController extends Controller
 {
@@ -26,7 +27,7 @@ class CaseNotesController extends Controller
         $data['cases_id'] = $case->id;
         $data['user_id'] = auth()->user()->id;
         CaseNotes::create($data);
-        return redirect()->route('note.all', )->with('success', 'تمت الإضافة بنجاح');
+        return redirect()->route('cases.show', $case)->with('success', 'تمت الإضافة بنجاح');
     }
 
     public function caseNotes(cases $case)
@@ -52,5 +53,35 @@ class CaseNotesController extends Controller
         }
         $notes = $query->latest()->get();
         return view('admin.case_notes.search', compact('notes'));
+    }
+
+    public function submitNote(Request $request, CaseNotes $case)
+    {
+        $user = Auth::user();
+
+        if (!in_array($user->role, ['admin', 'superadmin'])) {
+            return redirect()->back()->with('error', 'غير مسموح لك بتنفيذ هذا الإجراء.');
+        }
+
+        if (is_null($case->first_submitter_id)) {
+            $case->update([
+                'first_submitter_id' => $user->id
+            ]);
+            return redirect()->back()->with('success', 'تم تسجيل الاعتماد الأول بنجاح.');
+        }
+
+        if (is_null($case->second_submitter_id)) {
+            if ($case->first_submitter_id == $user->id) {
+                return redirect()->back()->with('error', 'لا يمكنك الاعتماد مرتين لنفس القضية.');
+            }
+
+            $case->update([
+                'second_submitter_id' => $user->id,
+                'is_done' => 1
+            ]);
+            return redirect()->back()->with('success', 'تم تسجيل الاعتماد الثاني بنجاح ✅.');
+        }
+
+        return redirect()->back()->with('info', 'تم الاعتماد بالفعل من مستخدمين مختلفين.');
     }
 }

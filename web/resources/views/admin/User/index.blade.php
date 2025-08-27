@@ -38,7 +38,7 @@
                                     <td>{{ $info->username }}</td>
                                     <td>{{ $info->email }}</td>
                                     <td>
-                                        @if ($info->role == 'User')
+                                        @if ($info->role == 'client')
                                             وكيل
                                         @elseif ($info->role == 'admin')
                                             ادمن

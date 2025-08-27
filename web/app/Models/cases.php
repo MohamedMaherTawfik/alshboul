@@ -48,4 +48,6 @@ class cases extends Model
     {
         return $this->hasMany(CaseNotes::class);
     }
+
+
 }

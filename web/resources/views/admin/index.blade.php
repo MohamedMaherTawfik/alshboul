@@ -80,8 +80,165 @@
 
             <!-- ./col -->
         </div>
-        <div style="background-image: url({{ asset('assets/admin/imgs/bg.jpg') }}); height:72vh ; background-size:cover">
+        <!-- Legal Durations Section -->
+        <div class="card shadow-sm border-0">
+            <div class="card-header bg-white border-0 pt-3 pb-2 d-flex flex-wrap align-items-center gap-2">
+                <h5 class="mb-0"><i class="bi bi-calendar-event me-2"></i>المدد القانونية </h5>
+                <span class="badge bg-primary fs-6 px-3 py-2">{{ $durations->count() }} مدة</span>
+                <a href="{{ route('duration.all') }}" class="btn btn-primary btn-sm ms-auto px-3 text-white">
+                    <i class="bi bi-list me-1"></i> جميع المدد
+                </a>
 
+            </div>
+            <div class="card-body">
+                <div class="table-responsive shadow-sm rounded">
+                    <table class="table table-bordered table-hover align-middle table-striped mb-0">
+                        <thead class="table-dark">
+                            <tr>
+                                <th>رقم الملف</th>
+                                <th>رقم القضية</th>
+                                <th>اسم المدخل</th>
+                                <th>تاريخ الإدخال</th>
+                                <th>وقائع المدة</th>
+                                <th>بداية المدة</th>
+                                <th>نهاية المدة</th>
+                                <th>اسم الموكل</th>
+                                <th>اسم الخصم</th>
+                                <th>اسم المحكمة</th>
+                                <th>ملاحظات</th>
+                                <th>المعتمد الأول</th>
+                                <th>المعتمد الثاني</th>
+                                <th>إجراء</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            @foreach ($durations as $duration)
+                                @php
+                                    $case = $duration->case;
+                                @endphp
+                                <tr>
+                                    <td>{{ $case->case_number ?? '-' }}</td>
+                                    <td>
+                                        {{ $case->file_number ?? '-' }}
+                                        @if ($case)
+                                            <a href="{{ route('cases.show', $case) }}" class="ms-2 text-primary">
+                                                <i class="fas fa-eye"></i>
+                                            </a>
+                                        @endif
+                                    </td>
+                                    <td>{{ $duration->user->name ?? '-' }}</td>
+                                    <td>{{ $duration->created_at?->format('Y-m-d') ?? '-' }}</td>
+                                    <td>{{ Str::limit($duration->period_facts, 50, '...') }}</td>
+                                    <td>{{ $duration->period_start ?? '-' }}</td>
+                                    <td>{{ $duration->period_end ?? '-' }}</td>
+                                    <td>{{ $case->client->name ?? '-' }}</td>
+                                    <td>{{ $case->opponent_name ?? '-' }}</td>
+                                    <td>{{ $case->court_name ?? '-' }}</td>
+                                    <td>{{ Str::limit($duration->notes, 40, '...') ?? '-' }}</td>
+
+                                    <!-- أسماء المعتمدين -->
+                                    <td>{{ $duration->firstSubmitter->name ?? '-' }}</td>
+                                    <td>{{ $duration->secondSubmitter->name ?? '-' }}</td>
+
+                                    <!-- زرار الاعتماد -->
+                                    <td>
+                                        <form action="{{ route('case.duration.submit', $duration) }}" method="POST">
+                                            @csrf
+                                            <button type="submit" class="btn btn-success btn-sm">
+                                                <i class="fas fa-check"></i> اعتماد
+                                            </button>
+                                        </form>
+                                    </td>
+                                </tr>
+                            @endforeach
+                        </tbody>
+
+                    </table>
+                </div>
+            </div>
         </div>
+
+
+        <div class="mt-4">
+            <hr>
+        </div>
+        <div class="card shadow-sm border-0">
+            <div class="card-header bg-white border-0 pt-3 pb-2 d-flex flex-wrap align-items-center gap-2">
+                <h5 class="mb-0"><i class="bi bi-calendar-event me-2"></i>المذكرات القانونية </h5>
+                <span class="badge bg-primary fs-6 px-3 py-2">{{ $notes->count() }} مذكره</span>
+                <a href="{{ route('note.all') }}" class="btn btn-primary btn-sm ms-auto px-3 text-white">
+                    <i class="bi bi-list me-1"></i> جميع المذكرات
+                </a>
+
+            </div>
+            <div class="card-body">
+                <div class="table-responsive shadow-sm rounded">
+                    <table class="table table-bordered table-hover align-middle table-striped mb-0">
+                        <thead class="table-dark">
+                            <tr>
+                                <th>رقم الملف</th>
+                                <th>رقم القضية</th>
+                                <th>اسم المدخل</th>
+                                <th>تاريخ الإدخال</th>
+                                <th>وقائع المذكرة</th>
+                                <th>بداية المدة</th>
+                                <th>نهاية المدة</th>
+                                <th>اسم الموكل</th>
+                                <th>اسم الخصم</th>
+                                <th>اسم المحكمة</th>
+                                <th>ملاحظات</th>
+                                <th>المعتمد الأول</th>
+                                <th>المعتمد الثاني</th>
+                                <th>إجراء</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            @foreach ($notes as $note)
+                                @php
+                                    $case = $note->case;
+                                @endphp
+                                <tr>
+                                    <td>{{ $case->case_number ?? '-' }}</td>
+                                    <td>
+                                        {{ $case->file_number ?? '-' }}
+                                        @if ($case)
+                                            <a href="{{ route('cases.show', $case) }}" class="ms-2 text-primary">
+                                                <i class="fas fa-eye"></i>
+                                            </a>
+                                        @endif
+                                    </td>
+                                    <td>{{ $note->user->name ?? '-' }}</td>
+                                    <td>{{ $note->created_at?->format('Y-m-d') ?? '-' }}</td>
+                                    <td>{{ Str::limit($note->period_facts, 50, '...') }}</td>
+                                    <td>{{ $note->period_start ?? '-' }}</td>
+                                    <td>{{ $note->period_end ?? '-' }}</td>
+                                    <td>{{ $case->client->name ?? '-' }}</td>
+                                    <td>{{ $case->opponent_name ?? '-' }}</td>
+                                    <td>{{ $case->court_name ?? '-' }}</td>
+                                    <td>{{ Str::limit($note->notes, 40, '...') ?? '-' }}</td>
+
+                                    <!-- أسماء المعتمدين -->
+                                    <td>{{ $note->firstSubmitter->name ?? '-' }}</td>
+                                    <td>{{ $note->secondSubmitter->name ?? '-' }}</td>
+
+                                    <!-- زرار الاعتماد -->
+                                    <td>
+                                        <form action="{{ route('case.note.submit', $note) }}" method="POST">
+                                            @csrf
+                                            <button type="submit" class="btn btn-success btn-sm">
+                                                <i class="fas fa-check"></i> اعتماد
+                                            </button>
+                                        </form>
+                                    </td>
+                                </tr>
+                            @endforeach
+                        </tbody>
+
+                    </table>
+                </div>
+            </div>
+        </div>
+
+    </div>
     </div>
 @endsection

@@ -37,8 +37,15 @@
                     <tbody>
                         @forelse ($notes as $note)
                             <tr>
+                                <td>
+                                    {{ $note->case->file_number ?? '-' }}
+                                    @if ($note->case)
+                                        <a href="{{ route('cases.show', $note->case) }}" class="ms-2 text-primary">
+                                            <i class="fas fa-eye"></i>
+                                        </a>
+                                    @endif
+                                </td>
                                 <td>{{ $note->case->case_number ?? '-' }}</td>
-                                <td>{{ $note->case->file_number ?? '-' }}</td>
                                 <td>{{ $note->user->name ?? '-' }}</td>
                                 <td>{{ $note->created_at?->format('Y-m-d') ?? '-' }}</td>
                                 <td>{{ $note->period_facts ?? '-' }}</td>

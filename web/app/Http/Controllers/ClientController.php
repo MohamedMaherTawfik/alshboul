@@ -50,27 +50,60 @@ class ClientController extends Controller
      */
     public function store(Request $request)
     {
-        $request->validate([
+        $data = $request->validate([
             'name' => 'required',
+            'email' => 'required',
             'phone' => 'required',
             'address' => 'required',
             'national_id' => 'required|integer',
             'nationality' => 'required|string',
             'company_name' => 'nullable|string',
             'company_national_number' => 'nullable|string',
+
+            'additional_clients' => 'nullable|array',
+            'additional_clients.*.client_name' => 'nullable|string',
+            'additional_clients.*.client_phone' => 'nullable|string',
+            'additional_clients.*.client_nationality' => 'nullable|string',
+            'additional_clients.*.client_national_id' => 'nullable|string',
+            'additional_clients.*.client_address' => 'nullable|string',
+        ]);
+        $user = User::create([
+            'email' => $data['email'],
+            'name' => $data['name'],
+            'phone' => $data['phone'],
+            'role' => 'user',
+            'password' => bcrypt($data['email']),
         ]);
 
-        $client = new Client();
-        $client->name = $request->name;
-        $client->phone = $request->phone;
-        $client->address = $request->address;
-        $client->company_name = $request->company_name ?? null;
-        $client->company_national_number = $request->company_national_number ?? null;
-        $client->national_id = $request->national_id;
-        $client->nationality = $request->nationality;
-        $client->user_id = Auth::user()->id;
-        $client->added_by = $request->added_by;
-        $client->save();
+        Client::create([
+            'user_id' => $user->id,
+            'name' => $data['name'],
+            'phone' => $data['phone'],
+            'address' => $data['address'],
+            'company_name' => $data['company_name'],
+            'company_national_number' => $data['company_national_number'],
+            'nationality' => $data['nationality'],
+            'national_id' => $data['national_id'],
+            'added_by' => Auth::id(),
+        ]);
+
+        if (!empty($data['additional_clients'])) {
+            foreach ($data['additional_clients'] as $client) {
+                if (!empty($client['client_name'])) {
+                    Client::create([
+                        'user_id' => $user->id,
+                        'name' => $client['client_name'],
+                        'phone' => $client['client_phone'] ?? null,
+                        'company_name' => $data['company_name'],
+                        'address' => $client['client_address'] ?? null,
+                        'company_national_number' => $data['company_national_number'],
+                        'nationality' => $client['client_nationality'] ?? null,
+                        'national_id' => $client['client_national_id'] ?? null,
+                        'added_by' => Auth::id(),
+                    ]);
+                }
+            }
+        }
 
         return redirect()->route('client.index')->with('success', 'تم إضافة البيانات بنجاح');
     }

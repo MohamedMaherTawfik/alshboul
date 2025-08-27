@@ -235,9 +235,9 @@ Route::group(['prefix' => 'admin', 'middleware' => ['auth', roleMiddleware::clas
     Route::get('/casetypes/{casetype}/show', [CaseTypeController::class, 'show'])->name('casetypes.show');
     Route::post('/casetypes/{id}', [CaseTypeController::class, 'update'])->name('casetypes.update');
 
-    Route::get('/casetypes/createCase/get', [CaseController::class, 'createCase'])->name('casetypes.create.case');
+    Route::get('/casetypes/createCase/get/{case}', [CaseController::class, 'createCase'])->name('casetypes.create.case');
     Route::get('/casetypes/cases/all', [CaseController::class, 'allCases'])->name('cases.all');
-    Route::post('/casetypes/createCase/store', [CaseController::class, 'storeCase'])->name('casetypes.store.case');
+    Route::post('/casetypes/createCase/store/{case}', [CaseController::class, 'storeCase'])->name('casetypes.store.case');
     Route::get('/casetypes/{id}/delete', [CaseTypeController::class, 'destroy'])->name('casetypes.destroy');
     Route::get('/{case}/edit/editcase', [CaseController::class, 'edit'])->name('cases.edit');
     Route::get('/{case}/show/showcase', [CaseController::class, 'show'])->name('cases.show');
@@ -257,11 +257,11 @@ Route::group(['prefix' => 'admin', 'middleware' => ['auth', roleMiddleware::clas
     Route::get('/{case}/expenses', [CaseController::class, 'expenses'])->name('cases.expenses');
     Route::post('/{case}/expenses', [CaseController::class, 'storeExpenses'])->name('cases.storeExpenses');
 
-
     Route::get('/dashboard/durations/all', [DurationController::class, 'index'])->name('duration.all');
     Route::get('/search/dashboard/durations', [DurationController::class, 'search'])->name('duration.search');
     Route::get('/search/dashboard/durations/periods', [DurationController::class, 'search1'])->name('duration.search.go');
     Route::get('/{case}/durations/all', [DurationController::class, 'caseDurations'])->name('case.duration.all');
+    Route::post('/{case}/durations/submit', [DurationController::class, 'submitDuration'])->name('case.duration.submit');
     Route::get('/{case}/duration/create', [DurationController::class, 'createDuration'])->name('cases.duration.create');
     Route::post('/{case}/duration/store', [DurationController::class, 'storeDuration'])->name('cases.duration.store');
 
@@ -269,6 +269,7 @@ Route::group(['prefix' => 'admin', 'middleware' => ['auth', roleMiddleware::clas
     Route::get('/search/dashboard/notes', [CaseNotesController::class, 'search'])->name('note.search');
     Route::get('/search/dashboard/notes/notes', [CaseNotesController::class, 'search1'])->name('note.search.go');
     Route::get('/dashboard/notes/all/', [CaseNotesController::class, 'index'])->name('note.all');
+    Route::post('{case}/dashboard/submit', [CaseNotesController::class, 'submitNote'])->name('case.note.submit');
     Route::get('/{case}/notes/all', [CaseNotesController::class, 'caseNotes'])->name('case.notes.all');
     Route::get('/{case}/notes/create', [CaseNotesController::class, 'create'])->name('cases.notes.create');
     Route::post('/{case}/notes/store', [CaseNotesController::class, 'store'])->name('cases.notes.store');

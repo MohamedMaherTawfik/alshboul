@@ -14,7 +14,7 @@
             <i class="fas fa-gavel me-2"></i>إضافة قضية جديدة
         </h3>
 
-        <form action="{{ route('casetypes.store.case') }}" method="POST" class="needs-validation" novalidate>
+        <form action="{{ route('casetypes.store.case', $case) }}" method="POST" class="needs-validation" novalidate>
             @csrf
 
             <div class="row">
@@ -104,25 +104,18 @@
                             <div class="row">
                                 <div class="form-group col-md-6">
                                     <label class="form-label fw-bold">القضية المقترحة</label>
-                                    <select name="suggested_case_id" class="form-select"
-                                        style="border-radius: 10px; padding: 10px;">
-                                        <option value="">-- اختر --</option>
-                                        @foreach (App\Models\CaseType::all() as $type)
-                                            <option value="{{ $type->id }}">{{ $type->name }}</option>
-                                        @endforeach
-                                    </select>
+                                    <input type="text" value="{{ $case->name }}" class="form-control"
+                                        style="border-radius: 10px;" readonly>
+                                    <input type="hidden" name="suggested_case_id" value="{{ $case->id }}">
                                 </div>
                             </div>
 
                             <div class="form-group mt-4">
                                 <label class="form-label fw-bold">نوع القضية</label>
-                                <select name="case_type" class="form-select" style="border-radius: 10px; padding: 10px;">
-                                    <option value="">-- اختر --</option>
-                                    <option value="حقوقي">حقوقي</option>
-                                    <option value="شرعي">شرعي</option>
-                                    <option value="جزائي">جزائي</option>
-                                </select>
+                                <input type="text" name="case_type" class="form-control"
+                                    style="border-radius: 10px; padding: 10px;" placeholder="اكتب نوع القضية">
                             </div>
+
                         </div>
                     </div>
                 </div>
@@ -137,12 +130,12 @@
                         </div>
                         <div class="card-body">
                             @php
-                                $randomNumber = rand(1000, 9999);
+                                $cases = App\Models\cases::count();
                             @endphp
 
                             <div class="form-group">
-                                <p>رقم الملف المقترح : {{ $randomNumber }}</p>
-                                <input type="hidden" name="case_number" value="{{ $randomNumber }}">
+                                <p>رقم الملف المقترح : {{ $cases + 1 }}</p>
+                                <input type="hidden" name="case_number" value="{{ $cases + 1 }}">
                             </div>
 
                             <div class="form-group mt-3">
@@ -305,6 +298,55 @@
                 }, false)
             })
     })()
+</script>
+
+<script>
+    document.addEventListener("DOMContentLoaded", function() {
+        const subscriberSelect = document.getElementById("subscriber_id");
+        const clientSelect = document.getElementById("client_id");
+        const firstNationalIdInput = document.querySelector("input[name='first_national_id']");
+
+        // لما يغير المشترك
+        subscriberSelect.addEventListener("change", function() {
+            clientSelect.innerHTML = '<option value="">-- اختر الموكل --</option>'; // فضي الاختيارات
+            clientSelect.disabled = true;
+            firstNationalIdInput.value = "";
+            firstNationalIdInput.removeAttribute("readonly");
+
+            const selectedOption = this.options[this.selectedIndex];
+            const clients = selectedOption.getAttribute("data-clients");
+
+            if (clients) {
+                let parsedClients = JSON.parse(clients);
+
+                if (parsedClients.length > 0) {
+                    parsedClients.forEach(client => {
+                        let option = document.createElement("option");
+                        option.value = client.id;
+                        option.textContent = client.name;
+                        option.setAttribute("data-national-id", client.national_id);
+                        clientSelect.appendChild(option);
+                    });
+
+                    clientSelect.disabled = false;
+                }
+            }
+        });
+
+        // لما يغير الموكل
+        clientSelect.addEventListener("change", function() {
+            const selectedOption = this.options[this.selectedIndex];
+            const nationalId = selectedOption.getAttribute("data-national-id");
+
+            if (nationalId) {
+                firstNationalIdInput.value = nationalId;
+                firstNationalIdInput.setAttribute("readonly", true);
+            } else {
+                firstNationalIdInput.value = "";
+                firstNationalIdInput.removeAttribute("readonly");
+            }
+        });
+    });
 </script>
 
 <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>

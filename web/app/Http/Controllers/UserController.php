@@ -17,14 +17,11 @@ class UserController extends Controller
      */
     public function index()
     {
-        // $data = User::whereIn('role', ['User', 'Lawyer'])->orderBy('id', 'desc')->get();
-        $data = User::orderBy('id', 'desc')->get();
-
+        $data = User::get();
         return view('admin.User.index', compact('data'));
     }
     public function indexDelete()
     {
-        // $data = User::whereIn('role', ['User', 'Lawyer'])->onlyTrashed()->get();
         $data = User::onlyTrashed()->get();
         return view('admin.User.index-delete', compact('data'));
     }
@@ -47,7 +44,7 @@ class UserController extends Controller
             'email' => 'required|email|unique:users,email',
             'username' => 'required|unique:users,username',
             'password' => 'required|min:8',
-            'name'=>'required|string',
+            'name' => 'required|string',
             'role'
         ]);
         $user = new User();
@@ -130,7 +127,7 @@ class UserController extends Controller
                     'string',
                     Rule::unique('users', 'username')->ignore($id),
                 ],
-              'password' => 'nullable|min:8',
+                'password' => 'nullable|min:8',
                 'name' => 'required|string',
 
             ]);

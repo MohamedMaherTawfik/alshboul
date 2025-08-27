@@ -22,6 +22,9 @@ return new class extends Migration {
             $table->string('period_end')->nullable();
             $table->string('notes')->nullable();
             $table->string('period_facts')->nullable();
+            $table->boolean('is_done')->default(false);
+            $table->foreignIdFor(User::class, 'first_submitter_id')->nullable()->constrained()->onDelete('cascade');
+            $table->foreignIdFor(User::class, 'second_submitter_id')->nullable()->constrained()->onDelete('cascade');
             $table->timestamps();
         });
     }

@@ -16,6 +16,17 @@ class LegalPeriods extends Model
 
     public function case()
     {
-        return $this->belongsTo(Cases::class, 'cases_id');
+        return $this->belongsTo(cases::class, 'cases_id');
     }
+
+     public function firstSubmitter()
+    {
+        return $this->belongsTo(User::class, 'first_submitter_id');
+    }
+
+    public function secondSubmitter()
+    {
+        return $this->belongsTo(User::class, 'second_submitter_id');
+    }
+
 }

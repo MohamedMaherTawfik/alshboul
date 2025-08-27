@@ -59,6 +59,27 @@
                 </div>
             </li>
 
+            @if (Auth::user()->role == 'superadmin')
+                <li class="nav-item dropdown">
+                    <a class="nav-link dropdown-toggle {{ request()->is('admin/*setting*') ? 'active' : '' }}"
+                        href="#" id="deletedItemsMenu" role="button" data-toggle="dropdown" aria-haspopup="true"
+                        aria-expanded="false">
+                        اعدادات الادمن
+                    </a>
+                    <div class="dropdown-menu dropdown-menu-right" aria-labelledby="deletedItemsMenu">
+                        <a class="dropdown-item" href="{{ route('archive.index') }}">جميع المستخدمين الفعالين</a>
+                        <a class="dropdown-item" href="{{ route('archive.index') }}">جميع المستخدمين المفصولين</a>
+                        <a class="dropdown-item" href="{{ route('archive.index') }}">اداره مدد الاهمال</a>
+                        <a class="dropdown-item" href="{{ route('archive.index') }}">اداره محتوي الموقع</a>
+                        <a class="dropdown-item" href="{{ route('archive.index') }}">اداره طلبات التوظيف</a>
+                        <a class="dropdown-item" href="{{ route('archive.index') }}">اراء الزوار بالنسبه للموقع</a>
+                        <hr>
+                        <a class="dropdown-item" href="{{ route('archive.index') }}">تسجيلات دخول الموبايل</a>
+
+                    </div>
+                </li>
+            @endif
+
             <!-- إدارة المستخدمين -->
             <li class="nav-item dropdown">
                 <a class="nav-link dropdown-toggle {{ request()->is('admin/user*') || request()->is('admin/lawyer*') || request()->is('admin/client*') || request()->is('admin/request*') || request()->is('admin/action*') || request()->is('admin/visit*') ? 'active' : '' }}"
@@ -67,7 +88,6 @@
                 </a>
                 <div class="dropdown-menu dropdown-menu-right">
                     <a class="dropdown-item" href="{{ route('user.index') }}">المستخدمين</a>
-                    <a class="dropdown-item" href="{{ route('lawyer.index') }}">المحامين</a>
                     <a class="dropdown-item" href="{{ route('client.index') }}">الموكلين</a>
                     <a class="dropdown-item" href="{{ route('request.index') }}">طلبات الموكلين</a>
                     <a class="dropdown-item" href="{{ route('client.action') }}">إجراءات الموكلين</a>
@@ -75,6 +95,7 @@
                 </div>
             </li>
 
+            {{-- القضايا --}}
             <li class="nav-item dropdown">
                 <a class="nav-link dropdown-toggle {{ request()->is('admin/casetypes*') | request()->is('admin/cases*') ? 'active' : '' }}"
                     href="#" id="executiveCaseDropdown" role="button" data-toggle="dropdown" aria-haspopup="true"
@@ -92,10 +113,11 @@
                 </div>
             </li>
 
+            {{-- القضايا التنفيذيه --}}
             <li class="nav-item dropdown">
                 <a class="nav-link dropdown-toggle {{ request()->is('admin/executive-case*') | request()->is('admin/procedural-records*') ? 'active' : '' }}"
-                    href="#" id="executiveCaseDropdown" role="button" data-toggle="dropdown" aria-haspopup="true"
-                    aria-expanded="false">
+                    href="#" id="executiveCaseDropdown" role="button" data-toggle="dropdown"
+                    aria-haspopup="true" aria-expanded="false">
                     إدارة القضايا التنفيذية
                 </a>
                 <div class="dropdown-menu dropdown-menu-right" aria-labelledby="executiveCaseDropdown">
@@ -111,10 +133,11 @@
                 </div>
             </li>
 
+            {{-- التسويات --}}
             <li class="nav-item dropdown">
                 <a class="nav-link dropdown-toggle {{ request()->is('admin/settlement*') ? 'active' : '' }}"
-                    href="#" id="settlementDropdown" role="button" data-toggle="dropdown" aria-haspopup="true"
-                    aria-expanded="false">
+                    href="#" id="settlementDropdown" role="button" data-toggle="dropdown"
+                    aria-haspopup="true" aria-expanded="false">
                     إدارة التسويات
                 </a>
                 <div class="dropdown-menu dropdown-menu-right" aria-labelledby="settlementDropdown">
@@ -182,6 +205,7 @@
                 </div>
             </li>
 
+            {{-- المحذوفات --}}
             <li class="nav-item dropdown">
                 <a class="nav-link dropdown-toggle {{ request()->is('admin/*Delete*') ? 'active' : '' }}"
                     href="#" id="deletedItemsMenu" role="button" data-toggle="dropdown" aria-haspopup="true"
@@ -200,6 +224,7 @@
                 </div>
             </li>
 
+            {{-- المهام --}}
             <li class="nav-item dropdown">
                 <a class="nav-link dropdown-toggle {{ request()->is('admin/*Mission*') ? 'active' : '' }}"
                     href="#" id="deletedItemsMenu" role="button" data-toggle="dropdown" aria-haspopup="true"
