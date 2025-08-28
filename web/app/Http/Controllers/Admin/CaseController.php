@@ -76,7 +76,13 @@ class CaseController extends Controller
             $validated['file'] = $request->file('file')->store('CourtSessions', 'public');
         }
         court_session_date::create($validated);
-        return redirect()->route('cases.all')->with('success', 'تمت الإضافة بنجاح');
+        return redirect()->route('cases.show', $case)->with('success', 'تمت الإضافة بنجاح');
+    }
+
+    public function caseSessions(Cases $case)
+    {
+        $case->load('courtSession');
+        return view('admin.cases.caseSessions', compact('case'));
     }
 
     public function settlement(Cases $case)
@@ -121,6 +127,7 @@ class CaseController extends Controller
 
     public function show(Cases $case)
     {
+        $case->load('courtSession', 'caseNotes', 'legalPeriods');
         return view('admin.cases.show', compact('case'));
     }
 

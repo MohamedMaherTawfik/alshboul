@@ -324,7 +324,8 @@
                                             <span class="text-muted">لا يوجد مستندات</span>
                                         @endif
                                     </td>
-                                    <td>{{ $lastSession->facts ?? 'لا توجد وقائع' }}</td>
+                                    <td><a href="{{ route('cases.show', $case) }}" class="btn btn-sm btn-info">وقائع
+                                            الدعوي</a></td>
                                     <td>
                                         <div class="dual-buttons d-flex gap-2">
                                             <a href="{{ route('cases.duration.create', $case) }}"
@@ -337,7 +338,7 @@
                                         <div class="d-flex flex-column gap-2">
                                             <a href="{{ route('cases.edit', $case) }}"
                                                 class="btn btn-lg btn-warning w-100">تعديل</a>
-                                            <a href="{{ route('cases.show', $case) }}"
+                                            <a href="{{ route('cases.sessions', $case) }}"
                                                 class="btn btn-lg btn-primary w-100"> كل الجلسات</a>
                                             <form action="{{ route('cases.destroy', $case) }}" method="POST"
                                                 onsubmit="return confirm('هل أنت متأكد من الحذف؟');" class="w-100">

@@ -21,6 +21,7 @@ return new class extends Migration {
             $table->string('nationality'); // الجنسية
             $table->string('phone'); // رقم الهاتف
             $table->string('address'); // العنوان
+            $table->boolean('seen')->default(1); // المشاهدة
             $table->integer('added_by')->nullable(); // المستخدم الذي أضاف العميل
             $table->integer('updated_by')->nullable(); // المستخدم الذي قام بتحديث العميل
             $table->softDeletes();

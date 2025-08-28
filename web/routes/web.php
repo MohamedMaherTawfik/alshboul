@@ -235,7 +235,6 @@ Route::group(['prefix' => 'admin', 'middleware' => ['auth', roleMiddleware::clas
         return back()->with('success', 'تم تعليم الإشعار كمقروء.');
     })->name('notifications.read');
 
-    // Case Types Routes
     Route::get('/casetypes', [CaseTypeController::class, 'index'])->name('casetypes.index');
     Route::get('/casetypes/create', [CaseTypeController::class, 'create'])->name('casetypes.create');
     Route::post('/casetypes', [CaseTypeController::class, 'store'])->name('casetypes.store');
@@ -257,6 +256,7 @@ Route::group(['prefix' => 'admin', 'middleware' => ['auth', roleMiddleware::clas
     Route::delete('/{case}/delete', [CaseController::class, 'destroy'])->name('cases.destroy');
     Route::get('/{case}/add', [CaseController::class, 'add'])->name('cases.add');
     Route::post('/{case}/add', [CaseController::class, 'storeAdd'])->name('cases.storeAdd');
+    Route::get('/{case}/sessions/all', [CaseController::class, 'caseSessions'])->name('cases.sessions');
     Route::get('{session}/edit/session', [CaseController::class, 'editSession'])->name('cases.session.edit');
     Route::post('/{session}/edit/session', [CaseController::class, 'updateSession'])->name('cases.session.update');
     Route::delete('/{session}/delete/session', [CaseController::class, 'destroySession'])->name('cases.session.delete');
@@ -343,7 +343,7 @@ Route::group(['prefix' => 'user', 'middleware' => ['auth', 'check_role:User']], 
     })->name('notifications.read');
 });
 
-Route::group(['prefix' => 'admin', 'middleware' => 'guest'], function () {
+Route::group(['prefix' => 'admin'], function () {
     Route::get('/', [LoginController::class, 'showLogin'])->name('login');
     Route::POST('login', [LoginController::class, 'login'])->name('admin.login');
 });

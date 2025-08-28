@@ -17,7 +17,7 @@ class ClientController extends Controller
      */
     public function index()
     {
-        $data = Client::with('user')->orderBy('id', 'desc')->get();
+        $data = Client::with('user')->where('seen', 1)->orderBy('id', 'desc')->get();
         return view('admin.Client.index', compact('data'));
     }
     public function visit()
@@ -85,6 +85,7 @@ class ClientController extends Controller
             'nationality' => $data['nationality'],
             'national_id' => $data['national_id'],
             'added_by' => Auth::id(),
+            'seen' => 1,
         ]);
 
         if (!empty($data['additional_clients'])) {
@@ -100,6 +101,7 @@ class ClientController extends Controller
                         'nationality' => $client['client_nationality'] ?? null,
                         'national_id' => $client['client_national_id'] ?? null,
                         'added_by' => Auth::id(),
+                        'seen' => 0,
                     ]);
                 }
             }
