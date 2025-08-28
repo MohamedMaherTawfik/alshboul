@@ -6,11 +6,10 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
     <title>مكتب المحاماة - مميزاتنا</title>
     <script src="https://cdn.tailwindcss.com"></script>
-
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css">
-    <link rel="stylesheet" href="{{ asset('css/style.css') }}">
     <style>
         body {
+            background-color: rgb(228, 220, 220);
             font-family: 'Arial', sans-serif;
             scroll-behavior: smooth;
         }
@@ -85,7 +84,6 @@
 
     <!-- Sub Header + Hero Section -->
     <div class="container mx-auto px-4" x-data>
-        <!-- Sub Header Title -->
         <!-- Slider main container -->
         <div class="swiper mySwiper w-full bg-gray-100">
             <div class="swiper-wrapper">
