@@ -20,6 +20,7 @@ use App\Http\Controllers\ClientRequestController;
 use App\Http\Controllers\LawyerController;
 use App\Http\Controllers\ProfileController;
 use App\Http\Controllers\UserController;
+use App\Http\Controllers\visitorReviewController;
 use App\Http\Middleware\roleMiddleware;
 use App\Http\Controllers\Message;
 use App\Http\Controllers\Admin\MoveBarController;
@@ -52,6 +53,7 @@ Route::get('change-language/{lang}', function ($lang) {
 
 Route::group(['middleware' => ['setLanguage']], function () {
     Route::get('/', [WelcomeController::class, 'index'])->name('home');
+    Route::post('/', [visitorReviewController::class, 'store'])->name('review');
     Route::get('/about-us', [AboutUsPageController::class, 'index'])->name('about-us');
     Route::get('/services', [ServicesPageController::class, 'index'])->name('services');
 
@@ -179,6 +181,7 @@ Route::group(['prefix' => 'admin', 'middleware' => ['auth', roleMiddleware::clas
     Route::get('/procedural-records/{id}/edit', [ProceduralRecordController::class, 'edit'])->name('procedural-record.edit');
     Route::get('/procedural-records/{id}/show/{case_id?}', [ProceduralRecordController::class, 'show'])->name('procedural-record.show');
 
+    Route::get('/vistiors/reviews/all', [visitorReviewController::class, 'index'])->name('visitors.index');
 
     Route::get('/chat/admin/{userId?}', [Message::class, 'index'])->name('chat.with');
     Route::get('/chat/lawyer/{userId?}', [Message::class, 'index2'])->name('chat.with1');

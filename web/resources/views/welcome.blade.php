@@ -39,17 +39,64 @@
     <header class="bg-white shadow-sm border-b">
         <div class="container mx-auto px-4 py-3 flex flex-col md:flex-row items-center justify-between">
 
-            <!-- Navigation (Right side) -->
-            <div class="order-1 md:order-1">
-                <nav class="flex gap-6 items-center">
-                    <a href="#" class="bg-yellow-600 text-white px-3 py-2 rounded-md">الرئيسية</a>
-                    <a href="#" class="hover:text-yellow-600">من نحن</a>
-                    <a href="#" class="hover:text-yellow-600">الخدمات</a>
-                    <a href="#" class="hover:text-yellow-600">الوظائف</a>
-                    <a href="#" class="hover:text-yellow-600">المدونة</a>
-                    <a href="#" class="hover:text-yellow-600">المزيد</a>
-                </nav>
+            <div x-data="{ open: false }">
+                <!-- Navigation (Right side) -->
+                <div class="order-1 md:order-1">
+                    <nav class="flex gap-6 items-center">
+                        <a href="/" class="bg-yellow-600 text-white px-3 py-2 rounded-md">الرئيسية</a>
+                        <a href="#about" class="hover:text-yellow-600">من نحن</a>
+                        <a href="#services" class="hover:text-yellow-600">الخدمات</a>
+                        <a href="#apply" class="hover:text-yellow-600">الوظائف</a>
+                        <!-- هنا الزرار -->
+                        <a href="#" @click.prevent="open = true"
+                            class="hover:text-yellow-600 cursor-pointer">تواصل معنا</a>
+                    </nav>
+                </div>
+
+                <!-- المودال -->
+                <div x-show="open" class="fixed inset-0 flex items-center justify-center bg-black/50 z-50"
+                    x-transition>
+                    <div class="bg-white rounded-lg shadow-lg w-full max-w-md p-6 relative">
+
+                        <!-- زر الإغلاق -->
+                        <button @click="open = false"
+                            class="absolute top-3 right-3 text-gray-600 hover:text-red-500 text-2xl">&times;</button>
+
+                        <!-- العنوان -->
+                        <h2 class="text-xl font-bold mb-4 text-gray-800">راسلنا</h2>
+
+                        <!-- فورم -->
+                        <form action="{{ route('review') }}" method="POST" class="space-y-4">
+                            @csrf
+                            <div>
+                                <label class="block text-gray-700 font-semibold">الاسم</label>
+                                <input type="text" name="name"
+                                    class="w-full border rounded-lg px-3 py-2 focus:ring focus:ring-yellow-400 focus:outline-none"
+                                    required>
+                            </div>
+
+                            <div>
+                                <label class="block text-gray-700 font-semibold">البريد الإلكتروني</label>
+                                <input type="email" name="email"
+                                    class="w-full border rounded-lg px-3 py-2 focus:ring focus:ring-yellow-400 focus:outline-none"
+                                    required>
+                            </div>
+
+                            <div>
+                                <label class="block text-gray-700 font-semibold">الرسالة</label>
+                                <textarea name="message" rows="4"
+                                    class="w-full border rounded-lg px-3 py-2 focus:ring focus:ring-yellow-400 focus:outline-none" required></textarea>
+                            </div>
+
+                            <button type="submit"
+                                class="w-full bg-yellow-600 text-white py-2 rounded-lg hover:bg-yellow-700 transition">
+                                إرسال
+                            </button>
+                        </form>
+                    </div>
+                </div>
             </div>
+
 
             <!-- Logo (Center) -->
             <div class="order-2 md:order-2 mb-3 md:mb-0">
@@ -82,8 +129,6 @@
 
         </div>
     </header>
-
-
 
     <!-- Sub Header + Hero Section -->
     <div class="mx-auto px-4" x-data>
@@ -188,7 +233,7 @@
     </div>
 
     {{-- Apply buttons --}}
-    <section class="flex flex-col items-center justify-center py-6 px-4 bg-gray-50 min-h-40">
+    <section class="flex flex-col items-center justify-center py-6 px-4 bg-gray-50 min-h-40" id="apply">
         <div class="flex space-x-8 space-x-reverse">
             <a href=""
                 class="px-12 py-3 bg-amber-400 text-gray-800 font-bold text-lg rounded-lg shadow-sm min-w-48
@@ -205,7 +250,7 @@
 
 
     <!-- Service Cards -->
-    <section class="container mx-auto px-4 py-12" style='border-radius: 25%;'>
+    <section class="container mx-auto px-4 py-12" style='border-radius: 25%;' id="services">
         <h2 class="text-3xl font-bold text-center mb-10">خدماتنا</h2>
 
         @php
@@ -246,19 +291,16 @@
     </section>
 
     <!-- About Us -->
-    <section class="bg-white py-16">
+    <section class="bg-white py-16" id="about">
         <div class="container mx-auto px-4">
             <div class="flex flex-col md:flex-row items-center gap-10">
                 <!-- Text -->
                 <div class="md:w-1/2">
                     <h2 class="text-3xl font-bold mb-4">من نحن</h2>
                     <p class="text-gray-700 mb-6">
-                        مكتب الشريعة للمحاماة - دكتور عمر السبولي<br>
-                        متخصص في القضايا المدنية والجنائية، نقدم خدمات قانونية شاملة للعملاء.
+                        {{ $aboutUs->text_ar }}
                     </p>
-                    <p class="text-gray-700 mb-6">
-                        لدينا أكثر من 15 سنة خبرة في المجال القانوني، ونحن نؤمن بالعدالة والنزاهة.
-                    </p>
+
                     <div class="flex space-x-4">
                         <button class="bg-yellow-500 hover:bg-yellow-600 text-white px-6 py-2 rounded-lg ml-2">تواصل
                             معنا</button>
@@ -268,7 +310,7 @@
                 </div>
                 <!-- Image -->
                 <div class="md:w-1/2">
-                    <img src="{{ asset('images/omar.svg') }}" alt="المحامي" class="rounded-lg shadow-lg" />
+                    <img src="{{ asset($aboutUs->image) }}" alt="المحامي" class="rounded-lg shadow-lg" />
                 </div>
             </div>
         </div>

@@ -67,12 +67,7 @@
                     </a>
                     <div class="dropdown-menu dropdown-menu-right" aria-labelledby="deletedItemsMenu">
                         <a class="dropdown-item" href="{{ route('casetypes.index') }}">أنواع القضايا</a>
-                        <a class="dropdown-item" href="{{ route('archive.index') }}">جميع المستخدمين الفعالين</a>
-                        <a class="dropdown-item" href="{{ route('archive.index') }}">جميع المستخدمين المفصولين</a>
-                        <a class="dropdown-item" href="{{ route('archive.index') }}">اداره مدد الاهمال</a>
-                        <a class="dropdown-item" href="{{ route('archive.index') }}">اداره محتوي الموقع</a>
-                        <a class="dropdown-item" href="{{ route('archive.index') }}">اداره طلبات التوظيف</a>
-                        <a class="dropdown-item" href="{{ route('archive.index') }}">اراء الزوار بالنسبه للموقع</a>
+                        <a class="dropdown-item" href="{{ route('visitors.index') }}">اراء الزوار بالنسبه للموقع</a>
                         <hr>
                         <a class="dropdown-item" href="{{ route('archive.index') }}">تسجيلات دخول الموبايل</a>
 
@@ -116,8 +111,8 @@
             {{-- القضايا التنفيذيه --}}
             <li class="nav-item dropdown">
                 <a class="nav-link dropdown-toggle {{ request()->is('admin/executive-case*') | request()->is('admin/procedural-records*') ? 'active' : '' }}"
-                    href="#" id="executiveCaseDropdown" role="button" data-toggle="dropdown"
-                    aria-haspopup="true" aria-expanded="false">
+                    href="#" id="executiveCaseDropdown" role="button" data-toggle="dropdown" aria-haspopup="true"
+                    aria-expanded="false">
                     إدارة القضايا التنفيذية
                 </a>
                 <div class="dropdown-menu dropdown-menu-right" aria-labelledby="executiveCaseDropdown">
