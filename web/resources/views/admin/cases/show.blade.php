@@ -120,7 +120,7 @@
                                     }
                                 @endphp
 
-                                <td @if ($isTomorrow) class="text-danger fw-bold" @endif>
+                                <td @if ($isTomorrow) class="text-white bg-danger fw-bold" @endif>
                                     {{ $duration->period_end ?? '-' }}
                                 </td>
 
@@ -216,7 +216,7 @@
 
                                 <td
                                     @if ($isToday) class="text-warning fw-bold"
-    @elseif($isTomorrow) class="text-danger fw-bold" @endif>
+    @elseif($isTomorrow) class="text-white bg-danger fw-bold" @endif>
                                     {{ date('Y-m-d', strtotime($note->period_end)) ?? '-' }}
                                 </td>
 

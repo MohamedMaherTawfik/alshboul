@@ -112,20 +112,27 @@
                             @foreach ($durations as $duration)
                                 @php
                                     $case = $duration->case;
+
+                                    // افتراض: نريد عرض الصف لو باقي عليه 6 أيام أو أقل
                                     $showRow = false;
-                                    $isNear = false;
+                                    $isNear = false; // لون أحمر لو باقي يوم أو اليوم نفسه
 
-                                    if ($duration->period_end) {
-                                        $endDate = strtotime($duration->period_end);
-                                        $today = strtotime(date('Y-m-d'));
-                                        $diffDays = floor(($endDate - $today) / 86400); // الفرق بالايام
+                                    if (!empty($duration->period_end)) {
+                                        // نطبع التاريخ بس بدون وقت علشان المقارنة تبقى صحيحة
+                                        $endDateStr = date('Y-m-d', strtotime($duration->period_end));
+                                        $todayStr = date('Y-m-d');
+                                        $endTimestamp = strtotime($endDateStr);
+                                        $todayTimestamp = strtotime($todayStr);
 
-                                        // لو باقي 6 أيام أو أقل وكمان لسه التاريخ مجاش
+                                        // الفرق بالأيام (integer)
+                                        $diffDays = (int) floor(($endTimestamp - $todayTimestamp) / 86400);
+
+                                        // لو باقي 0..6 يوم -> نظهر الصف
                                         if ($diffDays >= 0 && $diffDays <= 6) {
                                             $showRow = true;
                                         }
 
-                                        // للتلوين لو النهارده أو بكرة
+                                        // لو باقي 0 أو 1 يوم -> نبينها كـ "قريبة" (أحمر)
                                         if ($diffDays === 0 || $diffDays === 1) {
                                             $isNear = true;
                                         }
@@ -147,9 +154,17 @@
                                         <td>{{ $duration->created_at?->format('Y-m-d') ?? '-' }}</td>
                                         <td>{{ Str::limit($duration->period_facts, 50, '...') }}</td>
                                         <td>{{ $duration->period_start ?? '-' }}</td>
-                                        <td @if ($isNear) class="text-danger fw-bold" @endif>
-                                            {{ $duration->period_end ?? '-' }}
+
+                                        {{-- طريقة آمنة لإضافة كلاس أو ستايل --}}
+                                        <td class="{{ $isNear ? 'text-white bg-danger fw-bold' : '' }}"
+                                            @if (!$isNear) {{-- لو ما نفعش الكلاسات تبقى نستخدم ستايل inline كاحتياط --}}
+                style="" @endif>
+                                            {{ $endDateStr ?? ($duration->period_end ?? '-') }}
+
+                                            {{-- لو محتاج تتبع لماذا لا يعمل، فكّ كومنت السطر التالي عشان تشوف الفرق --}}
+                                            {{-- <small class="d-block text-muted">diffDays: {{ $diffDays ?? 'N/A' }}</small> --}}
                                         </td>
+
                                         <td>{{ $case->client->name ?? '-' }}</td>
                                         <td>{{ $case->opponent_name ?? '-' }}</td>
                                         <td>{{ $case->court_name ?? '-' }}</td>
@@ -216,14 +231,24 @@
                                 @php
                                     $case = $note->case;
                                     $showRow = false;
+                                    $isNear = false;
 
-                                    if ($note->period_end) {
-                                        $endDate = strtotime($note->period_end);
-                                        $today = strtotime(date('Y-m-d'));
-                                        $diffDays = floor(($endDate - $today) / 86400);
+                                    if (!empty($note->period_end)) {
+                                        $endDateStr = date('Y-m-d', strtotime($note->period_end));
+                                        $todayStr = date('Y-m-d');
+                                        $endTimestamp = strtotime($endDateStr);
+                                        $todayTimestamp = strtotime($todayStr);
 
+                                        $diffDays = (int) floor(($endTimestamp - $todayTimestamp) / 86400);
+
+                                        // نظهر الصف لو باقي 0..6 أيام
                                         if ($diffDays >= 0 && $diffDays <= 6) {
                                             $showRow = true;
+                                        }
+
+                                        // نلون لو باقي يوم أو اليوم نفسه
+                                        if ($diffDays === 0 || $diffDays === 1) {
+                                            $isNear = true;
                                         }
                                     }
                                 @endphp
@@ -243,7 +268,11 @@
                                         <td>{{ $note->created_at?->format('Y-m-d') ?? '-' }}</td>
                                         <td>{{ Str::limit($note->period_facts, 50, '...') }}</td>
                                         <td>{{ $note->period_start ?? '-' }}</td>
-                                        <td>{{ $note->period_end ?? '-' }}</td>
+
+                                        <td class="{{ $isNear ? 'text-white bg-danger fw-bold' : '' }}">
+                                            {{ $endDateStr ?? ($note->period_end ?? '-') }}
+                                        </td>
+
                                         <td>{{ $case->client->name ?? '-' }}</td>
                                         <td>{{ $case->opponent_name ?? '-' }}</td>
                                         <td>{{ $case->court_name ?? '-' }}</td>
