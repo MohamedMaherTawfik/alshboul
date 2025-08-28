@@ -35,11 +35,29 @@
 <body class="bg-gray-50
         text-gray-800">
 
-    <!-- Header -->
+    {{-- header --}}
     <header class="bg-white shadow-sm border-b">
         <div class="container mx-auto px-4 py-3 flex flex-col md:flex-row items-center justify-between">
-            <!-- Left: Search + Language -->
-            <div class="flex items-center gap-2 w-full md:w-auto mb-3 md:mb-0 order-2 md:order-1">
+
+            <!-- Navigation (Right side) -->
+            <div class="order-1 md:order-1">
+                <nav class="flex gap-6 items-center">
+                    <a href="#" class="bg-yellow-600 text-white px-3 py-2 rounded-md">الرئيسية</a>
+                    <a href="#" class="hover:text-yellow-600">من نحن</a>
+                    <a href="#" class="hover:text-yellow-600">الخدمات</a>
+                    <a href="#" class="hover:text-yellow-600">الوظائف</a>
+                    <a href="#" class="hover:text-yellow-600">المدونة</a>
+                    <a href="#" class="hover:text-yellow-600">المزيد</a>
+                </nav>
+            </div>
+
+            <!-- Logo (Center) -->
+            <div class="order-2 md:order-2 mb-3 md:mb-0">
+                <img src="{{ asset('images/logoFull.webp') }}" alt="Logo" class="h-12 mx-auto" />
+            </div>
+
+            <!-- Search + Language (Left side) -->
+            <div class="flex items-center gap-2 w-full md:w-auto mb-3 md:mb-0 order-3 md:order-3">
                 <!-- Search -->
                 <div class="relative w-full md:w-56">
                     <input type="text" placeholder="بحث"
@@ -52,38 +70,23 @@
                         </svg>
                     </button>
                 </div>
-                <!-- Language Switch -->
+                {{-- <!-- Language Switch -->
                 <button class="flex items-center gap-1 border rounded-md px-3 py-2 text-sm font-medium">
                     En
                     <svg xmlns="http://www.w3.org/2000/svg" class="h-4 w-4" fill="none" viewBox="0 0 24 24"
                         stroke="currentColor">
                         <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 4v16m8-8H4" />
                     </svg>
-                </button>
+                </button> --}}
             </div>
 
-            <!-- Logo (Center) -->
-            <div class="order-1 md:order-2 mb-3 md:mb-0">
-                <img src="{{ asset('images/logoFull.png') }}" alt="Logo" class="h-12 mx-auto" />
-            </div>
-
-            <!-- Navigation + Button (Right) -->
-            <div class="order-3">
-                <nav class="flex gap-6 items-center">
-                    <a href="#" class="bg-yellow-600 text-white px-3 py-2 rounded-md">الرئيسية</a>
-                    <a href="#" class="hover:text-yellow-600">من نحن</a>
-                    <a href="#" class="hover:text-yellow-600">الخدمات</a>
-                    <a href="#" class="hover:text-yellow-600">الوظائف</a>
-                    <a href="#" class="hover:text-yellow-600">المدونة</a>
-                    <a href="#" class="hover:text-yellow-600">المزيد</a>
-                    <a href="#" class="hover:text-yellow-600">الخريطة</a>
-                </nav>
-            </div>
         </div>
     </header>
 
+
+
     <!-- Sub Header + Hero Section -->
-    <div class="container mx-auto px-4" x-data>
+    <div class="mx-auto px-4" x-data>
         <!-- Slider main container -->
         <div class="swiper mySwiper w-full bg-gray-100">
             <div class="swiper-wrapper">
@@ -202,7 +205,7 @@
 
 
     <!-- Service Cards -->
-    <section class="container mx-auto px-4 py-12">
+    <section class="container mx-auto px-4 py-12" style='border-radius: 25%;'>
         <h2 class="text-3xl font-bold text-center mb-10">خدماتنا</h2>
 
         @php
@@ -228,7 +231,8 @@
                     </div>
 
                     <!-- صورة -->
-                    <img src="{{ asset('images/hammer.png') }}" alt="مطرقة قاضٍ" class="w-full h-60 object-cover" />
+                    <img src="{{ asset('images/hammer.webp') }}" alt="مطرقة قاضٍ"
+                        class="w-60 h-60 object-cover rounded-full border-4 border-white shadow-md mx-auto" />
 
                     <!-- العنوان -->
                     <div
@@ -238,6 +242,7 @@
                 </div>
             @endforeach
         </div>
+
     </section>
 
     <!-- About Us -->
@@ -336,38 +341,34 @@
     </div>
     <div class="mb-10"></div>
 
-    <!-- السلايدر -->
+    <!-- news -->
     <section class="relative mt-4 mb-4">
         <div class="container mx-auto px-4">
             <div class="relative w-full h-[600px] rounded-lg shadow-md overflow-hidden">
                 <!-- الصورة كـ Background -->
-                <img src="{{ asset('images/news.png') }}" alt="Office"
+                <img src="{{ asset('images/news.webp') }}" alt="Office"
                     class="absolute inset-0 w-full h-full object-cover" />
 
                 <!-- Overlay -->
                 <div class="absolute inset-0 bg-black/40"></div>
 
-                <!-- النص + صورة العميل -->
-                <div
-                    class="absolute inset-0 flex flex-col md:flex-row items-center justify-center text-white px-6 gap-8">
-
+                <!-- النص + صورة العميل في النص -->
+                <div class="absolute inset-0 flex flex-col items-center justify-center text-center text-white px-6">
                     <!-- النص -->
-                    <div class="flex-1 text-center md:text-left">
-                        <h1 class="text-4xl md:text-5xl font-bold mb-4">مرحبا بك في موقعنا</h1>
-                        <p class="text-lg md:text-xl max-w-xl">
-                            هنا تقدر تكتب أي وصف أو جملة قصيرة تظهر فوق الصورة في نص الصفحة
-                        </p>
-                    </div>
+                    <h1 class="text-4xl md:text-5xl font-bold mb-4">مرحبا بك في موقعنا</h1>
+                    <p class="text-lg md:text-xl max-w-2xl mb-6">
+                        هنا تقدر تكتب أي وصف أو جملة قصيرة تظهر فوق الصورة في نص الصفحة
+                    </p>
 
-                    <!-- صورة عميل -->
-                    <div class="flex-1 flex justify-center md:justify-end">
-                        <img src="{{ asset('images/client.png') }}" alt="Client"
-                            class="w-64 h-64 object-cover rounded-full border-4 border-white shadow-lg" />
-                    </div>
+                    <!-- صورة العميل -->
+                    <img src="{{ asset('images/client.webp') }}" alt="Client"
+                        class="w-32 h-32 object-cover rounded-full border-4 border-white shadow-lg" />
                 </div>
             </div>
         </div>
     </section>
+
+
 
     <section class="bg-gray-900 text-white py-12">
         <div class="container mx-auto px-4">
@@ -399,7 +400,7 @@
                             </p>
                         </div>
                         <div class="flex items-center">
-                            <img src="{{ asset('images/logoFull.png') }}" alt="شعار المكتب" class="h-16" />
+                            <img src="{{ asset('images/logoFull.webp') }}" alt="شعار المكتب" class="h-16" />
                         </div>
                     </div>
 
