@@ -13,10 +13,8 @@ class WelcomeController extends Controller
     public function index()
     {
         $moveBar = MoveBar::where('active', 1)
-            ->latest()
-            ->first();
-        $sliders = Slider::latest()
             ->get();
+        $sliders = Slider::get();
         $aboutUs = AboutUs::first();
         $caseTypes = CaseType::all();
 

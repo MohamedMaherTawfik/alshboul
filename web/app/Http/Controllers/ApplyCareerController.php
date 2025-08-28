@@ -23,7 +23,7 @@ class ApplyCareerController extends Controller
 
     public function store(Request $request)
     {
-        $request->validate([
+        $data = $request->validate([
             'full_name' => 'required|string|max:255',
             'brith_date' => 'required|date',
             'career_id' => 'required|exists:careers,id',
@@ -33,6 +33,9 @@ class ApplyCareerController extends Controller
 
         $data = $request->all();
 
+        if ($request->hasFile('cv_file')) {
+            $data['cv_file'] = $request->file('cv_file')->store('public/cv_files');
+        }
 
 
         ApplyCareer::create($data);

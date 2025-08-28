@@ -8,14 +8,30 @@
     <script src="https://cdn.tailwindcss.com"></script>
 
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css">
-
+    <link rel="stylesheet" href="{{ asset('css/style.css') }}">
     <style>
         body {
             font-family: 'Arial', sans-serif;
+            scroll-behavior: smooth;
+        }
+
+        @keyframes fadeIn {
+            from {
+                opacity: 0;
+                transform: translateY(20px);
+            }
+
+            to {
+                opacity: 1;
+                transform: translateY(0);
+            }
+        }
+
+        .animate-fadeIn {
+            animation: fadeIn 0.8s ease forwards;
         }
     </style>
 </head>
-
 
 <body class="bg-gray-50
         text-gray-800">
@@ -68,18 +84,76 @@
     </header>
 
     <!-- Sub Header + Hero Section -->
-    <div class="container mx-auto px-4">
+    <div class="container mx-auto px-4" x-data>
         <!-- Sub Header Title -->
-        <div class="text-center text-4xl font-bold py-3 border-b">
-            مكتب الشبول يرحب بكم - أهلا وسهلا
+        <!-- Slider main container -->
+        <div class="swiper mySwiper w-full bg-gray-100">
+            <div class="swiper-wrapper">
+                @foreach ($moveBar as $bar)
+                    <div class="swiper-slide">
+                        <div class="text-center text-4xl font-bold py-3 border-b">
+                            {{ $bar->text }}
+                        </div>
+                    </div>
+                @endforeach
+            </div>
+
+            <!-- pagination dots -->
+            <div class="swiper-pagination"></div>
         </div>
 
-        <!-- Hero Section -->
-        <section class="relative mt-4">
-            <img src="{{ asset('images/hero.png') }}" alt="Office"
-                class="w-full h-[600px] object-cover rounded-lg shadow-md" />
-        </section>
+        <!-- SwiperJS -->
+        <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/swiper@11/swiper-bundle.min.css" />
+        <script src="https://cdn.jsdelivr.net/npm/swiper@11/swiper-bundle.min.js"></script>
 
+        <script>
+            const swiper = new Swiper(".mySwiper", {
+                direction: "horizontal", // تقدر تخليها vertical لو عايز
+                loop: true,
+                autoplay: {
+                    delay: 5000, // كل 5 ثواني
+                    disableOnInteraction: false,
+                },
+            });
+        </script>
+
+        <!-- Hero Slider -->
+        <div class="swiper heroSwiper w-full rounded-lg shadow-md">
+            <div class="swiper-wrapper">
+                @foreach ($sliders as $slide)
+                    <div class="swiper-slide">
+                        <img src="{{ asset($slide->image) }}" alt="Slider Image"
+                            class="w-full h-[600px] rounded-lg shadow-md" style="background-size: cover" />
+                    </div>
+                @endforeach
+            </div>
+
+        </div>
+
+        <!-- SwiperJS -->
+        <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/swiper@11/swiper-bundle.min.css" />
+        <script src="https://cdn.jsdelivr.net/npm/swiper@11/swiper-bundle.min.js"></script>
+
+        <script>
+            const heroSwiper = new Swiper(".heroSwiper", {
+                loop: true,
+                autoplay: {
+                    delay: 5000, // كل 5 ثواني
+                    disableOnInteraction: false,
+                },
+                // pagination: {
+                //     el: ".swiper-pagination",
+                //     clickable: true,
+                // },
+                // navigation: {
+                //     nextEl: ".swiper-button-next",
+                //     prevEl: ".swiper-button-prev",
+                // },
+            });
+        </script>
+
+
+        <!-- Social Icons -->
         <div class="flex justify-center gap-4 mt-6">
             <!-- LinkedIn -->
             <a href="#" target="_blank"
@@ -90,147 +164,81 @@
                 </svg>
             </a>
 
-            <!-- YouTube -->
-            <a href="#" target="_blank"
+            <!-- YouTube --> <a href="#" target="_blank"
                 class="text-red-600 hover:bg-red-600 hover:text-white border border-red-600 rounded-full p-3 transition flex items-center justify-center w-10 h-10">
                 <svg xmlns="http://www.w3.org/2000/svg" class="w-5 h-5 fill-current" viewBox="0 0 576 512">
                     <path
                         d="M549.7 124.1c-6.3-23.7-24.8-42.3-48.5-48.6C458.4 64 288 64 288 64s-170.4 0-213.2 11.5c-23.7 6.3-42.2 24.9-48.5 48.6C16 166.9 16 256 16 256s0 89.1 10.3 131.9c6.3 23.7 24.8 42.3 48.5 48.6C117.6 448 288 448 288 448s170.4 0 213.2-11.5c23.7-6.3 42.2-24.9 48.5-48.6C560 345.1 560 256 560 256s0-89.1-10.3-131.9zM232 334.6V177.4l142.7 78.6L232 334.6z" />
-                </svg>
-            </a>
-
-            <!-- Twitter/X -->
-            <a href="#" target="_blank"
+                </svg> </a> <!-- Twitter/X --> <a href="#" target="_blank"
                 class="text-black hover:bg-black hover:text-white border border-black rounded-full p-3 transition flex items-center justify-center w-10 h-10">
                 <svg xmlns="http://www.w3.org/2000/svg" class="w-5 h-5 fill-current" viewBox="0 0 512 512">
                     <path
                         d="M459.4 151.7c.3 4.5.3 9 .3 13.6 0 138.7-105.6 298.7-298.7 298.7-59.5 0-114.7-17.2-161.1-47 8.4 1 16.8 1.6 25.6 1.6 49.3 0 94.6-16.8 130.5-45.5-46.2-1-85-31.2-98.4-72.8 6.4 1 12.8 1.6 19.2 1.6 9.4 0 18.7-1.3 27.5-3.6-48.4-9.7-84.7-52.3-84.7-103.6v-1.3c14.1 7.8 30.5 12.8 47.8 13.6-28.8-19.2-47.5-52.1-47.5-89.5 0-19.7 5.2-38.4 14.1-54.2 51.2 63 128.3 104.2 214.4 108.9-1.9-7.8-2.9-15.9-2.9-24 0-57.8 47.2-105 105-105 30.2 0 57.5 12.8 76.7 33.5 23.7-4.5 46.5-13.3 66.7-25.6-7.8 24.5-24.5 45.2-46.2 58.1 21.1-2.3 41.8-8.1 60.8-16.2-14.4 20.8-32.6 39.1-53.7 53.7z" />
-                </svg>
-            </a>
-
-            <!-- Facebook -->
-            <a href="#" target="_blank"
+                </svg> </a> <!-- Facebook --> <a href="#" target="_blank"
                 class="text-blue-600 hover:bg-blue-600 hover:text-white border border-blue-600 rounded-full p-3 transition flex items-center justify-center w-10 h-10">
                 <svg xmlns="http://www.w3.org/2000/svg" class="w-5 h-5 fill-current" viewBox="0 0 320 512">
                     <path
                         d="M279.14 288l14.22-92.66h-88.91V134.12c0-25.35 12.42-50.06 52.24-50.06H293V6.26S259.5 0 225.36 0c-73.22 0-121.08 44.38-121.08 124.72V195.3H22.89V288h81.39v224h100.17V288z" />
-                </svg>
-            </a>
-
-            <!-- Instagram with Font Awesome -->
-            <a href="https://www.instagram.com" target="_blank"
+                </svg> </a> <!-- Instagram with Font Awesome --> <a href="https://www.instagram.com" target="_blank"
                 class="block text-red-500 hover:bg-red-500 hover:text-white border border-red-500 rounded-full p-3 transition flex items-center justify-center w-10 h-10">
-                <i class="fab fa-instagram fa-sm"></i>
-            </a>
+                <i class="fab fa-instagram fa-sm"></i> </a>
         </div>
-
+    </div>
     </div>
 
+    {{-- Apply buttons --}}
     <section class="flex flex-col items-center justify-center py-6 px-4 bg-gray-50 min-h-40">
         <div class="flex space-x-8 space-x-reverse">
             <a href=""
-                class="px-12 py-3 bg-amber-400 text-gray-800 font-bold text-lg rounded-lg hover:bg-amber-500 transition-colors duration-200 shadow-sm min-w-48">
+                class="px-12 py-3 bg-amber-400 text-gray-800 font-bold text-lg rounded-lg shadow-sm min-w-48
+                   transition-all duration-300 ease-in-out transform hover:scale-110 hover:shadow-lg hover:bg-amber-600 hover:shadow-lg">
                 بوابه الموكلين
             </a>
             <a href="{{ route('apply-careers.index') }}"
-                class="px-12 py-3 bg-amber-400 text-gray-800 font-bold text-lg rounded-lg hover:bg-amber-500 transition-colors duration-200 shadow-sm min-w-48">
+                class="px-12 py-3 bg-amber-400 text-gray-800 font-bold text-lg rounded-lg shadow-sm min-w-48
+                   transition-all duration-300 ease-in-out transform hover:scale-110 hover:shadow-lg hover:bg-amber-600 hover:shadow-lg">
                 بوابه المحاميين
             </a>
         </div>
     </section>
+
+
     <!-- Service Cards -->
     <section class="container mx-auto px-4 py-12">
         <h2 class="text-3xl font-bold text-center mb-10">خدماتنا</h2>
-        <div class="grid grid-cols-3 gap-4 mt-8">
-            <!-- Card 1 -->
-            <div
-                class="relative group overflow-hidden rounded-lg shadow-md transition-transform duration-300 hover:scale-105">
-                <div class="absolute inset-0 bg-gradient-to-b from-gray-300 to-gray-300 opacity-80"></div>
-                <img src="{{ asset('images/hammer.png') }}" alt="مطرقة قاضٍ" class="w-full h-60 object-cover" />
-                <div class="absolute top-0 left-0 right-0 p-3 bg-gray-700 text-white text-center font-bold text-sm">
-                    تنظيم العقود
-                </div>
-            </div>
 
-            <!-- Card 2 -->
-            <div
-                class="relative group overflow-hidden rounded-lg shadow-md transition-transform duration-300 hover:scale-105">
-                <div class="absolute inset-0 bg-gradient-to-b from-gray-400 to-gray-400 opacity-80"></div>
-                <img src="{{ asset('images/hammer.png') }}" alt="مطرقة قاضٍ" class="w-full h-60 object-cover" />
-                <div class="absolute top-0 left-0 right-0 p-3 bg-gray-700 text-white text-center font-bold text-sm">
-                    تنظيم العقود
-                </div>
-            </div>
+        @php
+            // شوية ألوان مختلفة للـ gradient
+            $gradients = [
+                'from-gray-700 to-gray-900',
+                'from-gray-600 to-gray-800',
+                'from-gray-500 to-gray-700',
+                'from-gray-400 to-gray-600',
+                'from-gray-300 to-gray-500',
+            ];
+        @endphp
 
-            <!-- Card 3 -->
-            <div
-                class="relative group overflow-hidden rounded-lg shadow-md transition-transform duration-300 hover:scale-105">
-                <div class="absolute inset-0 bg-gradient-to-b from-gray-500 to-gray-500 opacity-80"></div>
-                <img src="{{ asset('images/hammer.png') }}" alt="مطرقة قاضٍ" class="w-full h-60 object-cover" />
-                <div class="absolute top-0 left-0 right-0 p-3 bg-gray-700 text-white text-center font-bold text-sm">
-                    تنظيم العقود
-                </div>
-            </div>
+        <!-- Grid واحدة تكفي -->
+        <div class="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 gap-6 mt-8">
+            @foreach ($caseTypes as $index => $case)
+                <div class="relative group overflow-hidden rounded-lg shadow-md transition-transform duration-300 hover:scale-105 opacity-0 animate-fadeIn"
+                    style="animation-delay: {{ $index * 0.3 }}s;">
 
-            <!-- Card 4 -->
-            <div
-                class="relative group overflow-hidden rounded-lg shadow-md transition-transform duration-300 hover:scale-105">
-                <div class="absolute inset-0 bg-gradient-to-b from-gray-600 to-gray-600 opacity-80"></div>
-                <img src="{{ asset('images/hammer.png') }}" alt="مطرقة قاضٍ" class="w-full h-60 object-cover" />
-                <div class="absolute top-0 left-0 right-0 p-3 bg-gray-700 text-white text-center font-bold text-sm">
-                    تنظيم العقود
-                </div>
-            </div>
+                    <!-- Gradient overlay متغير -->
+                    <div
+                        class="absolute inset-0 bg-gradient-to-b {{ $gradients[$index % count($gradients)] }} opacity-80">
+                    </div>
 
-            <!-- Card 5 -->
-            <div
-                class="relative group overflow-hidden rounded-lg shadow-md transition-transform duration-300 hover:scale-105">
-                <div class="absolute inset-0 bg-gradient-to-b from-gray-700 to-gray-700 opacity-80"></div>
-                <img src="{{ asset('images/hammer.png') }}" alt="مطرقة قاضٍ" class="w-full h-60 object-cover" />
-                <div class="absolute top-0 left-0 right-0 p-3 bg-gray-700 text-white text-center font-bold text-sm">
-                    تنظيم العقود
-                </div>
-            </div>
+                    <!-- صورة -->
+                    <img src="{{ asset('images/hammer.png') }}" alt="مطرقة قاضٍ" class="w-full h-60 object-cover" />
 
-            <!-- Card 6 -->
-            <div
-                class="relative group overflow-hidden rounded-lg shadow-md transition-transform duration-300 hover:scale-105">
-                <div class="absolute inset-0 bg-gradient-to-b from-gray-800 to-gray-800 opacity-80"></div>
-                <img src="{{ asset('images/hammer.png') }}" alt="مطرقة قاضٍ" class="w-full h-60 object-cover" />
-                <div class="absolute top-0 left-0 right-0 p-3 bg-gray-700 text-white text-center font-bold text-sm">
-                    تنظيم العقود
+                    <!-- العنوان -->
+                    <div
+                        class="absolute top-0 left-0 right-0 p-3 bg-gray-800/80 text-white text-center font-bold text-sm">
+                        {{ $case->name }}
+                    </div>
                 </div>
-            </div>
-
-            <!-- Card 7 -->
-            <div
-                class="relative group overflow-hidden rounded-lg shadow-md transition-transform duration-300 hover:scale-105">
-                <div class="absolute inset-0 bg-gradient-to-b from-gray-800 to-gray-900 opacity-80"></div>
-                <img src="{{ asset('images/hammer.png') }}" alt="مطرقة قاضٍ" class="w-full h-60 object-cover" />
-                <div class="absolute top-0 left-0 right-0 p-3 bg-gray-700 text-white text-center font-bold text-sm">
-                    تنظيم العقود
-                </div>
-            </div>
-
-            <!-- Card 8 -->
-            <div
-                class="relative group overflow-hidden rounded-lg shadow-md transition-transform duration-300 hover:scale-105">
-                <div class="absolute inset-0 bg-gradient-to-b from-gray-900 to-gray-1000 opacity-80"></div>
-                <img src="{{ asset('images/hammer.png') }}" alt="مطرقة قاضٍ" class="w-full h-60 object-cover" />
-                <div class="absolute top-0 left-0 right-0 p-3 bg-gray-700 text-white text-center font-bold text-sm">
-                    تنظيم العقود
-                </div>
-            </div>
-
-            <!-- Card 9 -->
-            <div
-                class="relative group overflow-hidden rounded-lg shadow-md transition-transform duration-300 hover:scale-105">
-                <div class="absolute inset-0 bg-gradient-to-b from-black to-gray-1100 opacity-80"></div>
-                <img src="{{ asset('images/hammer.png') }}" alt="مطرقة قاضٍ" class="w-full h-60 object-cover" />
-                <div class="absolute top-0 left-0 right-0 p-3 bg-gray-700 text-white text-center font-bold text-sm">
-                    تنظيم العقود
-                </div>
-            </div>
+            @endforeach
         </div>
     </section>
 
@@ -324,12 +332,13 @@
     <div class="max-w-md mx-auto mt-10">
         <div
             class="border-2 border-yellow-500 rounded-lg mb-5 bg-white px-6 py-3 shadow-sm flex items-center justify-center">
-            <p class="text-gray-700 font-medium text-sm">"رؤيتنا هي أن نخدم موكِلينا ومجتمعينا"</p>
+            <p class="text-gray-700 font-bold text-sm" style="font-size: 30px">رؤيتنا هي أن نخدم موكِلينا ومجتمعينا
+            </p>
         </div>
     </div>
     <div class="mb-10"></div>
 
-    <!-- Hero Section -->
+    <!-- السلايدر -->
     <section class="relative mt-4 mb-4">
         <div class="container mx-auto px-4">
             <div class="relative w-full h-[600px] rounded-lg shadow-md overflow-hidden">

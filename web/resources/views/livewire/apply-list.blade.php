@@ -38,11 +38,11 @@
         <table id="example2" class="table table-bordered table-hover">
             <thead class="custom_thead">
                 <tr>
-                    <th class="p-2 border"> اسم المتقدم</th>
-                    <th class="p-2 border">اسم الوظيفة </th>
-                    <th class="p-2 border">تاريخ الميلاد</th>
-                    <th class="p-2 border">الهاتف</th>
-                    <th class="p-2 border">السيرة الذاتية</th>
+                    <th class="p-2 border text-center"> اسم المتقدم</th>
+                    <th class="p-2 border text-center">اسم الوظيفة </th>
+                    <th class="p-2 border text-center">تاريخ الميلاد</th>
+                    <th class="p-2 border text-center">الهاتف</th>
+                    <th class="p-2 border text-center">السيرة الذاتية</th>
 
                 </tr>
             </thead>
@@ -50,41 +50,19 @@
                 @foreach ($data as $job)
                     <tr>
                         {{--  wire:click="loadActivity({{ $item->id }})" --}}
-                        <td class="p-2 border">{{ $job->full_name }}</td>
-                        <td class="p-2 border">{{ $job->career->name_ar }}</td>
-                        <td class="p-2 border">{{ $job->brith_date }}</td>
-                        <td class="p-2 border">{{ $job->phone }}</td>
-                        <td class="p-2 border">
+                        <td class="p-2 border text-center">{{ $job->full_name }}</td>
+                        <td class="p-2 border text-center">{{ $job->career->name_ar }}</td>
+                        <td class="p-2 border text-center">{{ $job->brith_date }}</td>
+                        <td class="p-2 border text-center">{{ $job->phone }}</td>
+                        <td class="p-2 border text-center">
                             @if ($job->cv_file)
-                                <a href="{{ Storage::url('cv_files/' . $job->cv_file) }}" target="_blank"
+                                <a href="{{ asset('storage/' . $job->cv_file) }}" target="_blank"
                                     class="text-[#D4AF37] hover:text-[#011627]">
                                     عرض الملف
                                 </a>
                             @endif
 
                         </td>
-                        {{-- <td class="p-2 border">{{ $action->entity }}</td>
-                        <td class="p-2 border">{{ $action->addedby?->username }}</td>
-                        <td class="p-2 border">{{ $action->updateby?->username ?? '-' }}</td>
-                        <td>
-
-                            <button wire:click="loadActivity({{ $action->id }})" class="btn btn-warning">
-                                تعديل
-                            </button>
-
-
-                            <a href="#" data-id="{{ $action->id }}" data-toggle="modal"
-                                data-target="#delete_reason" class="btn btn-danger open-delete-modal">حذف</a>
-                        </td>
-                        <td>
-                            <button wire:click="loadActivity1({{ $action->id }})" class="btn btn-primary">
-                                عرض الاجراءات الفرعية
-                            </button>
-
-                            <button wire:click="loadActivity2({{ $action->id }})" class="btn btn-primary">
-                                اضافة جراء فرعي
-                            </button>
-                        </td> --}}
                     </tr>
                 @endforeach
             </tbody>
