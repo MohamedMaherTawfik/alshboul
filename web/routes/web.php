@@ -127,6 +127,7 @@ Route::group(['prefix' => 'admin', 'middleware' => ['auth', roleMiddleware::clas
     Route::post('/lawyers/{id}', [LawyerController::class, 'update'])->name('lawyer.update');
     Route::delete('/lawyer/delete', [LawyerController::class, 'destroy'])->name('lawyer.delete');
     Route::get('/lawyer/{id}/restore', [LawyerController::class, 'restore'])->name('lawyer.restore');
+
     Route::get('/users', [UserController::class, 'index'])->name('user.index');
     Route::get('/user/delete', [UserController::class, 'indexDelete'])->name('user.indexDelete');
     Route::get('/users/create', [UserController::class, 'create'])->name('user.create');
@@ -135,6 +136,10 @@ Route::group(['prefix' => 'admin', 'middleware' => ['auth', roleMiddleware::clas
     Route::post('/users/{id}', [UserController::class, 'update'])->name('user.update');
     Route::delete('/user/delete', [UserController::class, 'destroy'])->name('user.delete');
     Route::get('/user/{id}/restore', [UserController::class, 'restore'])->name('user.restore');
+
+    Route::get('/careers/all', [CareerController::class, 'indexAdmin'])->name('career.index');
+    Route::get('/careers/all', [CareerController::class, 'createC'])->name('career.index');
+    Route::get('/careers/all', [CareerController::class, 'indexAdmin'])->name('career.index');
 
     Route::get('/agreements', [AgreementController::class, 'index'])->name('agreement.index');
     Route::get('/agreements/create', [AgreementController::class, 'create'])->name('agreement.create');

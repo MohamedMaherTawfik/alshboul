@@ -11,7 +11,7 @@
 
     <style>
         body {
-            font-family: 'Cairo', sans-serif;
+            font-family: 'Arial', sans-serif;
         }
     </style>
 </head>
@@ -126,6 +126,18 @@
 
     </div>
 
+    <section class="flex flex-col items-center justify-center py-6 px-4 bg-gray-50 min-h-40">
+        <div class="flex space-x-8 space-x-reverse">
+            <a href=""
+                class="px-12 py-3 bg-amber-400 text-gray-800 font-bold text-lg rounded-lg hover:bg-amber-500 transition-colors duration-200 shadow-sm min-w-48">
+                بوابه الموكلين
+            </a>
+            <a href="{{ route('apply-careers.index') }}"
+                class="px-12 py-3 bg-amber-400 text-gray-800 font-bold text-lg rounded-lg hover:bg-amber-500 transition-colors duration-200 shadow-sm min-w-48">
+                بوابه المحاميين
+            </a>
+        </div>
+    </section>
     <!-- Service Cards -->
     <section class="container mx-auto px-4 py-12">
         <h2 class="text-3xl font-bold text-center mb-10">خدماتنا</h2>
@@ -308,15 +320,15 @@
 
         </div>
     </section>
+
     <div class="max-w-md mx-auto mt-10">
         <div
             class="border-2 border-yellow-500 rounded-lg mb-5 bg-white px-6 py-3 shadow-sm flex items-center justify-center">
             <p class="text-gray-700 font-medium text-sm">"رؤيتنا هي أن نخدم موكِلينا ومجتمعينا"</p>
         </div>
     </div>
-    <div class="mb-10">
+    <div class="mb-10"></div>
 
-    </div>
     <!-- Hero Section -->
     <section class="relative mt-4 mb-4">
         <div class="container mx-auto px-4">
@@ -349,9 +361,6 @@
             </div>
         </div>
     </section>
-
-
-
 
     <section class="bg-gray-900 text-white py-12">
         <div class="container mx-auto px-4">
@@ -403,7 +412,6 @@
             </div>
         </div>
     </section>
-
 
     <!-- Font Awesome Icons (for social media) -->
     <script src="https://kit.fontawesome.com/a076d05399.js" crossorigin="anonymous"></script>

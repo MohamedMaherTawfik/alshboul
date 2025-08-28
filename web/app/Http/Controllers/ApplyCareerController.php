@@ -33,12 +33,7 @@ class ApplyCareerController extends Controller
 
         $data = $request->all();
 
-        if ($request->hasFile('cv_file')) {
-            $cvFile = $request->file('cv_file');
-            $cvFileName = time() . '_' . $cvFile->getClientOriginalName();
-            $cvFile->storeAs('public/cv_files', $cvFileName);
-            $data['cv_file'] = $cvFileName;
-        }
+
 
         ApplyCareer::create($data);
 
