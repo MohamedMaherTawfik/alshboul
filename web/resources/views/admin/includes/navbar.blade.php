@@ -66,7 +66,7 @@
                         اعدادات الادمن
                     </a>
                     <div class="dropdown-menu dropdown-menu-right" aria-labelledby="deletedItemsMenu">
-                        <a class="dropdown-item" href="{{ route('casetypes.index') }}">أنواع القضايا</a>
+                        <a class="dropdown-item" href="{{ route('casetypes.index') }}">اضافه نوع قضايا</a>
                         <a class="dropdown-item" href="{{ route('visitors.index') }}">اراء الزوار بالنسبه للموقع</a>
                         <hr>
                         <a class="dropdown-item" href="{{ route('archive.index') }}">تسجيلات دخول الموبايل</a>
