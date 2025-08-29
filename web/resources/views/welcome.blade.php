@@ -54,47 +54,62 @@
                 </div>
 
                 <!-- المودال -->
-                <div x-show="open" class="fixed inset-0 flex items-center justify-center bg-black/50 z-50"
-                    x-transition>
-                    <div class="bg-white rounded-lg shadow-lg w-full max-w-md p-6 relative">
+                <div x-data="{ open: false }">
+                    <!-- Navigation -->
+                    <div class="order-1 md:order-1">
+                        <nav class="flex gap-6 items-center">
+                            <a href="/" class="bg-yellow-600 text-white px-3 py-2 rounded-md">الرئيسية</a>
+                            <a href="#about" class="hover:text-yellow-600">من نحن</a>
+                            <a href="#services" class="hover:text-yellow-600">الخدمات</a>
+                            <a href="#apply" class="hover:text-yellow-600">الوظائف</a>
 
-                        <!-- زر الإغلاق -->
-                        <button @click="open = false"
-                            class="absolute top-3 right-3 text-gray-600 hover:text-red-500 text-2xl">&times;</button>
+                            <!-- زرار يفتح المودال -->
+                            <a href="#" @click.prevent="open = true"
+                                class="hover:text-yellow-600 cursor-pointer">تواصل معنا</a>
+                        </nav>
+                    </div>
 
-                        <!-- العنوان -->
-                        <h2 class="text-xl font-bold mb-4 text-gray-800">راسلنا</h2>
+                    <!-- المودال -->
+                    <div x-show="open" x-cloak class="fixed inset-0 flex items-center justify-center bg-black/50 z-50"
+                        x-transition>
+                        <div class="bg-white rounded-lg shadow-lg w-full max-w-md p-6 relative">
+                            <!-- زر الإغلاق -->
+                            <button @click="open = false"
+                                class="absolute top-3 right-3 text-gray-600 hover:text-red-500 text-2xl">&times;</button>
 
-                        <!-- فورم -->
-                        <form action="{{ route('review') }}" method="POST" class="space-y-4">
-                            @csrf
-                            <div>
-                                <label class="block text-gray-700 font-semibold">الاسم</label>
-                                <input type="text" name="name"
-                                    class="w-full border rounded-lg px-3 py-2 focus:ring focus:ring-yellow-400 focus:outline-none"
-                                    required>
-                            </div>
+                            <!-- العنوان -->
+                            <h2 class="text-xl font-bold mb-4 text-gray-800">راسلنا</h2>
 
-                            <div>
-                                <label class="block text-gray-700 font-semibold">البريد الإلكتروني</label>
-                                <input type="email" name="email"
-                                    class="w-full border rounded-lg px-3 py-2 focus:ring focus:ring-yellow-400 focus:outline-none"
-                                    required>
-                            </div>
+                            <!-- الفورم -->
+                            <form action="{{ route('review') }}" method="POST" class="space-y-4">
+                                @csrf
+                                <div>
+                                    <label class="block text-gray-700 font-semibold">الاسم</label>
+                                    <input type="text" name="name"
+                                        class="w-full border rounded-lg px-3 py-2 focus:ring focus:ring-yellow-400 focus:outline-none"
+                                        required>
+                                </div>
 
-                            <div>
-                                <label class="block text-gray-700 font-semibold">الرسالة</label>
-                                <textarea name="message" rows="4"
-                                    class="w-full border rounded-lg px-3 py-2 focus:ring focus:ring-yellow-400 focus:outline-none" required></textarea>
-                            </div>
+                                <div>
+                                    <label class="block text-gray-700 font-semibold">البريد الإلكتروني</label>
+                                    <input type="email" name="email"
+                                        class="w-full border rounded-lg px-3 py-2 focus:ring focus:ring-yellow-400 focus:outline-none"
+                                        required>
+                                </div>
 
-                            <button type="submit"
-                                class="w-full bg-yellow-600 text-white py-2 rounded-lg hover:bg-yellow-700 transition">
-                                إرسال
-                            </button>
-                        </form>
+                                <div>
+                                    <label class="block text-gray-700 font-semibold">الرسالة</label>
+                                    <textarea name="message" rows="4"
+                                        class="w-full border rounded-lg px-3 py-2 focus:ring focus:ring-yellow-400 focus:outline-none" required></textarea>
+                                </div>
+
+                                <button type="submit"
+                                    class="w-full bg-yellow-600 text-white py-2 rounded-lg hover:bg-yellow-700 transition">إرسال</button>
+                            </form>
+                        </div>
                     </div>
                 </div>
+
             </div>
 
 
