@@ -112,12 +112,8 @@
 
                             <div class="form-group mt-4">
                                 <label class="form-label fw-bold">نوع القضية</label>
-                                <select name="case_type" class="form-select" style="border-radius: 10px; padding: 10px;">
-                                    <option value="{{ $case->case_type }}">{{ $case->case_type }}</option>
-                                    <option value="حقوقي">حقوقي</option>
-                                    <option value="شرعي">شرعي</option>
-                                    <option value="جزائي">جزائي</option>
-                                </select>
+                                <input type="text" name="case_type" class="form-control" value="{{ $case->case_type }}"
+                                    placeholder="أدخل نوع القضية" style="border-radius: 10px;">
                             </div>
                         </div>
                     </div>
@@ -136,7 +132,7 @@
                                 <label class="form-label fw-bold">رقم القضية</label>
                                 <input type="text" name="case_number" class="form-control"
                                     value="{{ $case->case_number }}" placeholder="أدخل رقم القضية"
-                                    style="border-radius: 10px;">
+                                    style="border-radius: 10px;" readonly>
                             </div>
                             <div class="form-group mt-3">
                                 <label class="form-label fw-bold">اسم المحكمة</label>

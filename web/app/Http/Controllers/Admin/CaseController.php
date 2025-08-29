@@ -4,13 +4,11 @@ namespace App\Http\Controllers\Admin;
 
 use App\Http\Controllers\Controller;
 use App\Http\Requests\CaseRequest;
-use App\Models\CaseNotes;
 use App\Models\cases;
 use App\Models\CaseType;
 use App\Models\Client;
 use App\Models\court_session_date;
 use App\Models\Lawyer;
-use App\Models\LegalPeriods;
 use App\Models\Missions;
 use App\Models\Settlement;
 use App\Models\User;
@@ -30,8 +28,20 @@ class CaseController extends Controller
     {
         $clients = Client::get();
         $users = User::with('client')->where('role', 'user')->get();
-        return view('admin.CaseTypes.createCase', compact('case', 'clients', 'users'));
+
+        $numbers = $case->suggestedCases()->pluck('case_number')->sort()->toArray();
+
+        $missing = 1;
+        foreach ($numbers as $num) {
+            if ($num == $missing) {
+                $missing++;
+            } elseif ($num > $missing) {
+                break;
+            }
+        }
+        return view('admin.CaseTypes.createCase', compact('case', 'clients', 'users', 'missing'));
     }
+
 
     public function storeCase(CaseRequest $request, CaseType $case)
     {
@@ -39,6 +49,7 @@ class CaseController extends Controller
         $data['added_by_id'] = auth()->user()->id;
         cases::create($data);
         return redirect()->route('casetypes.show', $case)->with(['success' => 'تم اضافة القضية بنجاح']);
+
     }
 
     public function edit(Cases $case)
@@ -49,9 +60,33 @@ class CaseController extends Controller
 
     public function update(Request $request, Cases $case)
     {
+        $oldType = $case->suggested_case_id;
+
         $case->update($request->all());
-        return redirect()->route('cases.all')->with('success', 'تم تعديل القضية بنجاح');
+
+        if ($oldType != $case->suggested_case_id) {
+            $numbers = Cases::where('suggested_case_id', $case->suggested_case_id)
+                ->pluck('case_number')->sort()->toArray();
+
+            $missing = 1;
+            foreach ($numbers as $num) {
+                if ($num == $missing) {
+                    $missing++;
+                } elseif ($num > $missing) {
+                    break;
+                }
+            }
+
+            $case->update(['case_number' => $missing]);
+
+            return redirect()->route('cases.show', $case)
+                ->with('success', 'تم تعديل القضية بنجاح، رقم الملف الجديد هو: ' . $missing);
+        }
+
+        return redirect()->route('cases.show', $case)
+            ->with('success', 'تم تعديل القضية بنجاح، رقم الملف هو: ' . $case->case_number);
     }
+
 
     // حذف
     public function destroy(Cases $case)

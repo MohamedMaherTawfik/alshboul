@@ -129,13 +129,10 @@
                             <h6 class="m-0 font-weight-bold"><i class="fas fa-info-circle me-2"></i>معلومات أساسية</h6>
                         </div>
                         <div class="card-body">
-                            @php
-                                $cases = App\Models\cases::count();
-                            @endphp
 
                             <div class="form-group">
-                                <p>رقم الملف المقترح : {{ $cases + 1 }}</p>
-                                <input type="hidden" name="case_number" value="{{ $cases + 1 }}">
+                                <p>رقم الملف المقترح : {{ $missing }} </p>
+                                <input type="hidden" name="case_number" value="{{ $missing }}">
                             </div>
 
                             <div class="form-group mt-3">
