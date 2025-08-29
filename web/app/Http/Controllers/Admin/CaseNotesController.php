@@ -27,7 +27,7 @@ class CaseNotesController extends Controller
         $data['cases_id'] = $case->id;
         $data['user_id'] = auth()->user()->id;
         CaseNotes::create($data);
-        return redirect()->route('cases.show', $case)->with('success', 'تمت الإضافة بنجاح');
+        return redirect()->route('cases.show.notes', $case)->with('success', 'تمت الإضافة بنجاح');
     }
 
     public function caseNotes(cases $case)

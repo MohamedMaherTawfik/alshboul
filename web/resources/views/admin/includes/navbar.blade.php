@@ -98,8 +98,6 @@
                     جميع القضايا
                 </a>
                 <div class="dropdown-menu dropdown-menu-right" aria-labelledby="executiveCaseDropdown">
-                    <a href="{{ route('cases.all') }}" class="dropdown-item">جميع القضايا المسجله</a>
-                    <hr>
                     @foreach ($cases as $case)
                         <a class="dropdown-item" href="{{ route('casetypes.show', $case) }}">
                             {{ $case->name }}</a>

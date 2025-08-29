@@ -75,17 +75,49 @@
                     </a>
                 </div>
             </div>
-
         </div>
+
+        <section class="py-5">
+            <div class="container">
+                <div class="card shadow">
+                    <div class="card-header bg-dark text-white text-center">
+                        <h4>أنواع القضايا</h4>
+                    </div>
+                    <div class="card-body">
+                        <table class="table table-bordered text-center align-middle">
+                            <thead class="table-dark">
+                                <tr>
+                                    <th>النوع</th>
+                                    <th>عدد القضايا</th>
+                                    <th>عرض المزيد</th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                @foreach ($caseTypes as $caseType)
+                                    <tr>
+                                        <td>{{ $caseType->name }}</td>
+                                        <td>{{ $caseType->suggestedCases->count() }}</td>
+                                        <td>
+                                            <a href="{{ route('casetypes.show', $caseType) }}"
+                                                class="btn btn-primary btn-sm">
+                                                عرض المزيد
+                                            </a>
+                                        </td>
+                                    </tr>
+                                @endforeach
+                            </tbody>
+                        </table>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+
+
         <!-- المدد القانونية -->
         <div class="card shadow-sm border-0">
             <div class="card-header bg-white border-0 pt-3 pb-2 d-flex flex-wrap align-items-center gap-2">
-                <h5 class="mb-0"><i class="bi bi-calendar-event me-2"></i>المدد القانونية </h5>
-                <span class="badge bg-primary fs-6 px-3 py-2">{{ $durations->count() }} مدة</span>
-                <a href="{{ route('duration.all') }}" class="btn btn-primary btn-sm ms-auto px-3 text-white">
-                    <i class="bi bi-list me-1"></i> جميع المدد
-                </a>
-
+                <h5 class="mb-0"><i class="bi bi-calendar-event me-2"></i>المدد القانونية المتبقي عليها 6 ايام او اقل</h5>
             </div>
             <div class="card-body">
                 <div class="table-responsive shadow-sm rounded">
@@ -113,18 +145,21 @@
                                 @php
                                     $case = $duration->case;
 
-                                    // افتراض: نريد عرض الصف لو باقي عليه 6 أيام أو أقل
                                     $showRow = false;
-                                    $isNear = false; // لون أحمر لو باقي يوم أو اليوم نفسه
+                                    $isNear = false; // لو قريب (اليوم أو بكرة)
+                                    $isToday = false; // لو النهارده
 
                                     if (!empty($duration->period_end)) {
-                                        // نطبع التاريخ بس بدون وقت علشان المقارنة تبقى صحيحة
-                                        $endDateStr = date('Y-m-d', strtotime($duration->period_end));
-                                        $todayStr = date('Y-m-d');
+                                        // نحسب التاريخ حسب توقيت الأردن
+                                        $endDate = new DateTime($duration->period_end, new DateTimeZone('Asia/Amman'));
+                                        $today = new DateTime('now', new DateTimeZone('Asia/Amman'));
+
+                                        $endDateStr = $endDate->format('Y-m-d');
+                                        $todayStr = $today->format('Y-m-d');
+
                                         $endTimestamp = strtotime($endDateStr);
                                         $todayTimestamp = strtotime($todayStr);
 
-                                        // الفرق بالأيام (integer)
                                         $diffDays = (int) floor(($endTimestamp - $todayTimestamp) / 86400);
 
                                         // لو باقي 0..6 يوم -> نظهر الصف
@@ -132,7 +167,12 @@
                                             $showRow = true;
                                         }
 
-                                        // لو باقي 0 أو 1 يوم -> نبينها كـ "قريبة" (أحمر)
+                                        // لو باقي 0 -> النهارده
+                                        if ($diffDays === 0) {
+                                            $isToday = true;
+                                        }
+
+                                        // لو باقي 0 أو 1 -> قريبة
                                         if ($diffDays === 0 || $diffDays === 1) {
                                             $isNear = true;
                                         }
@@ -140,7 +180,7 @@
                                 @endphp
 
                                 @if ($showRow)
-                                    <tr>
+                                    <tr class="{{ $isToday ? ' bg-danger text-white fw-bold' : '' }}">
                                         <td>{{ $case->case_number ?? '-' }}</td>
                                         <td>
                                             {{ $case->file_number ?? '-' }}
@@ -155,14 +195,8 @@
                                         <td>{{ Str::limit($duration->period_facts, 50, '...') }}</td>
                                         <td>{{ $duration->period_start ?? '-' }}</td>
 
-                                        {{-- طريقة آمنة لإضافة كلاس أو ستايل --}}
-                                        <td class="{{ $isNear ? 'text-white bg-danger fw-bold' : '' }}"
-                                            @if (!$isNear) {{-- لو ما نفعش الكلاسات تبقى نستخدم ستايل inline كاحتياط --}}
-                style="" @endif>
+                                        <td class="{{ $isNear && !$isToday ? 'text-white bg-danger fw-bold' : '' }}">
                                             {{ $endDateStr ?? ($duration->period_end ?? '-') }}
-
-                                            {{-- لو محتاج تتبع لماذا لا يعمل، فكّ كومنت السطر التالي عشان تشوف الفرق --}}
-                                            {{-- <small class="d-block text-muted">diffDays: {{ $diffDays ?? 'N/A' }}</small> --}}
                                         </td>
 
                                         <td>{{ $case->client->name ?? '-' }}</td>
@@ -185,6 +219,7 @@
                         </tbody>
 
 
+
                     </table>
                 </div>
             </div>
@@ -198,12 +233,8 @@
         {{-- مذكرات القانونية --}}
         <div class="card shadow-sm border-0">
             <div class="card-header bg-white border-0 pt-3 pb-2 d-flex flex-wrap align-items-center gap-2">
-                <h5 class="mb-0"><i class="bi bi-calendar-event me-2"></i>المذكرات القانونية </h5>
-                <span class="badge bg-primary fs-6 px-3 py-2">{{ $notes->count() }} مذكره</span>
-                <a href="{{ route('note.all') }}" class="btn btn-primary btn-sm ms-auto px-3 text-white">
-                    <i class="bi bi-list me-1"></i> جميع المذكرات
-                </a>
-
+                <h5 class="mb-0"><i class="bi bi-calendar-event me-2"></i>المذكرات القانونية المتبقي عليها 6 ايام او اقل
+                </h5>
             </div>
             <div class="card-body">
                 <div class="table-responsive shadow-sm rounded">
@@ -231,30 +262,32 @@
                                 @php
                                     $case = $note->case;
                                     $showRow = false;
-                                    $isNear = false;
+                                    $rowClass = '';
 
                                     if (!empty($note->period_end)) {
-                                        $endDateStr = date('Y-m-d', strtotime($note->period_end));
-                                        $todayStr = date('Y-m-d');
+                                        $endDateObj = new DateTime($note->period_end, new DateTimeZone('Asia/Amman'));
+                                        $todayObj = new DateTime('now', new DateTimeZone('Asia/Amman'));
+
+                                        $endDateStr = $endDateObj->format('Y-m-d');
+                                        $todayStr = $todayObj->format('Y-m-d');
+
                                         $endTimestamp = strtotime($endDateStr);
                                         $todayTimestamp = strtotime($todayStr);
 
                                         $diffDays = (int) floor(($endTimestamp - $todayTimestamp) / 86400);
 
-                                        // نظهر الصف لو باقي 0..6 أيام
                                         if ($diffDays >= 0 && $diffDays <= 6) {
                                             $showRow = true;
-                                        }
-
-                                        // نلون لو باقي يوم أو اليوم نفسه
-                                        if ($diffDays === 0 || $diffDays === 1) {
-                                            $isNear = true;
+                                            if ($diffDays === 0) {
+                                                $rowClass = 'bg-danger text-white fw-bold';
+                                            }
                                         }
                                     }
                                 @endphp
 
+
                                 @if ($showRow)
-                                    <tr>
+                                    <tr class="{{ $rowClass }}">
                                         <td>{{ $case->case_number ?? '-' }}</td>
                                         <td>
                                             {{ $case->file_number ?? '-' }}
@@ -265,11 +298,11 @@
                                             @endif
                                         </td>
                                         <td>{{ $note->user->name ?? '-' }}</td>
-                                        <td>{{ $note->created_at?->format('Y-m-d') ?? '-' }}</td>
+                                        <td>{{ $note->created_at ? $note->created_at->format('Y-m-d') : '-' }}</td>
                                         <td>{{ Str::limit($note->period_facts, 50, '...') }}</td>
                                         <td>{{ $note->period_start ?? '-' }}</td>
 
-                                        <td class="{{ $isNear ? 'text-white bg-danger fw-bold' : '' }}">
+                                        <td>
                                             {{ $endDateStr ?? ($note->period_end ?? '-') }}
                                         </td>
 
@@ -291,6 +324,7 @@
                                 @endif
                             @endforeach
                         </tbody>
+
 
 
                     </table>

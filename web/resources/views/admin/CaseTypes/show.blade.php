@@ -328,9 +328,9 @@
                                             الدعوي</a></td>
                                     <td>
                                         <div class="dual-buttons d-flex gap-2">
-                                            <a href="{{ route('cases.duration.create', $case) }}"
-                                                class="btn btn-lg btn-outline-primary flex-fill">المدة</a>
-                                            <a href="{{ route('cases.notes.create', $case) }}"
+                                            <a href="{{ route('cases.show.durations', $case) }}"
+                                                class="btn btn-lg btn-outline-primary flex-fill">المدد</a>
+                                            <a href="{{ route('cases.show.notes', $case) }}"
                                                 class="btn btn-lg btn-outline-secondary flex-fill">المذكرات</a>
                                         </div>
                                     </td>
@@ -338,16 +338,13 @@
                                         <div class="d-flex flex-column gap-2">
                                             <a href="{{ route('cases.edit', $case) }}"
                                                 class="btn btn-lg btn-warning w-100">تعديل</a>
-                                            <a href="{{ route('cases.sessions', $case) }}"
-                                                class="btn btn-lg btn-primary w-100"> كل الجلسات</a>
+
                                             <form action="{{ route('cases.destroy', $case) }}" method="POST"
                                                 onsubmit="return confirm('هل أنت متأكد من الحذف؟');" class="w-100">
                                                 @csrf
                                                 @method('DELETE')
                                                 <button type="submit" class="btn btn-lg btn-danger w-100">حذف</button>
                                             </form>
-                                            <a href="{{ route('cases.add', $case) }}"
-                                                class="btn btn-lg btn-success w-100">اضافه جلسه</a>
                                             <a href="{{ route('cases.settlement', $case) }}"
                                                 class="btn btn-lg btn-info w-100"> + تسويه </a>
                                             <a href="{{ route('cases.expenses', $case) }}"

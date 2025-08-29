@@ -28,7 +28,7 @@ class DurationController extends Controller
         $data['cases_id'] = $case->id;
         $data['user_id'] = auth()->user()->id;
         LegalPeriods::create($data);
-        return redirect()->route('cases.show', $case)->with('success')->with('success', 'تمت الإضافة بنجاح');
+        return redirect()->route('cases.show.durations', $case)->with('success')->with('success', 'تمت الإضافة بنجاح');
     }
 
     public function caseDurations(cases $case)

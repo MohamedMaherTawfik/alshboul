@@ -248,6 +248,8 @@ Route::group(['prefix' => 'admin', 'middleware' => ['auth', roleMiddleware::clas
     Route::get('/casetypes/{id}/delete', [CaseTypeController::class, 'destroy'])->name('casetypes.destroy');
     Route::get('/{case}/edit/editcase', [CaseController::class, 'edit'])->name('cases.edit');
     Route::get('/{case}/show/showcase', [CaseController::class, 'show'])->name('cases.show');
+    Route::get('/{case}/show/showcase/durations', [CaseController::class, 'showDurations'])->name('cases.show.durations');
+    Route::get('/{case}/show/showcase/notes', [CaseController::class, 'showNotes'])->name('cases.show.notes');
     Route::get('/{case}/memos/memocase', [CaseController::class, 'memos'])->name('cases.memos');
     Route::get('/search/cases/searchCase', [CaseController::class, 'searchPage'])->name('cases.search');
     Route::get('/search/cases/search/find', [CaseController::class, 'search'])->name('cases.search.find');

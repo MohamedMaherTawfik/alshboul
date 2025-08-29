@@ -86,8 +86,6 @@ class CaseController extends Controller
         return redirect()->route('cases.show', $case)
             ->with('success', 'تم تعديل القضية بنجاح، رقم الملف هو: ' . $case->case_number);
     }
-
-
     // حذف
     public function destroy(Cases $case)
     {
@@ -162,8 +160,20 @@ class CaseController extends Controller
 
     public function show(Cases $case)
     {
-        $case->load('courtSession', 'caseNotes', 'legalPeriods');
+        $case->load('courtSession', );
         return view('admin.cases.show', compact('case'));
+    }
+
+    public function showDurations(Cases $case)
+    {
+        $case->load('legalPeriods', );
+        return view('admin.cases.caseDurations', compact('case'));
+    }
+
+    public function showNotes(Cases $case)
+    {
+        $case->load('caseNotes', );
+        return view('admin.cases.caseNotes', compact('case'));
     }
 
     public function searchPage()
