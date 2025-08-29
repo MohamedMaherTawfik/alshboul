@@ -40,18 +40,6 @@
         <div class="container mx-auto px-4 py-3 flex flex-col md:flex-row items-center justify-between">
 
             <div x-data="{ open: false }">
-                <!-- Navigation (Right side) -->
-                <div class="order-1 md:order-1">
-                    <nav class="flex gap-6 items-center">
-                        <a href="/" class="bg-yellow-600 text-white px-3 py-2 rounded-md">الرئيسية</a>
-                        <a href="#about" class="hover:text-yellow-600">من نحن</a>
-                        <a href="#services" class="hover:text-yellow-600">الخدمات</a>
-                        <a href="#apply" class="hover:text-yellow-600">الوظائف</a>
-                        <!-- هنا الزرار -->
-                        <a href="#" @click.prevent="open = true"
-                            class="hover:text-yellow-600 cursor-pointer">تواصل معنا</a>
-                    </nav>
-                </div>
 
                 <!-- المودال -->
                 <div x-data="{ open: false }">
