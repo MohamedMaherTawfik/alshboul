@@ -31,7 +31,7 @@
                     <div class="row">
                         <div class="form-group col-md-6">
                             <label for="">الوصف بالعربية</label>
-                            <textarea name="description" class="form-control" rows="4" required>{{ old('description') }}</textarea>
+                            <textarea name="description" class="form-control" rows="4">{{ old('description') }}</textarea>
                             @error('description')
                                 <small id="helpId" class="text-muted text-danger">{{ $message }}</small>
                             @enderror

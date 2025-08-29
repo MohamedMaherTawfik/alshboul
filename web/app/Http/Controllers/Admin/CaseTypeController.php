@@ -50,7 +50,7 @@ class CaseTypeController extends Controller
             DB::beginTransaction();
             CaseType::create([
                 'name' => $data['name'],
-                'image' => $data['image'],
+                'image' => $data['image'] ?? '',
                 'description' => $data['description'] ?? '',
             ]);
             DB::commit();
