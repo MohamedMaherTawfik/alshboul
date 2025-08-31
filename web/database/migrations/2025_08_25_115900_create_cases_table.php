@@ -23,7 +23,6 @@ return new class extends Migration {
             $table->string('opponent_name')->nullable();
             $table->string('opponent_national_id')->nullable();
             $table->foreignIdFor(CaseType::class, 'suggested_case_id')->nullable()->constrained()->onDelete('cascade');
-            $table->foreignIdFor(CaseType::class, 'requested_case_id')->nullable()->constrained()->onDelete('cascade');
             $table->string('case_type')->nullable();
             $table->string('case_number')->nullable();
             $table->string('file_number')->nullable();

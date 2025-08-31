@@ -10,7 +10,7 @@
         <div class="card-header">
             <h3 class="card-title card_title_center">قائمة التسويات
                 <br>
-                <a href="{{ route('settlement.create') }}" class="btn btn-success">إضافة جديد</a>
+                <a href="{{ route('settlement.create', ['type' => request('type')]) }}" class="btn btn-success">إضافة جديد</a>
             </h3>
         </div>
         <div class="card-body">

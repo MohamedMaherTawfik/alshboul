@@ -76,48 +76,47 @@
                 </div>
             </div>
         </div>
+        <section class="py-4">
+            <h3 class="text-center font-bold">انواع الاهمالات</h3>
+            <table class="table table-bordered">
+                <thead>
+                    <tr>
 
-        <section class="py-5">
-            <div class="container">
-                <div class="card shadow">
-                    <div class="card-header bg-dark text-white text-center">
-                        <h4>أنواع القضايا</h4>
-                    </div>
-                    <div class="card-body">
-                        <table class="table table-bordered text-center align-middle">
-                            <thead class="table-dark">
-                                <tr>
-                                    <th>النوع</th>
-                                    <th>عدد القضايا</th>
-                                    <th>عرض المزيد</th>
-                                </tr>
-                            </thead>
-                            <tbody>
-                                @foreach ($caseTypes as $caseType)
-                                    <tr>
-                                        <td>{{ $caseType->name }}</td>
-                                        <td>{{ $caseType->suggestedCases->count() }}</td>
-                                        <td>
-                                            <a href="{{ route('casetypes.show', $caseType) }}"
-                                                class="btn btn-primary btn-sm">
-                                                عرض المزيد
-                                            </a>
-                                        </td>
-                                    </tr>
-                                @endforeach
-                            </tbody>
-                        </table>
-                    </div>
-                </div>
-            </div>
+                        <th>النوع</th>
+                        <th>عدد ايام الاهمال</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    @foreach ($neglies as $index => $neg)
+                        <tr>
+                            <td>
+                                @if ($neg->caseTypes)
+                                    {{ $neg->caseTypes->name }}
+                                @elseif($neg->executiveCases)
+                                    {{ $neg->executiveCases->name }}
+                                @elseif($neg->settlements)
+                                    {{ $neg->settlements->name }}
+                                @elseif($neg->transactions)
+                                    {{ $neg->transactions->name }}
+                                @else
+                                    -
+                                @endif
+                            </td>
+                            <td>{{ $neg->days }} days</td>
+                        </tr>
+                    @endforeach
+                </tbody>
+            </table>
         </section>
-
 
 
         <!-- المدد القانونية -->
         <div class="card shadow-sm border-0">
-            <div class="card-header bg-white border-0 pt-3 pb-2 d-flex flex-wrap align-items-center gap-2">
-                <h5 class="mb-0"><i class="bi bi-calendar-event me-2"></i>المدد القانونية المتبقي عليها 6 ايام او اقل</h5>
+            <div class="card-header bg-white border-0 pt-3 pb-2 d-flex justify-content-center align-items-center">
+                <h5 class="mb-0 text-center w-100">
+                    <i class="bi bi-calendar-event me-2"></i>
+                    المدد القانونية الموشكه على الانتهاء
+                </h5>
             </div>
             <div class="card-body">
                 <div class="table-responsive shadow-sm rounded">
@@ -232,8 +231,10 @@
 
         {{-- مذكرات القانونية --}}
         <div class="card shadow-sm border-0">
-            <div class="card-header bg-white border-0 pt-3 pb-2 d-flex flex-wrap align-items-center gap-2">
-                <h5 class="mb-0"><i class="bi bi-calendar-event me-2"></i>المذكرات القانونية المتبقي عليها 6 ايام او اقل
+            <div class="card-header bg-white border-0 pt-3 pb-2 d-flex justify-content-center align-items-center">
+                <h5 class="mb-0 text-center w-100">
+                    <i class="bi bi-calendar-event me-2"></i>
+                    المذكرات القانونية الموشكه على الانتهاء
                 </h5>
             </div>
             <div class="card-body">

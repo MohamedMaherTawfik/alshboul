@@ -10,6 +10,7 @@ use App\Models\ExecutiveCase;
 use App\Models\NegligenceDays;
 use App\Models\Settlement;
 use App\Models\SettlementMain;
+use App\Models\trahsedDays;
 use App\Models\TransactionsMain;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\DB;
@@ -31,6 +32,42 @@ class CaseTypeController extends Controller
     public function show(CaseType $casetype)
     {
         $cases = cases::where('suggested_case_id', $casetype->id)->get();
+
+        $neglectConfig = NegligenceDays::where('case_type_id', $casetype->id)->first();
+        if (!$neglectConfig) {
+            return view('admin.CaseTypes.show', compact('casetype', 'cases'));
+        }
+
+        foreach ($cases as $case) {
+            $totalEvents = $case->courtSession()->count()
+                + $case->legalPeriods()->count()
+                + $case->caseNotes()->count();
+
+            $trashed = trahsedDays::where('cases_id', $case->id)->first();
+
+            if ($totalEvents === ($trashed->counts ?? $totalEvents)) {
+                // العدد ثابت
+                if (!$trashed) {
+                    trahsedDays::create([
+                        'cases_id' => $case->id,
+                        'counts' => $totalEvents,
+                        'is_seen' => 0,
+                    ]);
+                } else {
+                    // تحقق إذا وصل عدد الأيام المسموح
+                    $trashed->increment('counts');
+                    if ($trashed->counts >= $neglectConfig->days) {
+                        $trashed->update(['is_seen' => 1]);
+                    }
+                }
+            } else {
+                // حصل جديد، نحذف من جدول trashed
+                if ($trashed) {
+                    $trashed->delete();
+                }
+            }
+        }
+
         return view('admin.CaseTypes.show', compact('casetype', 'cases'));
     }
 
@@ -108,7 +145,6 @@ class CaseTypeController extends Controller
             return redirect()->back()->with(["error" => 'عفواً حدث خطأ: ' . $th->getMessage()])->withInput();
         }
     }
-
 
     /**
      * Show the form for editing the specified resource.

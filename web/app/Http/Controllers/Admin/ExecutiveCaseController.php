@@ -6,8 +6,10 @@ use App\Http\Controllers\Controller;
 use App\Models\Client;
 use App\Models\excutiveCasesMain;
 use App\Models\ExecutiveCase;
+use App\Models\NegligenceDays;
 use App\Models\Settlement;
 use App\Models\SettlementMain;
+use App\Models\trahsedDays;
 use App\Models\User;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
@@ -20,10 +22,46 @@ class ExecutiveCaseController extends Controller
      */
     public function index(excutiveCasesMain $item)
     {
-        $item->load('excutiveCases');
-        return view('admin.ExecutiveCase.index', compact('item'));
-    }
+        $executiveCases = ExecutiveCase::where('excutive_cases_main_id', $item->id)->get();
 
+        $neglectConfig = NegligenceDays::where('excutive_cases_main_id', $item->id)->first();
+
+        if (!$neglectConfig) {
+            return view('admin.ExecutiveCase.index', compact('item', 'executiveCases'));
+        }
+
+        foreach ($executiveCases as $case) {
+            $totalEvents = $case->proceduralRecords()->count()
+                + $case->settlements()->count();
+
+
+            $trashed = trahsedDays::where('executive_case_id', $case->id)->first();
+
+            if ($totalEvents === ($trashed->counts ?? $totalEvents)) {
+                // العدد ثابت
+                if (!$trashed) {
+                    trahsedDays::create([
+                        'executive_case_id' => $case->id,
+                        'counts' => $totalEvents,
+                        'is_seen' => 0,
+                    ]);
+                } else {
+                    // تحقق إذا وصل عدد الأيام المسموح
+                    $trashed->increment('counts');
+                    if ($trashed->counts >= $neglectConfig->days) {
+                        $trashed->update(['is_seen' => 1]);
+                    }
+                }
+            } else {
+                // حصل جديد، نحذف من جدول trashed
+                if ($trashed) {
+                    $trashed->delete();
+                }
+            }
+        }
+
+        return view('admin.ExecutiveCase.index', compact('item', 'executiveCases'));
+    }
     /**
      * Show the form for creating a new resource.
      */

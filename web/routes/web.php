@@ -154,8 +154,8 @@ Route::group(['prefix' => 'admin', 'middleware' => ['auth', roleMiddleware::clas
     Route::get('/agreements/{id}', [AgreementController::class, 'show'])->name('agreement.show');
 
     Route::get('/settlements/{type}/all', [SettlementController::class, 'index'])->name('settlement.index');
-    Route::get('/settlements/create', [SettlementController::class, 'create'])->name('settlement.create');
-    Route::post('/settlements', [SettlementController::class, 'store'])->name('settlement.store');
+    Route::get('/settlements/{type}/create/new', [SettlementController::class, 'create'])->name('settlement.create');
+    Route::post('/settlements/{type}/store/new', [SettlementController::class, 'store'])->name('settlement.store');
     Route::get('/settlements/{id}/edit', [SettlementController::class, 'edit'])->name('settlement.edit');
     Route::post('/settlements/{id}', [SettlementController::class, 'update'])->name('settlement.update');
     Route::delete('/settlement/delete', [SettlementController::class, 'destroy'])->name('settlement.delete');

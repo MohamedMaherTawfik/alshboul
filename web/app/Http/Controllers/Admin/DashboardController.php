@@ -10,6 +10,7 @@ use App\Models\ClientRequest;
 use App\Models\Lawyer;
 use App\Models\LegalPeriods;
 use App\Models\Missions;
+use App\Models\NegligenceDays;
 use App\Models\User;
 use Illuminate\Http\Request;
 
@@ -28,6 +29,7 @@ class DashboardController extends Controller
         $durations = LegalPeriods::where('is_done', 0)->whereBetween('period_end', [$today, $sixDaysLater])->get();
         $notes = CaseNotes::where('is_done', 0)->whereBetween('period_end', [$today, $sixDaysLater])->get();
         $missions = Missions::where('is_done', 0)->count();
-        return view('admin.index', compact('countLawyer', 'countClient', 'missions', 'countClientRequest', 'countUser', 'durations', 'notes', 'caseTypes'));
+        $neglies = NegligenceDays::get();
+        return view('admin.index', compact('neglies', 'countLawyer', 'countClient', 'missions', 'countClientRequest', 'countUser', 'durations', 'notes', 'caseTypes'));
     }
 }

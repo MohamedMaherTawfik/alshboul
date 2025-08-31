@@ -3,7 +3,9 @@
 namespace App\Http\Controllers\Admin;
 
 use App\Http\Controllers\Controller;
+use App\Models\cases;
 use App\Models\Client;
+use App\Models\excutiveCasesMain;
 use App\Models\Settlement;
 use App\Models\SettlementMain;
 use App\Models\User;
@@ -19,38 +21,25 @@ class SettlementController extends Controller
         return view('admin.Settlement.index', compact('type'));
     }
 
-    public function create()
+    public function create(excutiveCasesMain $type)
     {
-        return view('admin.Settlement.create');
+        $clients = Client::where('seen', 1)->get();
+        $settlements = SettlementMain::get();
+        return view('admin.Settlement.create', compact('type', 'clients', 'settlements'));
     }
 
-    public function store(Request $request)
+    public function store(Request $request, excutiveCasesMain $type)
     {
-        $request->validate([
-            'settlement_type' => 'required|string|max:255',
-            'partner_id' => 'required|exists:users,id',
-            'client_id' => 'required|exists:clients,id',
-            'client_national_id' => 'required|string|max:255',
-            'opponent_name' => 'required|string|max:255',
-            'opponent_national_id' => 'nullable|string|max:255',
-            'opponent_status' => 'nullable|string|max:255',
-            'obligation' => 'nullable|string|max:255',
-            'file_number' => 'nullable|string|max:255',
-            'opponent_address' => 'nullable|string|max:255',
-            'opponent_phone' => 'nullable|string|max:255',
-            'amount' => 'nullable|numeric',
-            'payment_terms' => 'nullable|string|max:255',
-            'notes' => 'nullable|string',
-            'status' => 'required|in:active,archived,canceled',
-        ]);
-
+        $data = $request->except('_token');
+        $data['user_id'] = Auth::id();
+        $case = cases::where('case_number', $data['file_number'])->first();
+        $data['cases_id'] = $case->id;
+        $main = SettlementMain::where('id', $data['settlement_main_id'])->first();
         try {
             DB::beginTransaction();
-            $data = $request->all();
-            $data['created_by'] = Auth::id();
             Settlement::create($data);
             DB::commit();
-            return redirect()->route('settlement.index')->with('success', 'تم إضافة التسوية بنجاح');
+            return redirect()->route('settlement.index', $main)->with('success', 'تم إضافة التسوية بنجاح');
         } catch (\Exception $th) {
             DB::rollBack();
             return redirect()->back()->with('error', 'حدث خطأ أثناء الإضافة: ' . $th->getMessage())->withInput();

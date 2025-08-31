@@ -28,16 +28,16 @@ class cases extends Model
     {
         return $this->belongsTo(User::class);
     }
+    public function subscriber()
+    {
+        return $this->belongsTo(User::class, 'subscriber_id');
+    }
 
     public function courtSession()
     {
         return $this->hasMany(court_session_date::class);
     }
 
-    public function subscriber()
-    {
-        return $this->belongsTo(User::class, 'subscriber_id');
-    }
 
     public function legalPeriods()
     {
