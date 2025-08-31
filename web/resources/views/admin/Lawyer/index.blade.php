@@ -26,7 +26,10 @@
                             <th>اضافة بواسطة</th>
                             <th>تعديل بواسطة</th>
                             <th>تاريخ التسجيل</th>
-                            <th>التحكم</th>
+                            @if (Auth::user()->role == 'admin' || Auth::user()->role == 'superadmin')
+                                <th>الاجراءات</th>
+                            @endif
+
 
                         </thead>
                         <tbody>
@@ -51,11 +54,17 @@
                                     <td>
                                         {{ optional($info->user)->date ? optional($info->user)->date : 'غير محدد' }}
                                     </td>
-                                    <td>
-                                        <a href="{{ route('lawyer.edit', $info->id) }}" class="btn btn-warning">تعديل</a>
-                                        <a href="#" data-id="{{ $info->id }}" data-toggle="modal"
-                                            data-target="#delete_reason" class="btn btn-danger open-delete-modal">حذف</a>
-                                    </td>
+                                    @if (Auth::user()->role == 'admin' || Auth::user()->role == 'superadmin')
+                                        <td>
+
+                                            <a href="{{ route('lawyer.edit', $info->id) }}"
+                                                class="btn btn-warning">تعديل</a>
+                                            <a href="#" data-id="{{ $info->id }}" data-toggle="modal"
+                                                data-target="#delete_reason"
+                                                class="btn btn-danger open-delete-modal">حذف</a>
+                                        </td>
+                                    @endif
+
                                 </tr>
                             @endforeach
 

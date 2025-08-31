@@ -52,18 +52,21 @@
             @endif
 
             <!-- إعدادات الموقع -->
-            <li class="nav-item dropdown">
-                <a class="nav-link dropdown-toggle {{ request()->is('admin/about*') || request()->is('admin/move-bars*') || request()->is('admin/casetypes*') || request()->is('admin/social-links*') || request()->is('admin/sliders*') ? 'active' : '' }}"
-                    href="#" data-toggle="dropdown">
-                    إعدادات الموقع
-                </a>
-                <div class="dropdown-menu dropdown-menu-right">
-                    <a class="dropdown-item" href="{{ route('move-bars.index') }}">الشريط المتحرك</a>
-                    <a class="dropdown-item" href="{{ route('sliders.index') }}">السلايدرات</a>
-                    <a class="dropdown-item" href="{{ route('sociallinks.index') }}">روابط التواصل</a>
-                    <a class="dropdown-item" href="{{ route('aboutus.index') }}">من نحن</a>
-                </div>
-            </li>
+            @if (Auth::user()->role == 'admin' || Auth::user()->role == 'superadmin')
+                <li class="nav-item dropdown">
+                    <a class="nav-link dropdown-toggle {{ request()->is('admin/about*') || request()->is('admin/move-bars*') || request()->is('admin/casetypes*') || request()->is('admin/social-links*') || request()->is('admin/sliders*') ? 'active' : '' }}"
+                        href="#" data-toggle="dropdown">
+                        إعدادات الموقع
+                    </a>
+                    <div class="dropdown-menu dropdown-menu-right">
+                        <a class="dropdown-item" href="{{ route('move-bars.index') }}">الشريط المتحرك</a>
+                        <a class="dropdown-item" href="{{ route('sliders.index') }}">السلايدرات</a>
+                        <a class="dropdown-item" href="{{ route('sociallinks.index') }}">روابط التواصل</a>
+                        <a class="dropdown-item" href="{{ route('aboutus.index') }}">من نحن</a>
+                    </div>
+                </li>
+            @endif
+
 
             @if (Auth::user()->role == 'superadmin')
                 <li class="nav-item dropdown">
@@ -161,17 +164,20 @@
                 </div>
             </li>
 
-            <!-- إدارة الوظائف -->
-            <li class="nav-item dropdown">
-                <a class="nav-link dropdown-toggle {{ request()->is('admin/careers*') || request()->is('admin/apply-careers*') ? 'active' : '' }}"
-                    href="#" data-toggle="dropdown">
-                    الوظائف
-                </a>
-                <div class="dropdown-menu dropdown-menu-right">
-                    <a class="dropdown-item" href="{{ route('careers.index') }}">الوظائف</a>
-                    <a class="dropdown-item" href="{{ route('apply-careers.all') }}">متقدمي الوظائف</a>
-                </div>
-            </li>
+            @if (Auth::user()->role == 'admin' || Auth::user()->role == 'superadmin')
+                <!-- إدارة الوظائف -->
+                <li class="nav-item dropdown">
+                    <a class="nav-link dropdown-toggle {{ request()->is('admin/careers*') || request()->is('admin/apply-careers*') ? 'active' : '' }}"
+                        href="#" data-toggle="dropdown">
+                        الوظائف
+                    </a>
+                    <div class="dropdown-menu dropdown-menu-right">
+                        <a class="dropdown-item" href="{{ route('careers.index') }}">الوظائف</a>
+                        <a class="dropdown-item" href="{{ route('apply-careers.all') }}">متقدمي الوظائف</a>
+                    </div>
+                </li>
+            @endif
+
 
             <!-- الدردشة -->
             <li class="nav-item dropdown">
@@ -203,24 +209,26 @@
             </li>
 
             {{-- المحذوفات --}}
-            <li class="nav-item dropdown">
-                <a class="nav-link dropdown-toggle {{ request()->is('admin/*Delete*') ? 'active' : '' }}"
-                    href="#" id="deletedItemsMenu" role="button" data-toggle="dropdown" aria-haspopup="true"
-                    aria-expanded="false">
-                    العناصر المحذوفة
-                </a>
-                <div class="dropdown-menu dropdown-menu-right" aria-labelledby="deletedItemsMenu">
-                    <a class="dropdown-item" href="{{ route('user.indexDelete') }}">المستخدمين</a>
-                    <a class="dropdown-item" href="{{ route('lawyer.indexDelete') }}">المحامين</a>
-                    <a class="dropdown-item" href="{{ route('client.indexDelete') }}">الموكلين </a>
-                    <a class="dropdown-item" href="{{ route('agreement.indexDelete') }}">الاتفاقيات</a>
-                    <a class="dropdown-item" href="{{ route('executive-case.indexDelete') }}">القضايا التنفيذية</a>
-                    <a class="dropdown-item" href="{{ route('settlement.indexDelete') }}">التسويات </a>
-                    <a class="dropdown-item" href="{{ route('archive.indexDelete') }}">الارشيف </a>
-                    <a class="dropdown-item" href="{{ route('mission.indexDelete') }}">المهام </a>
-                </div>
-            </li>
-
+            @if (Auth::user()->role == 'admin' || Auth::user()->role == 'superadmin')
+                <li class="nav-item dropdown">
+                    <a class="nav-link dropdown-toggle {{ request()->is('admin/*Delete*') ? 'active' : '' }}"
+                        href="#" id="deletedItemsMenu" role="button" data-toggle="dropdown"
+                        aria-haspopup="true" aria-expanded="false">
+                        العناصر المحذوفة
+                    </a>
+                    <div class="dropdown-menu dropdown-menu-right" aria-labelledby="deletedItemsMenu">
+                        <a class="dropdown-item" href="{{ route('user.indexDelete') }}">المستخدمين</a>
+                        <a class="dropdown-item" href="{{ route('lawyer.indexDelete') }}">المحامين</a>
+                        <a class="dropdown-item" href="{{ route('client.indexDelete') }}">الموكلين </a>
+                        <a class="dropdown-item" href="{{ route('agreement.indexDelete') }}">الاتفاقيات</a>
+                        <a class="dropdown-item" href="{{ route('executive-case.indexDelete') }}">القضايا
+                            التنفيذية</a>
+                        <a class="dropdown-item" href="{{ route('settlement.indexDelete') }}">التسويات </a>
+                        <a class="dropdown-item" href="{{ route('archive.indexDelete') }}">الارشيف </a>
+                        <a class="dropdown-item" href="{{ route('mission.indexDelete') }}">المهام </a>
+                    </div>
+                </li>
+            @endif
             {{-- المهام --}}
             <li class="nav-item dropdown">
                 <a class="nav-link dropdown-toggle {{ request()->is('admin/*Mission*') ? 'active' : '' }}"

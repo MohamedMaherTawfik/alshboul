@@ -44,7 +44,10 @@
                                 <th>الملف</th>
                                 <th>المنجز الأول</th>
                                 <th>المنجز الثاني</th>
-                                <th colspan="2">الإجراءات</th>
+                                @if (Auth::user()->role == 'admin' || Auth::user()->role == 'superadmin')
+                                    <th colspan="2">الإجراءات</th>
+                                @endif
+
                             </tr>
                         </thead>
                         <tbody>

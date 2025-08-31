@@ -49,7 +49,10 @@
                             <th>نوع القسط</th>
                             <th>قيمة القسط</th>
                             <th>تفاصيل التسوية</th>
-                            <th>العمليات</th>
+                            @if (Auth::user()->role == 'admin' || Auth::user()->role == 'superadmin')
+                                <th>الاجراءات</th>
+                            @endif
+
                         </tr>
                     </thead>
                     <tbody>
@@ -73,24 +76,27 @@
                                 <td>{{ $settlement->notes ?? 'لا توجد ملاحظات' }}</td>
 
                                 <td>
-                                    <a href="{{ route('executive-case.settlement.edit', $settlement) }}"
-                                        class="btn btn-warning btn-sm">
-                                        <i class="fas fa-edit"></i> تعديل
-                                    </a>
+                                    @if (Auth::user()->role == 'admin' || Auth::user()->role == 'superadmin')
+                                        <a href="{{ route('executive-case.settlement.edit', $settlement) }}"
+                                            class="btn btn-warning btn-sm">
+                                            <i class="fas fa-edit"></i> تعديل
+                                        </a>
+                                        <form action="{{ route('executive-case.settlement.delete', $settlement) }}"
+                                            method="POST" style="display:inline-block;">
+                                            @csrf
+                                            @method('DELETE')
+                                            <button type="submit" class="btn btn-danger btn-sm"
+                                                onclick="return confirm('هل أنت متأكد من الحذف؟')">
+                                                <i class="fas fa-trash"></i> حذف
+                                            </button>
+                                        </form>
+                                    @endif
 
                                     <button
                                         class="btn {{ $settlement->obligation === 'ملتزم' ? 'btn-success' : 'btn-danger' }}">
                                         {{ $settlement->obligation ?? 'غير محدد' }}
                                     </button>
-                                    <form action="{{ route('executive-case.settlement.delete', $settlement) }}"
-                                        method="POST" style="display:inline-block;">
-                                        @csrf
-                                        @method('DELETE')
-                                        <button type="submit" class="btn btn-danger btn-sm"
-                                            onclick="return confirm('هل أنت متأكد من الحذف؟')">
-                                            <i class="fas fa-trash"></i> حذف
-                                        </button>
-                                    </form>
+
 
                                 </td>
                             </tr>

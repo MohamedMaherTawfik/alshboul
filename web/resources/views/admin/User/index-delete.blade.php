@@ -23,8 +23,9 @@
                             <th>سبب الحذف</th>
                             <th>الحذف بواسطة</th>
                             <th>تاريخ الحذف</th>
-                            <th>التحكم</th>
-
+                            @if (Auth::user()->role == 'admin' || Auth::user()->role == 'superadmin')
+                                <th>الاجراءات</th>
+                            @endif
                         </thead>
                         <tbody>
 

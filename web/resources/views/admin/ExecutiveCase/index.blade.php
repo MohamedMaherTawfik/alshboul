@@ -46,7 +46,9 @@
                                 <th>صفة المحكوم له</th>
                                 <th>صفة المحكوم عليه</th>
                                 <th>تاريخ الجلسة الإجرائية</th>
-                                <th>الإجراءات</th>
+                                @if (Auth::user()->role == 'admin' || Auth::user()->role == 'superadmin')
+                                    <th>الاجراءات</th>
+                                @endif
                             </tr>
                         </thead>
                         <tbody>
@@ -75,19 +77,20 @@
                                     <td>{{ $case->judged_against_status }}</td>
                                     <td>{{ $case->procedural_session_date }}</td>
                                     <td>
-                                        <a href="{{ route('executive-case.edit', $case) }}"
-                                            class="btn btn-warning btn-sm mb-1">✏️ تعديل</a>
+                                        @if (Auth::user()->role == 'admin' || Auth::user()->role == 'superadmin')
+                                            <a href="{{ route('executive-case.edit', $case) }}"
+                                                class="btn btn-warning btn-sm mb-1">✏️ تعديل</a>
 
-                                        <form action="{{ route('executive-case.delete', $case) }}" method="POST"
-                                            class="d-inline">
-                                            @csrf
-                                            @method('DELETE')
-                                            <button type="submit" class="btn btn-danger btn-sm mb-1"
-                                                onclick="return confirm('هل أنت متأكد من الحذف؟')">
-                                                🗑 حذف
-                                            </button>
-                                        </form>
-
+                                            <form action="{{ route('executive-case.delete', $case) }}" method="POST"
+                                                class="d-inline">
+                                                @csrf
+                                                @method('DELETE')
+                                                <button type="submit" class="btn btn-danger btn-sm mb-1"
+                                                    onclick="return confirm('هل أنت متأكد من الحذف؟')">
+                                                    🗑 حذف
+                                                </button>
+                                            </form>
+                                        @endif
                                         <a href="{{ route('procedural-record.index', $case) }}"
                                             class="btn btn-info btn-sm mb-1">⚖️ الإجراءات</a>
 

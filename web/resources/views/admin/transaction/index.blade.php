@@ -34,6 +34,9 @@
                                 <th>الوصف</th>
                                 <th>المنطقة</th>
                                 <th>ملاحظات</th>
+                                @if (Auth::user()->role == 'admin' || Auth::user()->role == 'superadmin')
+                                    <th>الاجراءات</th>
+                                @endif
                             </tr>
                         </thead>
                         <tbody>
@@ -54,6 +57,25 @@
                                     <td>{{ $item->description ?? '-' }}</td>
                                     <td>{{ $item->area_name ?? '-' }}</td>
                                     <td>{{ $item->notes ?? '-' }}</td>
+                                    @if (Auth::user()->role == 'admin' || Auth::user()->role == 'superadmin')
+                                        <td class="d-flex">
+                                            {{-- Edit --}}
+                                            <a href="{{ route('transactions.edit', $item) }}"
+                                                class="btn btn-sm btn-warning me-2">
+                                                تعديل
+                                            </a>
+
+                                            {{-- Delete --}}
+                                            <form action="{{ route('transactions.destroy', $item) }}" method="POST"
+                                                onsubmit="return confirm('هل أنت متأكد من الحذف؟');">
+                                                @csrf
+                                                @method('DELETE')
+                                                <button type="submit" class="btn btn-sm btn-danger">
+                                                    حذف
+                                                </button>
+                                            </form>
+                                        </td>
+                                    @endif
                                 </tr>
                             @endforeach
                         </tbody>

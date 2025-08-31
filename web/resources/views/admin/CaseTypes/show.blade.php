@@ -281,7 +281,10 @@
                                 <th>المستندات</th>
                                 <th>وقائع الدعوي</th>
                                 <th>المدة</th>
-                                <th>الإجراءات</th>
+                                @if (Auth::user()->role == 'admin' || Auth::user()->role == 'superadmin')
+                                    <th>الاجراءات</th>
+                                @endif
+
                             </tr>
                         </thead>
                         <tbody style="font-size: 1.2rem;">
@@ -335,7 +338,7 @@
                                         </div>
                                     </td>
                                     <td>
-                                        <div class="d-flex flex-column gap-2">
+                                        @if (Auth::user()->role == 'admin' || Auth::user()->role == 'superadmin')
                                             <a href="{{ route('cases.edit', $case) }}"
                                                 class="btn btn-lg btn-warning w-100">تعديل</a>
 
@@ -345,6 +348,9 @@
                                                 @method('DELETE')
                                                 <button type="submit" class="btn btn-lg btn-danger w-100">حذف</button>
                                             </form>
+                                        @endif
+                                        <div class="d-flex flex-column gap-2">
+
                                             <a href="{{ route('cases.settlement', $case) }}"
                                                 class="btn btn-lg btn-info w-100"> + تسويه </a>
                                             <a href="{{ route('cases.expenses', $case) }}"

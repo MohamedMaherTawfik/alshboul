@@ -23,28 +23,27 @@
                     <input type="hidden" name="user_id" value="{{ auth()->id() }}">
 
                     <div class="row">
-                        <!-- العميل -->
                         <div class="form-group col-md-6">
-                            <label for="client_id">العميل</label>
-                            <select name="client_id" id="client_id" class="form-control">
-                                <option value="">اختر العميل</option>
+                            <label for="subscriber_id">المشترك</label>
+                            <select name="subscriber_id" id="subscriber_id" class="form-control">
+                                <option value="">اختر المشترك</option>
                                 @foreach ($clients as $client)
-                                    <option value="{{ $client->id }}"
-                                        {{ old('client_id') == $client->id ? 'selected' : '' }}>
+                                    <option value="{{ $client->id }}" data-user="{{ $client->user_id }}">
                                         {{ $client->name }}
                                     </option>
                                 @endforeach
                             </select>
-                            @error('client_id')
+                            @error('subscriber_id')
                                 <small class="text-danger">{{ $message }}</small>
                             @enderror
                         </div>
 
+
                         <!-- رقم الملف -->
                         <div class="form-group col-md-6">
                             <label for="file_number">رقم الملف</label>
-                            <input type="text" name="file_number" id="file_number" value="{{ old('file_number') }}"
-                                class="form-control">
+                            <input type="text" name="file_number" id="file_number" value="{{ $missing }}"
+                                class="form-control" readonly>
                             @error('file_number')
                                 <small class="text-danger">{{ $message }}</small>
                             @enderror
@@ -52,19 +51,24 @@
                     </div>
 
                     <div class="row">
-                        <!-- اسم العميل -->
+                        <!-- العميل -->
+
+                        <!-- الموكل -->
                         <div class="form-group col-md-6">
-                            <label for="client_name">اسم العميل</label>
-                            <input type="text" name="client_name" id="client_name" value="{{ old('client_name') }}"
-                                class="form-control">
-                            @error('client_name')
+                            <label for="client_id">الموكل</label>
+                            <select name="client_name" id="client_id" class="form-control" disabled>
+                                <option value="">اختر الموكل</option>
+                            </select>
+                            @error('client_id')
                                 <small class="text-danger">{{ $message }}</small>
                             @enderror
                         </div>
 
+
+
                         <!-- المنطقة -->
                         <div class="form-group col-md-6">
-                            <label for="area_name">المنطقة</label>
+                            <label for="area_name">اسم الدائره المختصه</label>
                             <input type="text" name="area_name" id="area_name" value="{{ old('area_name') }}"
                                 class="form-control">
                             @error('area_name')
@@ -116,3 +120,36 @@
         </div>
     </div>
 @endsection
+
+{{-- JSON بكل العملاء --}}
+<script>
+    const allClients = @json($clients);
+
+    document.addEventListener("DOMContentLoaded", function() {
+        const subscriberSelect = document.getElementById("subscriber_id");
+        const clientSelect = document.getElementById("client_id");
+
+        subscriberSelect.addEventListener("change", function() {
+            clientSelect.innerHTML = '<option value="">اختر الموكل</option>';
+            clientSelect.setAttribute("disabled", true);
+
+            const selectedOption = this.options[this.selectedIndex];
+            if (!selectedOption.value) return;
+
+            const selectedUser = selectedOption.getAttribute("data-user");
+
+            // فلترة الموكلين بنفس user_id
+            const relatedClients = allClients.filter(c => c.user_id == selectedUser);
+
+            if (relatedClients.length > 0) {
+                relatedClients.forEach(client => {
+                    let opt = document.createElement("option");
+                    opt.value = client.name;
+                    opt.textContent = client.name;
+                    clientSelect.appendChild(opt);
+                });
+                clientSelect.removeAttribute("disabled");
+            }
+        });
+    });
+</script>
