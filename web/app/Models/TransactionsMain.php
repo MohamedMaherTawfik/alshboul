@@ -10,10 +10,10 @@ class TransactionsMain extends Model
 
     protected $guarded = [];
 
-    // public function transactions()
-    // {
-    //     return $this->hasMany(Transactions::class);
-    // }
+    public function transactions()
+    {
+        return $this->hasMany(Transactions::class);
+    }
 
     public function user()
     {
@@ -24,4 +24,5 @@ class TransactionsMain extends Model
     {
         return $this->hasMany(NegligenceDays::class, 'transactions_main_id');
     }
+
 }

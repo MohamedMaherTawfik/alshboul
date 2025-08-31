@@ -154,7 +154,7 @@
                 </a>
                 <div class="dropdown-menu dropdown-menu-right" aria-labelledby="settlementDropdown">
                     @foreach ($transactions as $type)
-                        <a class="dropdown-item" href="{{ route('settlement.index', $type) }}">
+                        <a class="dropdown-item" href="{{ route('transactions.all', $type) }}">
                             {{ $type->name }}
                         </a>
                     @endforeach

@@ -13,6 +13,7 @@ use App\Http\Controllers\Admin\LoginController;
 use App\Http\Controllers\Admin\CaseTypeController;
 use App\Http\Controllers\Admin\SliderController;
 use App\Http\Controllers\Admin\CareerController;
+use App\Http\Controllers\Admin\TransactionController;
 use App\Http\Controllers\ApplyCareerController;
 use App\Http\Controllers\User\LoginController as UserLoginController;
 use App\Http\Controllers\User\DashboardController as UserDashboardController;
@@ -203,6 +204,14 @@ Route::group(['prefix' => 'admin', 'middleware' => ['auth', roleMiddleware::clas
     Route::get('/settlement-actions/{id}/edit', [SettlementActionController::class, 'edit'])->name('settlement-action.edit');
     Route::get('/settlement-actions/{settlement_id}/deleted', [SettlementActionController::class, 'deleted'])->name('settlement-action.deleted');
     Route::get('/settlement-actions/{id}/show', [SettlementActionController::class, 'show'])->name('settlement-action.show');
+
+    Route::get('/transactions/{transaction}/all/transactions', [TransactionController::class, 'index'])->name('transactions.all');
+    Route::get('/transactions/{transaction}/create/new', [TransactionController::class, 'create'])->name('transactions.create');
+    Route::post('/transactions/{transaction}/store/new', [TransactionController::class, 'store'])->name('transactions.store');
+    Route::get('/transactions/{transaction}/edit/new', [TransactionController::class, 'edit'])->name('transactions.edit');
+    Route::post('/transactions/{transaction}/update/new', [TransactionController::class, 'update'])->name('transactions.update');
+    Route::delete('/transactions/{transaction}/destroy/new', [TransactionController::class, 'destroy'])->name('transactions.destroy');
+
 
     Route::get('/archives/system', [ArchiveController::class, 'index'])->name('archive.index');
     Route::get('/archives/system/main', [ArchiveController::class, 'createMain'])->name('archive.main.create');

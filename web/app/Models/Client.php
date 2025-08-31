@@ -51,4 +51,9 @@ class Client extends Model
     {
         return $this->hasMany(ExecutiveCase::class);
     }
+
+    public function Transactions()
+    {
+        return $this->hasMany(Transactions::class);
+    }
 }
