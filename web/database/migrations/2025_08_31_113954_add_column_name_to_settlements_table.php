@@ -1,5 +1,6 @@
 <?php
 
+use App\Models\cases;
 use App\Models\ExecutiveCase;
 use App\Models\SettlementMain;
 use Illuminate\Database\Migrations\Migration;
@@ -15,6 +16,7 @@ return new class extends Migration {
         Schema::table('settlements', function (Blueprint $table) {
             $table->foreignIdFor(ExecutiveCase::class)->nullable()->constrained()->nullOnDelete();
             $table->foreignIdFor(SettlementMain::class)->nullable()->constrained()->nullOnDelete();
+            $table->foreignIdFor(cases::class)->nullable()->constrained()->onDelete('cascade');
         });
     }
 
