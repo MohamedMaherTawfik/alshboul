@@ -34,9 +34,9 @@
                                     <td class="text-start">{{ $info->name }}</td>
                                     <td>{{ $info->NegligenceDays->first()->days ?? '-' }}</td>
                                     <td>
-                                        <a href="{{ route('casetypes.edit', $info->id) }}"
+                                        <a href="{{ route('casetypes.edit.new', $info->id) }}"
                                             class="btn btn-warning btn-sm">تعديل</a>
-                                        <a href="{{ route('casetypes.destroy', $info->id) }}"
+                                        <a href="{{ route('casetypes.destroy.new', $info->id) }}"
                                             class="btn btn-danger btn-sm">حذف</a>
                                     </td>
                                 </tr>
@@ -74,9 +74,9 @@
                                     <td class="text-start">{{ $info->name }}</td>
                                     <td>{{ $info->NegligenceDays->first()->days ?? '-' }}</td>
                                     <td>
-                                        <a href="{{ route('casetypes.edit', $info->id) }}"
+                                        <a href="{{ route('settlements.edit.new', $info->id) }}"
                                             class="btn btn-warning btn-sm">تعديل</a>
-                                        <a href="{{ route('casetypes.destroy', $info->id) }}"
+                                        <a href="{{ route('settlements.destroy.new', $info->id) }}"
                                             class="btn btn-danger btn-sm">حذف</a>
                                     </td>
                                 </tr>
@@ -114,9 +114,9 @@
                                     <td class="text-start">{{ $info->name }}</td>
                                     <td>{{ $info->NegligenceDays->first()->days ?? '-' }}</td>
                                     <td>
-                                        <a href="{{ route('casetypes.edit', $info->id) }}"
+                                        <a href="{{ route('transactions.edit.new', $info->id) }}"
                                             class="btn btn-warning btn-sm">تعديل</a>
-                                        <a href="{{ route('casetypes.destroy', $info->id) }}"
+                                        <a href="{{ route('transactions.destroy.new', $info->id) }}"
                                             class="btn btn-danger btn-sm">حذف</a>
                                     </td>
                                 </tr>
@@ -154,9 +154,9 @@
                                     <td class="text-start">{{ $info->name }}</td>
                                     <td>{{ $info->NegligenceDays->first()->days ?? '-' }}</td>
                                     <td>
-                                        <a href="{{ route('casetypes.edit', $info->id) }}"
+                                        <a href="{{ route('excutiveCases.edit.new', $info->id) }}"
                                             class="btn btn-warning btn-sm">تعديل</a>
-                                        <a href="{{ route('casetypes.destroy', $info->id) }}"
+                                        <a href="{{ route('excutiveCases.destroy.new', $info->id) }}"
                                             class="btn btn-danger btn-sm">حذف</a>
                                     </td>
                                 </tr>

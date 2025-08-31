@@ -19,6 +19,11 @@ class cases extends Model
         return $this->belongsTo(CaseType::class, 'suggested_case_id');
     }
 
+    public function caseType()
+    {
+        return $this->belongsTo(CaseType::class);
+    }
+
     public function requestedCases()
     {
         return $this->belongsTo(CaseType::class, 'requested_case_id');

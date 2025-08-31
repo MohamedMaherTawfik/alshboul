@@ -12,6 +12,10 @@ class ExecutiveCase extends Model
     protected $table = 'executive_cases';
     protected $guarded = [];
 
+    public function mainExecutiveCases()
+    {
+        return $this->belongsTo(excutiveCasesMain::class, 'excutive_cases_main_id');
+    }
     public function proceduralRecords()
     {
         return $this->hasMany(ProceduralRecord::class);

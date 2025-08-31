@@ -11,8 +11,8 @@ use App\Models\Lawyer;
 use App\Models\LegalPeriods;
 use App\Models\Missions;
 use App\Models\NegligenceDays;
+use App\Models\trahsedDays;
 use App\Models\User;
-use Illuminate\Http\Request;
 
 class DashboardController extends Controller
 {
@@ -29,7 +29,11 @@ class DashboardController extends Controller
         $durations = LegalPeriods::where('is_done', 0)->whereBetween('period_end', [$today, $sixDaysLater])->get();
         $notes = CaseNotes::where('is_done', 0)->whereBetween('period_end', [$today, $sixDaysLater])->get();
         $missions = Missions::where('is_done', 0)->count();
-        $neglies = NegligenceDays::get();
-        return view('admin.index', compact('neglies', 'countLawyer', 'countClient', 'missions', 'countClientRequest', 'countUser', 'durations', 'notes', 'caseTypes'));
+        $trashed = trahsedDays::with([
+            'cases.caseType',
+            'excutiveCases.mainExecutiveCases',
+            'settlements.settlementMain'
+        ])->where('is_seen', 1)->get();
+        return view('admin.index', compact('trashed', 'countLawyer', 'countClient', 'missions', 'countClientRequest', 'countUser', 'durations', 'notes', 'caseTypes'));
     }
 }

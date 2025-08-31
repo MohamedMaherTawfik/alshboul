@@ -3,6 +3,7 @@ use App\Http\Controllers\Admin\ArchiveController;
 use App\Http\Controllers\Admin\CaseController;
 use App\Http\Controllers\Admin\CaseNotesController;
 use App\Http\Controllers\Admin\DurationController;
+use App\Http\Controllers\Admin\editController;
 use App\Http\Controllers\Admin\MissionController;
 use App\Http\Controllers\Admin\SettlementController;
 use App\Http\Controllers\Admin\AboutUsController;
@@ -329,6 +330,26 @@ Route::group(['prefix' => 'admin', 'middleware' => ['auth', roleMiddleware::clas
     Route::post('/careers/{id}', [CareerController::class, 'update'])->name('careers.update');
     Route::delete('/careers/{id}/delete', [CareerController::class, 'destroy'])->name('careers.destroy');
     Route::get('/apply-careers', [CareerController::class, 'apply'])->name('apply-careers.all');
+
+    Route::prefix('edit')->group(function () {
+        Route::get('/casetypes/{type}/edit', [editController::class, 'editCaseType'])->name('casetypes.edit.new');
+        Route::post('/casetypes/{type}/update', [editController::class, 'updateCaseType'])->name('casetypes.update.new');
+        Route::get('/settlements/{type}/edit', [editController::class, 'editSettlement'])->name('settlements.edit.new');
+        Route::post('/settlements/{type}/update', [editController::class, 'updateSettlement'])->name('settlements.update.new');
+        Route::get('/transactions/{type}/edit', [editController::class, 'editTransaction'])->name('transactions.edit.new');
+        Route::post('/transactions/{type}/update', [editController::class, 'updateTransaction'])->name('transactions.update.new');
+        Route::get('/excutiveCases/{type}/edit', [editController::class, 'editExcutiveCase'])->name('excutiveCases.edit.new');
+        Route::post('/excutiveCases/{type}/update', [editController::class, 'updateExcutiveCase'])->name('excutiveCases.update.new');
+    });
+
+    Route::prefix('destroy')->group(function () {
+        Route::get('/casetypes/{type}', [editController::class, 'destroyCaseType'])->name('casetypes.destroy.new');
+        Route::get('/settlements/{type}', [editController::class, 'destroySettlement'])->name('settlements.destroy.new');
+        Route::get('/transactions/{type}', [editController::class, 'destroyTransaction'])->name('transactions.destroy.new');
+        Route::get('/excutiveCases/{type}', [editController::class, 'destroyExcutiveCase'])->name('excutiveCases.destroy.new');
+    });
+
+
 });
 
 Route::group(['prefix' => 'user', 'middleware' => ['auth', 'check_role:User']], function () {
@@ -338,8 +359,6 @@ Route::group(['prefix' => 'user', 'middleware' => ['auth', 'check_role:User']], 
     Route::get('/request-client', [ClientRequestController::class, 'index1'])->name('user.request.index');
     Route::get('/request-client/create', [ClientRequestController::class, 'create'])->name('user.request.create');
     Route::POST('/request-client/store', [ClientRequestController::class, 'store'])->name('user.request.store');
-
-
 
     Route::get('/chat/{userId?}', [Message::class, 'index1'])->name('user.chat.with');
 

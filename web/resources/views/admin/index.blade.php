@@ -76,38 +76,45 @@
                 </div>
             </div>
         </div>
-        <section class="py-4">
-            <h3 class="text-center font-bold">انواع الاهمالات</h3>
-            <table class="table table-bordered">
+
+        <div class="container mt-4">
+            <h3> المهملات الحاليه</h3>
+            <table class="table table-bordered table-striped">
                 <thead>
                     <tr>
-
-                        <th>النوع</th>
-                        <th>عدد ايام الاهمال</th>
+                        <th>#</th>
+                        <th>نوع رئيسي</th>
+                        <th>الاسم</th>
                     </tr>
                 </thead>
                 <tbody>
-                    @foreach ($neglies as $index => $neg)
+                    @foreach ($trashed as $item)
                         <tr>
-                            <td>
-                                @if ($neg->caseTypes)
-                                    {{ $neg->caseTypes->name }}
-                                @elseif($neg->executiveCases)
-                                    {{ $neg->executiveCases->name }}
-                                @elseif($neg->settlements)
-                                    {{ $neg->settlements->name }}
-                                @elseif($neg->transactions)
-                                    {{ $neg->transactions->name }}
-                                @else
-                                    -
-                                @endif
-                            </td>
-                            <td>{{ $neg->days }} days</td>
+                            <td>{{ $item->id }}</td>
+
+                            {{-- لو جاي من قضية --}}
+                            @if ($item->cases)
+                                <td>قضية</td>
+                                <td>{{ $item->cases->caseType->name ?? '-' }}</td>
+
+                                {{-- لو جاي من قضية تنفيذية --}}
+                            @elseif($item->executiveCase)
+                                <td>قضية تنفيذية</td>
+                                <td>{{ $item->executiveCase->mainExecutiveCases->name ?? '-' }}</td>
+
+                                {{-- لو جاي من تسوية --}}
+                            @elseif($item->settlement)
+                                <td>تسوية</td>
+                                <td>{{ $item->settlement->settlementMain->name ?? '-' }}</td>
+                            @else
+                                <td>-</td>
+                                <td>-</td>
+                            @endif
                         </tr>
                     @endforeach
                 </tbody>
             </table>
-        </section>
+        </div>
 
 
         <!-- المدد القانونية -->
