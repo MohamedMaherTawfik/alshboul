@@ -2,6 +2,7 @@
     use App\Models\CaseType;
     use App\Models\SettlementMain;
     use App\Models\excutiveCasesMain;
+    use App\Models\TransactionsMain;
 
     $message = \App\Models\Message::where('receiver_id', Auth::id())->where('seen', '0')->count();
     $lawyerId = Auth::user()->id;
@@ -13,6 +14,7 @@
     $cases = CaseType::get();
     $excutive = excutiveCasesMain::get();
     $settlements = SettlementMain::get();
+    $transactions = TransactionsMain::get();
 @endphp
 <nav class="navbar navbar-expand-lg navbar-dark bg-dark">
     <a class="navbar-brand d-flex align-items-center" href="{{ route('admin.dashboard') }}">
@@ -143,13 +145,19 @@
                 </div>
             </li>
 
-            <!-- إدارة القضايا والاتفاقيات -->
+            {{-- المعاملات --}}
             <li class="nav-item dropdown">
-                <a class="nav-link dropdown-toggle {{ request()->is('admin/agreement*') ? 'active' : '' }}"
-                    href="#" data-toggle="dropdown">
-                    الاتفاقيات </a>
-                <div class="dropdown-menu dropdown-menu-right">
-                    <a class="dropdown-item" href="{{ route('agreement.index') }}">الاتفاقيات</a>
+                <a class="nav-link dropdown-toggle {{ request()->is('admin/settlement*') ? 'active' : '' }}"
+                    href="#" id="settlementDropdown" role="button" data-toggle="dropdown"
+                    aria-haspopup="true" aria-expanded="false">
+                    المعاملات
+                </a>
+                <div class="dropdown-menu dropdown-menu-right" aria-labelledby="settlementDropdown">
+                    @foreach ($transactions as $type)
+                        <a class="dropdown-item" href="{{ route('settlement.index', $type) }}">
+                            {{ $type->name }}
+                        </a>
+                    @endforeach
                 </div>
             </li>
 
