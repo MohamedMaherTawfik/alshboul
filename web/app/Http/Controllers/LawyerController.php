@@ -67,7 +67,7 @@ class LawyerController extends Controller
         $user->email = $request->email;
         $user->address = $request->address;
         $user->date = now();
-        $user->role = 'lawyer';
+        $user->role = 'Lawyer';
         $user->added_by = Auth::id();
         $user->save();
         $path = null;

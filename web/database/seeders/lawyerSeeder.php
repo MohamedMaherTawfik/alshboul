@@ -93,7 +93,7 @@ class LawyerSeeder extends Seeder
                 'phone' => $data['phone'],
                 'address' => $data['address'],
                 'password' => Hash::make('password'),
-                'role' => 'lawyer',
+                'role' => 'Lawyer',
             ]);
 
             Lawyer::create([

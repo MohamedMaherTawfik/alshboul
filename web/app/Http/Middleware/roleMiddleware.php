@@ -16,7 +16,7 @@ class roleMiddleware
      */
     public function handle(Request $request, Closure $next): Response
     {
-        if (Auth::user()->role == 'superadmin' || Auth::user()->role == 'admin' || Auth::user()->role == 'lawyer') {
+        if (Auth::user()->role == 'superadmin' || Auth::user()->role == 'admin' || Auth::user()->role == 'Lawyer') {
             return $next($request);
         }
         abort(401, 'UnAuthorized Action');
