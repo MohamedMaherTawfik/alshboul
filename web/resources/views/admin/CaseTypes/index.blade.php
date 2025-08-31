@@ -9,30 +9,35 @@
     <div class="col-12">
         <div class="card">
             <div class="card-header">
-                <h3 class="card-title card_title_center">بيانات أنواع القضايا
+                <h3 class="card-title card_title_center">بيانات أنواع الحالات
                     <a href="{{ route('casetypes.create') }}" class="btn btn-success">إضافة جديد</a>
                 </h3>
             </div>
+            <div class="text-center mt-4">
+                <h3>قائمة انواع القضايا</h3>
+            </div>
             <div class="overflow-auto card-body">
                 @if (@isset($data) and !@empty($data) and count($data) > 0)
-                    <table id="example2" class="table table-bordered table-hover">
+                    <table id="example2" class="table table-bordered table-hover text-center align-middle">
                         <thead class="custom_thead">
-                            <th>#</th>
-                            <th>الاسم بالعربية</th>
-                            <th>الوصف بالعربية</th>
-                            <th>التحكم</th>
+                            <tr>
+                                <th style="width: 50px;">#</th>
+                                <th style="width: 50%;">الاسم بالعربية</th>
+                                <th style="width: 120px;">عدد ايام الاهمال</th>
+                                <th style="width: 180px;">التحكم</th>
+                            </tr>
                         </thead>
                         <tbody>
                             @foreach ($data as $info)
                                 <tr>
                                     <td>{{ $info->id }}</td>
-                                    <td>{{ $info->name }}</td>
-                                    <td>{{ Str::limit($info->description, 200) }}</td>
-
+                                    <td class="text-start">{{ $info->name }}</td>
+                                    <td>{{ $info->NegligenceDays->first()->days ?? '-' }}</td>
                                     <td>
-                                        <a href="{{ route('casetypes.edit', $info->id) }}" class="btn btn-warning">تعديل</a>
+                                        <a href="{{ route('casetypes.edit', $info->id) }}"
+                                            class="btn btn-warning btn-sm">تعديل</a>
                                         <a href="{{ route('casetypes.destroy', $info->id) }}"
-                                            class="btn btn-danger ">حذف</a>
+                                            class="btn btn-danger btn-sm">حذف</a>
                                     </td>
                                 </tr>
                             @endforeach
@@ -46,6 +51,127 @@
                     </div>
                 @endif
             </div>
+
+            <hr>
+            <div class="text-center mt-4">
+                <h3>قائمة انواع التسويات</h3>
+            </div>
+            <div class="overflow-auto card-body">
+                @if (@isset($settlements) and !@empty($settlements) and count($settlements) > 0)
+                    <table id="example2" class="table table-bordered table-hover text-center align-middle">
+                        <thead class="custom_thead">
+                            <tr>
+                                <th style="width: 50px;">#</th>
+                                <th style="width: 50%;">الاسم بالعربية</th>
+                                <th style="width: 120px;">عدد ايام الاهمال</th>
+                                <th style="width: 180px;">التحكم</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            @foreach ($settlements as $info)
+                                <tr>
+                                    <td>{{ $info->id }}</td>
+                                    <td class="text-start">{{ $info->name }}</td>
+                                    <td>{{ $info->NegligenceDays->first()->days ?? '-' }}</td>
+                                    <td>
+                                        <a href="{{ route('casetypes.edit', $info->id) }}"
+                                            class="btn btn-warning btn-sm">تعديل</a>
+                                        <a href="{{ route('casetypes.destroy', $info->id) }}"
+                                            class="btn btn-danger btn-sm">حذف</a>
+                                    </td>
+                                </tr>
+                            @endforeach
+                        </tbody>
+                    </table>
+                @else
+                    <div class="col-md-12">
+                        <div class="text-center alert alert-info">
+                            لا توجد بيانات لعرضها.
+                        </div>
+                    </div>
+                @endif
+            </div>
+
+            <hr>
+            <div class="text-center mt-4">
+                <h3>قائمة انواع المعاملات</h3>
+            </div>
+            <div class="overflow-auto card-body">
+                @if (@isset($transactions) and !@empty($transactions) and count($transactions) > 0)
+                    <table id="example2" class="table table-bordered table-hover text-center align-middle">
+                        <thead class="custom_thead">
+                            <tr>
+                                <th style="width: 50px;">#</th>
+                                <th style="width: 50%;">الاسم بالعربية</th>
+                                <th style="width: 120px;">عدد ايام الاهمال</th>
+                                <th style="width: 180px;">التحكم</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            @foreach ($transactions as $info)
+                                <tr>
+                                    <td>{{ $info->id }}</td>
+                                    <td class="text-start">{{ $info->name }}</td>
+                                    <td>{{ $info->NegligenceDays->first()->days ?? '-' }}</td>
+                                    <td>
+                                        <a href="{{ route('casetypes.edit', $info->id) }}"
+                                            class="btn btn-warning btn-sm">تعديل</a>
+                                        <a href="{{ route('casetypes.destroy', $info->id) }}"
+                                            class="btn btn-danger btn-sm">حذف</a>
+                                    </td>
+                                </tr>
+                            @endforeach
+                        </tbody>
+                    </table>
+                @else
+                    <div class="col-md-12">
+                        <div class="text-center alert alert-info">
+                            لا توجد بيانات لعرضها.
+                        </div>
+                    </div>
+                @endif
+            </div>
+
+            <hr>
+            <div class="text-center mt-4">
+                <h3>قائمة انواع القضايا التنفذية</h3>
+            </div>
+            <div class="overflow-auto card-body">
+                @if (@isset($excutiveCases) and !@empty($excutiveCases) and count($excutiveCases) > 0)
+                    <table id="example2" class="table table-bordered table-hover text-center align-middle">
+                        <thead class="custom_thead">
+                            <tr>
+                                <th style="width: 50px;">#</th>
+                                <th style="width: 50%;">الاسم بالعربية</th>
+                                <th style="width: 120px;">عدد ايام الاهمال</th>
+                                <th style="width: 180px;">التحكم</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            @foreach ($excutiveCases as $info)
+                                <tr>
+                                    <td>{{ $info->id }}</td>
+                                    <td class="text-start">{{ $info->name }}</td>
+                                    <td>{{ $info->NegligenceDays->first()->days ?? '-' }}</td>
+                                    <td>
+                                        <a href="{{ route('casetypes.edit', $info->id) }}"
+                                            class="btn btn-warning btn-sm">تعديل</a>
+                                        <a href="{{ route('casetypes.destroy', $info->id) }}"
+                                            class="btn btn-danger btn-sm">حذف</a>
+                                    </td>
+                                </tr>
+                            @endforeach
+                        </tbody>
+                    </table>
+                @else
+                    <div class="col-md-12">
+                        <div class="text-center alert alert-info">
+                            لا توجد بيانات لعرضها.
+                        </div>
+                    </div>
+                @endif
+            </div>
+
         </div>
     </div>
     <div class="modal fade" id="delete_reason">

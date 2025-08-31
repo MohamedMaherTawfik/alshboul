@@ -1,5 +1,8 @@
 @php
     use App\Models\CaseType;
+    use App\Models\SettlementMain;
+    use App\Models\excutiveCasesMain;
+
     $message = \App\Models\Message::where('receiver_id', Auth::id())->where('seen', '0')->count();
     $lawyerId = Auth::user()->id;
     $missionsCount = \App\Models\Missions::where('is_done', 0)
@@ -8,6 +11,8 @@
         })
         ->count();
     $cases = CaseType::get();
+    $excutive = excutiveCasesMain::get();
+    $settlements = SettlementMain::get();
 @endphp
 <nav class="navbar navbar-expand-lg navbar-dark bg-dark">
     <a class="navbar-brand d-flex align-items-center" href="{{ route('admin.dashboard') }}">
@@ -66,7 +71,7 @@
                         اعدادات الادمن
                     </a>
                     <div class="dropdown-menu dropdown-menu-right" aria-labelledby="deletedItemsMenu">
-                        <a class="dropdown-item" href="{{ route('casetypes.index') }}">اضافه نوع قضايا</a>
+                        <a class="dropdown-item" href="{{ route('casetypes.index') }}">اضافه نوع او حاله</a>
                         <a class="dropdown-item" href="{{ route('visitors.index') }}">اراء الزوار بالنسبه للموقع</a>
                         <hr>
                         <a class="dropdown-item" href="{{ route('archive.index') }}">تسجيلات دخول الموبايل</a>
@@ -114,15 +119,11 @@
                     إدارة القضايا التنفيذية
                 </a>
                 <div class="dropdown-menu dropdown-menu-right" aria-labelledby="executiveCaseDropdown">
-                    <a class="dropdown-item" href="{{ route('executive-case.index', 1) }}">القضايا التنفيدية
-                        الفعالة</a>
-                    <a class="dropdown-item" href="{{ route('executive-case.index', 2) }}">القضايا التنفيذية المنتهية
-                    </a>
-                    <a class="dropdown-item" href="{{ route('executive-case.index', 3) }}">القضايا التنفيذية
-                        الموقوفة</a>
-                    <a class="dropdown-item" href="{{ route('executive-case.index', 4) }}">القضايا التنفيذية
-                        انابات</a>
-
+                    @foreach ($excutive as $item)
+                        <a class="dropdown-item" href="{{ route('executive-case.index', $item) }}">
+                            {{ $item->name }}
+                        </a>
+                    @endforeach
                 </div>
             </li>
 
@@ -134,16 +135,11 @@
                     إدارة التسويات
                 </a>
                 <div class="dropdown-menu dropdown-menu-right" aria-labelledby="settlementDropdown">
-                    @php
-                        $types = \App\Models\SettlementType::all();
-                    @endphp
-                    @foreach ($types as $type)
-                        <a class="dropdown-item" href="{{ route('settlement.index', ['type' => $type->id]) }}">
-                            {{ $type->name_ar }}
+                    @foreach ($settlements as $type)
+                        <a class="dropdown-item" href="{{ route('settlement.index', $type) }}">
+                            {{ $type->name }}
                         </a>
                     @endforeach
-                    <a class="dropdown-item" href="{{ route('settlement.index') }}">كل التسويات</a>
-                    <a class="dropdown-item" href="{{ route('settlement.indexDelete') }}">التسويات المحذوفة</a>
                 </div>
             </li>
 

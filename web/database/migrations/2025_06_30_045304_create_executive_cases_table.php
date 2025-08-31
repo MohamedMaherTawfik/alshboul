@@ -1,11 +1,13 @@
 <?php
 
+use App\Models\Client;
+use App\Models\excutiveCasesMain;
+use App\Models\User;
 use Illuminate\Database\Migrations\Migration;
 use Illuminate\Database\Schema\Blueprint;
 use Illuminate\Support\Facades\Schema;
 
-return new class extends Migration
-{
+return new class extends Migration {
     /**
      * Run the migrations.
      */
@@ -13,36 +15,34 @@ return new class extends Migration
     {
         Schema::create('executive_cases', function (Blueprint $table) {
             $table->id();
-            $table->string('case_number');                   // رقم القضية
-            $table->string('national_id')->nullable();       // رقم الهوية الوطنية
-            $table->string('plaintiff_name')->nullable();    // اسم المدعي
-            $table->string('defendant_name')->nullable();    // اسم الخصم
-            $table->string('file_number')->nullable();       // رقم الملف
-            $table->string('execution_location')->nullable(); // جهة التنفيذ
-            $table->text('notes')->nullable();               // الملاحظات
+            $table->foreignIdFor(User::class)->nullable()->constrained()->cascadeOnDelete();
+            $table->foreignIdFor(Client::class)->nullable()->constrained()->cascadeOnDelete();
+            $table->string('subscriber_name')->nullable();         // اسم المشترك
+            $table->string('subscriber_number')->nullable();         // اسم المشترك
+            $table->string('client_name')->nullable();             // اسم الموكل
+            $table->string('client_national_id')->nullable();      // الرقم الوطني له
+            $table->string('opponent_name')->nullable();           // اسم الخصم
+            $table->string('opponent_national_id')->nullable();    // الرقم الوطني للخصم
 
-            $table->enum('execution_type', ['مالي', 'غير مالي'])->nullable(); // نوع التنفيذ
-            $table->string('execution_number')->nullable();   // رقم التنفيذ
-            $table->date('execution_date')->nullable();       // تاريخ التنفيذ
-
-            $table->enum('execution_method', ['يدوي', 'الكتروني'])->nullable(); // طريقة التنفيذ
-
-            $table->enum('execution_status', ['منفذ', 'غير منفذ'])->nullable(); // حالة التنفيذ
-            $table->enum('execution_source', ['الصندوق', 'الفرع', 'مستند رسمي', 'إجراء آخر'])->nullable();
-
-            $table->string('reference_number')->nullable();    // رقم الإحالة
-            $table->date('reference_date')->nullable();        // تاريخ الإحالة
-            $table->string('court_or_ruling_number')->nullable(); // رقم الحكم أو المحكمة
-            $table->string('court_or_ruling_name')->nullable();   // اسم المحكمة أو الجهة
-            $table->text('execution_file_copy')->nullable();      // صورة من الملف التنفيذي (رابط مثلاً)
-            $table->enum('status', ['جديد', 'مؤرشف', 'ملغي'])->default('جديد');
-            $table->unsignedBigInteger('created_by')->nullable();
-            $table->unsignedBigInteger('updated_by')->nullable();
-            $table->text('delete_reason')->nullable();
+            $table->string('office_file_number')->nullable();      // رقم الملف المكتبي
+            $table->string('case_number')->nullable();             // رقم الدعوى
+            $table->string('file_number')->nullable();             // رقم الملف
+            $table->string('case_type')->nullable();               // نوع القضايا التنفيذية
+            $table->string('case_status')->nullable();             // حالة القضية
+            $table->decimal('case_value', 15, 2)->nullable(); // قيمة الدعوى
+            $table->string('execution_court')->nullable();         // الدائرة التنفيذية
+            $table->string('execution_document_type')->nullable(); // نوع السند التنفيذي
+            $table->string('judged_for')->nullable();              // المحكوم له
+            $table->string('judged_against')->nullable();          // المحكوم عليه
+            $table->date('registration_date')->nullable();         // تاريخ التسجيل
+            $table->string('execution_document_number')->nullable(); // رقم السند التنفيذي
+            $table->string('judged_for_status')->nullable();       // صفة المحكوم له
+            $table->string('judged_against_status')->nullable();   // صفة المحكوم عليه
+            $table->date('procedural_session_date')->nullable(); // تاريخ الجلسة الإجر
             $table->softDeletes();
+            // $table->foreign('created_by')->references('id')->on('users')->onDelete('set null');
+
             $table->timestamps();
-            $table->foreign('created_by')->references('id')->on('users')->onDelete('set null');
-            $table->foreign('updated_by')->references('id')->on('users')->onDelete('set null');
         });
     }
 

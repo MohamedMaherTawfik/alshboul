@@ -1,10 +1,12 @@
 @extends('layouts.admin')
-@section('title', ' تفاصيل السجل الإجرائي')
+
+@section('title', 'القضايا التنفيذية')
 @section('main_title_content', 'قائمة القضايا التنفيذية')
-@section('title_content', 'عرض')
+@section('title_content', 'التسويات')
 {{-- @section('link_content')
-    <a href="{{ route('procedural-record.index') }}">السجلات الجرائية </a>
+    <a href="{{ route('executive-case.index', $executiveCase) }}">قضايا تنفيذية</a>
 @endsection --}}
+
 @section('content')
     <div class="card shadow-sm">
         <div class="card-body">
@@ -67,47 +69,52 @@
             </div>
         </div>
     </div>
-    <div class="container-fluid">
-        <!-- جدول الإجراءات -->
+
+    <div class="container-fluid mt-4">
         <div class="d-flex justify-content-between align-items-center mb-3">
-            <h4 class="mb-0">الإجراءات</h4>
-            <a href="{{ route('procedural-record.create', $executiveCase) }}" class="btn btn-primary">
-                انشاء اجراء
+            <h4 class="mb-0">قائمة التسويات</h4>
+            <a href="{{ route('executive-case.settlement.create', $executiveCase) }}" class="btn btn-primary">
+                إضافة تسوية
             </a>
         </div>
 
         <div class="table-responsive">
             <table class="table table-striped table-bordered">
-                <thead class="table-dark">
+                <thead class="table-dark text-center">
                     <tr>
-                        <th>رقم الاجراء</th>
-                        <th>انشاء بواسطه</th>
-                        <th>النوع</th>
-                        <th>الإجراء</th>
-                        <th>ملاحظة</th>
-                        <th>المحامي</th>
-                        <th>الإجراء التالي</th>
-                        <th>تاريخ الإجراء التالي</th>
+                        <th>نوع الدعوي</th>
+                        <th>رقم الدعوي</th>
+                        <th>الالتزام</th>
+                        <th>هاتف الخصم</th>
+                        <th>صفه الموكل</th>
+                        <th>صفه الخصم</th>
+                        <th>قيمه الدين</th>
+                        <th>قيمه الدفعات</th>
+                        <th>واقع الاقساط</th>
+                        <th>ملاحظات </th>
                     </tr>
                 </thead>
                 <tbody>
-                    @forelse ($executiveCase->proceduralRecords as $record)
-                        <tr>
-                            <td>{{ $loop->iteration }}</td>
-                            <td>{{ $record->creator?->name ?? '-' }}</td>
-                            <td>{{ $record->type }}</td>
-                            <td>{{ $record->action }}</td>
-                            <td>{{ $record->note }}</td>
-                            <td>{{ $record->lawyer->name ?? '-' }}</td>
-                            <td>{{ $record->next_action }}</td>
-                            <td>{{ $record->next_action_date }}</td>
+                    @forelse ($executiveCase->settlements as $settlement)
+                        <tr class="text-center">
+                            <td>{{ $executiveCase->case_type ?? '-' }}</td>
+                            <td>{{ $executiveCase->case_number ?? '-' }}</td>
+                            <td>{{ $settlement->obligation ?? '-' }}</td>
+                            <td>{{ $settlement->opponent_phone ?? '-' }}</td>
+                            <td>{{ $settlement->client_status ?? '-' }}</td>
+                            <td>{{ $settlement->opponent_status ?? '-' }}</td>
+                            <td>{{ $settlement->amount ?? '-' }}</td>
+                            <td>{{ $settlement->payment_value ?? '-' }}</td>
+                            <td>{{ $settlement->payment_terms ?? '-' }}</td>
+                            <td>{{ $settlement->notes ?? '-' }}</td>
                         </tr>
                     @empty
                         <tr>
-                            <td colspan="7" class="text-center">لا توجد إجراءات مسجلة</td>
+                            <td colspan="10" class="text-center">لا توجد تسويات مسجلة</td>
                         </tr>
                     @endforelse
                 </tbody>
+
             </table>
         </div>
     </div>

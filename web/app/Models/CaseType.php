@@ -18,4 +18,10 @@ class CaseType extends Model
     {
         return $this->hasMany(cases::class);
     }
+
+    public function NegligenceDays()
+    {
+        return $this->hasMany(NegligenceDays::class, 'case_type_id');
+    }
+
 }

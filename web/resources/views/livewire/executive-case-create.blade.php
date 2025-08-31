@@ -32,7 +32,7 @@
                             <select wire:model.live="user_id"
                                 class="form-control @error('user_id') is-invalid @enderror">
                                 <option value="" selected>اختر المشترك</option>
-                                @foreach ($users as $user)
+                                @foreach ($clients as $user)
                                     <option value="{{ $user->id }}">{{ $user->name }}</option>
                                 @endforeach
                             </select>

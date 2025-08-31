@@ -11,8 +11,8 @@ return new class extends Migration {
     {
         Schema::create('settlements', function (Blueprint $table) {
             $table->id();
-            $table->foreignIdFor(User::class);
-            $table->foreignIdFor(cases::class);
+            $table->foreignIdFor(User::class)->nullable()->constrained()->onDelete('cascade');
+            $table->foreignIdFor(cases::class)->nullable()->constrained()->onDelete('cascade');
             $table->string('settlement_type')->nullable();
             $table->string('partner_name')->nullable();
             $table->string('client_name')->nullable();

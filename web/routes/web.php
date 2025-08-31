@@ -153,7 +153,7 @@ Route::group(['prefix' => 'admin', 'middleware' => ['auth', roleMiddleware::clas
     Route::get('/agreement/{id}/restore', [AgreementController::class, 'restore'])->name('agreement.restore');
     Route::get('/agreements/{id}', [AgreementController::class, 'show'])->name('agreement.show');
 
-    Route::get('/settlements', [SettlementController::class, 'index'])->name('settlement.index');
+    Route::get('/settlements/{type}/all', [SettlementController::class, 'index'])->name('settlement.index');
     Route::get('/settlements/create', [SettlementController::class, 'create'])->name('settlement.create');
     Route::post('/settlements', [SettlementController::class, 'store'])->name('settlement.store');
     Route::get('/settlements/{id}/edit', [SettlementController::class, 'edit'])->name('settlement.edit');
@@ -164,22 +164,29 @@ Route::group(['prefix' => 'admin', 'middleware' => ['auth', roleMiddleware::clas
     Route::get('/settlements/{id}', [SettlementController::class, 'show'])->name('settlement.show');
 
 
-    Route::get('/executive-cases/type/{id}', [ExecutiveCaseController::class, 'index'])->name('executive-case.index');
-    Route::get('/executive-cases/type/{id}/create', [ExecutiveCaseController::class, 'create'])->name('executive-case.create');
-    Route::post('/executive-cases', [ExecutiveCaseController::class, 'store'])->name('executive-case.store');
-    Route::get('/executive-cases/{id}/edit', [ExecutiveCaseController::class, 'edit'])->name('executive-case.edit');
-    Route::post('/executive-cases/{id}', [ExecutiveCaseController::class, 'update'])->name('executive-case.update');
+    Route::get('/executive-cases/type/{item}/all', [ExecutiveCaseController::class, 'index'])->name('executive-case.index');
+    Route::get('/executive-cases/type/{item}/expenses', [ExecutiveCaseController::class, 'expenses'])->name('executive-case.expenses');
+    Route::get('/executive-cases/type/{executiveCase}/settlement/all', [ExecutiveCaseController::class, 'caseSettlements'])->name('executive-case.settlement');
+    Route::get('/executive-cases/type/{executiveCase}/create/settlement', [ExecutiveCaseController::class, 'createSettlement'])->name('executive-case.settlement.create');
+    Route::post('/executive-cases/type/{executiveCase}/store/settlement', [ExecutiveCaseController::class, 'storeSettlement'])->name('executive-case.settlement.store');
+    Route::get('/executive-cases/type/{settlement}/edit/settlement/go', [ExecutiveCaseController::class, 'editSettlement'])->name('executive-case.settlement.edit');
+    Route::post('/executive-cases/type/{settlement}/update/settlement/go', [ExecutiveCaseController::class, 'updateSettlement'])->name('executive-case.settlement.update');
+    Route::delete('/executive-cases/type/{settlement}/delete/settlement/go', [ExecutiveCaseController::class, 'deleteSettlement'])->name('executive-case.settlement.delete');
+    Route::get('/executive-cases/type/{item}/create', [ExecutiveCaseController::class, 'create'])->name('executive-case.create');
+    Route::post('/executive-cases/{item}/store', [ExecutiveCaseController::class, 'store'])->name('executive-case.store');
+    Route::get('/executive-cases/{executiveCase}/edit', [ExecutiveCaseController::class, 'edit'])->name('executive-case.edit');
+    Route::post('/executive-cases/{executiveCase}/update', [ExecutiveCaseController::class, 'update'])->name('executive-case.update');
     Route::delete('/executive-case/delete', [ExecutiveCaseController::class, 'destroy'])->name('executive-case.delete');
     Route::get('/executive-cases/deleted', [ExecutiveCaseController::class, 'indexDelete'])->name('executive-case.indexDelete');
     Route::get('/executive-case/{id}/restore', [ExecutiveCaseController::class, 'restore'])->name('executive-case.restore');
     Route::get('/executive-cases/{id}', [ExecutiveCaseController::class, 'show'])->name('executive-case.show');
 
     // ProceduralRecord admin routes
-    Route::get('/procedural-records', [ProceduralRecordController::class, 'index'])->name('procedural-record.index');
-    Route::get('/procedural-records/{case_id?}', [ProceduralRecordController::class, 'index'])->name('procedural-record.index');
-    Route::get('/procedural-records/create/{case_id?}', [ProceduralRecordController::class, 'create'])->name('procedural-record.create');
+    Route::get('/procedural-records/{executiveCase}/action', [ProceduralRecordController::class, 'actions'])->name('procedural-record.index');
+    Route::get('/procedural-records/create/{executiveCase?}', [ProceduralRecordController::class, 'create'])->name('procedural-record.create');
+    Route::post('/procedural-records/create/{executiveCase?}', [ProceduralRecordController::class, 'store'])->name('procedural-record.store');
     Route::get('/procedural-records/{id}/edit', [ProceduralRecordController::class, 'edit'])->name('procedural-record.edit');
-    Route::get('/procedural-records/{id}/show/{case_id?}', [ProceduralRecordController::class, 'show'])->name('procedural-record.show');
+    Route::get('/procedural-records/{id}/show/{executiveCase?}', [ProceduralRecordController::class, 'show'])->name('procedural-record.show');
 
     Route::get('/vistiors/reviews/all', [visitorReviewController::class, 'index'])->name('visitors.index');
 

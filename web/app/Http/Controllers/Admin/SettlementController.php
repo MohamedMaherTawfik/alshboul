@@ -5,6 +5,7 @@ namespace App\Http\Controllers\Admin;
 use App\Http\Controllers\Controller;
 use App\Models\Client;
 use App\Models\Settlement;
+use App\Models\SettlementMain;
 use App\Models\User;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
@@ -12,10 +13,10 @@ use Illuminate\Support\Facades\DB;
 
 class SettlementController extends Controller
 {
-    public function index()
+    public function index(SettlementMain $type)
     {
-        $data = Settlement::with(['creator', 'updater'])->orderBy('id', 'desc')->get();
-        return view('admin.Settlement.index', compact('data'));
+        $type->load('settlements');
+        return view('admin.Settlement.index', compact('type'));
     }
 
     public function create()

@@ -9,31 +9,8 @@ class ExecutiveCase extends Model
 {
     use SoftDeletes;
 
-    protected $fillable = [
-        'user_id',
-        'subscriber_name',
-        'client_id',
-        'client_national_id',
-        'opponent_name',
-        'opponent_national_id',
-        'office_file_number',
-        'lawsuit_number',
-        'suggested_file_number',
-        'case_status',
-        'claim_value',
-        'execution_department',
-        'document_type',
-        'judged_for',
-        'judged_against',
-        'registration_date',
-        'document_number',
-        'judged_for_role',
-        'judged_against_role',
-        'created_by',
-        'updated_by',
-        'delete_reason',
-        'deleted_at'
-    ];
+    protected $table = 'executive_cases';
+    protected $guarded = [];
 
     public function proceduralRecords()
     {
@@ -58,5 +35,15 @@ class ExecutiveCase extends Model
     public function user()
     {
         return $this->belongsTo(User::class, 'user_id');
+    }
+
+    public function excecutiveCasesMain()
+    {
+        return $this->belongsTo(excutiveCasesMain::class, 'excutive_cases_main_id');
+    }
+
+    public function settlements()
+    {
+        return $this->hasMany(Settlement::class);
     }
 }

@@ -3,10 +3,107 @@
 @section('main_title_content', 'قائمة التسويات')
 @section('title_content', 'عرض')
 @section('link_content')
-    <a href="{{ route('settlement.index') }}">التسويات</a>
+    <a href="{{ route('settlement.index', ['type' => request('type')]) }}">التسويات</a>
 @endsection
 @section('content')
-    <div class="col-12">
-        @livewire('settlement-list', ['type_id' => request('type')])
+    <div class="card">
+        <div class="card-header">
+            <h3 class="card-title card_title_center">قائمة التسويات
+                <br>
+                <a href="{{ route('settlement.create') }}" class="btn btn-success">إضافة جديد</a>
+            </h3>
+        </div>
+        <div class="card-body">
+            <div class="mb-3 row">
+
+                <div class="col-md-3">
+                    <input type="text" name="office_file_number" class="form-control" placeholder="رقم الملف">
+                </div>
+                <div class="col-md-3">
+                    <input type="text" name="subscriber_name" class="form-control" placeholder="بحث اسم المشترك">
+                </div>
+                <div class="col-md-3">
+                    <input type="text" name="client_id" class="form-control" placeholder="بحث اسم الموكل">
+                </div>
+                <div class="col-md-3">
+                    <input type="text" name="opponent_name" class="form-control" placeholder="بحث اسم الخصم">
+                </div>
+
+            </div>
+            <div class="table-responsive">
+                <table class="table table-bordered table-striped">
+                    <thead>
+                        <tr>
+                            <th>اسم المدخل</th>
+                            <th>اسم الموكل</th>
+                            <th>اسم الخصم</th>
+                            <th>رقم الوطني للموكل</th>
+                            <th>رقم الوطني للخصم</th>
+                            <th>رقم هاتف الخصم</th>
+                            <th>العنوان</th>
+                            <th>صفة الموكل</th>
+                            <th>صفة الخصم</th>
+                            <th>رقم الملف</th>
+                            <th>رقم الدعوى</th>
+                            <th>قيمة الدين</th>
+                            <th>نوع القسط</th>
+                            <th>قيمة القسط</th>
+                            <th>تفاصيل التسوية</th>
+                            <th>العمليات</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        @forelse ($type->settlements as $settlement)
+                            <tr>
+                                <td>{{ $settlement->user->name ?? 'غير متوفر' }}</td>
+                                <td>{{ $settlement->client_name ?? 'غير متوفر' }}</td>
+                                <td>{{ $settlement->opponent_name ?? 'غير متوفر' }}</td>
+                                <td>{{ $settlement->excutiveCases?->client_national_id ?? 'غير متوفر' }}</td>
+                                <td>{{ $settlement->excutiveCases?->opponent_national_id ?? 'غير متوفر' }}</td>
+                                <td>{{ $settlement->opponent_phone ?? 'غير متوفر' }}</td>
+                                <td>{{ $settlement->opponent_address ?? 'غير متوفر' }}</td>
+                                <td>{{ $settlement->client_status ?? 'غير متوفر' }}</td>
+                                <td>{{ $settlement->opponent_status ?? 'غير متوفر' }}</td>
+                                <td>{{ $settlement->excutiveCases?->file_number ?? 'غير متوفر' }}</td>
+                                <td>{{ $settlement->excutiveCases?->case_number ?? 'غير متوفر' }}</td>
+                                <td>{{ $settlement->amount ? number_format($settlement->amount, 2) : 'غير متوفر' }}</td>
+                                <td>{{ $settlement->payment_terms ?? 'غير متوفر' }}</td>
+                                <td>{{ $settlement->payment_value ? number_format($settlement->payment_value, 2) : 'غير متوفر' }}
+                                </td>
+                                <td>{{ $settlement->notes ?? 'لا توجد ملاحظات' }}</td>
+
+                                <td>
+                                    <a href="{{ route('executive-case.settlement.edit', $settlement) }}"
+                                        class="btn btn-warning btn-sm">
+                                        <i class="fas fa-edit"></i> تعديل
+                                    </a>
+
+                                    <button
+                                        class="btn {{ $settlement->obligation === 'ملتزم' ? 'btn-success' : 'btn-danger' }}">
+                                        {{ $settlement->obligation ?? 'غير محدد' }}
+                                    </button>
+                                    <form action="{{ route('executive-case.settlement.delete', $settlement) }}"
+                                        method="POST" style="display:inline-block;">
+                                        @csrf
+                                        @method('DELETE')
+                                        <button type="submit" class="btn btn-danger btn-sm"
+                                            onclick="return confirm('هل أنت متأكد من الحذف؟')">
+                                            <i class="fas fa-trash"></i> حذف
+                                        </button>
+                                    </form>
+
+                                </td>
+                            </tr>
+                        @empty
+                            <tr>
+                                <td colspan="18" class="text-center">لا توجد تسويات لعرضها.</td>
+                            </tr>
+                        @endforelse
+                    </tbody>
+                </table>
+
+            </div>
+        </div>
     </div>
+
 @endsection

@@ -45,4 +45,14 @@ class Settlement extends Model
     {
         return $this->belongsTo(Cases::class);
     }
+
+    public function excutiveCases()
+    {
+        return $this->belongsTo(ExecutiveCase::class, 'executive_case_id');
+    }
+
+    public function settlementMain()
+    {
+        return $this->belongsTo(SettlementMain::class);
+    }
 }

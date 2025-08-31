@@ -5,6 +5,12 @@ namespace App\Http\Controllers\Admin;
 use App\Http\Controllers\Controller;
 use App\Models\cases;
 use App\Models\CaseType;
+use App\Models\excutiveCasesMain;
+use App\Models\ExecutiveCase;
+use App\Models\NegligenceDays;
+use App\Models\Settlement;
+use App\Models\SettlementMain;
+use App\Models\TransactionsMain;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\DB;
 
@@ -15,8 +21,11 @@ class CaseTypeController extends Controller
      */
     public function index()
     {
-        $data = CaseType::select("*")->orderby('id', 'DESC')->paginate(10);
-        return view('admin.CaseTypes.index', compact('data'));
+        $data = CaseType::select("*")->orderby('id', 'DESC')->get(10);
+        $settlements = SettlementMain::select("*")->orderby('id', 'DESC')->get(10);
+        $transactions = TransactionsMain::select("*")->orderby('id', 'DESC')->get(10);
+        $excutiveCases = excutiveCasesMain::select("*")->orderby('id', 'DESC')->get(10);
+        return view('admin.CaseTypes.index', compact('data', 'settlements', 'transactions', 'excutiveCases'));
     }
 
     public function show(CaseType $casetype)
@@ -40,26 +49,66 @@ class CaseTypeController extends Controller
     {
         try {
             $data = $request->all();
+            // نبدأ تحقق من قيمة الـ name
+            switch ($data['case_type']) {
+                case 'قضايا':
 
-            if ($request->hasFile('image')) {
-                $image = $request->file('image');
-                $imageName = time() . '.' . $image->getClientOriginalExtension();
-                $image->move(public_path('uploads/case_types'), $imageName);
-                $data['image'] = 'uploads/case_types/' . $imageName;
+                    $casetype = CaseType::create([
+                        'name' => $data['name'],
+                        'added_by' => auth()->user()->id
+                    ]);
+                    NegligenceDays::create([
+                        'case_type_id' => $casetype->id,
+                        'days' => $data['days'],
+                        'column_name' => $data['name'],
+                    ]);
+                    break;
+
+                case 'قضايا تنفيذيه':
+                    $excutiveCasesMain = excutiveCasesMain::create([
+                        'name' => $data['name'],
+                    ]);
+                    NegligenceDays::create([
+                        'excutive_cases_main_id' => $excutiveCasesMain->id,
+                        'days' => $data['days'],
+                        'column_name' => $data['name'],
+                    ]);
+                    break;
+
+                case 'التسويات':
+                    $settlement = SettlementMain::create([
+                        'name' => $data['name'],
+                    ]);
+                    NegligenceDays::create([
+                        'settlement_main_id' => $settlement->id,
+                        'days' => $data['days'],
+                        'column_name' => $data['name'],
+                    ]);
+                    break;
+
+                case 'معاملات':
+                    $transactionsMain = TransactionsMain::create([
+                        'name' => $data['name'],
+                    ]);
+                    NegligenceDays::create([
+                        'transactions_main_id' => $transactionsMain->id,
+                        'days' => $data['days'],
+                        'column_name' => $data['name'],
+                    ]);
+                    break;
+
+                default:
+                    throw new \Exception("اسم غير معروف!");
             }
-            DB::beginTransaction();
-            CaseType::create([
-                'name' => $data['name'],
-                'image' => $data['image'] ?? '',
-                'description' => $data['description'] ?? '',
-            ]);
-            DB::commit();
-            return redirect()->route('casetypes.index')->with(['success' => 'تم اضافة نوع القضية بنجاح']);
+
+            return redirect()->route('casetypes.index')->with(['success' => 'تم الحفظ بنجاح']);
+
         } catch (\Exception $th) {
             DB::rollBack();
-            return redirect()->back()->with(["error" => 'عفواً حدث خطأ' . $th->getMessage()])->withInput();
+            return redirect()->back()->with(["error" => 'عفواً حدث خطأ: ' . $th->getMessage()])->withInput();
         }
     }
+
 
     /**
      * Show the form for editing the specified resource.

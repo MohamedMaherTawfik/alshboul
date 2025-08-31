@@ -46,4 +46,9 @@ class Client extends Model
     {
         return $this->hasMany(cases::class);
     }
+
+    public function executiveCases()
+    {
+        return $this->hasMany(ExecutiveCase::class);
+    }
 }

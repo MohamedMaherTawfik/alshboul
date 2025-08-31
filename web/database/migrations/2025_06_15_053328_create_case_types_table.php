@@ -14,9 +14,9 @@ return new class extends Migration {
         Schema::create('case_types', function (Blueprint $table) {
             $table->id();
             $table->foreignIdFor(\App\Models\User::class, 'added_by')->nullable();
-            $table->string('name');
-            $table->text('description');
-            $table->string('image')->nullable();
+            $table->string('name')->unique();
+            $table->text('description')->nullable();
+            $table->boolean('is_active')->default(1);
             $table->timestamps();
         });
         DB::table('case_types')->insert([

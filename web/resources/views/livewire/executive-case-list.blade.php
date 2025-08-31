@@ -3,16 +3,8 @@
 
     <div class="card">
         <div class="card-header">
-            <h3 class="card-title card_title_center"> عدد القضايا التنفيذية @if ($case_id == 1)
-                    فعالة
-                @elseif ($case_id ==3)
-                    موقوفة
-                @elseif ($case_id == 2)
-                    منتهية
-                @else
-                    انابات
-                @endif
-
+            <h3 class="card-title card_title_center">قائمة القضايا التنفيذية
+                {{ $item->name }}
 
                 <span class="badge badge-info">{{ $executiveCases->count() }}</span>
                 <br>

@@ -8,19 +8,12 @@ use App\Models\User;
 class ProceduralRecord extends Model
 {
     protected $table = 'procedural_redords';
-    protected $fillable = [
-        'executive_case_id',
-        'session_date',
-        'type',
-        'action',
-        'lawyer',
-        'notes',
-        'next_action',
-        'next_action_date',
-        'created_by',
-        'updated_by'
-    ];
+    protected $guarded = [];
 
+    public function lawyer()
+    {
+        return $this->belongsTo(Lawyer::class, 'lawyer_id');
+    }
     public function case()
     {
         return $this->belongsTo(ExecutiveCase::class, 'executive_case_id');
