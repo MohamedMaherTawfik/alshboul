@@ -6,15 +6,24 @@
     <a href="{{ route('cases.all') }}"> جميع القضايا</a>
 @endsection
 
+
+
 @section('content')
     <div class="card p-4 mb-4">
         <form action="{{ route('cases.search.find') }}" method="GET" class="row g-3">
 
-            <!-- حقل التاريخ -->
-            <div class="col-md-4">
-                <label for="date" class="form-label">تاريخ الجلسة</label>
-                <input type="date" name="date" id="date" class="form-control">
+            <!-- حقل التاريخ من -->
+            <div class="col-md-3">
+                <label for="date_from" class="form-label">من تاريخ</label>
+                <input type="date" name="date_from" id="date_from" class="form-control" value="{{ request('date_from') }}">
             </div>
+
+            <!-- حقل التاريخ إلى -->
+            <div class="col-md-3">
+                <label for="date_to" class="form-label">إلى تاريخ</label>
+                <input type="date" name="date_to" id="date_to" class="form-control" value="{{ request('date_to') }}">
+            </div>
+
 
             <!-- زر البحث -->
             <div class="col-md-1 d-flex align-items-end">
@@ -28,14 +37,17 @@
     </a>
 
     <div class="card p-4 shadow">
-        <h3 class="mb-4 text-lg font-bold">نتائج البحث عن الجلسات بتاريخ {{ request('date') }}</h3>
+        <h3 class="mb-4 text-lg font-bold">
+            نتائج البحث عن الجلسات من {{ request('date_from') }} إلى {{ request('date_to') }}
+        </h3>
+
         @if (request()->routeIs('cases.search.find'))
             @if ($sessions->count() > 0)
                 <div class="table-responsive">
                     <table class="table table-bordered text-center">
                         <thead>
                             <tr>
-                                <th>#</th>
+                                <th>رقم الملف</th>
                                 <th>رقم القضية</th>
                                 <th>اسم القاضي </th>
                                 <th>اسم المحكمة</th>
@@ -50,19 +62,24 @@
                         <tbody>
                             @foreach ($sessions as $index => $session)
                                 <tr>
-                                    <td>{{ $index + 1 }}</td>
-                                    <td>{{ $session->cases_id ?? '-' }}</td>
+
+                                    <td>{{ $session->cases->case_number ?? '-' }}</td>
+                                    <td>{{ $session->cases->file_number ?? '-' }}
+                                        <a href="{{ route('cases.show', $session->cases) }}">
+                                            <i class="fa fa-eye"></i>
+                                        </a>
+                                    </td>
                                     <td>{{ $session->cases?->jubge_name ?? '-' }}</td>
-                                    <td>{{ $session->cases_id ?? '-' }}</td>
+                                    <td>{{ $session->cases->court_name ?? '-' }}</td>
                                     <td>{{ $session->date ?? '-' }}</td>
                                     <td>{{ $session->facts ?? '-' }}</td>
                                     <td>
-                                        @if ($session->file)
-                                            <a href="{{ asset('storage/' . $session->file) }}" target="_blank"
-                                                class="btn btn-sm btn-info">عرض</a>
-                                        @else
-                                            لا يوجد
-                                        @endif
+                                        @foreach ($files as $item)
+                                            @if ($item->court_session_date_id == $session->id)
+                                                <a href="{{ asset('storage/' . $item->file) }}" target="_blank"
+                                                    class="btn btn-sm btn-info">مستند</a>
+                                            @endif
+                                        @endforeach
                                     </td>
                                     <td>{{ $session->type ?? '-' }}</td>
                                     <td>{{ $session->lawyer->name ?? '-' }}</td>

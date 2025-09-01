@@ -220,16 +220,20 @@ class CaseController extends Controller
     public function search(Request $request)
     {
         $request->validate([
-            'date' => 'required|date',
+            'date_from' => 'required|date',
+            'date_to' => 'required|date|after_or_equal:date_from',
         ]);
 
-        $sessions = court_session_date::with('cases')
-            ->whereDate('date', $request->date)
+        $sessions = court_session_date::with(['cases', 'lawyer'])
+            ->whereBetween('date', [$request->date_from, $request->date_to])
             ->get();
-
-
-        return view('admin.cases.search', compact('sessions'));
+        $sessionPlucks = court_session_date::with(['cases', 'lawyer'])
+            ->whereBetween('date', [$request->date_from, $request->date_to])
+            ->pluck('id')->toArray();
+        $files = sessionfiles::whereIn('court_session_date_id', $sessionPlucks)->get();
+        return view('admin.cases.search', compact('sessions', 'files'));
     }
+
 
     public function editSession(court_session_date $session)
     {
