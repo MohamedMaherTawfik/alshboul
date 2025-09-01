@@ -55,4 +55,9 @@ class Settlement extends Model
     {
         return $this->belongsTo(SettlementMain::class);
     }
+
+    public function proceduralRedords()
+    {
+        return $this->hasMany(ProceduralRecord::class);
+    }
 }

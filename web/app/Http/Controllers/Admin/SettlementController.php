@@ -6,6 +6,7 @@ use App\Http\Controllers\Controller;
 use App\Models\cases;
 use App\Models\Client;
 use App\Models\excutiveCasesMain;
+use App\Models\ExecutiveCase;
 use App\Models\Settlement;
 use App\Models\SettlementMain;
 use App\Models\User;
@@ -18,7 +19,9 @@ class SettlementController extends Controller
     public function index(SettlementMain $type)
     {
         $type->load('settlements');
-        return view('admin.Settlement.index', compact('type'));
+        $settlements = Settlement::with('excutiveCases')->where('settlement_main_id', $type->id)->get();
+
+        return view('admin.Settlement.index', compact('type', 'settlements'));
     }
 
     public function create(excutiveCasesMain $type)

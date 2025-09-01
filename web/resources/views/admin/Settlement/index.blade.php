@@ -56,20 +56,20 @@
                         </tr>
                     </thead>
                     <tbody>
-                        @forelse ($type->settlements as $settlement)
+                        @forelse ($settlements as $settlement)
                             <tr>
                                 <td>{{ $settlement->user->name ?? 'غير متوفر' }}</td>
                                 <td>{{ $settlement->client_name ?? 'غير متوفر' }}</td>
                                 <td>{{ $settlement->opponent_name ?? 'غير متوفر' }}</td>
-                                <td>{{ $settlement->excutiveCases?->client_national_id ?? 'غير متوفر' }}</td>
-                                <td>{{ $settlement->excutiveCases?->opponent_national_id ?? 'غير متوفر' }}</td>
+                                <td>{{ $settlement->excutiveCases?->client_national_id ?? 'غير مرتبط بقضيه' }}</td>
+                                <td>{{ $settlement->excutiveCases?->opponent_national_id ?? 'غير مرتبط بقضيه' }}</td>
                                 <td>{{ $settlement->opponent_phone ?? 'غير متوفر' }}</td>
                                 <td>{{ $settlement->opponent_address ?? 'غير متوفر' }}</td>
                                 <td>{{ $settlement->client_status ?? 'غير متوفر' }}</td>
                                 <td>{{ $settlement->opponent_status ?? 'غير متوفر' }}</td>
-                                <td>{{ $settlement->excutiveCases?->file_number ?? 'غير متوفر' }}</td>
-                                <td>{{ $settlement->excutiveCases?->case_number ?? 'غير متوفر' }}</td>
-                                <td>{{ $settlement->amount ? number_format($settlement->amount, 2) : 'غير متوفر' }}</td>
+                                <td>{{ $settlement->excutiveCases?->file_number ?? 'غير مرتبط بقضيه' }}</td>
+                                <td>{{ $settlement->excutiveCases?->case_number ?? 'غير مرتبط بقضيه' }}</td>
+                                <td>{{ $settlement->amount }}</td>
                                 <td>{{ $settlement->payment_terms ?? 'غير متوفر' }}</td>
                                 <td>{{ $settlement->payment_value ? number_format($settlement->payment_value, 2) : 'غير متوفر' }}
                                 </td>
@@ -77,28 +77,36 @@
 
                                 <td>
                                     @if (Auth::user()->role == 'admin' || Auth::user()->role == 'superadmin')
-                                        <a href="{{ route('executive-case.settlement.edit', $settlement) }}"
-                                            class="btn btn-warning btn-sm">
-                                            <i class="fas fa-edit"></i> تعديل
-                                        </a>
-                                        <form action="{{ route('executive-case.settlement.delete', $settlement) }}"
-                                            method="POST" style="display:inline-block;">
-                                            @csrf
-                                            @method('DELETE')
-                                            <button type="submit" class="btn btn-danger btn-sm"
-                                                onclick="return confirm('هل أنت متأكد من الحذف؟')">
-                                                <i class="fas fa-trash"></i> حذف
-                                            </button>
-                                        </form>
+                                        <div class="d-flex flex-wrap gap-2 mb-2">
+                                            <a href="{{ route('executive-case.settlement.edit', $settlement) }}"
+                                                class="btn btn-warning btn-sm">
+                                                <i class="fas fa-edit"></i> تعديل
+                                            </a>
+
+                                            <form action="{{ route('executive-case.settlement.delete', $settlement) }}"
+                                                method="POST" onsubmit="return confirm('هل أنت متأكد من الحذف؟')">
+                                                @csrf
+                                                @method('DELETE')
+                                                <button type="submit" class="btn btn-danger btn-sm">
+                                                    <i class="fas fa-trash"></i> حذف
+                                                </button>
+                                            </form>
+
+                                            <a href="{{ route('settlements.procedure', $settlement) }}"
+                                                class="btn btn-info btn-sm">
+                                                <i class="fas fa-cogs"></i> إجراء
+                                            </a>
+                                        </div>
                                     @endif
 
-                                    <button
-                                        class="btn {{ $settlement->obligation === 'ملتزم' ? 'btn-success' : 'btn-danger' }}">
-                                        {{ $settlement->obligation ?? 'غير محدد' }}
-                                    </button>
-
-
+                                    <div>
+                                        <button
+                                            class="btn btn-sm {{ $settlement->obligation === 'ملتزم' ? 'btn-success' : 'btn-danger' }}">
+                                            {{ $settlement->obligation ?? 'غير محدد' }}
+                                        </button>
+                                    </div>
                                 </td>
+
                             </tr>
                         @empty
                             <tr>

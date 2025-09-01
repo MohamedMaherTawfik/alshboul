@@ -52,4 +52,9 @@ class ProceduralRecord extends Model
     {
         return $this->belongsTo(User::class, 'user_lawyer_id');
     }
+
+    public function settlement()
+    {
+        return $this->belongsTo(Settlement::class);
+    }
 }

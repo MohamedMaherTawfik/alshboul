@@ -11,6 +11,7 @@ use App\Http\Controllers\Admin\AgreementController;
 use App\Http\Controllers\Admin\DashboardController;
 use App\Http\Controllers\Admin\LoginController;
 use App\Http\Controllers\Admin\CaseTypeController;
+use App\Http\Controllers\Admin\SettlementProceduralController;
 use App\Http\Controllers\Admin\SliderController;
 use App\Http\Controllers\Admin\CareerController;
 use App\Http\Controllers\Admin\TransactionController;
@@ -165,6 +166,12 @@ Route::group(['prefix' => 'admin', 'middleware' => ['auth', roleMiddleware::clas
     Route::get('/settlement/{id}/restore', [SettlementController::class, 'restore'])->name('settlement.restore');
     Route::get('/settlements/{id}', [SettlementController::class, 'show'])->name('settlement.show');
 
+    Route::get('/{settlement}/show/show/settlement/procedure', [SettlementProceduralController::class, 'showProcedure'])->name('settlements.procedure');
+    Route::get('/{settlement}/show/show/settlement/procedure/create', [SettlementProceduralController::class, 'createProcedure'])->name('settlements.procedure.create');
+    Route::post('/{settlement}/show/show/settlement/procedure/store', [SettlementProceduralController::class, 'storeProcedure'])->name('settlements.procedure.store');
+    Route::post('/{settlement}/show/show/settlement/procedure/add/file', [SettlementProceduralController::class, 'addFile'])->name('settlement.procedural.add.file');
+    Route::get('/{settlement}/show/show/settlement/procedure/sub/procedure', [SettlementProceduralController::class, 'subProcedure'])->name('settlement.procedural.show');
+    Route::post('/{settlement}/show/showsettlement/procedure/sub/store', [SettlementProceduralController::class, 'storSubProcedure'])->name('settlements.subprocedure.store');
 
     Route::get('/executive-cases/type/{item}/all', [ExecutiveCaseController::class, 'index'])->name('executive-case.index');
     Route::get('/executive-cases/type/{item}/expenses', [ExecutiveCaseController::class, 'expenses'])->name('executive-case.expenses');
