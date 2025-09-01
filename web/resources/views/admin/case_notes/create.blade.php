@@ -213,17 +213,31 @@
                             <div class="col-md-6 mb-3">
                                 <label for="period_start" class="form-label">تاريخ بداية المدة</label>
                                 <div>
-                                    <input type="date" class="form-control datepicker" id="period_start"
-                                        name="period_start" placeholder="اختر تاريخ البداية" required>
+                                    <input type="date" class="form-control" id="period_start" name="period_start"
+                                        placeholder="اختر تاريخ البداية" required>
                                 </div>
                             </div>
+
                             <div class="col-md-6 mb-3">
                                 <label for="period_end" class="form-label">تاريخ نهاية المدة</label>
                                 <div>
-                                    <input type="date" class="form-control datepicker" id="period_end" name="period_end"
+                                    <input type="date" class="form-control" id="period_end" name="period_end"
                                         placeholder="اختر تاريخ النهاية" required>
                                 </div>
                             </div>
+
+                            <script>
+                                const startInput = document.getElementById('period_start');
+                                const endInput = document.getElementById('period_end');
+
+                                startInput.addEventListener('change', function() {
+                                    endInput.min = this.value; // تاريخ النهاية يبدأ من تاريخ البداية
+                                    if (endInput.value < this.value) {
+                                        endInput.value = this.value; // يمنع اختيار تاريخ قبل البداية
+                                    }
+                                });
+                            </script>
+
                         </div>
 
                         <div class="row">
