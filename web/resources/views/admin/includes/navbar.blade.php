@@ -85,20 +85,23 @@
                 </li>
             @endif
 
-            <!-- إدارة المستخدمين -->
-            <li class="nav-item dropdown">
-                <a class="nav-link dropdown-toggle {{ request()->is('admin/user*') || request()->is('admin/lawyer*') || request()->is('admin/client*') || request()->is('admin/request*') || request()->is('admin/action*') || request()->is('admin/visit*') ? 'active' : '' }}"
-                    href="#" data-toggle="dropdown">
-                    إدارة المستخدمين
-                </a>
-                <div class="dropdown-menu dropdown-menu-right">
-                    <a class="dropdown-item" href="{{ route('user.index') }}">المستخدمين</a>
-                    <a class="dropdown-item" href="{{ route('client.index') }}">الموكلين</a>
-                    <a class="dropdown-item" href="{{ route('request.index') }}">طلبات الموكلين</a>
-                    <a class="dropdown-item" href="{{ route('client.action') }}">إجراءات الموكلين</a>
-                    <a class="dropdown-item" href="{{ route('client.visit') }}">زيارات الموكلين</a>
-                </div>
-            </li>
+            @if (Auth::user()->role == 'admin' || Auth::user()->role == 'superadmin')
+                <!-- إدارة المستخدمين -->
+                <li class="nav-item dropdown">
+                    <a class="nav-link dropdown-toggle {{ request()->is('admin/user*') || request()->is('admin/lawyer*') || request()->is('admin/client*') || request()->is('admin/request*') || request()->is('admin/action*') || request()->is('admin/visit*') ? 'active' : '' }}"
+                        href="#" data-toggle="dropdown">
+                        إدارة المستخدمين
+                    </a>
+                    <div class="dropdown-menu dropdown-menu-right">
+                        <a class="dropdown-item" href="{{ route('user.index') }}">المستخدمين</a>
+                        <a class="dropdown-item" href="{{ route('client.index') }}">الموكلين</a>
+                        <a class="dropdown-item" href="{{ route('request.index') }}">طلبات الموكلين</a>
+                        <a class="dropdown-item" href="{{ route('client.action') }}">إجراءات الموكلين</a>
+                        <a class="dropdown-item" href="{{ route('client.visit') }}">زيارات الموكلين</a>
+                    </div>
+                </li>
+            @endif
+
 
             {{-- القضايا --}}
             <li class="nav-item dropdown">
@@ -132,21 +135,24 @@
                 </div>
             </li>
 
-            {{-- التسويات --}}
-            <li class="nav-item dropdown">
-                <a class="nav-link dropdown-toggle {{ request()->is('admin/settlement*') ? 'active' : '' }}"
-                    href="#" id="settlementDropdown" role="button" data-toggle="dropdown"
-                    aria-haspopup="true" aria-expanded="false">
-                    إدارة التسويات
-                </a>
-                <div class="dropdown-menu dropdown-menu-right" aria-labelledby="settlementDropdown">
-                    @foreach ($settlements as $type)
-                        <a class="dropdown-item" href="{{ route('settlement.index', $type) }}">
-                            {{ $type->name }}
-                        </a>
-                    @endforeach
-                </div>
-            </li>
+            @if (Auth::user()->role == 'admin' || Auth::user()->role == 'superadmin')
+                {{-- التسويات --}}
+                <li class="nav-item dropdown">
+                    <a class="nav-link dropdown-toggle {{ request()->is('admin/settlement*') ? 'active' : '' }}"
+                        href="#" id="settlementDropdown" role="button" data-toggle="dropdown"
+                        aria-haspopup="true" aria-expanded="false">
+                        إدارة التسويات
+                    </a>
+                    <div class="dropdown-menu dropdown-menu-right" aria-labelledby="settlementDropdown">
+                        @foreach ($settlements as $type)
+                            <a class="dropdown-item" href="{{ route('settlement.index', $type) }}">
+                                {{ $type->name }}
+                            </a>
+                        @endforeach
+                    </div>
+                </li>
+            @endif
+
 
             {{-- المعاملات --}}
             <li class="nav-item dropdown">
@@ -229,6 +235,7 @@
                     </div>
                 </li>
             @endif
+
             {{-- المهام --}}
             <li class="nav-item dropdown">
                 <a class="nav-link dropdown-toggle {{ request()->is('admin/*Mission*') ? 'active' : '' }}"

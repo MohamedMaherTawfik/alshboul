@@ -21,7 +21,8 @@
                             <th> رقم </th>
                             <th>اسم المشترك</th>
                             <th>اسم المستخدم</th>
-                            <th> البرد الإلكتروني </th>
+                            <th>البريد الإلكتروني</th>
+                            <th>الهاتف</th>
                             <th>نوع </th>
                             <th>اضافة بواسطة</th>
                             <th>تعديل بواسطة</th>
@@ -37,6 +38,7 @@
                                     <td>{{ $info->name }}</td>
                                     <td>{{ $info->username }}</td>
                                     <td>{{ $info->email }}</td>
+                                    <td>{{ $info->phone }}</td>
                                     <td>
                                         @if ($info->role == 'client')
                                             وكيل

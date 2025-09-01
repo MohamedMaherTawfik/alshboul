@@ -109,9 +109,9 @@ Route::group(['prefix' => 'admin', 'middleware' => ['auth', roleMiddleware::clas
     Route::get('/client/delete', [ClientController::class, 'indexDelete'])->name('client.indexDelete');
     Route::get('/clients/create', [ClientController::class, 'create'])->name('client.create');
     Route::POST('/clientstore', [ClientController::class, 'store'])->name('client.store');
-    Route::get('/clients/{id}/edit', [ClientController::class, 'edit'])->name('client.edit');
-    Route::post('/clients/{id}', [ClientController::class, 'update'])->name('client.update');
-    Route::delete('/client/delete', [ClientController::class, 'destroy'])->name('client.delete');
+    Route::get('/clients/{client}/edit', [ClientController::class, 'edit'])->name('client.edit');
+    Route::post('/clients/{client}', [ClientController::class, 'update'])->name('client.update');
+    Route::delete('/client/{client}/delete', [ClientController::class, 'destroy'])->name('client.delete');
     Route::get('/client/{id}/restore', [ClientController::class, 'restore'])->name('client.restore');
 
     Route::get('/request-client', [ClientRequestController::class, 'index'])->name('request.index');
@@ -265,8 +265,15 @@ Route::group(['prefix' => 'admin', 'middleware' => ['auth', roleMiddleware::clas
     Route::get('/casetypes/{id}/delete', [CaseTypeController::class, 'destroy'])->name('casetypes.destroy');
     Route::get('/{case}/edit/editcase', [CaseController::class, 'edit'])->name('cases.edit');
     Route::get('/{case}/show/showcase', [CaseController::class, 'show'])->name('cases.show');
+    Route::post('/{case}/show/showcase/session/uploadFile', [CaseController::class, 'uploadFile'])->name('sessions.uploadFile');
     Route::get('/{case}/show/showcase/durations', [CaseController::class, 'showDurations'])->name('cases.show.durations');
     Route::get('/{case}/show/showcase/notes', [CaseController::class, 'showNotes'])->name('cases.show.notes');
+    Route::get('/{case}/show/showcase/procedure', [CaseController::class, 'showProcedure'])->name('cases.procedure');
+    Route::get('/{case}/show/showcase/procedure/create', [CaseController::class, 'createProcedure'])->name('cases.procedure.create');
+    Route::post('/{case}/show/showcase/procedure/store', [CaseController::class, 'storeProcedure'])->name('cases.procedure.store');
+    Route::post('/{case}/show/showcase/procedure/add/file', [CaseController::class, 'addFile'])->name('procedural.add.file');
+    Route::get('/{case}/show/showcase/procedure/sub/procedure', [CaseController::class, 'subProcedure'])->name('case.procedural.show');
+    Route::post('/{case}/show/showcase/procedure/sub/store', [CaseController::class, 'storSubProcedure'])->name('cases.subprocedure.store');
     Route::get('/{case}/memos/memocase', [CaseController::class, 'memos'])->name('cases.memos');
     Route::get('/search/cases/searchCase', [CaseController::class, 'searchPage'])->name('cases.search');
     Route::get('/search/cases/search/find', [CaseController::class, 'search'])->name('cases.search.find');

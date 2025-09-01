@@ -71,26 +71,45 @@
                     </div>
                 </div>
 
-                <!-- الخصم -->
+                <!-- الخصوم -->
                 <div class="col-md-6 mb-4">
                     <div class="card h-100 shadow-sm">
-                        <div class="card-header py-3" style="background-color: #e74c3c; color: white;">
-                            <h6 class="m-0 font-weight-bold"><i class="fas fa-user-alt me-2"></i>معلومات الخصم</h6>
+                        <div class="card-header py-3 d-flex justify-content-between align-items-center"
+                            style="background-color: #e74c3c; color: white;">
+                            <h6 class="m-0 font-weight-bold">
+                                <i class="fas fa-user-alt me-2"></i>معلومات الخصوم
+                            </h6>
+                            <button type="button" class="btn btn-light btn-sm" id="add-opponent">+ إضافة خصم</button>
                         </div>
-                        <div class="card-body">
-                            <div class="form-group mt-3">
-                                <label class="form-label fw-bold">اسم الخصم</label>
-                                <input type="text" name="opponent_name" class="form-control" placeholder="أدخل اسم الخصم"
-                                    style="border-radius: 10px;">
-                            </div>
-                            <div class="form-group mt-3">
-                                <label class="form-label fw-bold">الرقم الوطني للخصم</label>
-                                <input type="text" name="opponent_national_id" class="form-control"
-                                    placeholder="أدخل الرقم القومي" style="border-radius: 10px;">
+                        <div class="card-body" id="opponents-wrapper">
+                            <div class="opponent-item mb-3 p-3 border rounded">
+                                <!-- اسم الخصم -->
+                                <div class="form-group">
+                                    <label class="form-label fw-bold">اسم الخصم</label>
+                                    <input type="text" name="opponent_name[]" class="form-control"
+                                        placeholder="أدخل اسم الخصم" style="border-radius: 10px;" required>
+                                </div>
+
+                                <!-- الرقم الوطني -->
+                                <div class="form-group mt-3">
+                                    <label class="form-label fw-bold">الرقم الوطني للخصم</label>
+                                    <input type="text" name="opponent_national_id[]" class="form-control"
+                                        placeholder="أدخل الرقم القومي" style="border-radius: 10px;" required>
+                                </div>
+
+                                <!-- وصف الخصم -->
+                                <div class="form-group mt-3">
+                                    <label class="form-label fw-bold">وصف الخصم</label>
+                                    <textarea name="opponent_description[]" class="form-control" placeholder="أدخل وصف الخصم (اختياري)"
+                                        style="border-radius: 10px;"></textarea>
+                                </div>
+
+                                <button type="button" class="btn btn-danger btn-sm mt-3 remove-opponent">حذف الخصم</button>
                             </div>
                         </div>
                     </div>
                 </div>
+
             </div>
 
             <!-- نوع القضية -->
@@ -113,7 +132,7 @@
                             <div class="form-group mt-4">
                                 <label class="form-label fw-bold">نوع القضية</label>
                                 <input type="text" name="case_type" class="form-control"
-                                    style="border-radius: 10px; padding: 10px;" placeholder="اكتب نوع القضية">
+                                    style="border-radius: 10px; padding: 10px;" placeholder="اكتب نوع القضية" required>
                             </div>
 
                         </div>
@@ -126,7 +145,8 @@
                 <div class="col-md-6">
                     <div class="card h-100 shadow-sm">
                         <div class="card-header py-3" style="background-color: #27ae60; color: white;">
-                            <h6 class="m-0 font-weight-bold"><i class="fas fa-info-circle me-2"></i>معلومات أساسية</h6>
+                            <h6 class="m-0 font-weight-bold"><i class="fas fa-info-circle me-2"></i>معلومات أساسية
+                            </h6>
                         </div>
                         <div class="card-body">
 
@@ -138,28 +158,28 @@
                             <div class="form-group mt-3">
                                 <label class="form-label fw-bold"> رقم الدعوي</label>
                                 <input type="text" name="file_number" class="form-control"
-                                    style="border-radius: 10px;">
+                                    style="border-radius: 10px;" required>
                             </div>
 
                             <div class="form-group mt-3">
                                 <label class="form-label fw-bold">اسم المحكمة</label>
                                 <input type="text" name="court_name" class="form-control"
-                                    placeholder="أدخل اسم المحكمة" style="border-radius: 10px;">
+                                    placeholder="أدخل اسم المحكمة" style="border-radius: 10px;" required>
                             </div>
                             <div class="form-group mt-3">
                                 <label class="form-label fw-bold">قيمة القضية</label>
                                 <input type="text" name="case_amount" class="form-control"
-                                    placeholder="أدخل قيمة القضية" style="border-radius: 10px;">
+                                    placeholder="أدخل قيمة القضية" style="border-radius: 10px;" required>
                             </div>
                             <div class="form-group mt-3">
                                 <label class="form-label fw-bold">تاريخ الاستحقاق</label>
                                 <input type="date" name="benefit_date" class="form-control"
-                                    style="border-radius: 10px;">
+                                    style="border-radius: 10px;" required>
                             </div>
                             <div class="form-group mt-3">
                                 <label class="form-label fw-bold">اسم القاضي</label>
                                 <input type="text" name="jubge_name" class="form-control"
-                                    placeholder="أدخل اسم القاضي" style="border-radius: 10px;">
+                                    placeholder="أدخل اسم القاضي" style="border-radius: 10px;" required>
                             </div>
                         </div>
                     </div>
@@ -229,121 +249,119 @@
             color: #2c3e50;
             margin-bottom: 8px;
         }
+
+        .opponent-item {
+            background-color: #f8f9fa;
+            transition: all 0.3s;
+        }
+
+        .opponent-item:hover {
+            background-color: #e9ecef;
+        }
     </style>
-
-
 @endsection
 
+@section('script')
+    <script>
+        document.addEventListener("DOMContentLoaded", function() {
+            const subscriberSelect = document.getElementById("subscriber_id");
+            const clientSelect = document.getElementById("client_id");
+            const firstNationalIdInput = document.querySelector("input[name='first_national_id']");
 
-<script>
-    document.addEventListener("DOMContentLoaded", function() {
-        const subscriberSelect = document.getElementById("subscriber_id");
-        const clientSelect = document.getElementById("client_id");
+            // لما يغير المشترك
+            subscriberSelect.addEventListener("change", function() {
+                clientSelect.innerHTML = '<option value="">-- اختر الموكل --</option>'; // فاضي الاختيارات
+                clientSelect.disabled = true;
+                firstNationalIdInput.value = "";
+                firstNationalIdInput.removeAttribute("readonly");
 
-        subscriberSelect.addEventListener("change", function() {
-            // مسح الموكلين القدام
-            clientSelect.innerHTML = '<option value="">-- اختر الموكل --</option>';
+                const selectedOption = this.options[this.selectedIndex];
+                const clients = selectedOption.getAttribute("data-clients");
 
-            // جبت الـ option اللي معمول له اختيار
-            const selectedOption = subscriberSelect.options[subscriberSelect.selectedIndex];
-            if (!selectedOption.value) {
-                clientSelect.setAttribute("disabled", true);
-                return;
-            }
+                if (clients) {
+                    let parsedClients = JSON.parse(clients);
 
-            // اسم و ID المشترك
-            const subscriberId = selectedOption.value;
-            const subscriberName = selectedOption.getAttribute("data-name");
+                    if (parsedClients.length > 0) {
+                        parsedClients.forEach(client => {
+                            let option = document.createElement("option");
+                            option.value = client.id;
+                            option.textContent = client.name;
+                            option.setAttribute("data-national-id", client.national_id);
+                            clientSelect.appendChild(option);
+                        });
 
-            // ضيف المشترك كـ option في الموكل
-            let userOption = document.createElement("option");
-            userOption.value = subscriberId;
-            userOption.textContent = subscriberName + " (المشترك)";
-            clientSelect.appendChild(userOption);
+                        clientSelect.disabled = false;
+                    }
+                }
+            });
 
-            // جبت الـ clients من data attribute
-            const clients = JSON.parse(selectedOption.getAttribute("data-clients") || "[]");
+            // لما يغير الموكل
+            clientSelect.addEventListener("change", function() {
+                const selectedOption = this.options[this.selectedIndex];
+                const nationalId = selectedOption.getAttribute("data-national-id");
 
-            // ضيف الموكلين لو موجودين
-            if (clients.length > 0) {
-                clients.forEach(client => {
-                    let option = document.createElement("option");
-                    option.value = client.id;
-                    option.textContent = client.name;
-                    clientSelect.appendChild(option);
+                if (nationalId) {
+                    firstNationalIdInput.value = nationalId;
+                    firstNationalIdInput.setAttribute("readonly", true);
+                } else {
+                    firstNationalIdInput.value = "";
+                    firstNationalIdInput.removeAttribute("readonly");
+                }
+            });
+        });
+    </script>
+
+    <script>
+        // دالة للتحقق من صحة النموذج
+        (function() {
+            'use strict'
+            var forms = document.querySelectorAll('.needs-validation')
+            Array.prototype.slice.call(forms)
+                .forEach(function(form) {
+                    form.addEventListener('submit', function(event) {
+                        if (!form.checkValidity()) {
+                            event.preventDefault()
+                            event.stopPropagation()
+                        }
+                        form.classList.add('was-validated')
+                    }, false)
+                })
+        })()
+    </script>
+
+
+    <script>
+        document.addEventListener('DOMContentLoaded', function() {
+            const wrapper = document.getElementById('opponents-wrapper');
+            const addBtn = document.getElementById('add-opponent');
+
+            // إضافة خصم جديد
+            addBtn.addEventListener('click', function() {
+                let firstOpponent = wrapper.querySelector('.opponent-item');
+                let clone = firstOpponent.cloneNode(true);
+
+                // مسح القيم
+                clone.querySelectorAll('input, textarea').forEach(input => input.value = '');
+
+                wrapper.appendChild(clone);
+
+                // إعادة تفعيل زرار الحذف
+                activateRemoveButtons();
+            });
+
+            function activateRemoveButtons() {
+                document.querySelectorAll('.remove-opponent').forEach(btn => {
+                    btn.onclick = function() {
+                        if (document.querySelectorAll('.opponent-item').length > 1) {
+                            this.closest('.opponent-item').remove();
+                        } else {
+                            alert('يجب أن يبقى خصم واحد على الأقل.');
+                        }
+                    }
                 });
             }
 
-            clientSelect.removeAttribute("disabled");
+            activateRemoveButtons();
         });
-    });
-</script>
-
-<script>
-    // دالة للتحقق من صحة النموذج
-    (function() {
-        'use strict'
-        var forms = document.querySelectorAll('.needs-validation')
-        Array.prototype.slice.call(forms)
-            .forEach(function(form) {
-                form.addEventListener('submit', function(event) {
-                    if (!form.checkValidity()) {
-                        event.preventDefault()
-                        event.stopPropagation()
-                    }
-                    form.classList.add('was-validated')
-                }, false)
-            })
-    })()
-</script>
-
-<script>
-    document.addEventListener("DOMContentLoaded", function() {
-        const subscriberSelect = document.getElementById("subscriber_id");
-        const clientSelect = document.getElementById("client_id");
-        const firstNationalIdInput = document.querySelector("input[name='first_national_id']");
-
-        // لما يغير المشترك
-        subscriberSelect.addEventListener("change", function() {
-            clientSelect.innerHTML = '<option value="">-- اختر الموكل --</option>'; // فضي الاختيارات
-            clientSelect.disabled = true;
-            firstNationalIdInput.value = "";
-            firstNationalIdInput.removeAttribute("readonly");
-
-            const selectedOption = this.options[this.selectedIndex];
-            const clients = selectedOption.getAttribute("data-clients");
-
-            if (clients) {
-                let parsedClients = JSON.parse(clients);
-
-                if (parsedClients.length > 0) {
-                    parsedClients.forEach(client => {
-                        let option = document.createElement("option");
-                        option.value = client.id;
-                        option.textContent = client.name;
-                        option.setAttribute("data-national-id", client.national_id);
-                        clientSelect.appendChild(option);
-                    });
-
-                    clientSelect.disabled = false;
-                }
-            }
-        });
-
-        // لما يغير الموكل
-        clientSelect.addEventListener("change", function() {
-            const selectedOption = this.options[this.selectedIndex];
-            const nationalId = selectedOption.getAttribute("data-national-id");
-
-            if (nationalId) {
-                firstNationalIdInput.value = nationalId;
-                firstNationalIdInput.setAttribute("readonly", true);
-            } else {
-                firstNationalIdInput.value = "";
-                firstNationalIdInput.removeAttribute("readonly");
-            }
-        });
-    });
-</script>
-
-<script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+    </script>
+@endsection

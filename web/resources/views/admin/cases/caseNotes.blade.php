@@ -3,7 +3,8 @@
 @section('main_title_content', 'تفاصيل القضية')
 @section('title_content', 'عرض')
 @section('link_content')
-    <a href="{{ route('cases.all') }}"> جميع القضايا</a>
+    <a href="{{ route('cases.all') }}">
+        جميع القضايا</a>
 @endsection
 
 @section('content')
@@ -19,20 +20,18 @@
                             <tr>
                                 <th>رقم الملف</th>
                                 <th>الموكل</th>
-                                <th>الرقم القومي الأول</th>
+                                <th>الرقم الوطني الأول</th>
                                 <th>اسم الخصم</th>
-                                <th>الرقم القومي للخصم</th>
-                                <th>القضية المقترحة</th>
+                                <th>الرقم الوطني للخصم</th>
+                                <th>حاله القضيه </th>
                                 <th>نوع القضية</th>
                                 <th>رقم الدعوي</th>
                                 <th>المحكمة</th>
                                 <th>قيمة القضية</th>
-                                <th>تاريخ الاستفادة</th>
                                 <th>اسم القاضي</th>
                                 <th>تفاصيل القضية</th>
                                 <th>وصف الموكل</th>
-                                <th>معلومات عامة</th>
-                                <th>معلومات خاصة</th>
+                                <th>وصف الخصم</th>
                                 <th>أضيف بواسطة</th>
                             </tr>
                         </thead>
@@ -41,19 +40,29 @@
                                 <td>{{ $case->case_number }}</td>
                                 <td>{{ $case->client->name }}</td>
                                 <td>{{ $case->first_national_id }}</td>
-                                <td>{{ $case->opponent_name }}</td>
-                                <td>{{ $case->opponent_national_id }}</td>
+                                <td>
+                                    @foreach ($case->caseOpponents as $item)
+                                        {{ $item->case_opponent_name }} -
+                                    @endforeach
+                                </td>
+                                <td>
+                                    @foreach ($case->caseOpponents as $item)
+                                        {{ $item->case_opponent_national_number }} -
+                                    @endforeach
+                                </td>
                                 <td>{{ $case->suggestedCases->name }}</td>
                                 <td>{{ $case->case_type }}</td>
                                 <td>{{ $case->file_number }}</td>
                                 <td>{{ $case->court_name }}</td>
                                 <td>{{ $case->case_amount }}</td>
-                                <td>{{ $case->benefit_date }}</td>
                                 <td>{{ $case->jubge_name }}</td>
                                 <td>{{ $case->case_details ?? '-' }}</td>
                                 <td>{{ $case->client_description ?? '-' }}</td>
-                                <td>{{ $case->general_information ?? '-' }}</td>
-                                <td>{{ $case->private_information ?? '-' }}</td>
+                                <td>
+                                    @foreach ($case->caseOpponents as $item)
+                                        {{ $item->case_opponent_description }} -
+                                    @endforeach
+                                </td>
                                 <td>{{ $case->added_by->name }}</td>
                             </tr>
                         </tbody>
@@ -153,7 +162,11 @@
                                 <td>{{ $duration->period_start ?? '-' }}</td>
                                 <td>{{ $duration->period_end ?? '-' }}</td>
                                 <td>{{ $case->client->name ?? '-' }}</td>
-                                <td>{{ $case->opponent_name ?? '-' }}</td>
+                                <td>
+                                    @foreach ($case->caseOpponents as $item)
+                                        {{ $item->case_opponent_name }} -
+                                    @endforeach
+                                </td>
                                 <td>{{ $case->court_name ?? '-' }}</td>
                                 <td>{{ Str::limit($duration->notes, 40, '...') ?? '-' }}</td>
                                 <td>{{ $duration->firstSubmitter->name ?? '-' }}</td>

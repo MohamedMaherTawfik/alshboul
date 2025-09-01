@@ -27,8 +27,6 @@ class CaseRequest extends FormRequest
             'first_national_id' => 'nullable',
             'second_national_id' => 'nullable',
             'third_national_id' => 'nullable',
-            'opponent_name' => 'nullable|string',
-            'opponent_national_id' => 'nullable',
             'suggested_case_id' => 'required',
             'case_type' => 'required',
             'case_number' => 'nullable',
@@ -41,6 +39,12 @@ class CaseRequest extends FormRequest
             'general_information' => 'nullable|string',
             'private_information' => 'nullable|string',
             'file_number' => 'nullable',
+            'opponent_name' => ['nullable', 'array', 'min:1'],
+            'opponent_name.*' => ['nullable', 'string', 'max:255'],
+            'opponent_national_id' => ['nullable', 'array', 'min:1'],
+            'opponent_national_id.*' => ['nullable', 'string', 'max:20'],
+            'case_opponent_description' => ['nullable', 'array', 'min:1'],
+            'opponent_description.*' => ['nullable', 'string', 'max:20'],
         ];
     }
 

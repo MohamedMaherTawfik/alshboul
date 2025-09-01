@@ -20,8 +20,6 @@ return new class extends Migration {
             $table->string('first_national_id')->nullable();
             $table->string('second_national_id')->nullable();
             $table->string('third_national_id')->nullable();
-            $table->string('opponent_name')->nullable();
-            $table->string('opponent_national_id')->nullable();
             $table->foreignIdFor(CaseType::class, 'suggested_case_id')->nullable()->constrained()->onDelete('cascade');
             $table->string('case_type')->nullable();
             $table->string('case_number')->nullable();

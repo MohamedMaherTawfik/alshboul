@@ -143,7 +143,10 @@
                                 <th>ملاحظات</th>
                                 <th>المعتمد الأول</th>
                                 <th>المعتمد الثاني</th>
-                                <th>إجراء</th>
+                                @if (Auth::user()->role == 'admin' || Auth::user()->role == 'superadmin')
+                                    <th>إجراء</th>
+                                @endif
+
                             </tr>
                         </thead>
                         <tbody>
@@ -211,14 +214,18 @@
                                         <td>{{ Str::limit($duration->notes, 40, '...') ?? '-' }}</td>
                                         <td>{{ $duration->firstSubmitter->name ?? '-' }}</td>
                                         <td>{{ $duration->secondSubmitter->name ?? '-' }}</td>
-                                        <td>
-                                            <form action="{{ route('case.duration.submit', $duration) }}" method="POST">
-                                                @csrf
-                                                <button type="submit" class="btn btn-success btn-sm">
-                                                    <i class="fas fa-check"></i> انجاز
-                                                </button>
-                                            </form>
-                                        </td>
+                                        @if (Auth::user()->role == 'admin' || Auth::user()->role == 'superadmin')
+                                            <td>
+                                                <form action="{{ route('case.duration.submit', $duration) }}"
+                                                    method="POST">
+                                                    @csrf
+                                                    <button type="submit" class="btn btn-success btn-sm">
+                                                        <i class="fas fa-check"></i> انجاز
+                                                    </button>
+                                                </form>
+                                            </td>
+                                        @endif
+
                                     </tr>
                                 @endif
                             @endforeach
@@ -262,7 +269,10 @@
                                 <th>ملاحظات</th>
                                 <th>المعتمد الأول</th>
                                 <th>المعتمد الثاني</th>
-                                <th>إجراء</th>
+                                @if (Auth::user()->role == 'admin' || Auth::user()->role == 'superadmin')
+                                    <th>إجراء</th>
+                                @endif
+
                             </tr>
                         </thead>
                         <tbody>
@@ -320,14 +330,16 @@
                                         <td>{{ Str::limit($note->notes, 40, '...') ?? '-' }}</td>
                                         <td>{{ $note->firstSubmitter->name ?? '-' }}</td>
                                         <td>{{ $note->secondSubmitter->name ?? '-' }}</td>
-                                        <td>
-                                            <form action="{{ route('case.note.submit', $note) }}" method="POST">
-                                                @csrf
-                                                <button type="submit" class="btn btn-success btn-sm">
-                                                    <i class="fas fa-check"></i> انجاز
-                                                </button>
-                                            </form>
-                                        </td>
+                                        @if (Auth::user()->role == 'admin' || Auth::user()->role == 'superadmin')
+                                            <td>
+                                                <form action="{{ route('case.note.submit', $note) }}" method="POST">
+                                                    @csrf
+                                                    <button type="submit" class="btn btn-success btn-sm">
+                                                        <i class="fas fa-check"></i> انجاز
+                                                    </button>
+                                                </form>
+                                            </td>
+                                        @endif
                                     </tr>
                                 @endif
                             @endforeach

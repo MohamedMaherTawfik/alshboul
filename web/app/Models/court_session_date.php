@@ -22,4 +22,9 @@ class court_session_date extends Model
     {
         return $this->belongsTo(Lawyer::class);
     }
+
+    public function sessionFiles()
+    {
+        return $this->hasMany(sessionfiles::class);
+    }
 }

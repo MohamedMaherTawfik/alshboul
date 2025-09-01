@@ -18,8 +18,6 @@
                     {{-- <input type="hidden" name="updated_by" value="{{ auth()->user()->id }}"> --}}
                     <input type="hidden" name="added_by" value="{{ Auth::user()->id }}">
 
-
-
                     <div class="row">
                         <div class="form-group col-md-4">
                             <label for=""> اسم المشترك </label>
@@ -34,6 +32,15 @@
                             <input type="text" name="username" value="{{ old('username') }}" class="form-control"
                                 placeholder="">
                             @error('username')
+                                <small id="helpId" class="text-muted text-danger">{{ $message }}</small>
+                            @enderror
+                        </div>
+
+                        <div class="form-group col-md-4">
+                            <label for=""> الهاتف </label>
+                            <input type="text" name="phone" value="{{ old('phone') }}" class="form-control"
+                                placeholder="">
+                            @error('phone')
                                 <small id="helpId" class="text-muted text-danger">{{ $message }}</small>
                             @enderror
                         </div>
@@ -56,11 +63,9 @@
                         <div class="form-group col-md-4">
                             <label for="الحالة">نوع المستخدم</label>
                             <select class="form-control" name="role">
-                                <option value="user" {{ old('role') == 'user' ? 'selected' : '' }}>وكيل</option>
                                 <option value="Lawyer" {{ old('role') == 'Lawyer' ? 'selected' : '' }}>محامي</option>
                                 <option value="admin" {{ old('role') == 'admin' ? 'selected' : '' }}>أدمن</option>
                                 <option value="superadmin" {{ old('role') == 'superadmin' ? 'selected' : '' }}>سوبر أدمن
-                                <option value="subscriber" {{ old('role') == 'subscriber' ? 'selected' : '' }}>مشترك
                                 </option>
                             </select>
                             @error('active')

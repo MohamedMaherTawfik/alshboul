@@ -156,49 +156,26 @@ class ClientController extends Controller
         }
         return redirect()->route('client.action')->with('success', 'تم إضافة البيانات بنجاح');
     }
-    /**
-     * Display the specified resource.
-     */
-    public function show(string $id)
-    {
-        $data = Client::findOrFail($id);
-        return view('admin.Client.show', compact('data'));
-    }
 
     /**
      * Show the form for editing the specified resource.
      */
-    public function edit(string $id)
+    public function edit(Client $client)
     {
-        $data = Client::findOrFail($id);
-        return view('admin.Client.edit', compact('data'));
+        return view('admin.Client.edit', compact('client'));
     }
 
     /**
      * Update the specified resource in storage.
      */
-    public function update(Request $request, string $id)
+    public function update(Request $request, Client $client)
     {
         try {
-
+            $data = $request->except('_token');
             DB::beginTransaction();
-            $request->validate([
-                'name' => 'required',
-                'phone' => 'required',
-                'address' => 'required',
-                'national_id' => 'required|integer',
-                'user_id' => ['required', 'exists:users,id'],
-                'nationality' => 'required|string',
-                'company_name' => 'nullable|string',
-                'company_national_number' => 'nullable|string',
-            ]);
-
-            $data = $request->except(['_token']);
             $data['updated_by'] = Auth::id();
             $data['updated_at'] = now();
-            Client::where(['id' => $id])->update($data);
-
-
+            $client->update($data);
             DB::commit();
             return redirect()->route('client.index')->with(['success' => 'تم تعديل البيانات بنجاح']);
         } catch (\Exception $th) {
@@ -209,30 +186,19 @@ class ClientController extends Controller
     /**
      * Remove the specified resource from storage.
      */
-    public function destroy(Request $request)
+    public function destroy(Request $request, Client $client)
     {
-        $client = Client::findOrFail($request->id);
-
         if (!$client) {
             return redirect()->back()->with(['error' => 'عفواً لا توجد بيانات']);
         }
-
-        $request->validate([
-            'reason' => 'required|string',
-        ]);
         $client->updated_by = Auth::id();
-        $client->delete_reason = $request->reason;
+        $client->active = 0;
         $client->save();
         $user = User::where('id', $client->user_id)->first();
-        if (!$user) {
-            return redirect()->back()->with(['error' => 'عفواً لا توجد بيانات']);
-        }
         $user->updated_by = Auth::id();
-        $user->delete_reason = $request->reason;
         $user->active = 0;
         $user->save();
         $client->delete();
-        $user->delete();
         return redirect()->route('client.index')->with(['success' => 'تم حذف البيانات بنجاح']);
     }
     public function destroy1(Request $request)

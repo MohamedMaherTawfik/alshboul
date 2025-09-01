@@ -84,9 +84,17 @@
                                         {{ optional($info->user)->created_at ? optional($info->user)->created_at : 'غير محدد' }}
                                     </td>
                                     <td>
-                                        <a href="{{ route('client.edit', $info->id) }}" class="btn btn-warning">تعديل</a>
-                                        <a href="#" data-id="{{ $info->id }}" data-toggle="modal"
-                                            data-target="#delete_reason" class="btn btn-danger open-delete-modal">حذف</a>
+                                        <a href="{{ route('client.edit', $info) }}" class="btn btn-warning">تعديل</a>
+                                        <form action="{{ route('client.delete', $info) }}" method="POST"
+                                            style="display:inline;">
+                                            @csrf
+                                            @method('DELETE')
+                                            <button type="submit" class="btn btn-danger"
+                                                onclick="return confirm('هل أنت متأكد من الحذف؟')">
+                                                حذف
+                                            </button>
+                                        </form>
+
                                     </td>
                                 </tr>
                             @endforeach
@@ -102,36 +110,6 @@
                 @endif
             </div>
         </div>
-    </div>
-    <div class="modal fade" id="delete_reason">
-        <div class="modal-dialog modal-l">
-            <div class="modal-content">
-                <div class="modal-header">
-                    <h4 class="text-center modal-title"> حذف البيانات</h4>
-                    <button type="button" class="close" data-dismiss="modal" aria-label="Close">
-                        <span aria-hidden="true">&times;</span>
-                    </button>
-                </div>
-                <div class="modal-body" id="months_of_year_model_body">
-                    <form action="{{ route('client.delete') }}" method="post">
-                        @csrf
-                        @method('delete')
-                        <input type="hidden" name="id" id="delete_id">
-                        <div class="form-group col-md-12">
-                            <label for=""> سبب الحذف </label>
-                            <textarea name="reason" class="form-control" cols="30" rows="10">{{ old('reason') }}</textarea>
-                        </div>
-
-                </div>
-                <div class="modal-footer justify-content-between">
-                    <button type="button" class="btn btn-primary" data-dismiss="modal">إغلاق</button>
-                    <button type="submit" class="btn btn-danger">حذف</button>
-                </div>
-                </form>
-            </div>
-            <!-- /.modal-content -->
-        </div>
-        <!-- /.modal-dialog -->
     </div>
 @endsection
 @section('script')

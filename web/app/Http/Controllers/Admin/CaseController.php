@@ -4,16 +4,21 @@ namespace App\Http\Controllers\Admin;
 
 use App\Http\Controllers\Controller;
 use App\Http\Requests\CaseRequest;
+use App\Models\CaseOpponents;
 use App\Models\cases;
 use App\Models\CaseType;
 use App\Models\Client;
 use App\Models\court_session_date;
 use App\Models\Lawyer;
 use App\Models\Missions;
+use App\Models\ProceduralFile;
+use App\Models\ProceduralRecord;
+use App\Models\sessionfiles;
 use App\Models\Settlement;
+use App\Models\subrocedural;
 use App\Models\User;
 use Illuminate\Http\Request;
-
+use Illuminate\Support\Facades\Auth;
 class CaseController extends Controller
 {
     public function allCases()
@@ -26,8 +31,8 @@ class CaseController extends Controller
 
     public function createCase(CaseType $case)
     {
-        $clients = Client::get();
-        $users = User::with('client')->where('role', 'user')->get();
+        $clients = Client::where('active', 1)->where('seen', 1)->get();
+        $users = User::with('client')->where('role', 'user')->where('active', 1)->get();
 
         $numbers = $case->suggestedCases()->pluck('case_number')->sort()->toArray();
 
@@ -43,13 +48,45 @@ class CaseController extends Controller
     }
 
 
-    public function storeCase(CaseRequest $request, CaseType $case)
+    public function storeCase(CaseRequest $request, CaseType $caseType)
     {
-        $data = $request->validated();
-        $data['added_by_id'] = auth()->user()->id;
-        cases::create($data);
-        return redirect()->route('casetypes.show', $case)->with(['success' => 'تم اضافة القضية بنجاح']);
-
+        try {
+            $data = $request->validated();
+            $case = cases::create([
+                'client_id' => $data['client_id'] ?? '',
+                'subscriber_id' => $data['subscriber_id'] ?? '',
+                'first_national_id' => $data['first_national_id'] ?? '',
+                'second_national_id' => $data['second_national_id'] ?? '',
+                'third_national_id' => $data['third_national_id'] ?? '',
+                'suggested_case_id' => $data['suggested_case_id'] ?? '',
+                'case_type' => $data['case_type'] ?? '',
+                'case_number' => $data['case_number'] ?? '',
+                'court_name' => $data['court_name'] ?? '',
+                'case_amount' => $data['case_amount'] ?? '',
+                'benefit_date' => $data['benefit_date'] ?? '',
+                'jubge_name' => $data['jubge_name'] ?? '',
+                'case_details' => $data['case_details'] ?? '',
+                'client_description' => $data['client_description'] ?? '',
+                'general_information' => $data['general_information'] ?? '',
+                'private_information' => $data['private_information'] ?? '',
+                'file_number' => $data['file_number'] ?? '',
+                'added_by_id' => auth()->id(),
+            ]);
+            foreach ($data['opponent_name'] as $index => $name) {
+                CaseOpponents::create([
+                    'cases_id' => $case->id,
+                    'user_id' => auth()->id(),
+                    'case_opponent_name' => $name ?? '',
+                    'case_opponent_national_number' => $data['opponent_national_id'][$index] ?? '',
+                    'case_opponent_description' => $data['opponent_description'][$index] ?? '',
+                ]);
+            }
+            return redirect()
+                ->route('casetypes.show', $case->suggestedCases)
+                ->with(['success' => 'تم اضافة القضية بنجاح']);
+        } catch (\Throwable $th) {
+            return back()->with('error', $th->getMessage());
+        }
     }
 
     public function edit(Cases $case)
@@ -90,7 +127,7 @@ class CaseController extends Controller
     public function destroy(Cases $case)
     {
         $case->delete();
-        return redirect()->route('cases.all')->with('success', 'تم حذف القضية بنجاح');
+        return redirect()->back()->with('success', 'تم حذف القضية بنجاح');
     }
 
     // إضافة بيانات للقضية
@@ -160,7 +197,7 @@ class CaseController extends Controller
 
     public function show(Cases $case)
     {
-        $case->load('courtSession', );
+        $case->load('courtSession');
         return view('admin.cases.show', compact('case'));
     }
 
@@ -200,17 +237,117 @@ class CaseController extends Controller
         return view('admin.cases.editSession', compact('session', 'lawers'));
     }
 
-
     public function updateSession(Request $request, court_session_date $session)
     {
         $session->update($request->all());
-        return redirect()->route('cases.all')->with('success', 'تم تعديل القضية بنجاح');
+        return redirect()->route('cases.show', $session->cases)->with('success', 'تم تعديل القضية بنجاح');
     }
 
-    public function destroySession(Cases $case)
+    public function destroySession(court_session_date $session)
     {
-        $case->delete();
-        return redirect()->route('cases.all')->with('success', 'تم حذف القضية بنجاح');
+        $session->delete();
+        return redirect()->back()->with('success', 'تم حذف القضية بنجاح');
+    }
+
+    public function showProcedure(Cases $case)
+    {
+        $case->load('proceduralRedords');
+        return view('admin.cases.showProcedure', compact('case'));
+    }
+
+    public function createProcedure(Cases $case)
+    {
+        $lawyers = Lawyer::get();
+        return view('admin.cases.createProcedure', compact('case', 'lawyers'));
+    }
+
+    public function storeProcedure(Request $request, Cases $case)
+    {
+        $data = $request->except('_token', 'file');
+        $data['cases_id'] = $case->id;
+        $data['created_by'] = Auth::user()->name;
+        // إنشاء الإجراء
+        $procedural = ProceduralRecord::create([
+            'cases_id' => $case->id,
+            'created_by' => $data['created_by'],
+            'date' => $data['date'],
+            'action' => $data['action'],
+            'note' => $data['note'],
+            'type' => $data['type'],
+            'lawyer_id' => $data['lawyer_id'],
+        ]);
+        // رفع الملفات
+        if ($request->hasFile('file_path')) {
+            foreach ($request->file('file_path') as $uploadedFile) {
+                $path = $uploadedFile->store('ProceduralFiles', 'public');
+
+                ProceduralFile::create([
+                    'procedural_record_id' => $procedural->id,
+                    'created_by' => Auth::user()->id,
+                    'file_path' => $path,
+                    'updated_by' => Auth::user()->id,
+                ]);
+            }
+        }
+
+        return redirect()->route('cases.procedure', $case)
+            ->with('success', 'تم تسجيل الاجراء بنجاح');
+    }
+
+    public function addFile(Request $request, ProceduralRecord $case)
+    {
+        if ($request->hasFile('file_path')) {
+            foreach ($request->file('file_path') as $uploadedFile) {
+                $path = $uploadedFile->store('ProceduralFiles', 'public');
+
+                ProceduralFile::create([
+                    'procedural_record_id' => $case->id,
+                    'created_by' => Auth::user()->id,
+                    'file_path' => $path,
+                    'updated_by' => Auth::user()->id,
+                ]);
+            }
+        }
+
+
+        return redirect()->route('cases.procedure', $case->cases)
+            ->with('success', 'تم رفع الملف بنجاح');
+    }
+
+    public function subProcedure(ProceduralRecord $case)
+    {
+        $case->load('subProcedurals');
+        return view('admin.cases.subProcedure', compact('case'));
+    }
+
+    public function storSubProcedure(Request $request, ProceduralRecord $case)
+    {
+        $data = $request->except('_token', 'file');
+        $data['procedural_record_id'] = $case->id;
+        $data['updated_at'] = Auth::user()->name;
+        subrocedural::create($data);
+        return redirect()->route('case.procedural.show', $case)
+            ->with('success', 'تم تسجيل الاجراء بنجاح');
+    }
+    public function uploadFile(Request $request, court_session_date $case)
+    {
+        $request->validate([
+            'files' => 'required',
+            'files.*' => 'mimes:pdf,jpg,png,doc,docx|max:2048',
+        ]);
+
+        if ($request->hasFile('files')) {
+            foreach ($request->file('files') as $file) {
+                $path = $file->store('SessionFiles', 'public');
+
+                sessionfiles::create([
+                    'court_session_date_id' => $case->id,
+                    'file' => $path,
+                ]);
+            }
+        }
+
+        return redirect()->back()->with('success', 'تم رفع الملفات بنجاح');
     }
 
 }

@@ -81,6 +81,7 @@ class editController extends Controller
 
     public function destroyExcutiveCase(excutiveCasesMain $type)
     {
+        $type->delete();
         return redirect()->route('casetypes.index')->with('success', 'تم الحذف بنجاح');
     }
 }

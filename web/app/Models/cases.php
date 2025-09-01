@@ -54,5 +54,13 @@ class cases extends Model
         return $this->hasMany(CaseNotes::class);
     }
 
+    public function caseOpponents()
+    {
+        return $this->hasMany(CaseOpponents::class, 'cases_id');
+    }
 
+    public function proceduralRedords()
+    {
+        return $this->hasMany(ProceduralRecord::class);
+    }
 }

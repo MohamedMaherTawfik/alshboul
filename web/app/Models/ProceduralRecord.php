@@ -33,4 +33,14 @@ class ProceduralRecord extends Model
     {
         return $this->belongsTo(User::class, 'updated_by');
     }
+
+    public function cases()
+    {
+        return $this->belongsTo(cases::class, 'cases_id');
+    }
+
+    public function subProcedurals()
+    {
+        return $this->hasMany(subrocedural::class);
+    }
 }

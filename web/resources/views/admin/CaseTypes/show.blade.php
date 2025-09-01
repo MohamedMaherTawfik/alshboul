@@ -3,7 +3,8 @@
 @section('main_title_content', 'قائمة أنواع القضايا')
 @section('title_content', 'إضافة')
 @section('link_content')
-    <a href="{{ route('cases.all') }}">جميع القضايا</a>
+    <a href="{{ route('cases.all') }}">
+        جميع القضايا</a>
 @endsection
 
 <style>
@@ -256,9 +257,11 @@
                 <h5 class="m-0 flex-grow-1" style="font-size: 1.6rem; font-weight: bold;">
                     <i class="fas fa-balance-scale me-2"></i>جميع القضايا
                 </h5>
-                <a href="{{ route('casetypes.create.case', request('casetype')) }}" class="btn btn-light btn-lg ms-auto">
-                    <i class="fas fa-plus"></i> انشاء قضية جديدة
-                </a>
+                @if (Auth::user()->role == 'admin' || Auth::user()->role == 'superadmin')
+                    <a href="{{ route('casetypes.create.case', request('casetype')) }}" class="btn btn-light btn-lg ms-auto">
+                        <i class="fas fa-plus"></i> انشاء قضية جديدة
+                    </a>
+                @endif
             </div>
 
             <div class="card-body p-0">
@@ -303,29 +306,37 @@
                                     <td>{{ $case->case_number }}</td>
                                     <td>{{ $case->added_by->name }}</td>
                                     <td>{{ $case->client->name }}</td>
-                                    <td>{{ $case->opponent_name }}</td>
+                                    <td>
+                                        @foreach ($case->caseOpponents as $item)
+                                            {{ $item->case_opponent_name }} -
+                                        @endforeach
+                                    </td>
                                     <td>
                                         {{ $case->created_at?->format('Y-m-d') ?? '-' }}
                                     </td>
 
-                                    <td>{{ $case->opponent_national_id }}</td>
+                                    <td>
+                                        @foreach ($case->caseOpponents as $item)
+                                            {{ $item->case_opponent_national_number }} -
+                                        @endforeach
+                                    </td>
                                     <td>{{ $case->file_number }}</td>
                                     <td>{{ $case->case_amount }}</td>
                                     <td>{{ $case->court_name }}</td>
                                     <td>{{ $case->jubge_name }}</td>
-                                    <td
-                                        @if (!is_null($hoursLeft) && $hoursLeft <= 36 && $hoursLeft >= 0) style="color:white;background-color:red; font-weight:bold;min-width:200px;white-space:nowrap;font-size:1.2rem;"
-                                        @else
-                                        style="min-width:200px;white-space:nowrap;font-size:1.2rem;" @endif>
-                                        {{ $lastSession->date ?? 'لا يوجد تاريخ' }}
+                                    <td>
+                                        {{ $case->courtSession->last()->date ?? 'لا يوجد جلسات' }}
                                     </td>
                                     <td>
-                                        @if ($lastSession && !empty($lastSession->file))
-                                            <a href="{{ asset('storage/' . $lastSession->file) }}" target="_blank"
-                                                class="btn btn-sm btn-info">عرض المستندات</a>
+                                        @if ($case->courtSession->last() && $case->courtSession->first()->file)
+                                            <a href="{{ asset('storage/' . $case->courtSession->first()->file) }}"
+                                                class="btn btn-primary btn-sm" target="_blank">
+                                                عرض المستند
+                                            </a>
                                         @else
-                                            <span class="text-muted">لا يوجد مستندات</span>
+                                            <button class="btn btn-secondary btn-sm" disabled>لا يوجد مستندات</button>
                                         @endif
+
                                     </td>
                                     <td><a href="{{ route('cases.show', $case) }}" class="btn btn-sm btn-info">وقائع
                                             الدعوي</a></td>
@@ -348,14 +359,18 @@
                                                 @method('DELETE')
                                                 <button type="submit" class="btn btn-lg btn-danger w-100">حذف</button>
                                             </form>
-                                        @endif
-                                        <div class="d-flex flex-column gap-2">
 
-                                            <a href="{{ route('cases.settlement', $case) }}"
-                                                class="btn btn-lg btn-info w-100"> + تسويه </a>
-                                            <a href="{{ route('cases.expenses', $case) }}"
-                                                class="btn btn-lg btn-dark w-100">المصاريف</a>
-                                        </div>
+                                            <div class="d-flex flex-column gap-2">
+
+                                                <a href="{{ route('cases.settlement', $case) }}"
+                                                    class="btn btn-lg btn-info w-100"> + تسويه </a>
+                                                <a href="{{ route('cases.expenses', $case) }}"
+                                                    class="btn btn-lg btn-dark w-100">المصاريف</a>
+                                                <a href="{{ route('cases.procedure', $case) }}"
+                                                    class="btn btn-lg btn-success w-100">اجراء</a>
+                                            </div>
+                                        @endif
+
                                     </td>
 
                                 </tr>
