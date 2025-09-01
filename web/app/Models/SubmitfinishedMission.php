@@ -11,12 +11,12 @@ class SubmitfinishedMission extends Model
 
     public function firstLawyer()
     {
-        return $this->belongsTo(Lawyer::class, 'first_lawyer_id');
+        return $this->belongsTo(User::class, 'first_lawyer_id_user');
     }
 
     public function secondLawyer()
     {
-        return $this->belongsTo(Lawyer::class, 'second_lawyer_id');
+        return $this->belongsTo(User::class, 'second_lawyer_id_user');
     }
 
     public function mission()

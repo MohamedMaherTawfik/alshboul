@@ -257,7 +257,10 @@ class CaseController extends Controller
 
     public function createProcedure(Cases $case)
     {
-        $lawyers = Lawyer::get();
+        $lawyers = User::whereIn('role', ['Lawyer', 'admin', 'superadmin'])
+            ->where('active', 1)
+            ->get();
+
         return view('admin.cases.createProcedure', compact('case', 'lawyers'));
     }
 
@@ -274,7 +277,7 @@ class CaseController extends Controller
             'action' => $data['action'],
             'note' => $data['note'],
             'type' => $data['type'],
-            'lawyer_id' => $data['lawyer_id'],
+            'user_id' => $data['user_id'],
         ]);
         // رفع الملفات
         if ($request->hasFile('file_path')) {
@@ -324,7 +327,6 @@ class CaseController extends Controller
     {
         $data = $request->except('_token', 'file');
         $data['procedural_record_id'] = $case->id;
-        $data['updated_at'] = Auth::user()->name;
         subrocedural::create($data);
         return redirect()->route('case.procedural.show', $case)
             ->with('success', 'تم تسجيل الاجراء بنجاح');

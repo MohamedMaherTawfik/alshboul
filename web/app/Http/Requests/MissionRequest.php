@@ -23,8 +23,8 @@ class MissionRequest extends FormRequest
     {
         return [
             'client_id' => 'required',
-            'first_lawyer_id' => 'nullable',
-            'second_lawyer_id' => 'nullable',
+            'first_lawyer_id_user' => 'nullable',
+            'second_lawyer_id_user' => 'nullable',
             'deadline' => 'nullable',
             'description' => 'required',
             'file' => 'required',

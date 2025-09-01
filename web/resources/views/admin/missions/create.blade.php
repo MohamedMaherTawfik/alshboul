@@ -41,7 +41,7 @@
                             <!-- Lawyer 1-->
                             <div class="mb-3">
                                 <label for="lawyer1" class="form-label">اختر المحامي الاول</label>
-                                <select name="first_lawyer_id" id="lawyer1" class="form-control" required>
+                                <select name="first_lawyer_id_user" id="lawyer1" class="form-control" required>
                                     <option value="">-- اختر المحامي --</option>
                                     @foreach ($lawyers as $lawyer)
                                         <option value="{{ $lawyer->id }}">{{ $lawyer->name }}</option>
@@ -52,7 +52,7 @@
                             <!-- Lawyer 2-->
                             <div class="mb-3">
                                 <label for="lawyer2" class="form-label">اختر المحامي الثاني</label>
-                                <select name="second_lawyer_id" id="lawyer2" class="form-control" required>
+                                <select name="second_lawyer_id_user" id="lawyer2" class="form-control" required>
                                     <option value="">-- اختر المحامي --</option>
                                     @foreach ($lawyers as $lawyer)
                                         <option value="{{ $lawyer->id }}">{{ $lawyer->name }}</option>

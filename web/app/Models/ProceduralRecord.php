@@ -10,6 +10,10 @@ class ProceduralRecord extends Model
     protected $table = 'procedural_redords';
     protected $guarded = [];
 
+    public function user()
+    {
+        return $this->belongsTo(User::class, 'user_id');
+    }
     public function lawyer()
     {
         return $this->belongsTo(Lawyer::class, 'lawyer_id');
@@ -42,5 +46,10 @@ class ProceduralRecord extends Model
     public function subProcedurals()
     {
         return $this->hasMany(subrocedural::class);
+    }
+
+    public function userLawyer()
+    {
+        return $this->belongsTo(User::class, 'user_lawyer_id');
     }
 }

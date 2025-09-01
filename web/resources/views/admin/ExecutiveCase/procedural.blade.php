@@ -3,9 +3,9 @@
 @section('title', 'الإجراءات')
 @section('main_title_content', 'عرض الإجراءات')
 @section('title_content', 'إجراءات')
-@section('link_content')
-    <a href="{{ route('cases.show', $case->id) }}">العودة للقضية</a>
-@endsection
+{{-- @section('link_content')
+    <a href="{{ route('executiveCases.show', $executiveCase->id) }}">العودة للقضية</a>
+@endsection --}}
 
 @section('content')
     <div class="container mt-4">
@@ -18,23 +18,23 @@
                 <table class="table table-bordered">
                     <tr>
                         <th>النوع</th>
-                        <td>{{ $case->type }}</td>
+                        <td>{{ $executiveCase->type }}</td>
                     </tr>
                     <tr>
                         <th>التاريخ</th>
-                        <td>{{ $case->date }}</td>
+                        <td>{{ $executiveCase->date }}</td>
                     </tr>
                     <tr>
                         <th>الإجراء</th>
-                        <td>{{ $case->action }}</td>
+                        <td>{{ $executiveCase->action }}</td>
                     </tr>
                     <tr>
                         <th>الملاحظة</th>
-                        <td>{{ $case->note }}</td>
+                        <td>{{ $executiveCase->note }}</td>
                     </tr>
                     <tr>
                         <th>المحامي</th>
-                        <td>{{ optional($case->user)->name }}</td>
+                        <td>{{ optional($executiveCase->user)->name }}</td>
                     </tr>
                 </table>
             </div>
@@ -49,7 +49,7 @@
                 </button>
             </div>
             <div class="card-body">
-                @if ($case->subProcedurals->count() > 0)
+                @if ($executiveCase->subProcedurals->count() > 0)
                     <table class="table table-striped">
                         <thead>
                             <tr>
@@ -59,7 +59,7 @@
                             </tr>
                         </thead>
                         <tbody>
-                            @foreach ($case->subProcedurals as $sub)
+                            @foreach ($executiveCase->subProcedurals as $sub)
                                 <tr>
                                     <td>{{ $sub->action }}</td>
                                     <td>{{ $sub->note }}</td>
@@ -79,7 +79,7 @@
     <div class="modal fade" id="addSubProcedureModal" tabindex="-1" aria-labelledby="addSubProcedureModalLabel"
         aria-hidden="true">
         <div class="modal-dialog">
-            <form action="{{ route('cases.subprocedure.store', $case->id) }}" method="POST">
+            <form action="{{ route('executiveCases.subprocedure.store', $executiveCase) }}" method="POST">
                 @csrf
                 <div class="modal-content">
                     <div class="modal-header bg-primary text-white">

@@ -7,8 +7,11 @@ use App\Models\Client;
 use App\Models\excutiveCasesMain;
 use App\Models\ExecutiveCase;
 use App\Models\NegligenceDays;
+use App\Models\ProceduralFile;
+use App\Models\ProceduralRecord;
 use App\Models\Settlement;
 use App\Models\SettlementMain;
+use App\Models\subrocedural;
 use App\Models\trahsedDays;
 use App\Models\User;
 use Illuminate\Http\Request;
@@ -281,6 +284,42 @@ class ExecutiveCaseController extends Controller
     {
         $settlement->delete();
         return redirect()->back()->with('success', 'تم حذف السداد بنجاح');
+    }
+
+    public function executiveProcedural(ProceduralRecord $executiveCase)
+    {
+
+        $executiveCase->load('subProcedurals');
+        return view('admin.ExecutiveCase.procedural', compact('executiveCase'));
+    }
+
+    public function addFile(Request $request, ProceduralRecord $executiveCase)
+    {
+        if ($request->hasFile('file_path')) {
+            foreach ($request->file('file_path') as $uploadedFile) {
+                $path = $uploadedFile->store('ProceduralFiles', 'public');
+
+                ProceduralFile::create([
+                    'procedural_record_id' => $executiveCase->id,
+                    'created_by' => Auth::user()->id,
+                    'file_path' => $path,
+                    'updated_by' => Auth::user()->id,
+                ]);
+            }
+        }
+
+
+        return redirect()->route('procedural-record.index', $executiveCase->case)
+            ->with('success', 'تم رفع الملف بنجاح');
+    }
+
+    public function subProcedural(Request $request, ProceduralRecord $executiveCase)
+    {
+        $data = $request->except('_token', 'file');
+        $data['procedural_record_id'] = $executiveCase->id;
+        subrocedural::create($data);
+        return redirect()->route('executive-case.procedural.show', $executiveCase)
+            ->with('success', 'تم تسجيل الاجراء بنجاح');
     }
 
 }

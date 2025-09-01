@@ -8,6 +8,7 @@ use App\Models\Client;
 use App\Models\Lawyer;
 use App\Models\Missions;
 use App\Models\SubmitfinishedMission;
+use App\Models\User;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
 
@@ -15,8 +16,8 @@ class MissionController extends Controller
 {
     public function create()
     {
-        $lawyers = Lawyer::get();
-        $clients = Client::get();
+        $lawyers = User::whereIn('role', ['Lawyer', 'admin', 'superadmin'])->where('active', 1)->get();
+        $clients = Client::where('seen', 1)->get();
         return view('admin.missions.create', compact('lawyers', 'clients'));
     }
     public function store(MissionRequest $request)
@@ -49,24 +50,24 @@ class MissionController extends Controller
     {
         $submits = $mission->submitFinishedMissions;
 
-        $hasFirstLawyer = $submits->whereNotNull('first_lawyer_id')->isNotEmpty();
+        $hasFirstLawyer = $submits->whereNotNull('first_lawyer_id_user')->isNotEmpty();
 
         if (!$hasFirstLawyer) {
-            if ($mission->first_lawyer_id == auth()->id() || $mission->second_lawyer_id == auth()->id()) {
+            if ($mission->first_lawyer_id_user == auth()->id() || $mission->second_lawyer_id_user == auth()->id()) {
                 $submits = SubmitfinishedMission::create([
                     'mission_id' => $mission->id,
-                    'first_lawyer_id' => auth()->user()->id,
+                    'first_lawyer_id_user' => auth()->user()->id,
                 ]);
                 return redirect()->back()->with('success', 'المهمة لم تنته بعد، في انتظار المحامي الثاني.');
             }
         }
 
         $submit = SubmitfinishedMission::where('mission_id', $mission->id)->first();
-        if ($submit && $submit->first_lawyer_id == auth()->id()) {
+        if ($submit && $submit->first_lawyer_id_user == auth()->id()) {
             return redirect()->back()->with('error', 'لقد قمت بإنهاء المهمة بالفعل، في انتظار المحامي الثاني.');
         }
-        if ($hasFirstLawyer && (auth()->user()->id == $mission->second_lawyer_id || auth()->user()->id == $mission->first_lawyer_id)) {
-            SubmitfinishedMission::where('mission_id', $mission->id)->update(['second_lawyer_id' => auth()->id()]);
+        if ($hasFirstLawyer && (auth()->user()->id == $mission->second_lawyer_id_user || auth()->user()->id == $mission->first_lawyer_id_user)) {
+            SubmitfinishedMission::where('mission_id', $mission->id)->update(['second_lawyer_id_user' => auth()->id()]);
             $mission->update(['is_done' => 1]);
             return redirect()->back()->with('success', 'تم انجاز المهمة بنجاح');
         }

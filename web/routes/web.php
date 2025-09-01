@@ -176,6 +176,9 @@ Route::group(['prefix' => 'admin', 'middleware' => ['auth', roleMiddleware::clas
     Route::delete('/executive-cases/type/{settlement}/delete/settlement/go', [ExecutiveCaseController::class, 'deleteSettlement'])->name('executive-case.settlement.delete');
     Route::get('/executive-cases/type/{item}/create', [ExecutiveCaseController::class, 'create'])->name('executive-case.create');
     Route::post('/executive-cases/{item}/store', [ExecutiveCaseController::class, 'store'])->name('executive-case.store');
+    Route::post('/executive-cases/{executiveCase}/add/file', [ExecutiveCaseController::class, 'addFile'])->name('executive-case.add.file');
+    Route::post('/executive-cases/{executiveCase}/add/subProcedural', [ExecutiveCaseController::class, 'subProcedural'])->name('executiveCases.subprocedure.store');
+    Route::get('/executive-cases/{executiveCase}/procedural/show', [ExecutiveCaseController::class, 'executiveProcedural'])->name('executive-case.procedural.show');
     Route::get('/executive-cases/{executiveCase}/edit', [ExecutiveCaseController::class, 'edit'])->name('executive-case.edit');
     Route::post('/executive-cases/{executiveCase}/update', [ExecutiveCaseController::class, 'update'])->name('executive-case.update');
     Route::delete('/executive-case/delete', [ExecutiveCaseController::class, 'destroy'])->name('executive-case.delete');
@@ -185,8 +188,8 @@ Route::group(['prefix' => 'admin', 'middleware' => ['auth', roleMiddleware::clas
 
     // ProceduralRecord admin routes
     Route::get('/procedural-records/{executiveCase}/action', [ProceduralRecordController::class, 'actions'])->name('procedural-record.index');
-    Route::get('/procedural-records/create/{executiveCase?}', [ProceduralRecordController::class, 'create'])->name('procedural-record.create');
-    Route::post('/procedural-records/create/{executiveCase?}', [ProceduralRecordController::class, 'store'])->name('procedural-record.store');
+    Route::get('/procedural-records/create/{executiveCase}', [ProceduralRecordController::class, 'create'])->name('procedural-record.create');
+    Route::post('/procedural-records/create/{executiveCase}', [ProceduralRecordController::class, 'store'])->name('procedural-record.store');
     Route::get('/procedural-records/{id}/edit', [ProceduralRecordController::class, 'edit'])->name('procedural-record.edit');
     Route::get('/procedural-records/{id}/show/{executiveCase?}', [ProceduralRecordController::class, 'show'])->name('procedural-record.show');
 

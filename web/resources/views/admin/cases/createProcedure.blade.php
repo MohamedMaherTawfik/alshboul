@@ -51,8 +51,8 @@
 
                             <!-- المحامي -->
                             <div class="mb-3">
-                                <label for="lawyer_id" class="form-label">المحامي</label>
-                                <select name="lawyer_id" id="lawyer_id" class="form-control">
+                                <label for="user_id" class="form-label">المحامي</label>
+                                <select name="user_id" id="user_id" class="form-control">
                                     <option value="">اختر المحامي</option>
                                     @foreach ($lawyers as $lawyer)
                                         <option value="{{ $lawyer->id }}">{{ $lawyer->name }}</option>

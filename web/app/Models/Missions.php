@@ -16,12 +16,12 @@ class Missions extends Model
 
     public function first_lawyer()
     {
-        return $this->belongsTo(Lawyer::class);
+        return $this->belongsTo(User::class, 'first_lawyer_id_user', 'id');
     }
 
     public function second_lawyer()
     {
-        return $this->belongsTo(Lawyer::class);
+        return $this->belongsTo(User::class, 'second_lawyer_id_user', 'id');
     }
 
     public function submitFinishedMissions()

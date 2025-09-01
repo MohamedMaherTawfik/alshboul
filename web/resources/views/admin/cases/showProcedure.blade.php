@@ -104,6 +104,7 @@
                         <tr>
                             <th>رقم الملف</th>
                             <th> النوع</th>
+                            <th> وقت الادخال</th>
                             <th>رقم القضية</th>
                             <th> المحامي</th>
                             <th>اسم المدخل</th>
@@ -126,13 +127,14 @@
                             <tr>
                                 <td>{{ $case->case_number ?? '-' }}</td>
                                 <td>{{ $duration->type ?? '-' }}</td>
+                                <td>{{ $duration->created_at->format('Y-m-d') ?? '-' }}</td>
                                 <td>
                                     {{ $case->file_number ?? '-' }}
                                     <a href="{{ route('cases.show', $case) }}" class="ms-2 text-primary">
                                         <i class="fas fa-eye"></i>
                                     </a>
                                 </td>
-                                <td>{{ $duration->lawyer->name ?? '-' }}</td>
+                                <td>{{ $duration->user->name ?? '-' }}</td>
                                 <td>{{ $duration->created_by ?? '-' }}</td>
                                 <td>{{ $duration->created_at?->format('Y-m-d') ?? '-' }}</td>
                                 <td>{{ $duration->action }}</td>

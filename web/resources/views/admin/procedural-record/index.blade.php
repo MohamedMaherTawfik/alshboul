@@ -84,10 +84,12 @@
                         <th>انشاء بواسطه</th>
                         <th>النوع</th>
                         <th>الإجراء</th>
+                        <th>المستندات</th>
                         <th>ملاحظة</th>
                         <th>المحامي</th>
                         <th>الإجراء التالي</th>
                         <th>تاريخ الإجراء التالي</th>
+                        <th> اجراء فرعي </th>
                     </tr>
                 </thead>
                 <tbody>
@@ -97,10 +99,53 @@
                             <td>{{ $record->creator?->name ?? '-' }}</td>
                             <td>{{ $record->type }}</td>
                             <td>{{ $record->action }}</td>
+                            <td>
+                                @foreach ($record->files as $item)
+                                    <a href="{{ asset('storage/' . $item->file_path) }} " class="btn btn-sm btn-primary"
+                                        target="_blank">مستند</a>
+                                @endforeach
+                                <!-- زرار -->
+                                <button type="button" class="btn btn-sm btn-success" data-bs-toggle="modal"
+                                    data-bs-target="#addFileModal-{{ $record->id }}">
+                                    +
+                                </button>
+                                <!-- Modal -->
+                                <div class="modal fade" id="addFileModal-{{ $record->id }}" tabindex="-1"
+                                    aria-labelledby="addFileModalLabel" aria-hidden="true">
+                                    <div class="modal-dialog">
+                                        <div class="modal-content">
+                                            <form action="{{ route('executive-case.add.file', $record) }}" method="POST"
+                                                enctype="multipart/form-data">
+                                                @csrf
+                                                <div class="modal-header">
+                                                    <h5 class="modal-title" id="addFileModalLabel">إضافة ملفات جديدة
+                                                    </h5>
+                                                    <button type="button" class="btn-close" data-bs-dismiss="modal"
+                                                        aria-label="إغلاق"></button>
+                                                </div>
+                                                <div class="modal-body">
+                                                    <div class="mb-3">
+                                                        <label for="file_path" class="form-label">اختر الملفات</label>
+                                                        <input type="file" name="file_path[]" id="file_path"
+                                                            class="form-control" multiple required>
+                                                    </div>
+                                                </div>
+                                                <div class="modal-footer">
+                                                    <button type="submit" class="btn btn-primary">حفظ</button>
+                                                    <button type="button" class="btn btn-secondary"
+                                                        data-bs-dismiss="modal">إلغاء</button>
+                                                </div>
+                                            </form>
+                                        </div>
+                                    </div>
+                                </div>
+                            </td>
                             <td>{{ $record->note }}</td>
-                            <td>{{ $record->lawyer->name ?? '-' }}</td>
+                            <td>{{ $record->user->name ?? '-' }}</td>
                             <td>{{ $record->next_action }}</td>
                             <td>{{ $record->next_action_date }}</td>
+                            <td><a href="{{ route('executive-case.procedural.show', $executiveCase) }}"
+                                    class="btn btn-primary">اجراء فرعي</a></td>
                         </tr>
                     @empty
                         <tr>

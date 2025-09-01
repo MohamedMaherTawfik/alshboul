@@ -15,25 +15,32 @@
                         <h4>إضافة إجراء جديد</h4>
                     </div>
                     <div class="card-body">
-                        <form action="{{ route('procedural-record.store', $executiveCase) }}" method="POST">
+                        <form action="{{ route('procedural-record.store', $executiveCase) }}" method="POST"
+                            enctype="multipart/form-data">
                             @csrf
 
                             <!-- نوع الإجراء -->
                             <div class="mb-3">
                                 <label for="type" class="form-label">نوع الإجراء</label>
-                                <input type="text" name="type" id="type" class="form-control" required>
+                                <input type="text" name="type" id="type" class="form-control">
                             </div>
 
                             <!-- نوع الإجراء -->
                             <div class="mb-3">
                                 <label for="date" class="form-label">تاريخ الإجراء</label>
-                                <input type="date" name="date" id="date" class="form-control" required>
+                                <input type="date" name="date" id="date" class="form-control">
                             </div>
 
                             <!-- الإجراء -->
                             <div class="mb-3">
                                 <label for="action" class="form-label">الإجراء</label>
-                                <input type="text" name="action" id="action" class="form-control" required>
+                                <input type="text" name="action" id="action" class="form-control">
+                            </div>
+
+                            <!-- رفع الملفات -->
+                            <div class="mb-3">
+                                <label for="file_path" class="form-label">المستندات</label>
+                                <input type="file" name="file_path[]" id="file_path" class="form-control" multiple>
                             </div>
 
                             <!-- ملاحظة -->
@@ -44,25 +51,13 @@
 
                             <!-- المحامي -->
                             <div class="mb-3">
-                                <label for="lawyer_id" class="form-label">المحامي</label>
-                                <select name="lawyer_id" id="lawyer_id" class="form-control" required>
+                                <label for="user_id" class="form-label">المحامي</label>
+                                <select name="user_id" id="user_id" class="form-control">
                                     <option value="">اختر المحامي</option>
                                     @foreach ($lawyers as $lawyer)
                                         <option value="{{ $lawyer->id }}">{{ $lawyer->name }}</option>
                                     @endforeach
                                 </select>
-                            </div>
-
-                            <!-- الإجراء التالي -->
-                            <div class="mb-3">
-                                <label for="next_action" class="form-label">الإجراء التالي</label>
-                                <input type="text" name="next_action" id="next_action" class="form-control">
-                            </div>
-
-                            <!-- تاريخ الإجراء التالي -->
-                            <div class="mb-3">
-                                <label for="next_action_date" class="form-label">تاريخ الإجراء التالي</label>
-                                <input type="date" name="next_action_date" id="next_action_date" class="form-control">
                             </div>
 
                             <!-- زر الحفظ -->
