@@ -241,7 +241,7 @@ class ClientController extends Controller
     public function clientProcedural()
     {
         $data = Client::where('seen', 1)->orderBy('id', 'desc')->get();
-        return view('admin.client.action', compact('data'));
+        return view('admin.edit.action', compact('data'));
     }
 
     public function ClientShowProcedural(Client $client)
