@@ -79,41 +79,30 @@
 
         <div class="container mt-4">
             <h3> المهملات الحاليه</h3>
-            <table class="table table-bordered table-striped">
+
+            {{-- جدول إحصائيات الكيش تايب --}}
+            <h5 class="mt-4">إحصائيات القضايا:</h5>
+            <table class="table">
                 <thead>
                     <tr>
-                        <th>#</th>
-                        <th>نوع رئيسي</th>
-                        <th>الاسم</th>
+                        <th>نوع القضية</th>
+                        <th>عدد القضايا المهمله</th>
+                        <th>عدد ايام الاهمال</th>
                     </tr>
                 </thead>
                 <tbody>
-                    @foreach ($trashed as $item)
+                    @foreach ($caseTypesWithCount as $caseType)
                         <tr>
-                            <td>{{ $item->id }}</td>
-
-                            {{-- لو جاي من قضية --}}
-                            @if ($item->cases)
-                                <td>قضية</td>
-                                <td>{{ $item->cases->caseType->name ?? '-' }}</td>
-
-                                {{-- لو جاي من قضية تنفيذية --}}
-                            @elseif($item->executiveCase)
-                                <td>قضية تنفيذية</td>
-                                <td>{{ $item->executiveCase->mainExecutiveCases->name ?? '-' }}</td>
-
-                                {{-- لو جاي من تسوية --}}
-                            @elseif($item->settlement)
-                                <td>تسوية</td>
-                                <td>{{ $item->settlement->settlementMain->name ?? '-' }}</td>
-                            @else
-                                <td>-</td>
-                                <td>-</td>
-                            @endif
+                            <td>{{ $caseType->name }}</td>
+                            <td>{{ $caseType->trashed_count }}</td>
+                            <td>{{ $caseType->NegligenceDays->first()->days }}</td>
                         </tr>
                     @endforeach
                 </tbody>
             </table>
+
+
+
         </div>
 
 

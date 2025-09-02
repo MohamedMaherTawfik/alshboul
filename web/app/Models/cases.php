@@ -24,6 +24,12 @@ class cases extends Model
         return $this->belongsTo(CaseType::class);
     }
 
+
+    public function trahsedDays()
+    {
+        return $this->hasMany(trahsedDays::class, 'cases_id');
+    }
+
     public function requestedCases()
     {
         return $this->belongsTo(CaseType::class, 'requested_case_id');
@@ -42,7 +48,6 @@ class cases extends Model
     {
         return $this->hasMany(court_session_date::class);
     }
-
 
     public function legalPeriods()
     {

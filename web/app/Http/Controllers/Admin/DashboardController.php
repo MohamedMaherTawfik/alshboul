@@ -4,6 +4,7 @@ namespace App\Http\Controllers\Admin;
 
 use App\Http\Controllers\Controller;
 use App\Models\CaseNotes;
+use App\Models\cases;
 use App\Models\CaseType;
 use App\Models\Client;
 use App\Models\ClientRequest;
@@ -30,10 +31,20 @@ class DashboardController extends Controller
         $notes = CaseNotes::where('is_done', 0)->whereBetween('period_end', [$today, $sixDaysLater])->get();
         $missions = Missions::where('is_done', 0)->count();
         $trashed = trahsedDays::with([
-            'cases.caseType',
-            'excutiveCases.mainExecutiveCases',
-            'settlements.settlementMain'
+            'cases',
+            'excutiveCases',
+            'settlements'
         ])->where('is_seen', 1)->get();
-        return view('admin.index', compact('trashed', 'countLawyer', 'countClient', 'missions', 'countClientRequest', 'countUser', 'durations', 'notes', 'caseTypes'));
+
+        $caseTypesWithCount = CaseType::select('case_types.id', 'case_types.name')
+            ->leftJoin('cases', 'cases.suggested_case_id', '=', 'case_types.id')
+            ->leftJoin('trahsed_days', 'trahsed_days.cases_id', '=', 'cases.id')
+            ->where('trahsed_days.is_seen', 1)
+            ->groupBy('case_types.id', 'case_types.name')
+            ->selectRaw('COUNT(trahsed_days.id) as trashed_count')
+            ->get();
+
+
+        return view('admin.index', compact('caseTypesWithCount', 'trashed', 'countLawyer', 'countClient', 'missions', 'countClientRequest', 'countUser', 'durations', 'notes', 'caseTypes'));
     }
 }

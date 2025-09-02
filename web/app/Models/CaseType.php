@@ -24,4 +24,18 @@ class CaseType extends Model
         return $this->hasMany(NegligenceDays::class, 'case_type_id');
     }
 
+    // CaseType.php (Model)
+    public function trashedDays()
+    {
+        return $this->hasManyThrough(
+            \App\Models\trahsedDays::class,
+            \App\Models\Cases::class,
+            'suggested_case_id', // Foreign key in Cases
+            'cases_id',          // Foreign key in trahsedDays
+            'id',                // Local key in CaseType
+            'id'                 // Local key in Cases
+        );
+    }
+
+
 }
