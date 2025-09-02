@@ -147,8 +147,8 @@ class CaseController extends Controller
                 'created_by' => auth()->id(),
                 'action' => $validated['action'] ?? null,
                 'note' => $validated['note'] ?? null,
-                'type' => $validated['type'] ?? null,
-                'user_id' => $validated['user_id'] ?? auth()->id(),
+                'type' => 'اجراء',
+                'user_id' => $validated['lawyer_id'] ?? null,
             ]);
 
             if ($request->hasFile('file_path')) {
@@ -172,6 +172,7 @@ class CaseController extends Controller
                 'user_id' => auth()->id(),
                 'note' => $validated['note'] ?? null,
                 'facts' => $validated['facts'] ?? null,
+                'type' => 'جلسه',
             ]);
 
             if ($request->hasFile('file_path')) {
