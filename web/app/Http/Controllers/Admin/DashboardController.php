@@ -30,11 +30,6 @@ class DashboardController extends Controller
         $durations = LegalPeriods::where('is_done', 0)->whereBetween('period_end', [$today, $sixDaysLater])->get();
         $notes = CaseNotes::where('is_done', 0)->whereBetween('period_end', [$today, $sixDaysLater])->get();
         $missions = Missions::where('is_done', 0)->count();
-        $trashed = trahsedDays::with([
-            'cases',
-            'excutiveCases',
-            'settlements'
-        ])->where('is_seen', 1)->get();
 
         $caseTypesWithCount = CaseType::select('case_types.id', 'case_types.name')
             ->leftJoin('cases', 'cases.suggested_case_id', '=', 'case_types.id')
@@ -45,6 +40,6 @@ class DashboardController extends Controller
             ->get();
 
 
-        return view('admin.index', compact('caseTypesWithCount', 'trashed', 'countLawyer', 'countClient', 'missions', 'countClientRequest', 'countUser', 'durations', 'notes', 'caseTypes'));
+        return view('admin.index', compact('caseTypesWithCount', 'countLawyer', 'countClient', 'missions', 'countClientRequest', 'countUser', 'durations', 'notes', 'caseTypes'));
     }
 }

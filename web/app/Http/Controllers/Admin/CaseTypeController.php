@@ -28,11 +28,14 @@ class CaseTypeController extends Controller
         $excutiveCases = excutiveCasesMain::select("*")->orderby('id', 'DESC')->get(10);
         return view('admin.CaseTypes.index', compact('data', 'settlements', 'transactions', 'excutiveCases'));
     }
-
     public function show(CaseType $casetype)
     {
-        $cases = cases::with('caseOpponents')->where('suggested_case_id', $casetype->id)->get();
+        $cases = cases::with('caseOpponents')
+            ->where('suggested_case_id', $casetype->id)
+            ->get();
+
         $neglectConfig = NegligenceDays::where('case_type_id', $casetype->id)->first();
+
         if (!$neglectConfig) {
             return view('admin.CaseTypes.show', compact('casetype', 'cases'));
         }
@@ -40,35 +43,41 @@ class CaseTypeController extends Controller
         foreach ($cases as $case) {
             $totalEvents = $case->courtSession()->count()
                 + $case->legalPeriods()->count()
-                + $case->caseNotes()->count();
-
+                + $case->caseNotes()->count()
+                + $case->proceduralRedords()->count();
             $trashed = trahsedDays::where('cases_id', $case->id)->first();
+            if ($trashed) {
+                $daysDiff = now()->diffInDays($trashed->created_at);
 
-            if ($totalEvents === ($trashed->counts ?? $totalEvents)) {
-                // العدد ثابت
-                if (!$trashed) {
-                    trahsedDays::create([
-                        'cases_id' => $case->id,
-                        'counts' => $totalEvents,
-                        'is_seen' => 0,
-                    ]);
-                } else {
-                    // تحقق إذا وصل عدد الأيام المسموح
-                    $trashed->increment('counts');
-                    if ($trashed->counts >= $neglectConfig->days) {
+                if ($totalEvents == $trashed->counts) {
+                    if ($daysDiff >= 1) {
+                        $trashed->increment('days_passed', $daysDiff);
+                    }
+
+                    if ($trashed->days_passed >= $neglectConfig->days) {
                         $trashed->update(['is_seen' => 1]);
                     }
+                } elseif ($totalEvents > $trashed->counts) {
+                    $trashed->update([
+                        'counts' => $totalEvents,
+                        'days_passed' => 0,
+                        'is_seen' => 0,
+                    ]);
                 }
             } else {
-                // حصل جديد، نحذف من جدول trashed
-                if ($trashed) {
-                    $trashed->delete();
-                }
+                trahsedDays::create([
+                    'cases_id' => $case->id,
+                    'counts' => $totalEvents,
+                    'days_passed' => 0,
+                    'is_seen' => 0,
+                ]);
             }
         }
 
         return view('admin.CaseTypes.show', compact('casetype', 'cases'));
     }
+
+
 
     /**
      * Show the form for creating a new resource.

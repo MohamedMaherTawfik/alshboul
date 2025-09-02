@@ -282,6 +282,9 @@ Route::group(['prefix' => 'admin', 'middleware' => ['auth', roleMiddleware::clas
     Route::get('/{case}/show/showcase/procedure/create', [CaseController::class, 'createProcedure'])->name('cases.procedure.create');
     Route::post('/{case}/show/showcase/procedure/store', [CaseController::class, 'storeProcedure'])->name('cases.procedure.store');
     Route::post('/{case}/show/showcase/procedure/add/file', [CaseController::class, 'addFile'])->name('procedural.add.file');
+    Route::get('/cases/trashed/{caseType}', [CaseController::class, 'trashedCases'])
+        ->name('cases.trashed');
+
     Route::get('/{case}/show/showcase/procedure/sub/procedure', [CaseController::class, 'subProcedure'])->name('case.procedural.show');
     Route::post('/{case}/show/showcase/procedure/sub/store', [CaseController::class, 'storSubProcedure'])->name('cases.subprocedure.store');
     Route::get('/{case}/show/showcase/procedure/sub/edit', [CaseController::class, 'editSubProcedure'])->name('case.procedural.edit');

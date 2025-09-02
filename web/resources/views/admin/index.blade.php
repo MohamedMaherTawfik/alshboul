@@ -94,12 +94,20 @@
                     @foreach ($caseTypesWithCount as $caseType)
                         <tr>
                             <td>{{ $caseType->name }}</td>
-                            <td>{{ $caseType->trashed_count }}</td>
+                            <td>
+                                {{ $caseType->trashed_count }}
+                                @if ($caseType->trashed_count > 0)
+                                    <a href="{{ route('cases.trashed', $caseType->id) }}" class="ms-2 text-primary">
+                                        <i class="fa fa-eye"></i>
+                                    </a>
+                                @endif
+                            </td>
                             <td>{{ $caseType->NegligenceDays->first()->days }}</td>
                         </tr>
                     @endforeach
                 </tbody>
             </table>
+
 
 
 

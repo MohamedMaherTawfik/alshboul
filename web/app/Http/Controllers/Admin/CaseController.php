@@ -383,4 +383,21 @@ class CaseController extends Controller
         return redirect()->back()
             ->with('success', 'تم حذف الملف بنجاح');
     }
+
+    public function trashedCases($caseTypeId)
+    {
+        $cases = cases::where('suggested_case_id', $caseTypeId)
+            ->whereHas('trahsedDays', function ($query) {
+                $query->where('is_seen', 1);
+            })
+            ->with([
+                'trahsedDays' => function ($query) {
+                    $query->where('is_seen', 1);
+                }
+            ])
+            ->get();
+
+        return view('admin.cases.trashed', compact('cases'));
+    }
+
 }
