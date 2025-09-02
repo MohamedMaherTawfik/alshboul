@@ -99,7 +99,11 @@ Route::group(['prefix' => 'admin', 'middleware' => ['auth', roleMiddleware::clas
     Route::get('/clients', [ClientController::class, 'index'])->name('client.index');
     Route::get('/visit-clients', [ClientController::class, 'visit'])->name('client.visit');
 
-    Route::get('/action-clients', [ClientController::class, 'action'])->name('client.action');
+    Route::get('/action-clients', [ClientController::class, 'clientProcedural'])->name('client.action.index');
+    Route::get('/action-clients/client/{client}', [ClientController::class, 'ClientShowProcedural'])->name('client.show');
+    Route::post('/action-clients/client/{client}/store', [ClientController::class, 'clientstoreProcedural'])->name('client.procedural.store');
+    Route::post('/action-clients/client/{client}/update', [ClientController::class, 'clientUpdateProcedural'])->name('client.procedural.update');
+    Route::delete('/action-clients/client/{client}/delete', [ClientController::class, 'clientDeleteProcedural'])->name('client.procedural.delete');
     Route::delete('/action-client/delete', [ClientController::class, 'destroy1'])->name('client.action.delete');
     Route::POST('/action-client/store', [ClientController::class, 'store1'])->name('client.action.store');
     Route::post('/action-client/action/{id}', [ClientController::class, 'update1'])->name('client.action.update');

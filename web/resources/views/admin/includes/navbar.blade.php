@@ -96,7 +96,7 @@
                         <a class="dropdown-item" href="{{ route('user.index') }}">المستخدمين</a>
                         <a class="dropdown-item" href="{{ route('client.index') }}">الموكلين</a>
                         <a class="dropdown-item" href="{{ route('request.index') }}">طلبات الموكلين</a>
-                        <a class="dropdown-item" href="{{ route('client.action') }}">إجراءات الموكلين</a>
+                        <a class="dropdown-item" href="{{ route('client.action.index') }}">إجراءات الموكلين</a>
                         <a class="dropdown-item" href="{{ route('client.visit') }}">زيارات الموكلين</a>
                     </div>
                 </li>

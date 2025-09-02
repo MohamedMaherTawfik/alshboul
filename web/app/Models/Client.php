@@ -56,4 +56,9 @@ class Client extends Model
     {
         return $this->hasMany(Transactions::class);
     }
+
+    public function clientProcedurals()
+    {
+        return $this->hasMany(ClientProcedural::class);
+    }
 }

@@ -3,6 +3,7 @@
 namespace App\Http\Controllers;
 
 use App\Models\Client;
+use App\Models\clientProcedural;
 use App\Models\MainAction;
 use App\Models\SubAction;
 use App\Models\User;
@@ -25,11 +26,7 @@ class ClientController extends Controller
 
         return view('admin.Client.Visit');
     }
-    public function action()
-    {
-        $data2 = Client::all();
-        return view('admin.Client.Action', compact('data2'));
-    }
+
     public function indexDelete()
     {
         $data = Client::onlyTrashed()->get();
@@ -239,5 +236,56 @@ class ClientController extends Controller
 
 
         return redirect()->route('client.indexDelete')->with(['success' => 'تم استرجاع البيانات بنجاح']);
+    }
+
+    public function clientProcedural()
+    {
+        $data = Client::where('seen', 1)->orderBy('id', 'desc')->get();
+        return view('admin.Client.action', compact('data'));
+    }
+
+    public function ClientShowProcedural(Client $client)
+    {
+        $client->load('clientProcedurals');
+        return view('admin.Client.show', compact('client'));
+    }
+    public function clientstoreProcedural(Request $request, Client $client)
+    {
+        $request->validate([
+            'procedural' => 'nullable',
+            'procedural_facts' => 'nullable',
+            'side' => 'nullable',
+            'procedural_type' => 'nullable',
+            'status' => 'nullable',
+        ]);
+        $data = $request->except('_token');
+        $data['user_id'] = Auth::id();
+        $data['client_id'] = $client->id;
+        clientProcedural::create($data);
+        if (!$data) {
+            return redirect()->back()->with('error', ' حدث خلل أثناء الاضافة');
+        }
+        return redirect()->back()->with('success', 'تم إضافة الاجراء بنجاح');
+    }
+
+    public function clientUpdateProcedural(Request $request, clientProcedural $client)
+    {
+        $request->validate([
+            'procedural' => 'nullable',
+            'procedural_facts' => 'nullable',
+            'side' => 'nullable',
+            'procedural_type' => 'nullable',
+            'status' => 'nullable',
+        ]);
+        $data = $request->except('_token');
+        $data['user_id'] = Auth::id();
+        $client->update($data);
+        return redirect()->back()->with('success', 'تم تعديل البيانات بنجاح');
+    }
+
+    public function clientDeleteProcedural(clientProcedural $client)
+    {
+        $client->delete();
+        return redirect()->back()->with('success', 'تم حذف البيانات بنجاح');
     }
 }
