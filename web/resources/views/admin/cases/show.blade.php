@@ -76,7 +76,7 @@
     <div class="card-header bg-white border-0 pt-3 pb-2 d-flex align-items-center justify-content-between">
         <!-- زرار على اليمين -->
         <a href="{{ route('cases.add', $case) }}" class="btn btn-warning btn-sm px-3 text-white d-flex align-items-center">
-            <i class="bi bi-plus-circle me-1"></i> إضافة جلسة
+            <i class="bi bi-plus-circle me-1"></i> إضافة جلسة او اجراء
         </a>
         {{-- <!-- زرار على الشمال -->
         <a href="{{ route('cases.procedure', $case) }}"
@@ -88,7 +88,7 @@
     <table class="table">
         <thead>
             <tr>
-                <th>#</th>
+                <th>اسم المدخل</th>
                 <th>التاريخ</th>
                 <th>المحامي</th>
                 <th>النوع</th>
@@ -104,7 +104,7 @@
                     @php
                         // dd($session);
                     @endphp
-                    <td>{{ $session['id'] }}</td>
+                    <td>{{ $session['user'] }}</td>
                     <td>{{ $session['date'] ?? '-' }}</td>
                     <td>{{ $session['lawyer'] }}</td>
                     <td>{{ $session['type'] }}</td>

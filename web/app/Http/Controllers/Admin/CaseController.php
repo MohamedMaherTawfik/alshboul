@@ -144,8 +144,8 @@ class CaseController extends Controller
         if (empty($validated['date'])) {
             $procedural = ProceduralRecord::create([
                 'cases_id' => $case->id,
-                'created_by' => auth()->id(),
-                'action' => $validated['action'] ?? null,
+                'created_by' => Auth::user()->name,
+                'action' => $validated['facts'] ?? null,
                 'note' => $validated['note'] ?? null,
                 'type' => 'اجراء',
                 'user_id' => $validated['lawyer_id'] ?? null,
@@ -256,6 +256,7 @@ class CaseController extends Controller
                 'facts' => $session->facts,
                 'note' => $session->note,
                 'files' => $session->sessionFiles,
+                'user' => $session->user->name
             ]);
         }
 
@@ -268,10 +269,11 @@ class CaseController extends Controller
                 'facts' => $record->action,
                 'note' => $record->note,
                 'files' => $record->files,
+                'user' => $record->created_by
             ]);
         }
 
-        $sessions = $sessions->sortByDesc('date');
+        $sessions = $sessions->sortBy('date');
 
         return view('admin.cases.show', compact('case', 'sessions'));
     }
@@ -358,7 +360,7 @@ class CaseController extends Controller
         // إنشاء الإجراء
         $procedural = ProceduralRecord::create([
             'cases_id' => $case->id,
-            'created_by' => $data['created_by'],
+            'created_by' => Auth::user()->name,
             'action' => $data['action'],
             'note' => $data['note'],
             'type' => $data['type'],
