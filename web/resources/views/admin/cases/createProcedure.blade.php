@@ -22,13 +22,8 @@
                             <!-- نوع الإجراء -->
                             <div class="mb-3">
                                 <label for="type" class="form-label">نوع الإجراء</label>
-                                <input type="text" name="type" id="type" class="form-control">
-                            </div>
-
-                            <!-- نوع الإجراء -->
-                            <div class="mb-3">
-                                <label for="date" class="form-label">تاريخ الإجراء</label>
-                                <input type="date" name="date" id="date" class="form-control">
+                                <input type="text" name="type" id="type" class="form-control" value="اجراء"
+                                    readonly>
                             </div>
 
                             <!-- الإجراء -->

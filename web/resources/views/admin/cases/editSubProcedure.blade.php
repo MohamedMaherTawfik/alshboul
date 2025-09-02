@@ -27,13 +27,6 @@
                                     value="{{ old('type', $case->type) }}">
                             </div>
 
-                            <!-- تاريخ الإجراء -->
-                            <div class="mb-3">
-                                <label for="date" class="form-label">تاريخ الإجراء</label>
-                                <input type="date" name="date" id="date" class="form-control"
-                                    value="{{ old('date', $case->date) }}">
-                            </div>
-
                             <!-- الإجراء -->
                             <div class="mb-3">
                                 <label for="action" class="form-label">الإجراء</label>

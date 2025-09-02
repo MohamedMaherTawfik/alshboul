@@ -27,4 +27,9 @@ class court_session_date extends Model
     {
         return $this->hasMany(sessionfiles::class);
     }
+
+    public function lawyer_user()
+    {
+        return $this->belongsTo(User::class, 'lawyer_user_id');
+    }
 }

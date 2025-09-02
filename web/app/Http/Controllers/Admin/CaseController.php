@@ -133,21 +133,62 @@ class CaseController extends Controller
     // إضافة بيانات للقضية
     public function add(Cases $case)
     {
-        $lawers = Lawyer::get();
+        $lawers = User::whereIn('role', ['Lawyer', 'admin', 'superadmin'])->where('active', 1)->get();
         return view('admin.cases.add', compact('case', 'lawers'));
     }
 
     public function storeAdd(Request $request, Cases $case)
     {
         $validated = $request->except('_token');
-        $validated['cases_id'] = $case->id;
-        $validated['user_id'] = auth()->user()->id;
-        if ($request->hasFile('file')) {
-            $validated['file'] = $request->file('file')->store('CourtSessions', 'public');
+
+        if (empty($validated['date'])) {
+            $procedural = ProceduralRecord::create([
+                'cases_id' => $case->id,
+                'created_by' => auth()->id(),
+                'action' => $validated['action'] ?? null,
+                'note' => $validated['note'] ?? null,
+                'type' => $validated['type'] ?? null,
+                'user_id' => $validated['user_id'] ?? auth()->id(),
+            ]);
+
+            if ($request->hasFile('file_path')) {
+                foreach ($request->file('file_path') as $uploadedFile) {
+                    $path = $uploadedFile->store('ProceduralFiles', 'public');
+
+                    ProceduralFile::create([
+                        'procedural_record_id' => $procedural->id,
+                        'created_by' => auth()->id(),
+                        'file_path' => $path,
+                        'updated_by' => auth()->id(),
+                    ]);
+                }
+            }
+
+        } else {
+            $court = court_session_date::create([
+                'cases_id' => $case->id,
+                'date' => $validated['date'],
+                'lawyer_user_id' => $validated['lawyer_id'] ?? null,
+                'user_id' => auth()->id(),
+                'note' => $validated['note'] ?? null,
+                'facts' => $validated['facts'] ?? null,
+            ]);
+
+            if ($request->hasFile('file_path')) {
+                foreach ($request->file('file_path') as $file) {
+                    $path = $file->store('SessionFiles', 'public');
+
+                    sessionfiles::create([
+                        'court_session_date_id' => $court->id,
+                        'file' => $path,
+                    ]);
+                }
+            }
         }
-        court_session_date::create($validated);
+
         return redirect()->route('cases.show', $case)->with('success', 'تمت الإضافة بنجاح');
     }
+
 
     public function caseSessions(Cases $case)
     {
@@ -197,9 +238,43 @@ class CaseController extends Controller
 
     public function show(Cases $case)
     {
-        $case->load('courtSession');
-        return view('admin.cases.show', compact('case'));
+        $case->load([
+            'courtSession.sessionFiles',
+            'proceduralRedords.files'
+        ]);
+
+        // نعمل collection جديدة ونجمع الاتنين
+        $sessions = collect();
+
+        foreach ($case->courtSession as $session) {
+            $sessions->push([
+                'id' => $session->id,
+                'date' => $session->date,
+                'lawyer' => $session->lawyer_user->name ?? '-',
+                'type' => 'جلسة',
+                'facts' => $session->facts,
+                'note' => $session->note,
+                'files' => $session->sessionFiles,
+            ]);
+        }
+
+        foreach ($case->proceduralRedords as $record) {
+            $sessions->push([
+                'id' => $record->id,
+                'date' => null,
+                'lawyer' => $record->user->name ?? '-',
+                'type' => $record->type ?? 'إجراء',
+                'facts' => $record->action,
+                'note' => $record->note,
+                'files' => $record->files,
+            ]);
+        }
+
+        $sessions = $sessions->sortByDesc('date');
+
+        return view('admin.cases.show', compact('case', 'sessions'));
     }
+
 
     public function showDurations(Cases $case)
     {
@@ -237,13 +312,19 @@ class CaseController extends Controller
 
     public function editSession(court_session_date $session)
     {
-        $lawers = Lawyer::get();
+        $lawers = User::whereIn('role', ['Lawyer', 'admin', 'superadmin'])->where('active', 1)->get();
         return view('admin.cases.editSession', compact('session', 'lawers'));
     }
 
     public function updateSession(Request $request, court_session_date $session)
     {
-        $session->update($request->all());
+        $session->update([
+            'date' => $request->date,
+            'facts' => $request->facts,
+            'note' => $request->note,
+            'lawyer_user_id' => $request->user_id,
+            'type' => 'جلسه'
+        ]);
         return redirect()->route('cases.show', $session->cases)->with('success', 'تم تعديل القضية بنجاح');
     }
 
@@ -277,7 +358,6 @@ class CaseController extends Controller
         $procedural = ProceduralRecord::create([
             'cases_id' => $case->id,
             'created_by' => $data['created_by'],
-            'date' => $data['date'],
             'action' => $data['action'],
             'note' => $data['note'],
             'type' => $data['type'],
@@ -303,8 +383,8 @@ class CaseController extends Controller
 
     public function addFile(Request $request, ProceduralRecord $case)
     {
-        if ($request->hasFile('file_path')) {
-            foreach ($request->file('file_path') as $uploadedFile) {
+        if ($request->hasFile('files')) {
+            foreach ($request->file('files') as $uploadedFile) {
                 $path = $uploadedFile->store('ProceduralFiles', 'public');
 
                 ProceduralFile::create([
@@ -317,7 +397,7 @@ class CaseController extends Controller
         }
 
 
-        return redirect()->route('cases.procedure', $case->cases)
+        return redirect()->back()
             ->with('success', 'تم رفع الملف بنجاح');
     }
 
@@ -366,7 +446,7 @@ class CaseController extends Controller
     {
         $data = $request->except('_token', 'file');
         $case->update($data);
-        return redirect()->route('cases.procedure', $case->cases)
+        return redirect()->route('cases.show', $case->cases)
             ->with('success', 'تم تسجيل الاجراء بنجاح');
     }
 
@@ -398,6 +478,37 @@ class CaseController extends Controller
             ->get();
 
         return view('admin.cases.trashed', compact('cases'));
+    }
+
+
+    public function editProcedure(ProceduralRecord $case)
+    {
+        $case->load('files');
+        $lawyers = User::whereIn('role', ['Lawyer', 'admin', 'superadmin'])->where('active', 1)->get();
+        return view('admin.cases.editProcedure', compact('case', 'lawyers'));
+    }
+
+    public function updateProcedure(Request $request, ProceduralRecord $case)
+    {
+        $data = $request->except('_token', 'file');
+
+        $data['type'] = 'اجراء';
+        $case->update($data);
+        return redirect()->route('cases.show', $case->cases)
+            ->with('success', 'تم تسجيل الاجراء بنجاح');
+    }
+
+    public function deleteSessionFile(sessionfiles $session)
+    {
+        $session->delete();
+        return redirect()->back()
+            ->with('success', 'تم حذف الملف بنجاح');
+    }
+    public function deleteProcedure(ProceduralRecord $case)
+    {
+        $case->delete();
+        return redirect()->back()
+            ->with('success', 'تم حذف الاجراء بنجاح');
     }
 
 }

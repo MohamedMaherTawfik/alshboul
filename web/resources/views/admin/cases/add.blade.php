@@ -88,7 +88,7 @@
                         <!-- التاريخ -->
                         <div class="col-md-6 mb-3">
                             <label for="date" class="form-label required-field">تاريخ الجلسة</label>
-                            <input type="date" class="form-control" id="date" name="date" required>
+                            <input type="date" class="form-control" id="date" name="date">
                         </div>
                     </div>
 
@@ -105,10 +105,10 @@
 
 
                     <div class="row">
-                        <!-- ملف مرفق -->
-                        <div class="col-md-6 mb-3">
-                            <label for="file" class="form-label">رفع ملف</label>
-                            <input type="file" class="form-control" id="file" name="file">
+                        <!-- رفع الملفات -->
+                        <div class="mb-3">
+                            <label for="file_path" class="form-label">المستندات</label>
+                            <input type="file" name="file_path[]" id="file_path" class="form-control" multiple>
                         </div>
                     </div>
 

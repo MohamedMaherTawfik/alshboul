@@ -109,8 +109,8 @@
 
                     <!-- المحامي -->
                     <div class="col-md-6 mb-3">
-                        <label for="lawyer_id" class="form-label required-field">المحامي</label>
-                        <select class="form-select" id="lawyer_id" name="lawyer_id" required>
+                        <label for="user_id" class="form-label required-field">المحامي</label>
+                        <select class="form-select" id="user_id" name="user_id" required>
                             <option value="" disabled>اختر المحامي</option>
                             @foreach ($lawers as $lawyer)
                                 <option value="{{ $lawyer->id }}"
@@ -119,23 +119,6 @@
                                 </option>
                             @endforeach
                         </select>
-                    </div>
-
-                    <div class="row">
-                        <!-- ملف مرفق -->
-                        <div class="col-md-6 mb-3">
-                            <label for="file" class="form-label">رفع ملف جديد (اختياري)</label>
-                            <input type="file" class="form-control" id="file" name="file">
-
-                            @if ($session->file)
-                                <small class="d-block mt-2">
-                                    الملف الحالي:
-                                    <a href="{{ asset('storage/' . $session->file) }}" target="_blank" class="text-primary">
-                                        عرض الملف
-                                    </a>
-                                </small>
-                            @endif
-                        </div>
                     </div>
 
                     <!-- الوقائع -->
@@ -156,6 +139,38 @@
                         <button type="submit" class="btn btn-primary">تحديث الجلسة</button>
                     </div>
                 </form>
+
+                <div class="row">
+                    <!-- ملف مرفق -->
+                    <div class="col-md-12 mb-3">
+                        @if ($session->sessionFiles->count() > 0)
+                            <p class="fw-bold mb-2">📂 الملفات الحالية:</p>
+                            @foreach ($session->sessionFiles as $file)
+                                <div class="mb-2">
+                                    <!-- زر عرض -->
+                                    <a href="{{ asset('storage/' . $file->file) }}" class="btn btn-sm btn-info"
+                                        target="_blank">
+                                        عرض المستند
+                                    </a>
+
+                                    <!-- زر الحذف -->
+                                    <form action="{{ route('cases.session.delete.files', $file->id) }}" method="POST"
+                                        onsubmit="return confirm('هل أنت متأكد من الحذف؟')" style="display:inline-block;">
+                                        @csrf
+                                        @method('DELETE')
+                                        <button type="submit" class="btn btn-sm btn-danger">
+                                            حذف
+                                        </button>
+                                    </form>
+                                </div>
+                            @endforeach
+                        @else
+                            <p class="text-muted">لا توجد ملفات مرفقة حالياً.</p>
+                        @endif
+                    </div>
+                </div>
+
+
             </div>
         </div>
     </div>

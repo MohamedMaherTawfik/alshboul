@@ -7,8 +7,6 @@ use App\Models\User;
 
 class ProceduralFile extends Model
 {
-
-
     protected $guarded = [];
 
     public function proceduralRecord()
