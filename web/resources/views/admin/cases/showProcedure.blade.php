@@ -72,7 +72,7 @@
         </div>
     </div>
 
-    {{-- ================== خانات البحث ================== --}}
+    {{-- ================== خانات البحث ==================
     <div class="row g-3 mb-3">
         <div class="col-md-3">
             <input type="text" id="searchUser" class="form-control" placeholder="بحث باسم المدخل">
@@ -86,7 +86,7 @@
         <div class="col-md-3">
             <input type="text" id="searchEnd" class="form-control" placeholder="بحث بنهاية المدة">
         </div>
-    </div>
+    </div> --}}
 
     {{-- ================== المذكرات القانونية ================== --}}
     <div class="card shadow-sm border-0 mt-4">
@@ -190,6 +190,16 @@
                                 <td>{{ $duration->note ?? '-' }}</td>
                                 <td><a href="{{ route('case.procedural.show', $duration) }}" class="btn btn-primary">اجراء
                                         فرعي</a>
+                                    @if (Auth::user()->role == 'admin' || Auth::user()->role == 'superadmin')
+                                        <a href="{{ route('case.procedural.edit', $duration) }}"
+                                            class="btn btn-warning">تعديل</a>
+                                        <form action="{{ route('case.procedural.delete', $duration) }}" method="POST"
+                                            style="display: inline-block">
+                                            @csrf
+                                            @method('DELETE')
+                                            <button type="submit" class="btn btn-danger">حذف</button>
+                                        </form>
+                                    @endif
                                 </td>
                                 {{-- @if (Auth::user()->role == 'admin' || Auth::user()->role == 'superadmin')
                                     <td>

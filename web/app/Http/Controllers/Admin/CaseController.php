@@ -356,4 +356,31 @@ class CaseController extends Controller
         return redirect()->back()->with('success', 'تم رفع الملفات بنجاح');
     }
 
+    public function editSubProcedure(ProceduralRecord $case)
+    {
+        $case->load('subProcedurals', 'files');
+        return view('admin.cases.editSubProcedure', compact('case'));
+    }
+
+    public function updateSubProcedure(Request $request, ProceduralRecord $case)
+    {
+        $data = $request->except('_token', 'file');
+        $case->update($data);
+        return redirect()->route('cases.procedure', $case->cases)
+            ->with('success', 'تم تسجيل الاجراء بنجاح');
+    }
+
+    public function deleteSubProcedure(ProceduralRecord $case)
+    {
+        $case->delete();
+        return redirect()->back()
+            ->with('success', 'تم حذف الاجراء بنجاح');
+    }
+
+    public function deleteFiles(ProceduralFile $case)
+    {
+        $case->delete();
+        return redirect()->back()
+            ->with('success', 'تم حذف الملف بنجاح');
+    }
 }

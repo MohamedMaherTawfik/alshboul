@@ -73,12 +73,19 @@
     </div>
 
     {{-- ================= جدول مواعيد الجلسات ================= --}}
-    <div class="card-header bg-white border-0 pt-3 pb-2 d-flex flex-wrap align-items-center gap-2">
-        <h5 class="mb-0"><i class="bi bi-calendar-event me-2"></i> مواعيد الجلسات </h5>
-        <a href="{{ route('cases.add', $case) }}" class="btn btn-warning me-2 btn-sm ms-auto px-3 text-white">
-            <i class="bi bi-list me-1"></i> اضافه جلسه
+    <div class="card-header bg-white border-0 pt-3 pb-2 d-flex align-items-center justify-content-between">
+        <!-- زرار على اليمين -->
+        <a href="{{ route('cases.add', $case) }}" class="btn btn-warning btn-sm px-3 text-white d-flex align-items-center">
+            <i class="bi bi-plus-circle me-1"></i> إضافة جلسة
+        </a>
+        <!-- زرار على الشمال -->
+        <a href="{{ route('cases.procedure', $case) }}"
+            class="btn btn-info mr-4 text-white btn-sm px-3 d-flex align-items-center">
+            <i class="bi bi-gear-fill me-1"></i> اضافه اجراء
         </a>
     </div>
+
+
     <table class="table table-bordered table-striped">
         <thead>
             <tr>

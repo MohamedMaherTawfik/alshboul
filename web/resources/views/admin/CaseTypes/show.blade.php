@@ -366,8 +366,7 @@
                                                     class="btn btn-lg btn-info w-100"> + تسويه </a>
                                                 <a href="{{ route('cases.expenses', $case) }}"
                                                     class="btn btn-lg btn-dark w-100">المصاريف</a>
-                                                <a href="{{ route('cases.procedure', $case) }}"
-                                                    class="btn btn-lg btn-success w-100">اجراء</a>
+
                                             </div>
                                         @endif
 
