@@ -256,7 +256,8 @@ class CaseController extends Controller
                 'facts' => $session->facts,
                 'note' => $session->note,
                 'files' => $session->sessionFiles,
-                'user' => $session->user->name
+                'user' => $session->user->name,
+                'created_at' => $session->created_at
             ]);
         }
 
@@ -269,7 +270,8 @@ class CaseController extends Controller
                 'facts' => $record->action,
                 'note' => $record->note,
                 'files' => $record->files,
-                'user' => $record->created_by
+                'user' => $record->created_by,
+                'created_at' => $record->created_at
             ]);
         }
 
@@ -311,7 +313,6 @@ class CaseController extends Controller
         $files = sessionfiles::whereIn('court_session_date_id', $sessionPlucks)->get();
         return view('admin.cases.search', compact('sessions', 'files'));
     }
-
 
     public function editSession(court_session_date $session)
     {

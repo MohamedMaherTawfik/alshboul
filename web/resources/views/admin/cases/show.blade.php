@@ -73,129 +73,151 @@
     </div>
 
     {{-- ================= جدول مواعيد الجلسات ================= --}}
-    <div class="card-header bg-white border-0 pt-3 pb-2 d-flex align-items-center justify-content-between">
-        <!-- زرار على اليمين -->
-        <a href="{{ route('cases.add', $case) }}" class="btn btn-warning btn-sm px-3 text-white d-flex align-items-center">
-            <i class="bi bi-plus-circle me-1"></i> إضافة جلسة او اجراء
-        </a>
-        {{-- <!-- زرار على الشمال -->
-        <a href="{{ route('cases.procedure', $case) }}"
-            class="btn btn-info mr-4 text-white btn-sm px-3 d-flex align-items-center">
-            <i class="bi bi-gear-fill me-1"></i> اضافه اجراء
-        </a> --}}
-    </div>
+    <!-- سكشن الفلترة والإضافة -->
+    <!-- سكشن الفلترة والإضافة -->
+    <section class="mb-5">
+        <div class="card shadow-sm">
+            <div class="card-body d-flex align-items-center justify-content-between">
+                <!-- زرار إضافة -->
+                <a href="{{ route('cases.add', $case) }}"
+                    class="btn btn-dark btn-sm px-3 text-white d-flex align-items-center">
+                    <i class="bi bi-plus-circle me-1"></i> إضافة جلسة او اجراء
+                </a>
 
-    <table class="table">
-        <thead>
-            <tr>
-                <th>اسم المدخل</th>
-                <th>التاريخ</th>
-                <th>المحامي</th>
-                <th>النوع</th>
-                <th>الوقائع</th>
-                <th>الملفات</th>
-                <th>ملاحظات</th>
-                <th>إجراءات</th>
-            </tr>
-        </thead>
-        <tbody>
-            @forelse ($sessions as $session)
-                <tr>
-                    @php
-                        // dd($session);
-                    @endphp
-                    <td>{{ $session['user'] }}</td>
-                    <td>{{ $session['date'] ?? '-' }}</td>
-                    <td>{{ $session['lawyer'] }}</td>
-                    <td>{{ $session['type'] }}</td>
-                    <td>{{ $session['facts'] }}</td>
-                    <td>
-                        {{-- عرض الملفات --}}
-                        @foreach ($session['files'] as $file)
-                            <a href="{{ asset('storage/' . ($file->file_path ?? $file->file)) }}"
-                                class="btn btn-sm btn-info mb-1" target="_blank">
-                                عرض المستند
-                            </a>
-                        @endforeach
-
-                        {{-- زرار إضافة ملف (+) --}}
-                        <button class="btn btn-sm btn-success" data-bs-toggle="modal"
-                            data-bs-target="#addFileModal-{{ $session['type'] }}-{{ $session['id'] }}">
-                            +
-                        </button>
-                    </td>
-
-                    <td>{{ $session['note'] ?? '-' }}</td>
-                    <td>
-                        {{-- زر التعديل --}}
-                        @if ($session['type'] === 'جلسة')
-                            <a href="{{ route('cases.session.edit', $session['id']) }}"
-                                class="btn btn-sm btn-warning">تعديل الجلسة</a>
-                        @else
-                            <a href="{{ route('cases.procedure.edit', $session['id']) }}"
-                                class="btn btn-sm btn-warning">تعديل الإجراء</a>
-                            {{-- زر إجراء فرعي --}}
-                            <a href="{{ route('case.procedural.show', $session['id']) }}" class="btn btn-sm btn-info">إجراء
-                                فرعي</a>
-                        @endif
-
-                        {{-- زر الحذف --}}
-                        <form
-                            action="{{ $session['type'] === 'جلسة'
-                                ? route('cases.session.delete', $session['id'])
-                                : route('cases.procedure.delete', $session['id']) }}"
-                            method="POST" style="display:inline-block;">
-                            @csrf
-                            @method('DELETE')
-                            <button type="submit" class="btn btn-sm btn-danger"
-                                onclick="return confirm('هل أنت متأكد من الحذف؟')">حذف</button>
-                        </form>
-                    </td>
-                </tr>
-
-                {{-- مودال إضافة ملفات لكل جلسة/إجراء --}}
-                <div class="modal fade" id="addFileModal-{{ $session['type'] }}-{{ $session['id'] }}" tabindex="-1"
-                    aria-labelledby="addFileModalLabel-{{ $session['id'] }}" aria-hidden="true">
-                    <div class="modal-dialog">
-                        <div class="modal-content">
-                            <form method="POST"
-                                action="{{ $session['type'] === 'جلسة'
-                                    ? route('sessions.uploadFile', $session['id'])
-                                    : route('procedural.add.file', $session['id']) }}"
-                                enctype="multipart/form-data">
-                                @csrf
-                                <div class="modal-header">
-                                    <h5 class="modal-title" id="addFileModalLabel-{{ $session['id'] }}">
-                                        رفع مستندات {{ $session['type'] }}
-                                    </h5>
-                                    <button type="button" class="btn-close" data-bs-dismiss="modal"
-                                        aria-label="إغلاق"></button>
-                                </div>
-                                <div class="modal-body">
-                                    <div class="mb-3">
-                                        <label for="files-{{ $session['id'] }}" class="form-label">اختر الملفات</label>
-                                        <input type="file" name="files[]" id="files-{{ $session['id'] }}"
-                                            class="form-control" multiple required>
-                                    </div>
-                                </div>
-                                <div class="modal-footer">
-                                    <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">إلغاء</button>
-                                    <button type="submit" class="btn btn-primary">رفع</button>
-                                </div>
-                            </form>
-                        </div>
-                    </div>
+                <!-- أزرار الفلترة -->
+                <div class="d-flex gap-2">
+                    <button class="btn btn-primary btn-sm mr-2" onclick="filterSessions('all')">عرض الكل</button>
+                    <button class="btn btn-success btn-sm mr-2" onclick="filterSessions('session')">الجلسات فقط</button>
+                    <button class="btn btn-info btn-sm mr-2" onclick="filterSessions('procedure')">الإجراءات فقط</button>
                 </div>
-            @empty
-                <tr>
-                    <td colspan="8" class="text-center">لا توجد بيانات</td>
-                </tr>
-            @endforelse
-        </tbody>
-    </table>
+            </div>
+        </div>
+    </section>
 
+    <!-- جدول الجلسات والإجراءات -->
+    <div class="card shadow">
+        <div class="card-body">
+            <table class="table table-bordered table-striped text-center">
+                <thead class="table-dark">
+                    <tr>
+                        <th>اسم المدخل</th>
+                        <th>التاريخ</th>
+                        <th>المحامي</th>
+                        <th>النوع</th>
+                        <th>الوقائع</th>
+                        <th>الملفات</th>
+                        <th>ملاحظات</th>
+                        <th>تاريخ الإدخال</th>
+                        <th>إجراءات</th>
+                    </tr>
+                </thead>
+                <tbody id="sessionsTable">
+                    @forelse ($sessions as $session)
+                        <tr data-type="{{ $session['type'] === 'جلسة' ? 'session' : 'procedure' }}">
+                            <td>{{ $session['user'] }}</td>
+                            <td>{{ $session['date'] ?? '-' }}</td>
+                            <td>{{ $session['lawyer'] }}</td>
+                            <td>{{ $session['type'] }}</td>
+                            <td>{{ $session['facts'] }}</td>
+                            <td>
+                                @foreach ($session['files'] as $file)
+                                    <a href="{{ asset('storage/' . ($file->file_path ?? $file->file)) }}"
+                                        class="btn btn-sm btn-info mb-1" target="_blank">
+                                        عرض المستند
+                                    </a>
+                                @endforeach
 
+                                <button class="btn btn-sm btn-success" data-bs-toggle="modal"
+                                    data-bs-target="#addFileModal-{{ $session['type'] }}-{{ $session['id'] }}">
+                                    +
+                                </button>
+                            </td>
 
+                            <td>{{ $session['note'] ?? '-' }}</td>
+                            <td>{{ $session['created_at'] ? date('d/m/Y H:i', strtotime($session['created_at'])) : '-' }}
+                            </td>
+                            <td>
+                                @if ($session['type'] === 'جلسة')
+                                    <a href="{{ route('cases.session.edit', $session['id']) }}"
+                                        class="btn btn-sm btn-warning">تعديل الجلسة</a>
+                                @else
+                                    <a href="{{ route('cases.procedure.edit', $session['id']) }}"
+                                        class="btn btn-sm btn-warning">تعديل الإجراء</a>
+                                    <a href="{{ route('case.procedural.show', $session['id']) }}"
+                                        class="btn btn-sm btn-info">إجراء فرعي</a>
+                                @endif
 
+                                <form
+                                    action="{{ $session['type'] === 'جلسة'
+                                        ? route('cases.session.delete', $session['id'])
+                                        : route('cases.procedure.delete', $session['id']) }}"
+                                    method="POST" style="display:inline-block;">
+                                    @csrf
+                                    @method('DELETE')
+                                    <button type="submit" class="btn btn-sm btn-danger"
+                                        onclick="return confirm('هل أنت متأكد من الحذف؟')">حذف</button>
+                                </form>
+                            </td>
+                        </tr>
+
+                        {{-- مودال رفع ملفات --}}
+                        <div class="modal fade" id="addFileModal-{{ $session['type'] }}-{{ $session['id'] }}"
+                            tabindex="-1" aria-labelledby="addFileModalLabel-{{ $session['id'] }}" aria-hidden="true">
+                            <div class="modal-dialog">
+                                <div class="modal-content">
+                                    <form method="POST"
+                                        action="{{ $session['type'] === 'جلسة'
+                                            ? route('sessions.uploadFile', $session['id'])
+                                            : route('procedural.add.file', $session['id']) }}"
+                                        enctype="multipart/form-data">
+                                        @csrf
+                                        <div class="modal-header">
+                                            <h5 class="modal-title" id="addFileModalLabel-{{ $session['id'] }}">
+                                                رفع مستندات {{ $session['type'] }}
+                                            </h5>
+                                            <button type="button" class="btn-close" data-bs-dismiss="modal"
+                                                aria-label="إغلاق"></button>
+                                        </div>
+                                        <div class="modal-body">
+                                            <div class="mb-3">
+                                                <label for="files-{{ $session['id'] }}" class="form-label">اختر
+                                                    الملفات</label>
+                                                <input type="file" name="files[]" id="files-{{ $session['id'] }}"
+                                                    class="form-control" multiple required>
+                                            </div>
+                                        </div>
+                                        <div class="modal-footer">
+                                            <button type="button" class="btn btn-secondary"
+                                                data-bs-dismiss="modal">إلغاء</button>
+                                            <button type="submit" class="btn btn-primary">رفع</button>
+                                        </div>
+                                    </form>
+                                </div>
+                            </div>
+                        </div>
+                    @empty
+                        <tr>
+                            <td colspan="9" class="text-center">لا توجد بيانات</td>
+                        </tr>
+                    @endforelse
+                </tbody>
+            </table>
+        </div>
     </div>
+
+@endsection
+
+@section('script')
+    <script>
+        function filterSessions(type) {
+            let rows = document.querySelectorAll("#sessionsTable tr");
+            rows.forEach(row => {
+                if (type === 'all' || row.dataset.type === type) {
+                    row.style.display = '';
+                } else {
+                    row.style.display = 'none';
+                }
+            });
+        }
+    </script>
 @endsection
