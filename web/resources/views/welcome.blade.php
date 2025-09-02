@@ -99,8 +99,6 @@
                 </div>
 
             </div>
-
-
             <!-- Logo (Center) -->
             <div class="order-2 md:order-2 mb-3 md:mb-0">
                 <img src="{{ asset('images/logoFull.webp') }}" alt="Logo" class="h-12 mx-auto" />

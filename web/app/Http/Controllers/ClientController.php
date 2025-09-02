@@ -19,12 +19,12 @@ class ClientController extends Controller
     public function index()
     {
         $data = Client::with('user')->where('seen', 1)->orderBy('id', 'desc')->get();
-        return view('admin.Client.index', compact('data'));
+        return view('admin.client.index', compact('data'));
     }
     public function visit()
     {
 
-        return view('admin.Client.Visit');
+        return view('admin.client.Visit');
     }
 
     public function indexDelete()
@@ -39,7 +39,7 @@ class ClientController extends Controller
     public function create()
     {
         $users = User::where('role', 'user')->get();
-        return view('admin.Client.create', compact('users'));
+        return view('admin.client.create', compact('users'));
     }
 
     /**
@@ -159,7 +159,7 @@ class ClientController extends Controller
      */
     public function edit(Client $client)
     {
-        return view('admin.Client.edit', compact('client'));
+        return view('admin.client.edit', compact('client'));
     }
 
     /**
@@ -241,13 +241,13 @@ class ClientController extends Controller
     public function clientProcedural()
     {
         $data = Client::where('seen', 1)->orderBy('id', 'desc')->get();
-        return view('admin.Client.action', compact('data'));
+        return view('admin.client.action', compact('data'));
     }
 
     public function ClientShowProcedural(Client $client)
     {
         $client->load('clientProcedurals');
-        return view('admin.Client.show', compact('client'));
+        return view('admin.client.show', compact('client'));
     }
     public function clientstoreProcedural(Request $request, Client $client)
     {
