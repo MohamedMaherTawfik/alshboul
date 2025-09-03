@@ -33,17 +33,14 @@ class ProceduralRecordController extends Controller
         $procedural = ProceduralRecord::create([
             'executive_case_id' => $executiveCase->id ?? null,
             'created_by' => $data['created_by'] ?? null,
-            'date' => $data['date'] ?? null,
             'action' => $data['action'] ?? null,
             'note' => $data['note'] ?? null,
             'type' => $data['type'] ?? null,
             'user_id' => $data['user_id'] ?? null,
-            'next_action' => $data['next_action'] ?? null,
-            'next_action_date' => $data['next_action_date'] ?? null,
         ]);
         // رفع الملفات
-        if ($request->hasFile('file_path')) {
-            foreach ($request->file('file_path') as $uploadedFile) {
+        if ($request->hasFile('files')) {
+            foreach ($request->file('files') as $uploadedFile) {
                 $path = $uploadedFile->store('ProceduralFiles', 'public');
 
                 ProceduralFile::create([
@@ -55,13 +52,27 @@ class ProceduralRecordController extends Controller
             }
         }
 
-        return redirect()->route('procedural-record.index', $executiveCase)->with('success', 'تم إضافة الإجراء الفرعي ورفع الملفات بنجاح');
+        return redirect()->back()->with('success', 'تم إضافة الإجراء الفرعي ورفع الملفات بنجاح');
     }
 
-    public function edit($id)
+    public function edit(ProceduralRecord $executiveCase)
     {
-        $proceduralRecord = ProceduralRecord::findOrFail($id);
-        return view('admin.procedural-record.edit', compact('proceduralRecord'));
+        $lawyers = User::whereIn('role', ['Lawyer', 'admin', 'superadmin'])->where('active', 1)->get();
+        return view('admin.procedural-record.edit', compact('executiveCase', 'lawyers'));
+    }
+    public function update(Request $request, ProceduralRecord $executiveCase)
+    {
+        $data = $request->except('_token', 'file_path');
+        $data['created_by'] = Auth::user()->name;
+        // إنشاء الإجراء
+        $executiveCase->update([
+            'created_by' => $data['created_by'] ?? null,
+            'action' => $data['action'] ?? null,
+            'note' => $data['note'] ?? null,
+            'type' => $data['type'] ?? null,
+            'user_id' => $data['user_id'] ?? null,
+        ]);
+        return redirect()->route('procedural-record.index', ['executiveCase' => $executiveCase->case])->with('success', 'تم تعديل الإجراء بنجاح');
     }
 
     public function show($id, $case_id = null)
@@ -73,7 +84,19 @@ class ProceduralRecordController extends Controller
     public function actions(ExecutiveCase $executiveCase)
     {
         $executiveCase->load('proceduralRecords');
-        // dd($executiveCase);
-        return view('admin.procedural-record.index', compact('executiveCase'));
+        $lawyers = User::whereIn('role', ['Lawyer', 'admin', 'superadmin'])->where('active', 1)->get();
+        return view('admin.procedural-record.index', compact('executiveCase', 'lawyers'));
+    }
+
+    public function destroy(ProceduralRecord $executiveCase)
+    {
+        $executiveCase->delete();
+        return redirect()->back()->with('success', 'تم حذف الإجراء بنجاح');
+    }
+
+    public function destroyFile(ProceduralFile $executiveCase)
+    {
+        $executiveCase->delete();
+        return redirect()->back()->with('success', 'تم حذف الملف بنجاح');
     }
 }

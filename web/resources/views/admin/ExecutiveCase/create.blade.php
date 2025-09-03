@@ -137,17 +137,6 @@
                         </div>
 
                         <!-- أرقام الملفات -->
-                        <div class="col-md-4">
-                            <div class="form-group">
-                                <label for="office_file_number">رقم الملف المكتبي</label>
-                                <input type="number" name="office_file_number"
-                                    class="form-control @error('office_file_number') is-invalid @enderror"
-                                    value="{{ $missing }}" readonly>
-                                @error('office_file_number')
-                                    <span class="invalid-feedback">{{ $message }}</span>
-                                @enderror
-                            </div>
-                        </div>
 
                         <div class="col-md-4">
                             <div class="form-group">
@@ -235,19 +224,6 @@
                             </div>
                         </div>
 
-                        <!-- المحكوم له -->
-                        <div class="col-md-6">
-                            <div class="form-group">
-                                <label for="judged_for">المحكوم له</label>
-                                <input type="text" name="judged_for"
-                                    class="form-control @error('judged_for') is-invalid @enderror"
-                                    value="{{ old('judged_for') }}">
-                                @error('judged_for')
-                                    <span class="invalid-feedback">{{ $message }}</span>
-                                @enderror
-                            </div>
-                        </div>
-
                         <div class="col-md-6">
                             <div class="form-group">
                                 <label for="judged_for_status">صفة المحكوم له</label>
@@ -255,19 +231,6 @@
                                     class="form-control @error('judged_for_status') is-invalid @enderror"
                                     value="{{ old('judged_for_status') }}">
                                 @error('judged_for_status')
-                                    <span class="invalid-feedback">{{ $message }}</span>
-                                @enderror
-                            </div>
-                        </div>
-
-                        <!-- المحكوم عليه -->
-                        <div class="col-md-6">
-                            <div class="form-group">
-                                <label for="judged_against">المحكوم عليه</label>
-                                <input type="text" name="judged_against"
-                                    class="form-control @error('judged_against') is-invalid @enderror"
-                                    value="{{ old('judged_against') }}">
-                                @error('judged_against')
                                     <span class="invalid-feedback">{{ $message }}</span>
                                 @enderror
                             </div>

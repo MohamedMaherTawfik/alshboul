@@ -86,12 +86,6 @@
                         </div>
 
                         <!-- أرقام الملفات -->
-                        <div class="col-md-4">
-                            <label>رقم الملف المكتبي</label>
-                            <input type="number" name="office_file_number" class="form-control"
-                                value="{{ old('office_file_number', $executiveCase->office_file_number) }}" readonly>
-                        </div>
-
                         @php
                             use App\Models\excutiveCasesMain;
                             $main = excutiveCasesMain::all();
@@ -156,21 +150,9 @@
                         </div>
 
                         <div class="col-md-6">
-                            <label>المحكوم له</label>
-                            <input type="text" name="judged_for" class="form-control"
-                                value="{{ old('judged_for', $executiveCase->judged_for) }}">
-                        </div>
-
-                        <div class="col-md-6">
                             <label>صفة المحكوم له</label>
                             <input type="text" name="judged_for_status" class="form-control"
                                 value="{{ old('judged_for_status', $executiveCase->judged_for_status) }}">
-                        </div>
-
-                        <div class="col-md-6">
-                            <label>المحكوم عليه</label>
-                            <input type="text" name="judged_against" class="form-control"
-                                value="{{ old('judged_against', $executiveCase->judged_against) }}">
                         </div>
 
                         <div class="col-md-6">

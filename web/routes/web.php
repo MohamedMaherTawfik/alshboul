@@ -192,7 +192,7 @@ Route::group(['prefix' => 'admin', 'middleware' => ['auth', roleMiddleware::clas
     Route::get('/executive-cases/{executiveCase}/procedural/show', [ExecutiveCaseController::class, 'executiveProcedural'])->name('executive-case.procedural.show');
     Route::get('/executive-cases/{executiveCase}/edit', [ExecutiveCaseController::class, 'edit'])->name('executive-case.edit');
     Route::post('/executive-cases/{executiveCase}/update', [ExecutiveCaseController::class, 'update'])->name('executive-case.update');
-    Route::delete('/executive-case/delete', [ExecutiveCaseController::class, 'destroy'])->name('executive-case.delete');
+    Route::delete('/executive-case/delete/{executiveCase}', [ExecutiveCaseController::class, 'destroy'])->name('executive-case.delete');
     Route::get('/executive-cases/deleted', [ExecutiveCaseController::class, 'indexDelete'])->name('executive-case.indexDelete');
     Route::get('/executive-case/{id}/restore', [ExecutiveCaseController::class, 'restore'])->name('executive-case.restore');
     Route::get('/executive-cases/{id}', [ExecutiveCaseController::class, 'show'])->name('executive-case.show');
@@ -201,7 +201,10 @@ Route::group(['prefix' => 'admin', 'middleware' => ['auth', roleMiddleware::clas
     Route::get('/procedural-records/{executiveCase}/action', [ProceduralRecordController::class, 'actions'])->name('procedural-record.index');
     Route::get('/procedural-records/create/{executiveCase}', [ProceduralRecordController::class, 'create'])->name('procedural-record.create');
     Route::post('/procedural-records/create/{executiveCase}', [ProceduralRecordController::class, 'store'])->name('procedural-record.store');
-    Route::get('/procedural-records/{id}/edit', [ProceduralRecordController::class, 'edit'])->name('procedural-record.edit');
+    Route::get('/procedural-records/{executiveCase}/edit', [ProceduralRecordController::class, 'edit'])->name('procedural-record.edit');
+    Route::post('/procedural-records/{executiveCase}/update', [ProceduralRecordController::class, 'update'])->name('procedural-record.update');
+    Route::delete('/procedural-records/{executiveCase}/delete', [ProceduralRecordController::class, 'destroy'])->name('procedural-record.delete');
+    Route::delete('/procedural-records/{executiveCase}/delete/file', [ProceduralRecordController::class, 'destroyFile'])->name('procedural-executiveCase.file.destroy');
     Route::get('/procedural-records/{id}/show/{executiveCase?}', [ProceduralRecordController::class, 'show'])->name('procedural-record.show');
 
     Route::get('/vistiors/reviews/all', [visitorReviewController::class, 'index'])->name('visitors.index');

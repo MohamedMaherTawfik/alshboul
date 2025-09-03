@@ -25,12 +25,6 @@
                                 <input type="text" name="type" id="type" class="form-control">
                             </div>
 
-                            <!-- نوع الإجراء -->
-                            <div class="mb-3">
-                                <label for="date" class="form-label">تاريخ الإجراء</label>
-                                <input type="date" name="date" id="date" class="form-control">
-                            </div>
-
                             <!-- الإجراء -->
                             <div class="mb-3">
                                 <label for="action" class="form-label">الإجراء</label>

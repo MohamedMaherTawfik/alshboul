@@ -31,7 +31,6 @@
                                 <th>الرقم الوطني للموكل</th>
                                 <th>اسم الخصم</th>
                                 <th>الرقم الوطني للخصم</th>
-                                <th>رقم الملف المكتبي</th>
                                 <th>رقم الدعوى</th>
                                 <th>رقم الملف</th>
                                 <th>نوع الدعوي التنفيذية</th>
@@ -39,8 +38,6 @@
                                 <th>قيمة الدعوى</th>
                                 <th>الدائرة التنفيذية</th>
                                 <th>نوع السند التنفيذي</th>
-                                <th>المحكوم له</th>
-                                <th>المحكوم عليه</th>
                                 <th>تاريخ التسجيل</th>
                                 <th>رقم السند التنفيذي</th>
                                 <th>صفة المحكوم له</th>
@@ -61,7 +58,6 @@
                                     <td>{{ $case->client_national_id }}</td>
                                     <td>{{ $case->opponent_name }}</td>
                                     <td>{{ $case->opponent_national_id }}</td>
-                                    <td>{{ $case->office_file_number }}</td>
                                     <td>{{ $case->case_number }}</td>
                                     <td>{{ $case->file_number }}</td>
                                     <td>{{ $case->case_type }}</td>
@@ -69,8 +65,6 @@
                                     <td>{{ $case->case_value }}</td>
                                     <td>{{ $case->execution_court }}</td>
                                     <td>{{ $case->execution_document_type }}</td>
-                                    <td>{{ $case->judged_for }}</td>
-                                    <td>{{ $case->judged_against }}</td>
                                     <td>{{ $case->registration_date }}</td>
                                     <td>{{ $case->execution_document_number }}</td>
                                     <td>{{ $case->judged_for_status }}</td>

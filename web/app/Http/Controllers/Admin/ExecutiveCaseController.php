@@ -193,24 +193,10 @@ class ExecutiveCaseController extends Controller
     /**
      * Remove the specified resource from storage.
      */
-    public function destroy(Request $request)
+    public function destroy(Request $request, ExecutiveCase $executiveCase)
     {
-        $executiveCase = ExecutiveCase::findOrFail($request->id);
-
-        if (!$executiveCase) {
-            return redirect()->back()->with('error', 'عفواً لا توجد بيانات');
-        }
-
-        $request->validate([
-            'reason' => 'required|string',
-        ]);
-
-        $executiveCase->updated_by = Auth::id();
-        $executiveCase->delete_reason = $request->reason;
-        $executiveCase->save();
         $executiveCase->delete();
-
-        return redirect()->route('executive-case.index')->with('success', 'تم حذف القضية التنفيذية بنجاح');
+        return redirect()->back()->with('success', 'تم حذف القضية التنفيذية بنجاح');
     }
 
     /**
@@ -288,6 +274,7 @@ class ExecutiveCaseController extends Controller
 
     public function executiveProcedural(ProceduralRecord $executiveCase)
     {
+        dd($executiveCase);
 
         $executiveCase->load('subProcedurals');
         return view('admin.ExecutiveCase.procedural', compact('executiveCase'));
