@@ -145,7 +145,7 @@
                     @forelse ($executiveCase->proceduralRecords as $record)
                         <tr>
                             <td>{{ $loop->iteration }}</td>
-                            <td>{{ $record->created_by ?? '-' }}</td>
+                            <td>{{ $record->userLawyer?->name ?? '-' }}</td>
                             <td>{{ $record->type }}</td>
                             <td>{{ $record->action }}</td>
                             <td>

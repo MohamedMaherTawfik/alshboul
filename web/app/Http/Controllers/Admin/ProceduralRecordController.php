@@ -28,11 +28,11 @@ class ProceduralRecordController extends Controller
     {
         $data = $request->except('_token', 'file_path');
         $data['cases_id'] = $executiveCase->id;
-        $data['created_by'] = Auth::user()->name;
+        $data['created_by'] = Auth::user()->id;
         // إنشاء الإجراء
         $procedural = ProceduralRecord::create([
             'executive_case_id' => $executiveCase->id ?? null,
-            'created_by' => $data['created_by'] ?? null,
+            'user_lawyer_id' => $data['created_by'] ?? null,
             'action' => $data['action'] ?? null,
             'note' => $data['note'] ?? null,
             'type' => $data['type'] ?? null,
