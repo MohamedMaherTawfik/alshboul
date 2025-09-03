@@ -16,14 +16,38 @@ use Illuminate\Support\Facades\Hash;
 
 class ArchiveController extends Controller
 {
+
     public function index()
     {
-        $archives = archives::where('active', 1)->get();
-        $mains = archivesMainMenues::get();
-        $subs = archivesSubMenues::get();
+        $archives = Archives::where('active', 1)->get();
+        $mains = ArchivesMainMenues::get();
+        $subs = ArchivesSubMenues::get();
         $clients = Client::get();
-        return view('admin.archive.index', compact('archives', 'mains', 'subs', 'clients'));
+
+        // نجهز array علشان نخزن فيه أول رقم فاضي لكل main
+        $missingNumbers = [];
+
+        foreach ($mains as $main) {
+            $subMenus = $subs->where('main_menu_id', $main->id)->pluck('document_number')->map(fn($v) => (int) $v)->sort()->values();
+            $expected = 1;
+            $missing = null;
+
+            foreach ($subMenus as $num) {
+                if ($num > $expected) {
+                    $missing = $expected;
+                    break;
+                }
+                $expected++;
+            }
+            if (!$missing) {
+                $missing = $expected;
+            }
+
+            $missingNumbers[$main->id] = $missing;
+        }
+        return view('admin.archive.index', compact('archives', 'mains', 'subs', 'clients', 'missingNumbers'));
     }
+
 
     public function index1()
     {
@@ -95,11 +119,6 @@ class ArchiveController extends Controller
             'added_by' => request()->user_id
         ]);
         return redirect()->route('archive.index')->with('success', 'تم الحفظ بنجاح');
-    }
-
-    public function createSubMain($id)
-    {
-        return view('admin.archive.createSub', compact('id'));
     }
 
     public function storeSubMain()

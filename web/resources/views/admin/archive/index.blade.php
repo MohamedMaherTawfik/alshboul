@@ -210,10 +210,12 @@
                             <li>
                                 <a class="dropdown-item d-flex align-items-center text-success fw-bold small px-2 py-1"
                                     href="#" data-bs-toggle="modal" data-bs-target="#createSubMainModal"
-                                    data-main-id="{{ $main->id }}" data-user-id="{{ auth()->id() }}">
+                                    data-main-id="{{ $main->id }}" data-user-id="{{ auth()->id() }}"
+                                    data-next-number="{{ $missingNumbers[$main->id] }}">
                                     <i class="fas fa-plus-circle me-1"></i>
                                     إضافة قائمة فرعية
                                 </a>
+
                             </li>
                         </ul>
                     </li>
@@ -570,8 +572,9 @@
                         <div class="mb-3">
                             <label for="document_number" class="form-label">رقم المستند</label>
                             <input type="text" class="form-control" id="document_number" name="document_number"
-                                placeholder="ادخل رقم المستند" required>
+                                placeholder="ادخل رقم المستند" readonly>
                         </div>
+
 
                     </div>
                     <div class="modal-footer">
@@ -655,18 +658,22 @@
 </script>
 
 <script>
-    document.addEventListener('DOMContentLoaded', function() {
-        var modal = document.getElementById('createSubMainModal');
+    document.addEventListener("DOMContentLoaded", function() {
+        const subMainModal = document.getElementById('createSubMainModal');
+        subMainModal.addEventListener('show.bs.modal', function(event) {
+            const button = event.relatedTarget;
+            const mainId = button.getAttribute('data-main-id');
+            const userId = button.getAttribute('data-user-id');
+            const nextNumber = button.getAttribute('data-next-number');
 
-        modal.addEventListener('show.bs.modal', function(event) {
-            var button = event.relatedTarget; // الزرار اللي فتح المودال
-            var mainId = button.getAttribute('data-main-id');
-
-            // املأ الحقول المخفية
-            modal.querySelector('#main_id_input').value = mainId;
+            // نضيف القيم في الفورم
+            document.getElementById('main_id_input').value = mainId;
+            document.getElementById('user_id_input').value = userId;
+            document.getElementById('document_number').value = nextNumber;
         });
     });
 </script>
+
 
 <script>
     document.addEventListener('DOMContentLoaded', function() {
