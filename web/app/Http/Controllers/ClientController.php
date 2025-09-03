@@ -19,12 +19,12 @@ class ClientController extends Controller
     public function index()
     {
         $data = Client::with('user')->where('seen', 1)->orderBy('id', 'desc')->get();
-        return view('admin.client.index', compact('data'));
+        return view('admin.mooakl.index', compact('data'));
     }
     public function visit()
     {
 
-        return view('admin.client.Visit');
+        return view('admin.mooakl.Visit');
     }
 
     public function indexDelete()
@@ -39,7 +39,7 @@ class ClientController extends Controller
     public function create()
     {
         $users = User::where('role', 'user')->get();
-        return view('admin.client.create', compact('users'));
+        return view('admin.mooakl.create', compact('users'));
     }
 
     /**
@@ -159,7 +159,7 @@ class ClientController extends Controller
      */
     public function edit(Client $client)
     {
-        return view('admin.client.edit', compact('client'));
+        return view('admin.mooakl.edit', compact('client'));
     }
 
     /**
@@ -247,7 +247,7 @@ class ClientController extends Controller
     public function ClientShowProcedural(Client $client)
     {
         $client->load('clientProcedurals');
-        return view('admin.client.show', compact('client'));
+        return view('admin.mooakl.show', compact('client'));
     }
     public function clientstoreProcedural(Request $request, Client $client)
     {
