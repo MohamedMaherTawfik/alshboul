@@ -228,6 +228,8 @@ Route::group(['prefix' => 'admin', 'middleware' => ['auth', roleMiddleware::clas
     Route::get('/transactions/{transaction}/edit/new', [TransactionController::class, 'edit'])->name('transactions.edit');
     Route::post('/transactions/{transaction}/update/new', [TransactionController::class, 'update'])->name('transactions.update');
     Route::delete('/transactions/{transaction}/destroy/new', [TransactionController::class, 'destroy'])->name('transactions.destroy');
+    Route::get('/transactions/{transaction}/procedural/new', [TransactionController::class, 'allProcedural'])->name('transactions.procedural.create');
+    Route::post('/transactions/{transaction}/procedural/new', [TransactionController::class, 'storeProcedural'])->name('transactions.procedural.store');
 
 
     Route::get('/archives/system', [ArchiveController::class, 'index'])->name('archive.index');

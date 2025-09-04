@@ -77,8 +77,8 @@
                             <div class="card bg-light">
                                 <div class="card-body py-3">
                                     <h6 class="card-title"><i class="bi bi-folder me-2"></i>معلومات القضية</h6>
-                                    <p class="mb-0">رقم القضية: {{ $case->case_number }}</p>
-                                    <p class="mb-0">اسم الموكل: {{ $case->client->name }}</p>
+                                    <p class="mb-0">رقم القضية: {{ $case->case_number ?? 'غير محدد' }}</p>
+                                    <p class="mb-0">اسم الموكل: {{ $case->client->name ?? 'غير محدد' }}</p>
                                 </div>
                             </div>
                         </div>
@@ -98,7 +98,7 @@
                         <select class="form-select" id="lawyer_id" name="lawyer_id" required>
                             <option value="" selected disabled>اختر المحامي</option>
                             @foreach ($lawers as $lawyer)
-                                <option value="{{ $lawyer->id }}">{{ $lawyer->name }}</option>
+                                <option value="{{ $lawyer->id }}">{{ $lawyer->name ?? 'غير محدد' }}</option>
                             @endforeach
                         </select>
                     </div>

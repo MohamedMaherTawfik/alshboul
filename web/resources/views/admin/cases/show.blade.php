@@ -37,33 +37,33 @@
                         </thead>
                         <tbody>
                             <tr>
-                                <td>{{ $case->case_number }}</td>
-                                <td>{{ $case->client->name }}</td>
-                                <td>{{ $case->first_national_id }}</td>
+                                <td>{{ $case->case_number ?? '-' }}</td>
+                                <td>{{ $case->client->name ?? '-' }}</td>
+                                <td>{{ $case->first_national_id ?? '-' }}</td>
                                 <td>
                                     @foreach ($case->caseOpponents as $item)
-                                        {{ $item->case_opponent_name }} -
+                                        {{ $item->case_opponent_name ?? '-' }} -
                                     @endforeach
                                 </td>
                                 <td>
                                     @foreach ($case->caseOpponents as $item)
-                                        {{ $item->case_opponent_national_number }} -
+                                        {{ $item->case_opponent_national_number ?? '-' }} -
                                     @endforeach
                                 </td>
-                                <td>{{ $case->suggestedCases->name }}</td>
-                                <td>{{ $case->case_type }}</td>
-                                <td>{{ $case->file_number }}</td>
-                                <td>{{ $case->court_name }}</td>
-                                <td>{{ $case->case_amount }}</td>
-                                <td>{{ $case->jubge_name }}</td>
+                                <td>{{ $case->suggestedCases->name ?? '-' }}</td>
+                                <td>{{ $case->case_type ?? '-' }}</td>
+                                <td>{{ $case->file_number ?? '-' }}</td>
+                                <td>{{ $case->court_name ?? '-' }}</td>
+                                <td>{{ $case->case_amount ?? '-' }}</td>
+                                <td>{{ $case->jubge_name ?? '-' }}</td>
                                 <td>{{ $case->case_details ?? '-' }}</td>
                                 <td>{{ $case->client_description ?? '-' }}</td>
                                 <td>
                                     @foreach ($case->caseOpponents as $item)
-                                        {{ $item->case_opponent_description }} -
+                                        {{ $item->case_opponent_description ?? '-' }} -
                                     @endforeach
                                 </td>
-                                <td>{{ $case->added_by->name }}</td>
+                                <td>{{ $case->added_by->name ?? '-' }}</td>
                             </tr>
                         </tbody>
                     </table>

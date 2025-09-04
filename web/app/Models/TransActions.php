@@ -23,4 +23,9 @@ class TransActions extends Model
     {
         return $this->belongsTo(User::class);
     }
+
+    public function procedural()
+    {
+        return $this->hasMany(ProceduralRecord::class, 'trans_actions_id');
+    }
 }

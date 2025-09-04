@@ -61,7 +61,7 @@
                                         <td class="d-flex">
                                             {{-- Edit --}}
                                             <a href="{{ route('transactions.edit', $item) }}"
-                                                class="btn btn-sm btn-warning me-2">
+                                                class="btn btn-sm btn-warning me-2 mr-2">
                                                 تعديل
                                             </a>
 
@@ -74,6 +74,11 @@
                                                     حذف
                                                 </button>
                                             </form>
+
+                                            <a href="{{ route('transactions.procedural.create', $item) }}"
+                                                class="btn btn-sm btn-info me-2 mr-2">
+                                                اجراء
+                                            </a>
                                         </td>
                                     @endif
                                 </tr>

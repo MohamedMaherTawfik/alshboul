@@ -140,11 +140,10 @@ class CaseController extends Controller
     public function storeAdd(Request $request, Cases $case)
     {
         $validated = $request->except('_token');
-
         if (empty($validated['date'])) {
             $procedural = ProceduralRecord::create([
                 'cases_id' => $case->id,
-                'created_by' => Auth::user()->name,
+                'user_lawyer_id' => $validated['lawyer_id'] ?? null,
                 'action' => $validated['facts'] ?? null,
                 'note' => $validated['note'] ?? null,
                 'type' => 'اجراء',
@@ -244,7 +243,6 @@ class CaseController extends Controller
             'proceduralRedords.files'
         ]);
 
-        // نعمل collection جديدة ونجمع الاتنين
         $sessions = collect();
 
         foreach ($case->courtSession as $session) {
@@ -257,7 +255,7 @@ class CaseController extends Controller
                 'note' => $session->note,
                 'files' => $session->sessionFiles,
                 'user' => $session->user->name,
-                'created_at' => $session->created_at
+                'created_at' => $session->created_at,
             ]);
         }
 
@@ -265,20 +263,22 @@ class CaseController extends Controller
             $sessions->push([
                 'id' => $record->id,
                 'date' => null,
-                'lawyer' => $record->user->name ?? '-',
+                'user' => $record->userLawyer->name ?? '-',
                 'type' => $record->type ?? 'إجراء',
                 'facts' => $record->action,
                 'note' => $record->note,
                 'files' => $record->files,
-                'user' => $record->created_by,
-                'created_at' => $record->created_at
+                'lawyer' => $record->user->name,
+                'created_at' => $record->created_at,
             ]);
         }
 
-        $sessions = $sessions->sortBy('date');
+        // الترتيب بالأحدث للأقدم حسب created_at
+        $sessions = $sessions->sortByDesc('created_at')->values();
 
         return view('admin.cases.show', compact('case', 'sessions'));
     }
+
 
 
     public function showDurations(Cases $case)
@@ -361,7 +361,7 @@ class CaseController extends Controller
         // إنشاء الإجراء
         $procedural = ProceduralRecord::create([
             'cases_id' => $case->id,
-            'created_by' => Auth::user()->name,
+            'user_layer' => Auth::user()->name,
             'action' => $data['action'],
             'note' => $data['note'],
             'type' => $data['type'],

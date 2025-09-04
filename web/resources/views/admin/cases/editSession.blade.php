@@ -81,8 +81,8 @@
                             <div class="card bg-light">
                                 <div class="card-body py-3">
                                     <h6 class="card-title"><i class="bi bi-folder me-2"></i>معلومات القضية</h6>
-                                    <p class="mb-0">رقم القضية: {{ $session->cases->case_number }}</p>
-                                    <p class="mb-0">اسم الموكل: {{ $session->cases->client->name }}</p>
+                                    <p class="mb-0">رقم القضية: {{ $session->cases->case_number ?? 'غير محدد' }}</p>
+                                    <p class="mb-0">اسم الموكل: {{ $session->cases->client->name ?? 'غير محدد' }}</p>
                                 </div>
                             </div>
                         </div>
@@ -124,13 +124,13 @@
                     <!-- الوقائع -->
                     <div class="mb-3">
                         <label for="facts" class="form-label required-field">وقائع الجلسة</label>
-                        <textarea class="form-control" id="facts" name="facts" rows="4" required>{{ $session->facts }}</textarea>
+                        <textarea class="form-control" id="facts" name="facts" rows="4" required>{{ $session->facts ?? '' }}</textarea>
                     </div>
 
                     <!-- ملاحظات -->
                     <div class="mb-4">
                         <label for="note" class="form-label">ملاحظات</label>
-                        <textarea class="form-control" id="note" name="note" rows="3">{{ $session->note }}</textarea>
+                        <textarea class="form-control" id="note" name="note" rows="3">{{ $session->note ?? '' }}</textarea>
                     </div>
 
                     <!-- أزرار -->

@@ -4,9 +4,12 @@ namespace App\Http\Controllers\Admin;
 
 use App\Http\Controllers\Controller;
 use App\Models\Client;
+use App\Models\ProceduralFile;
+use App\Models\ProceduralRecord;
 use App\Models\TransActions;
 use App\Models\TransactionsMain;
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\Auth;
 
 class TransactionController extends Controller
 {
@@ -77,6 +80,44 @@ class TransactionController extends Controller
     {
         $transaction->delete();
         return redirect()->route('transactions.all', $transaction->transactionsMain)->with('success', 'Transaction deleted successfully');
+    }
+
+    public function allProcedural(TransActions $transaction)
+    {
+        $transaction->load('procedural');
+        return view('admin.transaction.procedural', compact('transaction'));
+    }
+
+    public function storeProcedural(Request $request, TransActions $transaction)
+    {
+        $data = $request->validate([
+            'type' => 'required|string|max:255',
+            'action' => 'required|string',
+            'note' => 'nullable|string',
+            'user_lawyer_id' => 'required|exists:users,id',
+        ]);
+        $procedural = ProceduralRecord::create([
+            'trans_actions_id' => $transaction->id ?? null,
+            'user_lawyer_id' => $data['user_lawyer_id'] ?? null,
+            'action' => $data['action'] ?? null,
+            'note' => $data['note'] ?? null,
+            'type' => $data['type'] ?? null,
+            'user_id' => Auth::user()->id
+        ]);
+        if ($request->hasFile('files')) {
+            foreach ($request->file('files') as $uploadedFile) {
+                $path = $uploadedFile->store('ProceduralFiles', 'public');
+
+                ProceduralFile::create([
+                    'procedural_record_id' => $procedural->id,
+                    'created_by' => Auth::user()->id,
+                    'file_path' => $path,
+                    'updated_by' => Auth::user()->id,
+                ]);
+            }
+        }
+
+        return redirect()->back()->with('success', 'تم إضافة الإجراء بنجاح');
     }
 
 }

@@ -303,12 +303,12 @@
                                     }
                                 @endphp
                                 <tr>
-                                    <td>{{ $case->case_number }}</td>
-                                    <td>{{ $case->added_by->name }}</td>
-                                    <td>{{ $case->client->name }}</td>
+                                    <td>{{ $case->case_number ?? '-' }}</td>
+                                    <td>{{ $case->added_by->name ?? '-' }}</td>
+                                    <td>{{ $case->client->name ?? '-' }}</td>
                                     <td>
                                         @foreach ($case->caseOpponents as $item)
-                                            {{ $item->case_opponent_name }} -
+                                            {{ $item->case_opponent_name ?? '-' }} -
                                         @endforeach
                                     </td>
                                     <td>
@@ -320,10 +320,10 @@
                                             {{ $item->case_opponent_national_number }} -
                                         @endforeach
                                     </td>
-                                    <td>{{ $case->file_number }}</td>
-                                    <td>{{ $case->case_amount }}</td>
-                                    <td>{{ $case->court_name }}</td>
-                                    <td>{{ $case->jubge_name }}</td>
+                                    <td>{{ $case->file_number ?? '-' }}</td>
+                                    <td>{{ $case->case_amount ?? '-' }}</td>
+                                    <td>{{ $case->court_name ?? '-' }}</td>
+                                    <td>{{ $case->jubge_name ?? '-' }}</td>
                                     <td>
                                         {{ $case->courtSession->last()->date ?? 'لا يوجد جلسات' }}
                                     </td>

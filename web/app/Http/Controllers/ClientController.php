@@ -159,27 +159,85 @@ class ClientController extends Controller
      */
     public function edit(Client $client)
     {
-        return view('admin.mooakl.edit', compact('client'));
+        $client->load('user');
+
+        $additionalClients = Client::where('user_id', $client->user_id)
+            ->where('id', '!=', $client->id)
+            ->get();
+
+        return view('admin.mooakl.edit', compact('client', 'additionalClients'));
     }
+
 
     /**
      * Update the specified resource in storage.
      */
     public function update(Request $request, Client $client)
     {
-        try {
-            $data = $request->except('_token');
-            DB::beginTransaction();
-            $data['updated_by'] = Auth::id();
-            $data['updated_at'] = now();
-            $client->update($data);
-            DB::commit();
-            return redirect()->route('client.index')->with(['success' => 'تم تعديل البيانات بنجاح']);
-        } catch (\Exception $th) {
-            DB::rollBack();
-            return redirect()->back()->with(['error' => 'عفواً حدث خطأ  ' . $th->getMessage()])->withInput();
+        $data = $request->validate([
+            'name' => 'required',
+            'email' => 'required',
+            'phone' => 'required',
+            'address' => 'required',
+            'national_id' => 'required|integer',
+            'nationality' => 'required|string',
+            'company_name' => 'nullable|string',
+            'company_national_number' => 'nullable|string',
+
+            'additional_clients' => 'nullable|array',
+            'additional_clients.*.client_name' => 'nullable|string',
+            'additional_clients.*.client_phone' => 'nullable|string',
+            'additional_clients.*.client_nationality' => 'nullable|string',
+            'additional_clients.*.client_national_id' => 'nullable|string',
+            'additional_clients.*.client_address' => 'nullable|string',
+        ]);
+
+        // تحديث user
+        $client->user->update([
+            'email' => $data['email'],
+            'name' => $data['name'],
+            'phone' => $data['phone'],
+        ]);
+
+        // تحديث client الأساسي
+        $client->update([
+            'name' => $data['name'],
+            'phone' => $data['phone'],
+            'address' => $data['address'],
+            'company_name' => $data['company_name'],
+            'company_national_number' => $data['company_national_number'],
+            'nationality' => $data['nationality'],
+            'national_id' => $data['national_id'],
+        ]);
+
+        // امسح الموكلين الإضافيين القدام
+        Client::where('user_id', $client->user_id)
+            ->where('id', '!=', $client->id)
+            ->delete();
+
+        // دخل الموكلين الإضافيين الجداد
+        if (!empty($data['additional_clients'])) {
+            foreach ($data['additional_clients'] as $add) {
+                if (!empty($add['client_name'])) {
+                    Client::create([
+                        'user_id' => $client->user_id,
+                        'name' => $add['client_name'],
+                        'phone' => $add['client_phone'] ?? null,
+                        'company_name' => $data['company_name'],
+                        'address' => $add['client_address'] ?? null,
+                        'company_national_number' => $data['company_national_number'],
+                        'nationality' => $add['client_nationality'] ?? null,
+                        'national_id' => $add['client_national_id'] ?? null,
+                        'added_by' => Auth::id(),
+                        'seen' => 0,
+                    ]);
+                }
+            }
         }
+
+        return redirect()->route('client.index')->with('success', 'تم تحديث البيانات بنجاح');
     }
+
     /**
      * Remove the specified resource from storage.
      */
