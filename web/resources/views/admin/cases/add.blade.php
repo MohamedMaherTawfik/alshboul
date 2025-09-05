@@ -92,6 +92,14 @@
                         </div>
                     </div>
 
+                    <div class="row">
+                        <!-- التاريخ -->
+                        <div class="col-md-6 mb-3">
+                            <label for="created_at" class="form-label required-field">تاريخ الادخال</label>
+                            <input type="date" class="form-control" id="created_at" name="created_at">
+                        </div>
+                    </div>
+
                     <!-- المحامي -->
                     <div class="col-md-6 mb-3">
                         <label for="lawyer_id" class="form-label required-field">المحامي</label>

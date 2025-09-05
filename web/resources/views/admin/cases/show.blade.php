@@ -134,7 +134,7 @@
                             </td>
 
                             <td>{{ $session['note'] ?? '-' }}</td>
-                            <td>{{ $session['created_at'] ? date('d/m/Y H:i', strtotime($session['created_at'])) : '-' }}
+                            <td>{{ $session['created_at'] ? date('d/m/Y', strtotime($session['created_at'])) : '-' }}
                             </td>
                             <td>
                                 @if ($session['type'] === 'جلسة')

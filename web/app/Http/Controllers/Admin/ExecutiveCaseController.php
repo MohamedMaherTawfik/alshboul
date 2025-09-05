@@ -274,8 +274,6 @@ class ExecutiveCaseController extends Controller
 
     public function executiveProcedural(ProceduralRecord $executiveCase)
     {
-        dd($executiveCase);
-
         $executiveCase->load('subProcedurals');
         return view('admin.ExecutiveCase.procedural', compact('executiveCase'));
     }

@@ -116,11 +116,11 @@ class CaseController extends Controller
 
             $case->update(['case_number' => $missing]);
 
-            return redirect()->route('cases.show', $case)
+            return redirect()->route('casetypes.show', $case->suggestedCases)
                 ->with('success', 'تم تعديل القضية بنجاح، رقم الملف الجديد هو: ' . $missing);
         }
 
-        return redirect()->route('cases.show', $case)
+        return redirect()->route('casetypes.show', $case->suggestedCases)
             ->with('success', 'تم تعديل القضية بنجاح، رقم الملف هو: ' . $case->case_number);
     }
     // حذف
@@ -148,6 +148,7 @@ class CaseController extends Controller
                 'note' => $validated['note'] ?? null,
                 'type' => 'اجراء',
                 'user_id' => $validated['lawyer_id'] ?? null,
+                'created_at' => $validated['created_at']
             ]);
 
             if ($request->hasFile('file_path')) {
@@ -172,6 +173,7 @@ class CaseController extends Controller
                 'note' => $validated['note'] ?? null,
                 'facts' => $validated['facts'] ?? null,
                 'type' => 'جلسه',
+                'created_at' => $validated['created_at']
             ]);
 
             if ($request->hasFile('file_path')) {
