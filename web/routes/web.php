@@ -229,7 +229,12 @@ Route::group(['prefix' => 'admin', 'middleware' => ['auth', roleMiddleware::clas
     Route::post('/transactions/{transaction}/update/new', [TransactionController::class, 'update'])->name('transactions.update');
     Route::delete('/transactions/{transaction}/destroy/new', [TransactionController::class, 'destroy'])->name('transactions.destroy');
     Route::get('/transactions/{transaction}/procedural/new', [TransactionController::class, 'allProcedural'])->name('transactions.procedural.create');
+    Route::post('/transactions/{transaction}/procedural/new/file', [TransactionController::class, 'addFile'])->name('transactions.procedural.create.file');
     Route::post('/transactions/{transaction}/procedural/new', [TransactionController::class, 'storeProcedural'])->name('transactions.procedural.store');
+    Route::get('/transactions/{transaction}/procedural/edit', [TransactionController::class, 'editProcedural'])->name('transactions.procedural.edit');
+    Route::delete('/transactions/{transaction}/procedural/edit/deleteFile', [TransactionController::class, 'deleteFile'])->name('transactions.procedure.file.delete');
+    Route::post('/transactions/{transaction}/procedural/update', [TransactionController::class, 'updateprocedural'])->name('transactions.procedural.update');
+    Route::delete('/transactions/{transaction}/procedural/delete', [TransactionController::class, 'deleteProcedural'])->name('transactions.procedural.destroy');
 
 
     Route::get('/archives/system', [ArchiveController::class, 'index'])->name('archive.index');

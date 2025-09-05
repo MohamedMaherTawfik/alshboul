@@ -74,9 +74,9 @@
                             <th>المستندات</th>
                             <th>المحامي المسئول</th>
                             <th>تاريخ الإدخال</th>
-                            {{-- @if (Auth::user()->role == 'admin' || Auth::user()->role == 'superadmin')
+                            @if (Auth::user()->role == 'admin' || Auth::user()->role == 'superadmin')
                                 <th>التحكم</th>
-                            @endif --}}
+                            @endif
 
                         </tr>
                     </thead>
@@ -94,22 +94,66 @@
                                             <i class="fa fa-download"></i>
                                         </a>
                                     @endforeach
+                                    {{-- add file <a> --}}
+                                    <!-- زر فتح المودال -->
+                                    <button type="button"
+                                        class="btn btn-dark btn-sm rounded-circle d-inline-flex align-items-center justify-content-center"
+                                        data-bs-toggle="modal" data-bs-target="#uploadFileModal{{ $procedural->id }}">
+                                        <i class="fa fa-plus"></i>
+                                    </button>
+
+                                    <!-- مودال رفع الملفات -->
+                                    <div class="modal fade" id="uploadFileModal{{ $procedural->id }}" tabindex="-1"
+                                        aria-labelledby="uploadFileModalLabel{{ $procedural->id }}" aria-hidden="true">
+                                        <div class="modal-dialog">
+                                            <form action="{{ route('transactions.procedural.create.file', $procedural) }}"
+                                                method="POST" enctype="multipart/form-data">
+                                                @csrf
+                                                <div class="modal-content">
+                                                    <div class="modal-header">
+                                                        <h5 class="modal-title"
+                                                            id="uploadFileModalLabel{{ $procedural->id }}">رفع ملفات جديدة
+                                                        </h5>
+                                                        <button type="button" class="btn-close" data-bs-dismiss="modal"
+                                                            aria-label="إغلاق"></button>
+                                                    </div>
+                                                    <div class="modal-body">
+                                                        <div class="mb-3">
+                                                            <label class="form-label">الملفات</label>
+                                                            <input type="file" name="files[]" class="form-control"
+                                                                multiple required>
+                                                            <small class="text-muted">يمكنك اختيار أكثر من ملف</small>
+                                                        </div>
+                                                    </div>
+                                                    <div class="modal-footer">
+                                                        <button type="button" class="btn btn-secondary"
+                                                            data-bs-dismiss="modal">إلغاء</button>
+                                                        <button type="submit" class="btn btn-success">رفع</button>
+                                                    </div>
+                                                </div>
+                                            </form>
+                                        </div>
+                                    </div>
+
                                 </td>
                                 <td>{{ $procedural->userLawyer?->name ?? '-' }}</td>
                                 <td>{{ $procedural->created_at->format('Y-m-d H:i') }}</td>
-                                {{-- @if (Auth::user()->role == 'admin' || Auth::user()->role == 'superadmin')
-                                    <a href="{{ route('transactions.procedural.edit', $procedural->id) }}"
-                                        class="btn btn-warning"></a>
-                                    <form action="{{ route('transactions.procedural.destroy', $procedural->id) }}"
-                                        method="POST" class="d-inline">
-                                        @csrf
-                                        @method('DELETE')
-                                        <button type="submit" class="btn btn-danger"
-                                            onclick="return confirm('هل أنت متأكد من الحذف؟')">
-                                            حذف
-                                        </button>
-                                    </form>
-                                @endif --}}
+                                <td>
+                                    @if (Auth::user()->role == 'admin' || Auth::user()->role == 'superadmin')
+                                        <a href="{{ route('transactions.procedural.edit', $procedural->id) }}"
+                                            class="btn btn-warning">
+                                            تعديل</a>
+                                        <form action="{{ route('transactions.procedural.destroy', $procedural->id) }}"
+                                            method="POST" class="d-inline">
+                                            @csrf
+                                            @method('DELETE')
+                                            <button type="submit" class="btn btn-danger"
+                                                onclick="return confirm('هل أنت متأكد من الحذف؟')">
+                                                حذف
+                                            </button>
+                                        </form>
+                                    @endif
+                                </td>
                             </tr>
                         @empty
                             <tr>

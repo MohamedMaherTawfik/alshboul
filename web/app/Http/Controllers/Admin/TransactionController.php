@@ -120,4 +120,43 @@ class TransactionController extends Controller
         return redirect()->back()->with('success', 'تم إضافة الإجراء بنجاح');
     }
 
+    public function editProcedural(ProceduralRecord $transaction)
+    {
+        return view('admin.transaction.procedural-edit', compact('transaction'));
+    }
+
+    public function updateProcedural(Request $request, ProceduralRecord $transaction)
+    {
+        $data = $request->validate([
+            'type' => 'required|string|max:255',
+            'action' => 'required|string',
+            'note' => 'nullable|string',
+            'user_lawyer_id' => 'required|exists:users,id',
+        ]);
+        $transaction->update($data);
+        return redirect()->route('transactions.procedural.create', $transaction->transactions)->with('success', 'تم تحديث الإجراء بنجاح');
+    }
+
+    public function deleteFile(ProceduralFile $transaction)
+    {
+        $transaction->delete();
+        return redirect()->back()->with('success', 'تم حذف الملف بنجاح');
+    }
+
+    public function addFile(Request $request, ProceduralRecord $transaction)
+    {
+        if ($request->hasFile('files')) {
+            foreach ($request->file('files') as $uploadedFile) {
+                $path = $uploadedFile->store('ProceduralFiles', 'public');
+
+                ProceduralFile::create([
+                    'procedural_record_id' => $transaction->id,
+                    'created_by' => Auth::user()->id,
+                    'file_path' => $path,
+                    'updated_by' => Auth::user()->id,
+                ]);
+            }
+        }
+        return redirect()->back()->with('success', 'تم اضافة الملفات بنجاح');
+    }
 }
