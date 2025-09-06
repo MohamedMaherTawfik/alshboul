@@ -126,7 +126,8 @@ class ArchiveController extends Controller
         archivesSubMenues::create([
             'name' => request()->name,
             'added_by' => Auth::user()->id,
-            'document_number' => request()->document_number,
+            'file_number' => request()->document_number,
+            'document_number' => '1' . time(),
             'main_menu_id' => request()->main_id
         ]);
         return redirect()->route('archive.index')->with('success', 'تم الحفظ بنجاح');
