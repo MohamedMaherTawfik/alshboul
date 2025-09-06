@@ -259,7 +259,7 @@
                     @if ($archives->count() > 0)
                         @foreach ($archives as $archive)
                             <tr data-sub-menu-id="{{ $archive->archivesSubMenues->id ?? '' }}">
-                                <td>{{ $loop->iteration }}</td>
+                                <td>{{ $archive->file_number }}</td>
                                 <td>{{ $archive->user->name ?? 'غير معروف' }}</td>
                                 <td>{{ $archive->archivesSubMenues->archivesMainMenues->name ?? 'لا يوجد' }}</td>
                                 <td>{{ $archive->archivesSubMenues->name ?? 'لا يوجد' }}</td>
@@ -280,10 +280,11 @@
                                 <td>{{ $archive->time }}</td>
                                 <td>
                                     <!-- زر تعديل -->
-                                    <a href="{{ route('archive.edit', $archive) }}" class="text-primary ml-2 me-2">
-                                        <i class="fas fa-edit fa-lg"></i>
-                                    </a>
-
+                                    @if (Auth::user()->role == 'superadmin' || Auth::user()->role == 'admin')
+                                        <a href="{{ route('archive.edit', $archive) }}" class="text-primary ml-2 me-2">
+                                            <i class="fas fa-edit fa-lg"></i>
+                                        </a>
+                                    @endif
                                     @if (Auth::user()->role == 'superadmin')
                                         <!-- زر حذف -->
                                         <!-- زرار الحذف -->

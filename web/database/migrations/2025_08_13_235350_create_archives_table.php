@@ -16,15 +16,16 @@ return new class extends Migration {
     {
         Schema::create('archives', function (Blueprint $table) {
             $table->id();
-            $table->foreignIdFor(Client::class, 'client_id')->constrained()->onDelete('cascade');
-            $table->foreignIdFor(User::class, 'user_id')->constrained()->onDelete('cascade');
-            $table->foreignIdFor(archivesMainMenues::class, 'main_menu_id')->constrained()->onDelete('cascade');
-            $table->foreignIdFor(archivesSubMenues::class, 'sub_menu_id')->constrained()->onDelete('cascade');
-            $table->string('file');
+            $table->foreignIdFor(Client::class, 'client_id')->nullable()->constrained()->onDelete('cascade');
+            $table->foreignIdFor(User::class, 'user_id')->nullable()->constrained()->onDelete('cascade');
+            $table->foreignIdFor(archivesMainMenues::class, 'main_menu_id')->nullable()->constrained()->onDelete('cascade');
+            $table->foreignIdFor(archivesSubMenues::class, 'sub_menu_id')->nullable()->constrained()->onDelete('cascade');
+            $table->string('file')->nullable();
             $table->text('another_names')->nullable();
             $table->string('notes')->nullable();
             $table->boolean('active')->default(1);
-            $table->string('time');
+            $table->string('time')->nullable();
+            $table->string('file_number')->nullable();
             $table->timestamps();
         });
     }

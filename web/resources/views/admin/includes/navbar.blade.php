@@ -67,7 +67,7 @@
                 </li>
             @endif
 
-
+            {{-- اعدادات الادمن --}}
             @if (Auth::user()->role == 'superadmin')
                 <li class="nav-item dropdown">
                     <a class="nav-link dropdown-toggle {{ request()->is('admin/*setting*') ? 'active' : '' }}"
@@ -85,6 +85,7 @@
                 </li>
             @endif
 
+            {{-- المستخدمين --}}
             @if (Auth::user()->role == 'admin' || Auth::user()->role == 'superadmin')
                 <!-- إدارة المستخدمين -->
                 <li class="nav-item dropdown">
@@ -135,6 +136,7 @@
                 </div>
             </li>
 
+            {{-- التسويات --}}
             @if (Auth::user()->role == 'admin' || Auth::user()->role == 'superadmin')
                 {{-- التسويات --}}
                 <li class="nav-item dropdown">
@@ -170,6 +172,7 @@
                 </div>
             </li>
 
+            {{-- الوظائف --}}
             @if (Auth::user()->role == 'admin' || Auth::user()->role == 'superadmin')
                 <!-- إدارة الوظائف -->
                 <li class="nav-item dropdown">
@@ -256,7 +259,8 @@
                 </div>
             </li>
 
-            @if (Auth::user()->role == 'superadmin')
+            {{-- الارشيف --}}
+            @if (Auth::user()->role == 'superadmin' || Auth::user()->role == 'admin')
                 <li class="nav-item dropdown">
                     <a class="nav-link dropdown-toggle {{ request()->is('admin/*archive*') ? 'active' : '' }}"
                         href="#" id="deletedItemsMenu" role="button" data-toggle="dropdown"

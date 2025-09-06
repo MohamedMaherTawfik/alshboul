@@ -31,7 +31,7 @@ class DatabaseSeeder extends Seeder
             'email' => 'admin2',
             'password' => bcrypt('admin'),
             'address' => 'Mansoura elteera street 6 building',
-            'role' => 'superadmin',
+            'role' => 'admin',
             'phone' => '123456789',
             'active' => true,
             'date' => time(),

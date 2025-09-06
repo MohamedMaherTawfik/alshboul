@@ -22,7 +22,7 @@ class ArchiveController extends Controller
         $archives = Archives::where('active', 1)->get();
         $mains = ArchivesMainMenues::get();
         $subs = ArchivesSubMenues::get();
-        $clients = Client::get();
+        $clients = Client::where('seen', 1)->get();
 
         // نجهز array علشان نخزن فيه أول رقم فاضي لكل main
         $missingNumbers = [];
@@ -68,12 +68,43 @@ class ArchiveController extends Controller
     public function store(archiveRequest $request)
     {
         $validated = $request->validated();
+
         if ($request->hasFile('file')) {
             $validated['file'] = $request->file('file')->store('archives', 'public');
         }
-        $archive = archives::create($validated);
-        return redirect()->route('archive.index')->with('success', 'تم الحفظ بنجاح');
+
+        $existingNumbers = archives::where('sub_menu_id', $validated['sub_menu_id'])
+            ->pluck('file_number')
+            ->filter()
+            ->toArray();
+
+        // نرتب الأرقام
+        sort($existingNumbers);
+
+        $nextNumber = 1;
+        foreach ($existingNumbers as $num) {
+            if ($num == $nextNumber) {
+                $nextNumber++;
+            } elseif ($num > $nextNumber) {
+                break;
+            }
+        }
+
+        archives::create([
+            'sub_menu_id' => $validated['sub_menu_id'] ?? null,
+            'notes' => $validated['notes'] ?? null,
+            'user_id' => $validated['user_id'] ?? null,
+            'file' => $validated['file'] ?? null,
+            'main_menu_id' => $validated['main_menu_id'] ?? null,
+            'time' => $validated['time'] ?? null,
+            'another_names' => $validated['another_names'] ?? null,
+            'client_id' => $validated['client_id'] ?? null,
+            'file_number' => $nextNumber,
+        ]);
+
+        return redirect()->back()->with('success', 'تم الحفظ بنجاح و رقم الملف هو ' . $nextNumber);
     }
+
 
     public function edit(archives $archive)
     {
@@ -126,8 +157,7 @@ class ArchiveController extends Controller
         archivesSubMenues::create([
             'name' => request()->name,
             'added_by' => Auth::user()->id,
-            'file_number' => request()->document_number,
-            'document_number' => '1' . time(),
+            'document_number' => request()->document_number,
             'main_menu_id' => request()->main_id
         ]);
         return redirect()->route('archive.index')->with('success', 'تم الحفظ بنجاح');
