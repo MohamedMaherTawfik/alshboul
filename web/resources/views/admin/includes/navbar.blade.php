@@ -214,6 +214,7 @@
                     <a href="{{ route('mission.finished.search') }}" class="dropdown-item">بحث المهمات المنجزه </a>
                     <a href="{{ route('mission.unfinished.search') }}" class="dropdown-item">بحث المهمات الغير منجزه
                     </a>
+                    <a href="{{ route('public.search.index') }}" class="dropdown-item">البحث العام</a>
                 </div>
             </li>
 

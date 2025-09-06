@@ -5,6 +5,7 @@ use App\Http\Controllers\Admin\CaseNotesController;
 use App\Http\Controllers\Admin\DurationController;
 use App\Http\Controllers\Admin\editController;
 use App\Http\Controllers\Admin\MissionController;
+use App\Http\Controllers\Admin\PublicSearchController;
 use App\Http\Controllers\Admin\SettlementController;
 use App\Http\Controllers\Admin\AboutUsController;
 use App\Http\Controllers\Admin\AgreementController;
@@ -206,6 +207,9 @@ Route::group(['prefix' => 'admin', 'middleware' => ['auth', roleMiddleware::clas
     Route::delete('/procedural-records/{executiveCase}/delete', [ProceduralRecordController::class, 'destroy'])->name('procedural-record.delete');
     Route::delete('/procedural-records/{executiveCase}/delete/file', [ProceduralRecordController::class, 'destroyFile'])->name('procedural-executiveCase.file.destroy');
     Route::get('/procedural-records/{id}/show/{executiveCase?}', [ProceduralRecordController::class, 'show'])->name('procedural-record.show');
+
+    Route::get('/public/search', [PublicSearchController::class, 'index'])->name('public.search.index');
+    Route::post('/public/search', [PublicSearchController::class, 'search'])->name('public.search');
 
     Route::get('/vistiors/reviews/all', [visitorReviewController::class, 'index'])->name('visitors.index');
 
