@@ -101,7 +101,7 @@ class CaseController extends Controller
             // نعمل تحديث للقضية
             $case->update([
                 'client_id' => $data['client_id'] ?? '',
-                'subscriber_id' => $data['subscriber_id'] ?? '',
+                'subscriber_id' => $data['subscriber_id'] ?? null,
                 'first_national_id' => $data['first_national_id'] ?? '',
                 'second_national_id' => $data['second_national_id'] ?? '',
                 'third_national_id' => $data['third_national_id'] ?? '',
