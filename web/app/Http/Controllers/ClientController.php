@@ -18,7 +18,7 @@ class ClientController extends Controller
      */
     public function index()
     {
-        $data = Client::with('user')->where('seen', 1)->orderBy('id', 'desc')->get();
+        $data = Client::with('user')->where('seen', 1)->where('active', 1)->orderBy('id', 'desc')->get();
         return view('admin.mooakl.index', compact('data'));
     }
     public function visit()
@@ -29,8 +29,8 @@ class ClientController extends Controller
 
     public function indexDelete()
     {
-        $data = Client::onlyTrashed()->get();
-        return redirect()->back()->with(['error' => 'عفواً لا توجد بيانات']);
+        $data = Client::where('active', 0)->get();
+        return view('admin.mooakl.indexDelete', compact('data'));
     }
 
     /**
@@ -241,58 +241,20 @@ class ClientController extends Controller
     /**
      * Remove the specified resource from storage.
      */
-    public function destroy(Request $request, Client $client)
+    public function destroy(Client $client)
     {
-        if (!$client) {
-            return redirect()->back()->with(['error' => 'عفواً لا توجد بيانات']);
-        }
-        $client->updated_by = Auth::id();
-        $client->active = 0;
-        $client->save();
-        $user = User::where('id', $client->user_id)->first();
-        $user->updated_by = Auth::id();
-        $user->active = 0;
-        $user->save();
-        $client->delete();
+        $client->update(['active' => 0]);
         return redirect()->route('client.index')->with(['success' => 'تم حذف البيانات بنجاح']);
     }
-    public function destroy1(Request $request)
+    // public function destroy1(Request $request)
+    // {
+
+    //     $client
+    //     return redirect()->route('client.action')->with(['success' => 'تم حذف البيانات بنجاح']);
+    // }
+    public function restore(Client $client)
     {
-
-        $action = MainAction::findOrFail($request->id);
-        if (!$action) {
-            return redirect()->back()->with(['error' => 'عفواً لا توجد بيانات']);
-        }
-        $request->validate([
-            'reason' => 'required|string',
-        ]);
-        $action->updated_by = Auth::id();
-        $action->delete_reason = $request->reason;
-        $action->save();
-        $action->delete();
-        return redirect()->route('client.action')->with(['success' => 'تم حذف البيانات بنجاح']);
-    }
-    public function restore($id)
-    {
-        Client::withTrashed()->find($id)->restore();
-
-        $client = Client::findOrFail($id);
-        if (!$client) {
-            return redirect()->route('client.indexDelete')->with(['error' => 'عفواً لا توجد بيانات']);
-        }
-        $client->updated_by = Auth::id();
-        $client->delete_reason = "";
-        $client->save();
-
-        User::withTrashed()->find($client->user_id)->restore();
-
-        $user = User::findOrFail($client->user_id);
-        $user->updated_by = Auth::id();
-        $user->delete_reason = "";
-        $user->active = 1;
-        $user->save();
-
-
+        $client->update(['active' => 1]);
         return redirect()->route('client.indexDelete')->with(['success' => 'تم استرجاع البيانات بنجاح']);
     }
 

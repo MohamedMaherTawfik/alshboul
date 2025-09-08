@@ -28,7 +28,6 @@ class CaseController extends Controller
         return view('admin.CaseTypes.allCases', compact('caseTypes', 'unfinishedMissions'));
     }
 
-
     public function createCase(CaseType $case)
     {
         $clients = Client::where('active', 1)->where('seen', 1)->get();
@@ -46,7 +45,6 @@ class CaseController extends Controller
         }
         return view('admin.CaseTypes.createCase', compact('case', 'clients', 'users', 'missing'));
     }
-
 
     public function storeCase(CaseRequest $request, CaseType $caseType)
     {
@@ -91,38 +89,61 @@ class CaseController extends Controller
 
     public function edit(Cases $case)
     {
-        $clients = Client::get();
-        return view('admin.cases.edit', compact('case', 'clients'));
+        $clients = Client::where('seen', 1)->get();
+        $users = User::with('client')->where('role', 'user')->where('active', 1)->get();
+        return view('admin.cases.edit', compact('case', 'clients', 'users'));
     }
-
-    public function update(Request $request, Cases $case)
+    public function update(Request $request, cases $case)
     {
-        $oldType = $case->suggested_case_id;
+        try {
+            $data = $request->except('_token');
+            // dd($data);
+            // نعمل تحديث للقضية
+            $case->update([
+                'client_id' => $data['client_id'] ?? '',
+                'subscriber_id' => $data['subscriber_id'] ?? '',
+                'first_national_id' => $data['first_national_id'] ?? '',
+                'second_national_id' => $data['second_national_id'] ?? '',
+                'third_national_id' => $data['third_national_id'] ?? '',
+                'suggested_case_id' => $data['suggested_case_id'] ?? '',
+                'case_type' => $data['case_type'] ?? '',
+                'case_number' => $data['case_number'] ?? '',
+                'court_name' => $data['court_name'] ?? '',
+                'case_amount' => $data['case_amount'] ?? '',
+                'benefit_date' => $data['benefit_date'] ?? '',
+                'jubge_name' => $data['jubge_name'] ?? '',
+                'case_details' => $data['case_details'] ?? '',
+                'client_description' => $data['client_description'] ?? '',
+                'general_information' => $data['general_information'] ?? '',
+                'private_information' => $data['private_information'] ?? '',
+                'added_by_id' => auth()->id(),
+            ]);
 
-        $case->update($request->all());
+            // نحذف الخصوم القدام (لو عايز تعيد إدخالهم كل مرة)
+            CaseOpponents::where('cases_id', $case->id)->delete();
 
-        if ($oldType != $case->suggested_case_id) {
-            $numbers = Cases::where('suggested_case_id', $case->suggested_case_id)
-                ->pluck('case_number')->sort()->toArray();
-
-            $missing = 1;
-            foreach ($numbers as $num) {
-                if ($num == $missing) {
-                    $missing++;
-                } elseif ($num > $missing) {
-                    break;
+            // نضيف الخصوم من جديد
+            if (!empty($data['opponent_name'])) {
+                foreach ($data['opponent_name'] as $index => $name) {
+                    CaseOpponents::create([
+                        'cases_id' => $case->id,
+                        'user_id' => auth()->id(),
+                        'case_opponent_name' => $name ?? '',
+                        'case_opponent_national_number' => $data['opponent_national_id'][$index] ?? '',
+                        'case_opponent_description' => $data['opponent_description'][$index] ?? '',
+                    ]);
                 }
             }
 
-            $case->update(['case_number' => $missing]);
+            return redirect()
+                ->route('casetypes.show', $case->suggestedCases)
+                ->with(['success' => 'تم تعديل القضية بنجاح']);
 
-            return redirect()->route('casetypes.show', $case->suggestedCases)
-                ->with('success', 'تم تعديل القضية بنجاح، رقم الملف الجديد هو: ' . $missing);
+        } catch (\Throwable $th) {
+            return back()->with('error', $th->getMessage());
         }
-
-        return redirect()->route('casetypes.show', $case->suggestedCases)
-            ->with('success', 'تم تعديل القضية بنجاح، رقم الملف هو: ' . $case->case_number);
     }
+
     // حذف
     public function destroy(Cases $case)
     {

@@ -118,7 +118,7 @@ Route::group(['prefix' => 'admin', 'middleware' => ['auth', roleMiddleware::clas
     Route::get('/clients/{client}/edit', [ClientController::class, 'edit'])->name('client.edit');
     Route::post('/clients/{client}', [ClientController::class, 'update'])->name('client.update');
     Route::delete('/client/{client}/delete', [ClientController::class, 'destroy'])->name('client.delete');
-    Route::get('/client/{id}/restore', [ClientController::class, 'restore'])->name('client.restore');
+    Route::get('/client/{client}/restore', [ClientController::class, 'restore'])->name('client.restore');
 
     Route::get('/request-client', [ClientRequestController::class, 'index'])->name('request.index');
     Route::post('/request-client', [ClientRequestController::class, 'replay'])->name('request.reply');
