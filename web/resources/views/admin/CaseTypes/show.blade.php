@@ -270,18 +270,18 @@
                         style="font-size: 1.2rem; width: 100%;">
                         <thead style="font-size: 1.3rem; font-weight: bold;">
                             <tr>
-                                <th>رقم الملف</th>
-                                <th>اسم المدخل</th>
-                                <th>اسم الموكل</th>
+                                <th> اسم مشترك</th>
+                                <th> اسم الموكل</th>
+                                <th>الرقم الوطني </th>
                                 <th>اسم الخصم</th>
-                                <th> تاريخ الادخال</th>
                                 <th>الرقم الوطني للخصم</th>
-                                <th>رقم الدعوي</th>
-                                <th>قيمة الدعوي</th>
-                                <th>اسم المحكمة</th>
-                                <th>القاضي</th>
+                                <th> رقم الدعوي</th>
+                                <th> قيمه الدعوي</th>
+                                <th>رقم الملف</th>
+                                <th> المحكمه</th>
+                                <th>اسم القاضي</th>
+                                <th>اخر نشاظ</th>
                                 <th>تاريخ الجلسة القادمة</th>
-                                <th>المستندات</th>
                                 <th>وقائع الدعوي</th>
                                 <th>المدة</th>
                                 @if (Auth::user()->role == 'admin' || Auth::user()->role == 'superadmin')
@@ -303,16 +303,13 @@
                                     }
                                 @endphp
                                 <tr>
-                                    <td>{{ $case->case_number ?? '-' }}</td>
-                                    <td>{{ $case->added_by->name ?? '-' }}</td>
+                                    <td>{{ $case->subscriber->name ?? '-' }}</td>
                                     <td>{{ $case->client->name ?? '-' }}</td>
+                                    <td>{{ $case->first_national_id ?? '-' }}</td>
                                     <td>
                                         @foreach ($case->caseOpponents as $item)
                                             {{ $item->case_opponent_name ?? '-' }} -
                                         @endforeach
-                                    </td>
-                                    <td>
-                                        {{ $case->created_at?->format('Y-m-d') ?? '-' }}
                                     </td>
 
                                     <td>
@@ -320,23 +317,17 @@
                                             {{ $item->case_opponent_national_number }} -
                                         @endforeach
                                     </td>
-                                    <td>{{ $case->file_number ?? '-' }}</td>
+
+                                    <td>
+                                        {{ $case->file_number ?? '-' }}
+                                    </td>
                                     <td>{{ $case->case_amount ?? '-' }}</td>
+                                    <td>{{ $case->case_number ?? '-' }}</td>
                                     <td>{{ $case->court_name ?? '-' }}</td>
+                                    <td>{{ $case->jubge_name ?? '-' }}</td>
                                     <td>{{ $case->jubge_name ?? '-' }}</td>
                                     <td>
                                         {{ $case->courtSession->last()->date ?? 'لا يوجد جلسات' }}
-                                    </td>
-                                    <td>
-                                        @if ($case->courtSession->last() && $case->courtSession->first()->file)
-                                            <a href="{{ asset('storage/' . $case->courtSession->first()->file) }}"
-                                                class="btn btn-primary btn-sm" target="_blank">
-                                                عرض المستند
-                                            </a>
-                                        @else
-                                            <button class="btn btn-secondary btn-sm" disabled>لا يوجد مستندات</button>
-                                        @endif
-
                                     </td>
                                     <td><a href="{{ route('cases.show', $case) }}" class="btn btn-sm btn-info">وقائع
                                             الدعوي</a></td>

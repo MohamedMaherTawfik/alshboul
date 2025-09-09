@@ -167,9 +167,9 @@ class CaseController extends Controller
                 'user_lawyer_id' => $validated['lawyer_id'] ?? null,
                 'action' => $validated['facts'] ?? null,
                 'note' => $validated['note'] ?? null,
-                'type' => 'اجراء',
+                'type' => 'اجراء' ?? null,
                 'user_id' => $validated['lawyer_id'] ?? null,
-                'created_at' => $validated['created_at']
+                'created_at' => $validated['created_at'] ?? null
             ]);
 
             if ($request->hasFile('file_path')) {
@@ -187,14 +187,14 @@ class CaseController extends Controller
 
         } else {
             $court = court_session_date::create([
-                'cases_id' => $case->id,
-                'date' => $validated['date'],
+                'cases_id' => $case->id ?? null,
+                'date' => $validated['date'] ?? null,
                 'lawyer_user_id' => $validated['lawyer_id'] ?? null,
                 'user_id' => auth()->id(),
                 'note' => $validated['note'] ?? null,
                 'facts' => $validated['facts'] ?? null,
-                'type' => 'جلسه',
-                'created_at' => $validated['created_at']
+                'type' => 'جلسه' ?? null,
+                'created_at' => $validated['created_at'] ?? null
             ]);
 
             if ($request->hasFile('file_path')) {
@@ -229,7 +229,7 @@ class CaseController extends Controller
         $data = $request->except('_token', 'lawsuit_type', 'lawsuit_number');
         $data['cases_id'] = $case->id;
         Settlement::create($data);
-        return redirect()->route('cases.all')->with('success', 'تم تسجيل التسوية بنجاح');
+        return redirect()->route('cases.show', $case ?? '')->with('success', 'تم تسجيل التسوية بنجاح');
     }
 
     public function expenses(Cases $case)
@@ -271,10 +271,10 @@ class CaseController extends Controller
         foreach ($case->courtSession as $session) {
             $sessions->push([
                 'id' => $session->id,
-                'date' => $session->date,
-                'lawyer' => $session->lawyer_user->name ?? '-',
-                'type' => 'جلسة',
-                'facts' => $session->facts,
+                'date' => $session->date ?? '-',
+                'lawyer' => $session->lawyer_user->name ?? 'بلا',
+                'type' => 'جلسة' ?? '-',
+                'facts' => $session->facts ?? '-',
                 'note' => $session->note,
                 'files' => $session->sessionFiles,
                 'user' => $session->user->name,
@@ -288,21 +288,19 @@ class CaseController extends Controller
                 'date' => null,
                 'user' => $record->userLawyer->name ?? '-',
                 'type' => $record->type ?? 'إجراء',
-                'facts' => $record->action,
-                'note' => $record->note,
-                'files' => $record->files,
-                'lawyer' => $record->user->name,
-                'created_at' => $record->created_at,
+                'facts' => $record->action ?? '-',
+                'note' => $record->note ?? '-',
+                'files' => $record->files ?? '-',
+                'lawyer' => $record->user->name ?? 'بلا',
+                'created_at' => $record->created_at ?? null,
             ]);
         }
 
         // الترتيب بالأحدث للأقدم حسب created_at
-        $sessions = $sessions->sortByDesc('created_at')->values();
+        $sessions = $sessions->sortByDesc('id')->values();
 
         return view('admin.cases.show', compact('case', 'sessions'));
     }
-
-
 
     public function showDurations(Cases $case)
     {

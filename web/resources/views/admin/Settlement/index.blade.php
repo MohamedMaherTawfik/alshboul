@@ -2,15 +2,15 @@
 @section('title', 'التسويات')
 @section('main_title_content', 'قائمة التسويات')
 @section('title_content', 'عرض')
-@section('link_content')
-    <a href="{{ route('settlement.index', ['type' => request('type')]) }}">التسويات</a>
-@endsection
+{{-- @section('link_content')
+    <a href="{{ route('settlement.index', $settlements) }}">التسويات</a>
+@endsection --}}
 @section('content')
     <div class="card">
         <div class="card-header">
             <h3 class="card-title card_title_center">قائمة التسويات
                 <br>
-                <a href="{{ route('settlement.create', ['type' => request('type')]) }}" class="btn btn-success">إضافة جديد</a>
+                <a href="{{ route('settlement.create', $settlements) }}" class="btn btn-success">إضافة جديد</a>
             </h3>
         </div>
         <div class="card-body">
@@ -35,14 +35,11 @@
                     <thead>
                         <tr>
                             <th>اسم المدخل</th>
-                            <th>اسم الموكل</th>
-                            <th>اسم الخصم</th>
+                            <th>اسم المشترك</th>
                             <th>رقم الوطني للموكل</th>
+                            <th>اسم الخصم</th>
                             <th>رقم الوطني للخصم</th>
                             <th>رقم هاتف الخصم</th>
-                            <th>العنوان</th>
-                            <th>صفة الموكل</th>
-                            <th>صفة الخصم</th>
                             <th>رقم الملف</th>
                             <th>رقم الدعوى</th>
                             <th>قيمة الدين</th>
@@ -56,34 +53,34 @@
                         </tr>
                     </thead>
                     <tbody>
-                        @forelse ($settlements as $settlement)
+                        @forelse ($settlement as $settlemen)
                             <tr>
-                                <td>{{ $settlement->user->name ?? 'غير متوفر' }}</td>
-                                <td>{{ $settlement->client_name ?? 'غير متوفر' }}</td>
-                                <td>{{ $settlement->opponent_name ?? 'غير متوفر' }}</td>
-                                <td>{{ $settlement->excutiveCases?->client_national_id ?? 'غير مرتبط بقضيه' }}</td>
-                                <td>{{ $settlement->excutiveCases?->opponent_national_id ?? 'غير مرتبط بقضيه' }}</td>
-                                <td>{{ $settlement->opponent_phone ?? 'غير متوفر' }}</td>
-                                <td>{{ $settlement->opponent_address ?? 'غير متوفر' }}</td>
-                                <td>{{ $settlement->client_status ?? 'غير متوفر' }}</td>
-                                <td>{{ $settlement->opponent_status ?? 'غير متوفر' }}</td>
-                                <td>{{ $settlement->excutiveCases?->file_number ?? 'غير مرتبط بقضيه' }}</td>
-                                <td>{{ $settlement->excutiveCases?->case_number ?? 'غير مرتبط بقضيه' }}</td>
-                                <td>{{ $settlement->amount }}</td>
-                                <td>{{ $settlement->payment_terms ?? 'غير متوفر' }}</td>
-                                <td>{{ $settlement->payment_value ? number_format($settlement->payment_value, 2) : 'غير متوفر' }}
+                                <td>{{ $settlemen->user->name ?? 'غير متوفر' }}</td>
+                                <td>{{ $settlemen->client_name ?? 'غير متوفر' }}</td>
+                                <td>{{ $settlemen->opponent_name ?? 'غير متوفر' }}</td>
+                                <td>{{ $settlemen->excutiveCases?->client_national_id ?? 'غير مرتبط بقضيه' }}</td>
+                                <td>{{ $settlemen->excutiveCases?->opponent_national_id ?? 'غير مرتبط بقضيه' }}</td>
+                                <td>{{ $settlemen->opponent_phone ?? 'غير متوفر' }}</td>
+                                <td>{{ $settlemen->opponent_address ?? 'غير متوفر' }}</td>
+                                <td>{{ $settlemen->client_status ?? 'غير متوفر' }}</td>
+                                <td>{{ $settlemen->opponent_status ?? 'غير متوفر' }}</td>
+                                <td>{{ $settlemen->excutiveCases?->file_number ?? 'غير مرتبط بقضيه' }}</td>
+                                <td>{{ $settlemen->excutiveCases?->case_number ?? 'غير مرتبط بقضيه' }}</td>
+                                <td>{{ $settlemen->amount ?? 'غير متوفر' }}</td>
+                                <td>{{ $settlemen->payment_terms ?? 'غير متوفر' }}</td>
+                                <td>{{ $settlemen->payment_value ?? 'غير متوفر' }}
                                 </td>
-                                <td>{{ $settlement->notes ?? 'لا توجد ملاحظات' }}</td>
+                                <td>{{ $settlemen->notes ?? 'لا توجد ملاحظات' }}</td>
 
                                 <td>
                                     @if (Auth::user()->role == 'admin' || Auth::user()->role == 'superadmin')
                                         <div class="d-flex flex-wrap gap-2 mb-2">
-                                            <a href="{{ route('executive-case.settlement.edit', $settlement) }}"
+                                            <a href="{{ route('executive-case.settlement.edit', $settlemen) }}"
                                                 class="btn btn-warning btn-sm">
                                                 <i class="fas fa-edit"></i> تعديل
                                             </a>
 
-                                            <form action="{{ route('executive-case.settlement.delete', $settlement) }}"
+                                            <form action="{{ route('executive-case.settlement.delete', $settlemen) }}"
                                                 method="POST" onsubmit="return confirm('هل أنت متأكد من الحذف؟')">
                                                 @csrf
                                                 @method('DELETE')
@@ -92,7 +89,7 @@
                                                 </button>
                                             </form>
 
-                                            <a href="{{ route('settlements.procedure', $settlement) }}"
+                                            <a href="{{ route('settlements.procedure', $settlemen) }}"
                                                 class="btn btn-info btn-sm">
                                                 <i class="fas fa-cogs"></i> إجراء
                                             </a>
@@ -101,8 +98,8 @@
 
                                     <div>
                                         <button
-                                            class="btn btn-sm {{ $settlement->obligation === 'ملتزم' ? 'btn-success' : 'btn-danger' }}">
-                                            {{ $settlement->obligation ?? 'غير محدد' }}
+                                            class="btn btn-sm {{ $settlemen->obligation == 'ملتزم' ? 'btn-success' : 'btn-danger' }}">
+                                            {{ $settlemen->obligation ?? 'غير محدد' }}
                                         </button>
                                     </div>
                                 </td>

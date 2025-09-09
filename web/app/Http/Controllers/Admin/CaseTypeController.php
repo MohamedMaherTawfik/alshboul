@@ -224,5 +224,12 @@ class CaseTypeController extends Controller
         }
     }
 
+    public function storeSettlement(Request $request, ExecutiveCase $casetype)
+    {
+        $data = $request->except('_token', 'lawsuit_type', 'lawsuit_number');
+        $data['executive_case_id'] = $casetype->id;
+        Settlement::create($data);
+        return redirect()->route('cases.show', $case ?? '')->with('success', 'تم تسجيل التسوية بنجاح');
+    }
 
 }

@@ -28,7 +28,8 @@
                             <select name="subscriber_id" id="subscriber_id" class="form-control">
                                 <option value="">اختر المشترك</option>
                                 @foreach ($clients as $client)
-                                    <option value="{{ $client->id }}" data-user="{{ $client->user_id }}">
+                                    <option value="{{ $client->id }}" data-user="{{ $client->user_id }}"
+                                        data-clients='@json($client->user ? $client->user->client : [])'>
                                         {{ $client->name }}
                                     </option>
                                 @endforeach
@@ -37,7 +38,6 @@
                                 <small class="text-danger">{{ $message }}</small>
                             @enderror
                         </div>
-
 
                         <!-- رقم الملف -->
                         <div class="form-group col-md-6">
@@ -51,8 +51,6 @@
                     </div>
 
                     <div class="row">
-                        <!-- العميل -->
-
                         <!-- الموكل -->
                         <div class="form-group col-md-6">
                             <label for="client_id">الموكل</label>
@@ -63,8 +61,6 @@
                                 <small class="text-danger">{{ $message }}</small>
                             @enderror
                         </div>
-
-
 
                         <!-- المنطقة -->
                         <div class="form-group col-md-6">
@@ -123,32 +119,34 @@
 
 {{-- JSON بكل العملاء --}}
 <script>
-    const allClients = @json($clients);
-
     document.addEventListener("DOMContentLoaded", function() {
         const subscriberSelect = document.getElementById("subscriber_id");
         const clientSelect = document.getElementById("client_id");
 
         subscriberSelect.addEventListener("change", function() {
             clientSelect.innerHTML = '<option value="">اختر الموكل</option>';
-            clientSelect.setAttribute("disabled", true);
+            clientSelect.disabled = true;
 
             const selectedOption = this.options[this.selectedIndex];
-            if (!selectedOption.value) return;
+            const clients = selectedOption.getAttribute("data-clients");
 
-            const selectedUser = selectedOption.getAttribute("data-user");
+            if (clients) {
+                let parsedClients = [];
+                try {
+                    parsedClients = JSON.parse(clients);
+                } catch (e) {
+                    parsedClients = [];
+                }
 
-            // فلترة الموكلين بنفس user_id
-            const relatedClients = allClients.filter(c => c.user_id == selectedUser);
-
-            if (relatedClients.length > 0) {
-                relatedClients.forEach(client => {
-                    let opt = document.createElement("option");
-                    opt.value = client.name;
-                    opt.textContent = client.name;
-                    clientSelect.appendChild(opt);
-                });
-                clientSelect.removeAttribute("disabled");
+                if (parsedClients.length > 0) {
+                    parsedClients.forEach(client => {
+                        let option = document.createElement("option");
+                        option.value = client.name;
+                        option.textContent = client.name;
+                        clientSelect.appendChild(option);
+                    });
+                    clientSelect.disabled = false;
+                }
             }
         });
     });

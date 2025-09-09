@@ -24,24 +24,20 @@
                     <table class="table table-bordered table-striped text-center align-middle">
                         <thead class="table-dark">
                             <tr>
-                                <th>المستخدم</th>
-                                <th>اسم المشترك</th>
-                                <th>رقم المشترك</th>
-                                <th>اسم الموكل</th>
-                                <th>الرقم الوطني للموكل</th>
+                                <th> اسم مشترك</th>
+                                <th> اسم الموكل</th>
+                                <th>الرقم الوطني </th>
                                 <th>اسم الخصم</th>
                                 <th>الرقم الوطني للخصم</th>
-                                <th>رقم الدعوى</th>
+                                <th> رقم الدعوي</th>
+                                <th> قيمه الدعوي</th>
                                 <th>رقم الملف</th>
-                                <th>نوع الدعوي التنفيذية</th>
-                                <th>حالة القضية</th>
-                                <th>قيمة الدعوى</th>
-                                <th>الدائرة التنفيذية</th>
+                                <th> الدائره</th>
+                                <th> المحكوم له</th>
+                                <th> المحكوم عليه</th>
+                                <th>حالة الدعوي</th>
                                 <th>نوع السند التنفيذي</th>
-                                <th>تاريخ التسجيل</th>
                                 <th>رقم السند التنفيذي</th>
-                                <th>صفة المحكوم له</th>
-                                <th>صفة المحكوم عليه</th>
                                 <th>تاريخ الجلسة الإجرائية</th>
                                 @if (Auth::user()->role == 'admin' || Auth::user()->role == 'superadmin')
                                     <th>الاجراءات</th>
@@ -51,24 +47,20 @@
                         <tbody>
                             @forelse ($item->excutiveCases as $case)
                                 <tr>
-                                    <td>{{ $case->user?->name }}</td>
                                     <td>{{ $case->client?->name }}</td>
-                                    <td>{{ $case->subscriber_number }}</td>
                                     <td>{{ $case->client_name }}</td>
                                     <td>{{ $case->client_national_id }}</td>
                                     <td>{{ $case->opponent_name }}</td>
                                     <td>{{ $case->opponent_national_id }}</td>
                                     <td>{{ $case->case_number }}</td>
-                                    <td>{{ $case->file_number }}</td>
-                                    <td>{{ $case->case_type }}</td>
-                                    <td>{{ $case->case_status }}</td>
                                     <td>{{ $case->case_value }}</td>
+                                    <td>{{ $case->file_number }}</td>
                                     <td>{{ $case->execution_court }}</td>
-                                    <td>{{ $case->execution_document_type }}</td>
-                                    <td>{{ $case->registration_date }}</td>
-                                    <td>{{ $case->execution_document_number }}</td>
                                     <td>{{ $case->judged_for_status }}</td>
                                     <td>{{ $case->judged_against_status }}</td>
+                                    <td>{{ $case->case_status }}</td>
+                                    <td>{{ $case->execution_document_type }}</td>
+                                    <td>{{ $case->execution_document_number }}</td>
                                     <td>{{ $case->procedural_session_date }}</td>
                                     <td>
                                         @if (Auth::user()->role == 'admin' || Auth::user()->role == 'superadmin')

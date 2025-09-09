@@ -110,8 +110,9 @@
                     <!-- المحامي -->
                     <div class="col-md-6 mb-3">
                         <label for="user_id" class="form-label required-field">المحامي</label>
-                        <select class="form-select" id="user_id" name="user_id" required>
-                            <option value="" disabled>اختر المحامي</option>
+                        <select class="form-select" id="user_id" name="user_id">
+                            <option value="{{ $session->lawyer_user->id ?? null }}">
+                                {{ $session->lawyer_user->name ?? 'غير محدد' }}</option>
                             @foreach ($lawers as $lawyer)
                                 <option value="{{ $lawyer->id }}"
                                     {{ $session->lawyer_id == $lawyer->id ? 'selected' : '' }}>
@@ -144,7 +145,7 @@
                     <!-- ملف مرفق -->
                     <div class="col-md-12 mb-3">
                         @if ($session->sessionFiles->count() > 0)
-                            <p class="fw-bold mb-2">📂 الملفات الحالية:</p>
+                            <p class="fw-bold mb-2">الملفات الحالية:</p>
                             @foreach ($session->sessionFiles as $file)
                                 <div class="mb-2">
                                     <!-- زر عرض -->

@@ -3,10 +3,7 @@
 namespace App\Http\Controllers\Admin;
 
 use App\Http\Controllers\Controller;
-use App\Models\cases;
 use App\Models\Client;
-use App\Models\excutiveCasesMain;
-use App\Models\ExecutiveCase;
 use App\Models\Settlement;
 use App\Models\SettlementMain;
 use App\Models\User;
@@ -16,33 +13,53 @@ use Illuminate\Support\Facades\DB;
 
 class SettlementController extends Controller
 {
-    public function index(SettlementMain $type)
+    public function index(SettlementMain $settlements)
     {
-        $type->load('settlements');
-        $settlements = Settlement::with('excutiveCases')->where('settlement_main_id', $type->id)->get();
-
-        return view('admin.Settlement.index', compact('type', 'settlements'));
+        $settlements->load('settlements');
+        $settlement = Settlement::where('settlement_main_id', $settlements->id)->get();
+        return view('admin.Settlement.index', compact('settlements', 'settlement'));
     }
 
-    public function create(excutiveCasesMain $type)
+    public function create(SettlementMain $settlements)
     {
         $clients = Client::where('seen', 1)->get();
-        $settlements = SettlementMain::get();
-        return view('admin.Settlement.create', compact('type', 'clients', 'settlements'));
-    }
 
-    public function store(Request $request, excutiveCasesMain $type)
+        $settlementsForMain = Settlement::where('settlement_main_id', $settlements->id)
+            ->orderBy('file_number')
+            ->pluck('file_number')
+            ->toArray();
+
+        if (empty($settlementsForMain)) {
+            $nextFileNumber = 1;
+        } else {
+            $nextFileNumber = null;
+
+
+            $max = max($settlementsForMain);
+            for ($i = 1; $i <= $max; $i++) {
+                if (!in_array($i, $settlementsForMain)) {
+                    $nextFileNumber = $i;
+                    break;
+                }
+            }
+
+            if (is_null($nextFileNumber)) {
+                $nextFileNumber = $max + 1;
+            }
+        }
+
+        return view('admin.Settlement.create', compact('clients', 'settlements', 'nextFileNumber'));
+    }
+    public function store(Request $request, SettlementMain $settlements)
     {
-        $data = $request->except('_token');
+        $data = $request->except('_token', 'client_address', 'type');
         $data['user_id'] = Auth::id();
-        $case = cases::where('case_number', $data['file_number'])->first();
-        $data['cases_id'] = $case->id;
-        $main = SettlementMain::where('id', $data['settlement_main_id'])->first();
+        $data['settlement_main_id'] = $settlements->id;
         try {
             DB::beginTransaction();
             Settlement::create($data);
             DB::commit();
-            return redirect()->route('settlement.index', $main)->with('success', 'تم إضافة التسوية بنجاح');
+            return redirect()->route('settlement.index', $settlements)->with('success', 'تم إضافة التسوية بنجاح');
         } catch (\Exception $th) {
             DB::rollBack();
             return redirect()->back()->with('error', 'حدث خطأ أثناء الإضافة: ' . $th->getMessage())->withInput();

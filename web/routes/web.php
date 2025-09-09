@@ -161,9 +161,9 @@ Route::group(['prefix' => 'admin', 'middleware' => ['auth', roleMiddleware::clas
     Route::get('/agreement/{id}/restore', [AgreementController::class, 'restore'])->name('agreement.restore');
     Route::get('/agreements/{id}', [AgreementController::class, 'show'])->name('agreement.show');
 
-    Route::get('/settlements/{type}/all', [SettlementController::class, 'index'])->name('settlement.index');
-    Route::get('/settlements/{type}/create/new', [SettlementController::class, 'create'])->name('settlement.create');
-    Route::post('/settlements/{type}/store/new', [SettlementController::class, 'store'])->name('settlement.store');
+    Route::get('/settlements/{settlements}/all', [SettlementController::class, 'index'])->name('settlement.index');
+    Route::get('/settlements/{settlements}/create/new', [SettlementController::class, 'create'])->name('settlement.create');
+    Route::post('/settlements/{settlements}/store/new', [SettlementController::class, 'store'])->name('settlement.store');
     Route::get('/settlements/{id}/edit', [SettlementController::class, 'edit'])->name('settlement.edit');
     Route::post('/settlements/{id}', [SettlementController::class, 'update'])->name('settlement.update');
     Route::delete('/settlement/delete', [SettlementController::class, 'destroy'])->name('settlement.delete');
@@ -285,6 +285,7 @@ Route::group(['prefix' => 'admin', 'middleware' => ['auth', roleMiddleware::clas
     Route::post('/casetypes', [CaseTypeController::class, 'store'])->name('casetypes.store');
     Route::get('/casetypes/{id}/edit', [CaseTypeController::class, 'edit'])->name('casetypes.edit');
     Route::get('/casetypes/{casetype}/show', [CaseTypeController::class, 'show'])->name('casetypes.show');
+    Route::get('/casetypes/{casetype}/create/settlement', [CaseTypeController::class, 'storeSettlement'])->name('casetypes.create.settlement');
     Route::post('/casetypes/{id}', [CaseTypeController::class, 'update'])->name('casetypes.update');
 
     Route::get('/casetypes/createCase/get/{case}', [CaseController::class, 'createCase'])->name('casetypes.create.case');

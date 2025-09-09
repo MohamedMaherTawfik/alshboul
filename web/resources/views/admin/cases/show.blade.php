@@ -101,24 +101,26 @@
                 <thead class="table-dark">
                     <tr>
                         <th>اسم المدخل</th>
-                        <th>التاريخ</th>
                         <th>المحامي</th>
-                        <th>النوع</th>
-                        <th>الوقائع</th>
-                        <th>الملفات</th>
-                        <th>ملاحظات</th>
                         <th>تاريخ الإدخال</th>
+                        <th>الوقائع</th>
+                        <th>ملاحظات</th>
+                        <th>تاريخ الجلسه او الاجراء القادم</th>
+                        <th>الملفات</th>
+                        <th>النوع</th>
                         <th>إجراءات</th>
                     </tr>
                 </thead>
                 <tbody id="sessionsTable">
                     @forelse ($sessions as $session)
                         <tr data-type="{{ $session['type'] === 'جلسة' ? 'session' : 'procedure' }}">
-                            <td>{{ $session['user'] }}</td>
+                            <td>{{ $session['user'] ?? '-' }}</td>
+                            <td>{{ $session['lawyer'] ?? '-' }}</td>
+                            <td>{{ $session['created_at'] ? date('d/m/Y', strtotime($session['created_at'])) : '-' }}
+                            </td>
+                            <td>{{ $session['facts'] ?? '-' }}</td>
+                            <td>{{ $session['note'] ?? '-' }}</td>
                             <td>{{ $session['date'] ?? '-' }}</td>
-                            <td>{{ $session['lawyer'] }}</td>
-                            <td>{{ $session['type'] }}</td>
-                            <td>{{ $session['facts'] }}</td>
                             <td>
                                 @foreach ($session['files'] as $file)
                                     <a href="{{ asset('storage/' . ($file->file_path ?? $file->file)) }}"
@@ -132,10 +134,8 @@
                                     +
                                 </button>
                             </td>
+                            <td>{{ $session['type'] }}</td>
 
-                            <td>{{ $session['note'] ?? '-' }}</td>
-                            <td>{{ $session['created_at'] ? date('d/m/Y', strtotime($session['created_at'])) : '-' }}
-                            </td>
                             <td>
                                 @if ($session['type'] === 'جلسة')
                                     <a href="{{ route('cases.session.edit', $session['id']) }}"

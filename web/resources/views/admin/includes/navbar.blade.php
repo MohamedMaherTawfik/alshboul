@@ -158,7 +158,7 @@
 
             {{-- المعاملات --}}
             <li class="nav-item dropdown">
-                <a class="nav-link dropdown-toggle {{ request()->is('admin/settlement*') ? 'active' : '' }}"
+                <a class="nav-link dropdown-toggle {{ request()->is('admin/transactions*') ? 'active' : '' }}"
                     href="#" id="settlementDropdown" role="button" data-toggle="dropdown"
                     aria-haspopup="true" aria-expanded="false">
                     المعاملات

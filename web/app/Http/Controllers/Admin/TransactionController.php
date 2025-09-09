@@ -8,6 +8,7 @@ use App\Models\ProceduralFile;
 use App\Models\ProceduralRecord;
 use App\Models\TransActions;
 use App\Models\TransactionsMain;
+use App\Models\User;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
 
@@ -21,7 +22,7 @@ class TransactionController extends Controller
 
     public function create(TransactionsMain $transaction)
     {
-        $clients = Client::where('seen', 1)->get();
+        $clients = Client::where('active', 1)->where('seen', 1)->get();
 
         $numbers = $transaction->transactions()
             ->pluck('file_number')

@@ -103,7 +103,7 @@
                     <!-- المحامي -->
                     <div class="col-md-6 mb-3">
                         <label for="lawyer_id" class="form-label required-field">المحامي</label>
-                        <select class="form-select" id="lawyer_id" name="lawyer_id" required>
+                        <select class="form-select" id="lawyer_id" name="lawyer_id">
                             <option value="" selected disabled>اختر المحامي</option>
                             @foreach ($lawers as $lawyer)
                                 <option value="{{ $lawyer->id }}">{{ $lawyer->name ?? 'غير محدد' }}</option>
