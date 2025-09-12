@@ -26,17 +26,17 @@ class ProceduralRecordController extends Controller
     }
     public function store(Request $request, ExecutiveCase $executiveCase)
     {
-        $data = $request->except('_token', 'file_path');
-        $data['cases_id'] = $executiveCase->id;
-        $data['created_by'] = Auth::user()->id;
+        $data = $request->except('_token');
         // إنشاء الإجراء
         $procedural = ProceduralRecord::create([
             'executive_case_id' => $executiveCase->id ?? null,
-            'user_lawyer_id' => $data['created_by'] ?? null,
+            'user_lawyer_id' => auth()->user()->id ?? null,
             'action' => $data['action'] ?? null,
             'note' => $data['note'] ?? null,
             'type' => $data['type'] ?? null,
             'user_id' => $data['user_id'] ?? null,
+            'next_action' => $data['next_action'] ?? null,
+            'next_action_date' => $data['next_action_date'] ?? null,
         ]);
         // رفع الملفات
         if ($request->hasFile('files')) {
@@ -71,6 +71,8 @@ class ProceduralRecordController extends Controller
             'note' => $data['note'] ?? null,
             'type' => $data['type'] ?? null,
             'user_id' => $data['user_id'] ?? null,
+            'next_action' => $data['next_action'] ?? null,
+            'next_action_date' => $data['next_action_date'] ?? null,
         ]);
         return redirect()->route('procedural-record.index', ['executiveCase' => $executiveCase->case])->with('success', 'تم تعديل الإجراء بنجاح');
     }

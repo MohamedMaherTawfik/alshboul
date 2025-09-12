@@ -1,3 +1,8 @@
+@php
+    use App\Models\User;
+    $lawyers = User::whereIn('role', ['Lawyer', 'admin', 'superadmin'])->get();
+@endphp
+
 @extends('layouts.admin')
 @section('title', 'الموكلين')
 @section('main_title_content', 'قائمة الموكلين')
@@ -57,57 +62,83 @@
                         </button>
                     </div>
                     <div class="card-body">
+
+                        <div class="mb-3 d-flex gap-2">
+                            <input type="text" id="searchMain" class="form-control" placeholder="بحث الإجراء الرئيسي"
+                                style="width:20%; border:2px solid #00000085; font-weight:500;">
+
+                            <input type="text" id="searchDetail" class="form-control mr-2"
+                                placeholder="بحث تفاصيل الإجراء"
+                                style="width:20%; border:2px solid #00000085; font-weight:500;">
+                        </div>
+
                         <div class="table-responsive">
-                            <table class="table table-hover">
+                            <table class="table table-hover" id="proceduralTable">
                                 <thead class="table-light">
                                     <tr>
-                                        <th>#</th>
-                                        <th>نوع الإجراء</th>
-                                        <th>الإجراء</th>
-                                        <th>الجهة</th>
-                                        <th>وقائع الإجراء</th>
-                                        <th>الحالة</th>
-                                        <th>المستخدم</th>
-                                        <th>الإجراءات</th>
+                                        <th class="text-center">اسم المدخل</th>
+                                        <th class="text-center">تاريخ الادخال</th>
+                                        <th class="text-center"> الاجراء الرئيسي</th>
+                                        <th class="text-center"> المحامي</th>
+                                        <th class="text-center">الجهة</th>
+                                        <th class="text-center">وقائع الإجراء</th>
+                                        <th class="text-center">الحالة</th>
+                                        <th class="text-center">الموكل</th>
+                                        <th class="text-center">تاريخ الاجراء اللاحق</th>
+                                        <th class="text-center">اجراء فرعي</th>
+                                        @if (Auth::user()->role == 'admin' || Auth::user()->role == 'superadmin')
+                                            <th class="text-center">التحكم</th>
+                                        @endif
                                     </tr>
                                 </thead>
                                 <tbody>
-                                    @forelse($client->clientProcedurals as $procedural)
+                                    @forelse($client->clientProcedurals->sortByDesc('created_at') as $procedural)
                                         <tr>
-                                            <td>{{ $loop->iteration }}</td>
-                                            <td>{{ $procedural->procedural_type }}</td>
-                                            <td>{{ $procedural->procedural }}</td>
-                                            <td>{{ $procedural->side }}</td>
-                                            <td style="white-space: pre-wrap; word-wrap: break-word; max-width: 400px;">
+                                            <td class="text-center">{{ $procedural->user->name ?? 'غير محدد' }}</td>
+                                            <td class="text-center">
+                                                {{ $procedural->created_at->format('Y-m-d') ?: 'غير محدد' }}</td>
+                                            <td class="text-center procedural-col">
+                                                {{ $procedural->procedural ?? 'غير محدد' }}</td>
+                                            <td class="text-center">
+                                                {{ $procedural->lawyer->name ?? 'غير محدد' }}</td>
+                                            <td class="text-center">{{ $procedural->side }}</td>
+                                            <td class="facts-col"
+                                                style="white-space: pre-wrap; word-wrap: break-word; max-width: 400px;">
                                                 {{ $procedural->procedural_facts }}
                                             </td>
-
-                                            <td>
+                                            <td class="text-center">
                                                 <span
                                                     class="badge p-2 {{ $procedural->status ? 'bg-success' : 'bg-warning' }}">
                                                     {{ $procedural->status ? 'مكتمل' : 'غير مكتمل' }}
                                                 </span>
                                             </td>
-                                            <td>{{ $procedural->user->name ?? 'غير محدد' }}</td>
-                                            <td>
-                                                <button type="button" class="btn btn-sm btn-outline-primary"
-                                                    data-bs-toggle="modal"
-                                                    data-bs-target="#editProceduralModal{{ $procedural->id }}">
-                                                    تعديل الاجراء
-                                                </button>
-                                                <form action="{{ route('client.procedural.delete', $procedural) }}"
-                                                    method="POST" class="d-inline">
-                                                    @csrf
-                                                    @method('DELETE')
-                                                    <button type="submit" class="btn btn-sm btn-outline-danger"
-                                                        onclick="return confirm('هل أنت متأكد من الحذف؟')">
-                                                        حذف الاجراء
-                                                    </button>
-                                                </form>
+                                            <td class="text-center">{{ $procedural->client->name ?? 'غير محدد' }}</td>
+                                            <td class="text-center">{{ $procedural->next_action_date ?? 'غير محدد' }}</td>
+                                            <td class="text-center">
+                                                <a href="{{ route('client.procedural.sub.index', $procedural) }}">اجراء
+                                                    فرعي</a>
                                             </td>
+                                            @if (Auth::user()->role == 'admin' || Auth::user()->role == 'superadmin')
+                                                <td class="text-center">
+                                                    <button type="button" class="btn btn-sm btn-outline-primary"
+                                                        data-bs-toggle="modal"
+                                                        data-bs-target="#editProceduralModal{{ $procedural->id }}">
+                                                        تعديل الاجراء
+                                                    </button>
+                                                    <form action="{{ route('client.procedural.delete', $procedural) }}"
+                                                        method="POST" class="d-inline">
+                                                        @csrf
+                                                        @method('DELETE')
+                                                        <button type="submit" class="btn btn-sm btn-outline-danger"
+                                                            onclick="return confirm('هل أنت متأكد من الحذف؟')">
+                                                            حذف الاجراء
+                                                        </button>
+                                                    </form>
+                                                </td>
+                                            @endif
                                         </tr>
 
-                                        <!-- Modal للتعديل -->
+                                        <!-- مودال التعديل -->
                                         <div class="modal fade" id="editProceduralModal{{ $procedural->id }}"
                                             tabindex="-1" aria-hidden="true">
                                             <div class="modal-dialog">
@@ -117,39 +148,69 @@
                                                         <button type="button" class="btn-close" data-bs-dismiss="modal"
                                                             aria-label="Close"></button>
                                                     </div>
-                                                    <form action="{{ route('client.procedural.update', $procedural->id) }}"
+                                                    <form action="{{ route('client.procedural.update', $procedural) }}"
                                                         method="POST">
                                                         @csrf
                                                         <div class="modal-body">
                                                             <div class="mb-3">
                                                                 <label class="form-label">نوع الإجراء</label>
-                                                                <input type="text" class="form-control"
-                                                                    name="procedural_type"
-                                                                    value="{{ $procedural->procedural_type }}" required>
+                                                                <input type="text" class="form-control" value="اجراء"
+                                                                    readonly>
                                                             </div>
+
                                                             <div class="mb-3">
-                                                                <label class="form-label">الإجراء</label>
-                                                                <input type="text" class="form-control" name="procedural"
-                                                                    value="{{ $procedural->procedural }}" required>
+                                                                <label class="form-label">تاريخ ادخل الإجراء </label>
+                                                                <input type="date" class="form-control"
+                                                                    name="created_at"
+                                                                    value="{{ now()->format('Y-m-d') }}">
+                                                            </div>
+
+
+                                                            <div class="mb-3">
+                                                                <label class="form-label">تاريخ الإجراء اللاحق</label>
+                                                                <input type="date" class="form-control"
+                                                                    name="next_action_date">
+                                                            </div>
+
+
+                                                            <div class="mb-3">
+                                                                <label class="form-label">الاجراء الرئيسي</label>
+                                                                <input type="text" class="form-control"
+                                                                    name="procedural"
+                                                                    value="{{ $procedural->procedural }}">
                                                             </div>
                                                             <div class="mb-3">
                                                                 <label class="form-label">الجهة</label>
                                                                 <input type="text" class="form-control" name="side"
-                                                                    value="{{ $procedural->side }}" required>
+                                                                    value="{{ $procedural->side }}">
                                                             </div>
                                                             <div class="mb-3">
                                                                 <label class="form-label">وقائع الإجراء</label>
                                                                 <textarea class="form-control" name="procedural_facts" rows="3">{{ $procedural->procedural_facts }}</textarea>
                                                             </div>
+
+                                                            <div class="mb-3">
+                                                                <label class="form-label">اختر المحامي</label>
+                                                                <select name="lawyer_id" class="form-select">
+                                                                    @foreach ($lawyers as $item)
+                                                                        <option value="{{ $item->id }}"
+                                                                            {{ $procedural->lawyer_id == $item->id ? 'selected' : '' }}>
+                                                                            {{ $item->name }}
+                                                                        </option>
+                                                                    @endforeach
+                                                                </select>
+                                                            </div>
+
                                                             <div class="mb-3">
                                                                 <label class="form-label">الحالة</label>
                                                                 <select class="form-select" name="status">
                                                                     <option value="0"
-                                                                        {{ !$procedural->status ? 'selected' : '' }}>غير
-                                                                        مكتمل
+                                                                        {{ $procedural->status == 0 ? 'selected' : '' }}>
+                                                                        غير مكتمل
                                                                     </option>
                                                                     <option value="1"
-                                                                        {{ $procedural->status ? 'selected' : '' }}>مكتمل
+                                                                        {{ $procedural->status == 1 ? 'selected' : '' }}>
+                                                                        مكتمل
                                                                     </option>
                                                                 </select>
                                                             </div>
@@ -158,15 +219,16 @@
                                                             <button type="button" class="btn btn-secondary"
                                                                 data-bs-dismiss="modal">إلغاء</button>
                                                             <button type="submit" class="btn btn-primary">حفظ
-                                                                التعديلات</button>
+                                                                التعديل</button>
                                                         </div>
                                                     </form>
                                                 </div>
                                             </div>
                                         </div>
+                                        <!-- نهاية المودال -->
                                     @empty
                                         <tr>
-                                            <td colspan="8" class="text-center py-4">
+                                            <td colspan="10" class="text-center py-4">
                                                 <i class="fas fa-tasks fa-2x text-muted mb-3"></i>
                                                 <h5 class="text-muted">لا توجد إجراءات مسجلة</h5>
                                                 <p class="text-muted">يمكنك إضافة إجراء جديد باستخدام الزر بالأعلى</p>
@@ -196,10 +258,17 @@
                     <div class="modal-body">
                         <div class="mb-3">
                             <label class="form-label">نوع الإجراء</label>
-                            <input type="text" class="form-control" name="procedural_type" required>
+                            <input type="text" class="form-control" name="procedural_type" readonly value="اجراء">
                         </div>
+
                         <div class="mb-3">
-                            <label class="form-label">الإجراء</label>
+                            <label class="form-label">تاريخ ادخال الإجراء</label>
+                            <input type="date" class="form-control" name="created_at"
+                                value="{{ now()->format('Y-m-d') }}">
+                        </div>
+
+                        <div class="mb-3">
+                            <label class="form-label">الاجراء الرئيسي</label>
                             <input type="text" class="form-control" name="procedural" required>
                         </div>
                         <div class="mb-3">
@@ -210,6 +279,16 @@
                             <label class="form-label">وقائع الإجراء</label>
                             <textarea class="form-control" name="procedural_facts" rows="3"></textarea>
                         </div>
+
+                        <div class="mb-3">
+                            <label class="form-label">اختر المحامي</label>
+                            <select name="lawyer_id" class="form-select">
+                                @foreach ($lawyers as $item)
+                                    <option value="{{ $item->id }}">{{ $item->name }}</option>
+                                @endforeach
+                            </select>
+                        </div>
+
                         <div class="mb-3">
                             <label class="form-label">الحالة</label>
                             <select class="form-select" name="status">
@@ -246,4 +325,36 @@
             font-size: 0.85em;
         }
     </style>
+
+    <script>
+        // البحث في الإجراء الرئيسي
+        document.getElementById('searchMain').addEventListener('keyup', function() {
+            let filter = this.value.toLowerCase();
+            let rows = document.querySelectorAll('#proceduralTable tbody tr');
+
+            rows.forEach(row => {
+                let proceduralText = row.querySelector('.procedural-col')?.textContent.toLowerCase();
+                if (proceduralText && proceduralText.includes(filter)) {
+                    row.style.display = '';
+                } else {
+                    row.style.display = 'none';
+                }
+            });
+        });
+
+        // البحث في وقائع الإجراء
+        document.getElementById('searchDetail').addEventListener('keyup', function() {
+            let filter = this.value.toLowerCase();
+            let rows = document.querySelectorAll('#proceduralTable tbody tr');
+
+            rows.forEach(row => {
+                let factsText = row.querySelector('.facts-col')?.textContent.toLowerCase();
+                if (factsText && factsText.includes(filter)) {
+                    row.style.display = '';
+                } else {
+                    row.style.display = 'none';
+                }
+            });
+        });
+    </script>
 @endsection

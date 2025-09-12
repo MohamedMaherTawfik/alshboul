@@ -13,7 +13,6 @@ use App\Models\Settlement;
 use App\Models\SettlementMain;
 use App\Models\subrocedural;
 use App\Models\trahsedDays;
-use App\Models\User;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\DB;
@@ -37,34 +36,40 @@ class ExecutiveCaseController extends Controller
             $totalEvents = $case->proceduralRecords()->count()
                 + $case->settlements()->count();
 
-
             $trashed = trahsedDays::where('executive_case_id', $case->id)->first();
 
-            if ($totalEvents === ($trashed->counts ?? $totalEvents)) {
-                // العدد ثابت
-                if (!$trashed) {
-                    trahsedDays::create([
-                        'executive_case_id' => $case->id,
-                        'counts' => $totalEvents,
-                        'is_seen' => 0,
-                    ]);
-                } else {
-                    // تحقق إذا وصل عدد الأيام المسموح
-                    $trashed->increment('counts');
-                    if ($trashed->counts >= $neglectConfig->days) {
+            if ($trashed) {
+                if ($totalEvents == $trashed->counts) {
+                    $daysDiff = now()->diffInDays($trashed->updated_at);
+
+                    if ($daysDiff >= 1) {
+                        $trashed->increment('days_passed', $daysDiff);
+                    }
+
+                    if ($trashed->days_passed >= $neglectConfig->days) {
                         $trashed->update(['is_seen' => 1]);
                     }
+                } elseif ($totalEvents > $trashed->counts) {
+                    $trashed->update([
+                        'counts' => $totalEvents,
+                        'days_passed' => 0,
+                        'is_seen' => 0,
+                    ]);
                 }
             } else {
-                // حصل جديد، نحذف من جدول trashed
-                if ($trashed) {
-                    $trashed->delete();
-                }
+                // مفيش سجل → نعمل واحد جديد
+                trahsedDays::create([
+                    'executive_case_id' => $case->id,
+                    'counts' => $totalEvents,
+                    'days_passed' => 0,
+                    'is_seen' => 0,
+                ]);
             }
         }
 
         return view('admin.ExecutiveCase.index', compact('item', 'executiveCases'));
     }
+
     /**
      * Show the form for creating a new resource.
      */

@@ -21,16 +21,28 @@
                             value="{{ $executiveCase->type ?? 'اجراء' }}" readonly>
                     </div>
 
-                    <div class="col-md-6 mb-3">
+                    <div class="col-md-12 mb-3">
                         <label class="form-label">الإجراء</label>
-                        <input type="text" name="action" class="form-control" value="{{ $executiveCase->action }}"
-                            required>
+                        <textarea name="action" class="form-control" rows="4" required>{{ $executiveCase->action }}</textarea>
                     </div>
+
 
                     <div class="col-md-12 mb-3">
                         <label class="form-label">ملاحظات</label>
                         <textarea name="note" class="form-control">{{ $executiveCase->note }}</textarea>
                     </div>
+
+                    <div class="col-md-12 mb-3">
+                        <label class="form-label">اجراء قادم</label>
+                        <textarea name="next_action" class="form-control">{{ $executiveCase->next_action }}</textarea>
+                    </div>
+
+                    <div class="col-md-12 mb-3">
+                        <label class="form-label">تاريخ الاجراء القادم </label>
+                        <input type="date" name="next_action_date"
+                            class="form-control">{{ $executiveCase->next_action_date }}</input>
+                    </div>
+
 
                     <div class="col-md-6 mb-3">
                         <label class="form-label">المحامي</label>

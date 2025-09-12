@@ -58,7 +58,7 @@
     <div class="container py-5">
         <div class="row mb-4">
             <div class="col">
-                <h2 class="page-title">إضافة جلسة قضائية جديدة</h2>
+                <h2 class="page-title">إضافة جلسة او اجراء قضائي جديد</h2>
                 <p class="text-muted">أدخل تفاصيل الجلسة القضائية للقضية المحددة</p>
             </div>
         </div>
@@ -95,10 +95,12 @@
                     <div class="row">
                         <!-- التاريخ -->
                         <div class="col-md-6 mb-3">
-                            <label for="created_at" class="form-label required-field">تاريخ الادخال</label>
-                            <input type="date" class="form-control" id="created_at" name="created_at">
+                            <label for="created_at" class="form-label required-field">تاريخ الإدخال</label>
+                            <input type="date" class="form-control" id="created_at" name="created_at"
+                                value="{{ old('created_at', now()->format('Y-m-d')) }}">
                         </div>
                     </div>
+
 
                     <!-- المحامي -->
                     <div class="col-md-6 mb-3">

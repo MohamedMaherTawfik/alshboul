@@ -91,13 +91,26 @@ class CaseController extends Controller
     {
         $clients = Client::where('seen', 1)->get();
         $users = User::with('client')->where('role', 'user')->where('active', 1)->get();
-        return view('admin.cases.edit', compact('case', 'clients', 'users'));
+        $caseTypes = CaseType::all();
+        return view('admin.cases.edit', compact('case', 'clients', 'users', 'caseTypes'));
     }
     public function update(Request $request, cases $case)
     {
         try {
             $data = $request->except('_token');
-            // dd($data);
+            $numbers = Cases::where('suggested_case_id', $data['suggested_case_id'])
+                ->pluck('case_number')
+                ->sort()
+                ->toArray();
+
+            $missing = 1;
+            foreach ($numbers as $num) {
+                if ($num == $missing) {
+                    $missing++;
+                } elseif ($num > $missing) {
+                    break;
+                }
+            }
             // نعمل تحديث للقضية
             $case->update([
                 'client_id' => $data['client_id'] ?? '',
@@ -107,7 +120,7 @@ class CaseController extends Controller
                 'third_national_id' => $data['third_national_id'] ?? '',
                 'suggested_case_id' => $data['suggested_case_id'] ?? '',
                 'case_type' => $data['case_type'] ?? '',
-                'case_number' => $data['case_number'] ?? '',
+                'case_number' => $missing, // الرقم الجديد
                 'court_name' => $data['court_name'] ?? '',
                 'case_amount' => $data['case_amount'] ?? '',
                 'benefit_date' => $data['benefit_date'] ?? '',
@@ -137,7 +150,9 @@ class CaseController extends Controller
 
             return redirect()
                 ->route('casetypes.show', $case->suggestedCases)
-                ->with(['success' => 'تم تعديل القضية بنجاح']);
+                ->with([
+                    'success' => "تم تعديل القضية بنجاح. رقم الملف الجديد هو: {$missing}"
+                ]);
 
         } catch (\Throwable $th) {
             return back()->with('error', $th->getMessage());
@@ -164,7 +179,7 @@ class CaseController extends Controller
         if (empty($validated['date'])) {
             $procedural = ProceduralRecord::create([
                 'cases_id' => $case->id,
-                'user_lawyer_id' => $validated['lawyer_id'] ?? null,
+                'user_lawyer_id' => auth()->id() ?? null,
                 'action' => $validated['facts'] ?? null,
                 'note' => $validated['note'] ?? null,
                 'type' => 'اجراء' ?? null,
@@ -273,7 +288,7 @@ class CaseController extends Controller
                 'id' => $session->id,
                 'date' => $session->date ?? '-',
                 'lawyer' => $session->lawyer_user->name ?? 'بلا',
-                'type' => 'جلسة' ?? '-',
+                'type' => 'جلسة',
                 'facts' => $session->facts ?? '-',
                 'note' => $session->note,
                 'files' => $session->sessionFiles,
@@ -290,17 +305,18 @@ class CaseController extends Controller
                 'type' => $record->type ?? 'إجراء',
                 'facts' => $record->action ?? '-',
                 'note' => $record->note ?? '-',
-                'files' => $record->files ?? '-',
+                'files' => $record->files,
                 'lawyer' => $record->user->name ?? 'بلا',
-                'created_at' => $record->created_at ?? null,
+                'created_at' => $record->created_at,
             ]);
         }
 
-        // الترتيب بالأحدث للأقدم حسب created_at
-        $sessions = $sessions->sortByDesc('id')->values();
+        // الترتيب بالأحدث للأقدم
+        $sessions = $sessions->sortByDesc('created_at')->values();
 
         return view('admin.cases.show', compact('case', 'sessions'));
     }
+
 
     public function showDurations(Cases $case)
     {
@@ -348,7 +364,8 @@ class CaseController extends Controller
             'facts' => $request->facts,
             'note' => $request->note,
             'lawyer_user_id' => $request->user_id,
-            'type' => 'جلسه'
+            'type' => 'جلسه',
+            'created_at' => $request->created_at
         ]);
         return redirect()->route('cases.show', $session->cases)->with('success', 'تم تعديل القضية بنجاح');
     }

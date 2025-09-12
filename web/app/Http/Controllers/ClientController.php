@@ -5,7 +5,9 @@ namespace App\Http\Controllers;
 use App\Models\Client;
 use App\Models\clientProcedural;
 use App\Models\MainAction;
+use App\Models\ProceduralRecord;
 use App\Models\SubAction;
+use App\Models\subrocedural;
 use App\Models\User;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
@@ -277,6 +279,9 @@ class ClientController extends Controller
             'side' => 'nullable',
             'procedural_type' => 'nullable',
             'status' => 'nullable',
+            'created_at',
+            'nullable',
+            'lawyer_id' => 'nullable',
         ]);
         $data = $request->except('_token');
         $data['user_id'] = Auth::id();
@@ -290,15 +295,8 @@ class ClientController extends Controller
 
     public function clientUpdateProcedural(Request $request, clientProcedural $client)
     {
-        $request->validate([
-            'procedural' => 'nullable',
-            'procedural_facts' => 'nullable',
-            'side' => 'nullable',
-            'procedural_type' => 'nullable',
-            'status' => 'nullable',
-        ]);
+
         $data = $request->except('_token');
-        $data['user_id'] = Auth::id();
         $client->update($data);
         return redirect()->back()->with('success', 'تم تعديل البيانات بنجاح');
     }
@@ -307,5 +305,18 @@ class ClientController extends Controller
     {
         $client->delete();
         return redirect()->back()->with('success', 'تم حذف البيانات بنجاح');
+    }
+
+    public function showProcedural(clientProcedural $client)
+    {
+        $client->load('subProcedurals');
+        return view('admin.mooakl.procedural', compact('client'));
+    }
+
+    public function storeSub(Request $request, clientProcedural $client)
+    {
+        $data = $request->except('_token');
+        subrocedural::create($data);
+        return redirect()->back()->with('success', 'تم إضافة الاجراء الفرعي بنجاح');
     }
 }

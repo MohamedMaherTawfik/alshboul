@@ -87,6 +87,21 @@
                     <div class="row">
                         <!-- الحالة -->
                         <div class="form-group col-md-6">
+                            <label for="is_active">نوع المعاملة</label>
+                            <select name="transactions_main_id" id="transactions_main_id" class="form-control">
+                                @foreach ($transzctionsmains as $item)
+                                    <option value="{{ $item->id }}">
+                                        {{ $item->name }}</option>
+                                @endforeach
+
+                            </select>
+                            @error('is_active')
+                                <small class="text-danger">{{ $message }}</small>
+                            @enderror
+                        </div>
+
+                        <!-- الحالة -->
+                        <div class="form-group col-md-6">
                             <label for="is_active">الحالة</label>
                             <select name="is_active" id="is_active" class="form-control">
                                 <option value="1"

@@ -92,4 +92,30 @@ class SettlementProceduralController extends Controller
         return redirect()->back()
             ->with('success', 'تم تسجيل الاجراء بنجاح');
     }
+
+
+    public function editProcedure(ProceduralRecord $settlement)
+    {
+        $lawyers = User::whereIn('role', ['Lawyer', 'admin', 'superadmin'])->where('active', 1)->get();
+        return view('admin.Settlement.editProcedure', compact('settlement', 'lawyers'));
+    }
+
+    public function updateProcedure(Request $request, ProceduralRecord $settlement)
+    {
+        $data = $request->except('_token');
+        $settlement->update($data);
+        return redirect()->route('settlements.procedure', $settlement->settlement)->with('success', 'تم تعديل الإجراء بنجاح');
+    }
+
+    public function deleteProcedure(ProceduralRecord $settlement)
+    {
+        $settlement->delete();
+        return redirect()->back()->with('success', 'تم حذف الإجراء بنجاح');
+    }
+
+    public function deleteFile(ProceduralFile $settlement)
+    {
+        $settlement->delete();
+        return redirect()->back()->with('success', 'تم حذف الملف بنجاح');
+    }
 }

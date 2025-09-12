@@ -103,8 +103,15 @@
                         <input type="date"
                             class="form-control {{ $isLessThan48 ? 'border border-danger text-danger fw-bold' : '' }}"
                             id="date" name="date"
-                            value="{{ $session->date ? \Carbon\Carbon::parse($session->date)->format('Y-m-d') : '' }}"
-                            required>
+                            value="{{ $session->date ? \Carbon\Carbon::parse($session->date)->format('Y-m-d') : '' }}">
+                    </div>
+
+                    <div class="col-md-6 mb-3">
+                        <label for="created_at" class="form-label required-field">تاريخ الادخال</label>
+                        <input type="date"
+                            class="form-control {{ $isLessThan48 ? 'border border-danger text-danger fw-bold' : '' }}"
+                            id="created_at" name="created_at"
+                            value="{{ $session->date ? \Carbon\Carbon::parse($session->created_at)->format('Y-m-d') : '' }}">
                     </div>
 
                     <!-- المحامي -->

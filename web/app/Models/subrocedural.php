@@ -13,4 +13,9 @@ class subrocedural extends Model
     {
         return $this->belongsTo(ProceduralRecord::class);
     }
+
+    public function clientProcedural()
+    {
+        return $this->belongsTo(clientProcedural::class);
+    }
 }

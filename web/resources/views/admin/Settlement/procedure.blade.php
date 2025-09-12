@@ -2,14 +2,9 @@
 @section('title', 'التسويات')
 @section('main_title_content', 'قائمة التسويات')
 @section('title_content', 'عرض')
-{{-- @section('link_content')
-    <a href="{{ route('settlement.index', ['type' => request('type')]) }}">التسويات</a>
-@endsection --}}
+
 @section('content')
-    <h2 class="text-center justify-content-center">
-        <a href="{{ route('settlements.procedure.create', $settlement) }}" class="btn btn-primary">انشاء اجراء</a>
-    </h2>
-    <div class="card">
+    <div class="card mb-4">
         <div class="card-body">
             <div class="table-responsive">
                 <table class="table table-bordered table-striped">
@@ -33,7 +28,6 @@
                             @if (Auth::user()->role == 'admin' || Auth::user()->role == 'superadmin')
                                 <th>الاجراءات</th>
                             @endif
-
                         </tr>
                     </thead>
                     <tbody>
@@ -54,133 +48,114 @@
                             <td>{{ $settlement->payment_value ? number_format($settlement->payment_value, 2) : 'غير متوفر' }}
                             </td>
                             <td>{{ $settlement->notes ?? 'لا توجد ملاحظات' }}</td>
-
                             <td>
-
-
-                                <div>
-                                    <button
-                                        class="btn btn-sm {{ $settlement->obligation === 'ملتزم' ? 'btn-success' : 'btn-danger' }}">
-                                        {{ $settlement->obligation ?? 'غير محدد' }}
-                                    </button>
-                                </div>
+                                <span class="badge {{ $settlement->obligation === 'ملتزم' ? 'bg-success' : 'bg-danger' }}">
+                                    {{ $settlement->obligation ?? 'غير محدد' }}
+                                </span>
                             </td>
-
                         </tr>
                     </tbody>
                 </table>
-
             </div>
         </div>
     </div>
-    <div class="card-body">
-        <div class="table-responsive shadow-sm rounded">
-            <table class="table table-bordered table-hover align-middle table-striped mb-0">
-                <thead class="table-dark">
-                    <tr>
-                        <th>رقم الملف</th>
-                        <th> النوع</th>
-                        <th> وقت الادخال</th>
-                        <th>رقم القضية</th>
-                        <th> المحامي</th>
-                        <th>اسم المدخل</th>
-                        <th>تاريخ الإدخال</th>
-                        <th>وقائع الاجراء</th>
-                        <th>مستندات</th>
-                        <th>اسم الموكل</th>
-                        <th>اسم الخصم</th>
-                        <th>اسم المحكمة</th>
-                        <th>ملاحظات</th>
-                        <th>اجراءات فرعيه</th>
-                        {{-- @if (Auth::user()->role == 'admin' || Auth::user()->role == 'superadmin')
-                                <th>الاجراءات</th>
-                            @endif --}}
 
-                    </tr>
-                </thead>
-                <tbody>
-                    @forelse ($settlement->proceduralRedords as $duration)
+    {{-- زرار إنشاء إجراء --}}
+    <div class="d-flex justify-content-end mb-3">
+        <a href="{{ route('settlements.procedure.create', $settlement) }}" class="btn btn-primary">
+            + انشاء اجراء
+        </a>
+    </div>
+
+    <div class="card">
+        <div class="card-body">
+            <div class="table-responsive shadow-sm rounded">
+                <table class="table table-bordered table-hover align-middle table-striped mb-0">
+                    <thead class="table-dark">
                         <tr>
-                            <td>{{ $settlement->file_number ?? '-' }}</td>
-                            <td>{{ $duration->type ?? '-' }}</td>
-                            <td>{{ $duration->created_at->format('Y-m-d') ?? '-' }}</td>
-                            <td>
-                                {{ $settlement->cases?->file_number ?? '-' }}
-
-                            </td>
-                            <td>{{ $duration->user->name ?? '-' }}</td>
-                            <td>{{ $duration->created_by ?? '-' }}</td>
-                            <td>{{ $duration->created_at?->format('Y-m-d') ?? '-' }}</td>
-                            <td>{{ $duration->action }}</td>
-                            <td>
-                                @foreach ($duration->files as $item)
-                                    <a href="{{ asset('storage/' . $item->file_path) }} " class="btn btn-sm btn-primary"
-                                        target="_blank">مستند</a>
-                                @endforeach
-                                <!-- زرار -->
-                                <button type="button" class="btn btn-sm btn-success" data-bs-toggle="modal"
-                                    data-bs-target="#addFileModal-{{ $duration->id }}">
-                                    +
-                                </button>
-                                <!-- Modal -->
-                                <div class="modal fade" id="addFileModal-{{ $duration->id }}" tabindex="-1"
-                                    aria-labelledby="addFileModalLabel" aria-hidden="true">
-                                    <div class="modal-dialog">
-                                        <div class="modal-content">
-                                            <form action="{{ route('settlement.procedural.add.file', $duration) }}"
-                                                method="POST" enctype="multipart/form-data">
-                                                @csrf
-                                                <div class="modal-header">
-                                                    <h5 class="modal-title" id="addFileModalLabel">إضافة ملفات جديدة
-                                                    </h5>
-                                                    <button type="button" class="btn-close" data-bs-dismiss="modal"
-                                                        aria-label="إغلاق"></button>
-                                                </div>
-                                                <div class="modal-body">
-                                                    <div class="mb-3">
+                            <th>اسم المدخل</th>
+                            <th>المحامي</th>
+                            <th>تاريخ الإدخال</th>
+                            <th>وقائع الاجراء</th>
+                            <th>مستندات</th>
+                            <th>ملاحظات</th>
+                            <th>اجراءات فرعيه</th>
+                            @if (Auth::user()->role == 'admin' || Auth::user()->role == 'superadmin')
+                                <th>الاجراءات</th>
+                            @endif
+                        </tr>
+                    </thead>
+                    <tbody>
+                        @forelse ($settlement->proceduralRedords as $duration)
+                            <tr>
+                                <td>{{ $duration->created_by ?? '-' }}</td>
+                                <td>{{ $duration->user->name ?? '-' }}</td>
+                                <td>{{ $duration->created_at?->format('Y-m-d') ?? '-' }}</td>
+                                <td>{{ $duration->action }}</td>
+                                <td>
+                                    @foreach ($duration->files as $item)
+                                        <a href="{{ asset('storage/' . $item->file_path) }} "
+                                            class="btn btn-sm btn-primary mb-1" target="_blank">📄 مستند</a>
+                                    @endforeach
+                                    <button type="button" class="btn btn-sm btn-success" data-bs-toggle="modal"
+                                        data-bs-target="#addFileModal-{{ $duration->id }}">
+                                        + إضافة
+                                    </button>
+                                    {{-- Modal --}}
+                                    <div class="modal fade" id="addFileModal-{{ $duration->id }}" tabindex="-1"
+                                        aria-labelledby="addFileModalLabel" aria-hidden="true">
+                                        <div class="modal-dialog">
+                                            <div class="modal-content">
+                                                <form action="{{ route('settlement.procedural.add.file', $duration) }}"
+                                                    method="POST" enctype="multipart/form-data">
+                                                    @csrf
+                                                    <div class="modal-header">
+                                                        <h5 class="modal-title">إضافة ملفات جديدة</h5>
+                                                        <button type="button" class="btn-close" data-bs-dismiss="modal"
+                                                            aria-label="إغلاق"></button>
+                                                    </div>
+                                                    <div class="modal-body">
                                                         <label for="file_path" class="form-label">اختر الملفات</label>
                                                         <input type="file" name="file_path[]" id="file_path"
                                                             class="form-control" multiple required>
                                                     </div>
-                                                </div>
-                                                <div class="modal-footer">
-                                                    <button type="submit" class="btn btn-primary">حفظ</button>
-                                                    <button type="button" class="btn btn-secondary"
-                                                        data-bs-dismiss="modal">إلغاء</button>
-                                                </div>
-                                            </form>
+                                                    <div class="modal-footer">
+                                                        <button type="submit" class="btn btn-primary">حفظ</button>
+                                                        <button type="button" class="btn btn-secondary"
+                                                            data-bs-dismiss="modal">إلغاء</button>
+                                                    </div>
+                                                </form>
+                                            </div>
                                         </div>
                                     </div>
-                                </div>
-
-                            </td>
-                            <td>{{ $settlement->client->name ?? 'لا يوجد موكل' }}</td>
-                            <td>
-                                @if (!empty($settlement->settlementOpponents) && $settlement->settlementOpponents->isNotEmpty())
-                                    @foreach ($settlement->settlementOpponents as $item)
-                                        {{ $item->settlement_opponent_name ?? '-' }} -
-                                    @endforeach
-                                @else
-                                    <span class="text-muted">لا يوجد خصوم</span>
+                                </td>
+                                <td>{{ $duration->note ?? ' لا يوجد ملاحظات' }}</td>
+                                <td>
+                                    <a href="{{ route('settlement.procedural.show', $duration) }}"
+                                        class="btn btn-sm btn-info">اجراء فرعي</a>
+                                </td>
+                                @if (Auth::user()->role == 'admin' || Auth::user()->role == 'superadmin')
+                                    <td>
+                                        <a href="{{ route('settlement.procedural.edit', $duration) }}"
+                                            class="btn btn-sm btn-warning">تعديل</a>
+                                        <form action="{{ route('settlement.procedural.destroy', $duration) }}"
+                                            method="POST" onsubmit="return confirm('هل أنت متأكد من الحذف؟');"
+                                            class="d-inline">
+                                            @csrf
+                                            @method('DELETE')
+                                            <button type="submit" class="btn btn-sm btn-danger">حذف</button>
+                                        </form>
+                                    </td>
                                 @endif
-
-                            </td>
-                            <td>{{ $settlement->court_name ?? 'لا يوجد محكمة' }}</td>
-                            <td>{{ $duration->note ?? ' لا يوجد ملاحظات' }}</td>
-                            <td><a href="{{ route('settlement.procedural.show', $duration) }}"
-                                    class="btn btn-primary">اجراء
-                                    فرعي</a>
-                            </td>
-                        </tr>
-                    @empty
-                        <tr>
-                            <td colspan="14" class="text-center">لا توجد اجرائات مسجلة</td>
-                        </tr>
-                    @endforelse
-                </tbody>
-
-
-            </table>
+                            </tr>
+                        @empty
+                            <tr>
+                                <td colspan="14" class="text-center">لا توجد اجرائات مسجلة</td>
+                            </tr>
+                        @endforelse
+                    </tbody>
+                </table>
+            </div>
         </div>
     </div>
 @endsection

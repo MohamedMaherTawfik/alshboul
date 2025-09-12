@@ -12,50 +12,44 @@
                 <table class="table table-bordered table-striped text-center align-middle">
                     <thead class="table-dark">
                         <tr>
-                            <th>المستخدم</th>
-                            <th>المشترك</th>
-                            <th>رقم المشترك</th>
-                            <th>اسم الموكل</th>
-                            <th>الرقم الوطني للموكل</th>
+                            <th> اسم مشترك</th>
+                            <th> اسم الموكل</th>
+                            <th>الرقم الوطني </th>
                             <th>اسم الخصم</th>
                             <th>الرقم الوطني للخصم</th>
-                            <th>رقم الدعوى</th>
+                            <th> رقم الدعوي</th>
+                            <th> قيمه الدعوي</th>
                             <th>رقم الملف</th>
-                            <th>نوع القضايا التنفيذية</th>
-                            <th>حالة القضية</th>
-                            <th>قيمة الدعوى</th>
-                            <th>الدائرة التنفيذية</th>
+                            <th> الدائره</th>
+                            <th> المحكوم له</th>
+                            <th> المحكوم عليه</th>
+                            <th>حالة الدعوي</th>
                             <th>نوع السند التنفيذي</th>
-                            <th>تاريخ التسجيل</th>
                             <th>رقم السند التنفيذي</th>
-                            <th>صفة المحكوم له</th>
-                            <th>صفة المحكوم عليه</th>
                             <th>تاريخ الجلسة الإجرائية</th>
+
                         </tr>
                     </thead>
                     <tbody>
                         <tr>
-                            <td>{{ $executiveCase->user?->name }}</td>
                             <td>{{ $executiveCase->client?->name }}</td>
-                            <td>{{ $executiveCase->subscriber_number }}</td>
                             <td>{{ $executiveCase->client_name }}</td>
                             <td>{{ $executiveCase->client_national_id }}</td>
                             <td>{{ $executiveCase->opponent_name }}</td>
                             <td>{{ $executiveCase->opponent_national_id }}</td>
                             <td>{{ $executiveCase->case_number }}</td>
-                            <td>{{ $executiveCase->file_number }}</td>
-                            <td>{{ $executiveCase->case_type }}</td>
-                            <td>{{ $executiveCase->case_status }}</td>
                             <td>{{ $executiveCase->case_value }}</td>
+                            <td>{{ $executiveCase->file_number }}</td>
                             <td>{{ $executiveCase->execution_court }}</td>
-                            <td>{{ $executiveCase->execution_document_type }}</td>
-                            <td>{{ $executiveCase->registration_date }}</td>
-                            <td>{{ $executiveCase->execution_document_number }}</td>
                             <td>{{ $executiveCase->judged_for_status }}</td>
                             <td>{{ $executiveCase->judged_against_status }}</td>
+                            <td>{{ $executiveCase->case_status }}</td>
+                            <td>{{ $executiveCase->execution_document_type }}</td>
+                            <td>{{ $executiveCase->execution_document_number }}</td>
                             <td>{{ $executiveCase->procedural_session_date }}</td>
 
                         </tr>
+
                     </tbody>
                 </table>
             </div>
@@ -80,43 +74,76 @@
                         enctype="multipart/form-data">
                         @csrf
                         <div class="modal-header">
-                            <h5 class="modal-title" id="createProceduralModalLabel">إنشاء إجراء جديد</h5>
+                            <h5 class="modal-title" id="createProceduralModalLabel">
+                                <i class="bi bi-gear-fill me-2"></i> إنشاء إجراء جديد
+                            </h5>
                             <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="إغلاق"></button>
                         </div>
+
                         <div class="modal-body row">
 
+                            <!-- النوع -->
+
+                            <input type="hidden" name="type" class="form-control" value="إجراء" readonly>
+
+
+                            <!-- تاريخ الإجراء -->
                             <div class="col-md-6 mb-3">
-                                <label class="form-label">النوع</label>
-                                <input type="text" name="type" class="form-control" value="اجراء" readonly>
+                                <label for="date" class="form-label required-field">تاريخ الإجراء</label>
+                                <input type="date" class="form-control" id="date" name="date">
                             </div>
 
+                            <!-- تاريخ الإدخال -->
                             <div class="col-md-6 mb-3">
-                                <label class="form-label">الإجراء</label>
-                                <input type="text" name="action" class="form-control" required>
+                                <label for="created_at" class="form-label required-field">تاريخ الإدخال</label>
+                                <input type="date" class="form-control" id="created_at" name="created_at"
+                                    value="{{ old('created_at', now()->format('Y-m-d')) }}">
                             </div>
 
-                            <div class="col-md-12 mb-3">
-                                <label class="form-label">ملاحظات</label>
-                                <textarea name="note" class="form-control"></textarea>
-                            </div>
-
+                            <!-- المحامي -->
                             <div class="col-md-6 mb-3">
-                                <label class="form-label">المحامي</label>
-                                <select name="user_id" class="form-select">
-                                    <option value="">-- اختر المحامي --</option>
+                                <label for="user_id" class="form-label required-field">المحامي</label>
+                                <select name="user_id" id="user_id" class="form-select">
+                                    <option value="" selected disabled>-- اختر المحامي --</option>
                                     @foreach ($lawyers as $lawyer)
                                         <option value="{{ $lawyer->id }}">{{ $lawyer->name }}</option>
                                     @endforeach
                                 </select>
                             </div>
 
+                            <!-- وقائع / تفاصيل الإجراء -->
                             <div class="col-md-12 mb-3">
-                                <label class="form-label">رفع مستندات</label>
-                                <input type="file" name="files[]" class="form-control" multiple>
+                                <label for="action" class="form-label required-field">تفاصيل الإجراء</label>
+                                <textarea class="form-control" id="action" name="action" rows="4" required
+                                    placeholder="أدخل تفاصيل الإجراء..."></textarea>
+                            </div>
+
+                            <!-- ملاحظات -->
+                            <div class="col-md-12 mb-3">
+                                <label for="note" class="form-label">ملاحظات</label>
+                                <textarea class="form-control" id="note" name="note" rows="3" placeholder="أدخل أي ملاحظات إضافية..."></textarea>
+                            </div>
+
+                            <div class="col-md-12 mb-3">
+                                <label for="next_action" class="form-label">اجراء قادم</label>
+                                <input type="text" class="form-control" id="next_action" name="next_action">
+                            </div>
+
+                            <!-- تاريخ الإجراء -->
+                            <div class="col-md-6 mb-3">
+                                <label for="next_action_date" class="form-label required-field">تاريخ الإجراء القادم</label>
+                                <input type="date" class="form-control" id="next_action_date" name="next_action_date">
+                            </div>
+
+                            <!-- رفع الملفات -->
+                            <div class="col-md-12 mb-3">
+                                <label for="files" class="form-label">رفع مستندات</label>
+                                <input type="file" name="files[]" id="files" class="form-control" multiple>
                                 <small class="text-muted">يمكنك اختيار أكثر من ملف</small>
                             </div>
 
                         </div>
+
                         <div class="modal-footer">
                             <button type="submit" class="btn btn-primary">حفظ</button>
                             <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">إلغاء</button>
@@ -126,18 +153,20 @@
             </div>
         </div>
 
-
         <div class="table-responsive">
             <table class="table table-striped table-bordered">
                 <thead class="table-dark">
                     <tr>
                         <th>رقم الاجراء</th>
-                        <th>انشاء بواسطه</th>
+                        <th> اسم المدحل</th>
                         <th>النوع</th>
                         <th>الإجراء</th>
                         <th>المستندات</th>
+                        <th>تاريخ الادخال</th>
                         <th>ملاحظة</th>
                         <th>المحامي</th>
+                        <th>اجراء قادم</th>
+                        <th>تاريخ الاجراء القادم</th>
                         <th> اجراء فرعي </th>
                     </tr>
                 </thead>
@@ -189,21 +218,24 @@
                                     </div>
                                 </div>
                             </td>
+                            <td>{{ date('Y-m-d H:i', strtotime($record->created_at->setTimezone('Asia/Amman'))) }}</td>
                             <td>{{ $record->note }}</td>
                             <td>{{ $record->user->name ?? '-' }}</td>
-                            <td><a href="{{ route('executive-case.procedural.show', $executiveCase) }}"
+                            <td>{{ $record->next_action ?? '-' }}</td>
+                            <td>{{ $record->next_action_date ?? '-' }}</td>
+                            <td><a href="{{ route('executive-case.procedural.show', $record) }}"
                                     class="btn btn-primary">اجراء فرعي</a>
                                 @if (Auth::user()->role == 'admin' || Auth::user()->role == 'superadmin')
                                     <a href="{{ route('procedural-record.edit', $record) }}"
                                         class="btn btn-success">تعديل</a>
-                                    {{-- <form action="{{ route('procedural-record.delete', $record) }}" method="POST"
+                                    <form action="{{ route('procedural-record.delete', $record) }}" method="POST"
                                         class="d-inline p-2" onsubmit="return confirm('هل انت متأكد من الحذف؟');">
                                         @csrf
                                         @method('DELETE')
                                         <button type="submit" class="btn btn-danger btn-sm">
                                             حذف
                                         </button>
-                                    </form> --}}
+                                    </form>
                                 @endif
                             </td>
                         </tr>

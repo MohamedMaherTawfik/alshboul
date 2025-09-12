@@ -102,6 +102,8 @@ Route::group(['prefix' => 'admin', 'middleware' => ['auth', roleMiddleware::clas
 
     Route::get('/action-clients', [ClientController::class, 'clientProcedural'])->name('client.action.index');
     Route::get('/action-clients/client/{client}', [ClientController::class, 'ClientShowProcedural'])->name('client.show');
+    Route::get('/action-clients/client/{client}/procedural', [ClientController::class, 'showProcedural'])->name('client.procedural.sub.index');
+    Route::post('/action-clients/client/{client}/procedural/storeSub', [ClientController::class, 'storeSub'])->name('subprocedural.store');
     Route::post('/action-clients/client/{client}/store', [ClientController::class, 'clientstoreProcedural'])->name('client.procedural.store');
     Route::post('/action-clients/client/{client}/update', [ClientController::class, 'clientUpdateProcedural'])->name('client.procedural.update');
     Route::delete('/action-clients/client/{client}/delete', [ClientController::class, 'clientDeleteProcedural'])->name('client.procedural.delete');
@@ -173,8 +175,12 @@ Route::group(['prefix' => 'admin', 'middleware' => ['auth', roleMiddleware::clas
 
     Route::get('/{settlement}/show/show/settlement/procedure', [SettlementProceduralController::class, 'showProcedure'])->name('settlements.procedure');
     Route::get('/{settlement}/show/show/settlement/procedure/create', [SettlementProceduralController::class, 'createProcedure'])->name('settlements.procedure.create');
+    Route::get('/{settlement}/show/show/settlement/procedure/edit', [SettlementProceduralController::class, 'editProcedure'])->name('settlement.procedural.edit');
     Route::post('/{settlement}/show/show/settlement/procedure/store', [SettlementProceduralController::class, 'storeProcedure'])->name('settlements.procedure.store');
+    Route::post('/{settlement}/show/show/settlement/procedure/update', [SettlementProceduralController::class, 'updateProcedure'])->name('settlement.procedural.update');
+    Route::delete('/{settlement}/show/show/settlement/procedure/delete', [SettlementProceduralController::class, 'deleteProcedure'])->name('settlement.procedural.destroy');
     Route::post('/{settlement}/show/show/settlement/procedure/add/file', [SettlementProceduralController::class, 'addFile'])->name('settlement.procedural.add.file');
+    Route::delete('/{settlement}/show/show/settlement/procedure/delete/file/destroy', [SettlementProceduralController::class, 'deleteFile'])->name('settlements.files.destroy');
     Route::get('/{settlement}/show/show/settlement/procedure/sub/procedure', [SettlementProceduralController::class, 'subProcedure'])->name('settlement.procedural.show');
     Route::post('/{settlement}/show/showsettlement/procedure/sub/store', [SettlementProceduralController::class, 'storSubProcedure'])->name('settlements.subprocedure.store');
 

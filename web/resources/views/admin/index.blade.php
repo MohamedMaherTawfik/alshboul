@@ -131,6 +131,7 @@
                                 <th>رقم القضية</th>
                                 <th>اسم المدخل</th>
                                 <th>تاريخ الإدخال</th>
+                                <th>ساعه الإدخال</th>
                                 <th>وقائع المدة</th>
                                 <th>بداية المدة</th>
                                 <th>نهاية المدة</th>
@@ -198,6 +199,7 @@
                                         </td>
                                         <td>{{ $duration->user->name ?? '-' }}</td>
                                         <td>{{ $duration->created_at?->format('Y-m-d') ?? '-' }}</td>
+                                        <td>{{ $duration->created_at?->format('h:i') ?? '-' }}</td>
                                         <td>{{ Str::limit($duration->period_facts, 50, '...') }}</td>
                                         <td>{{ $duration->period_start ?? '-' }}</td>
 
@@ -257,6 +259,7 @@
                                 <th>رقم القضية</th>
                                 <th>اسم المدخل</th>
                                 <th>تاريخ الإدخال</th>
+                                <th>ساعه الإدخال</th>
                                 <th>وقائع المذكرة</th>
                                 <th>بداية المدة</th>
                                 <th>نهاية المدة</th>
@@ -314,6 +317,7 @@
                                         </td>
                                         <td>{{ $note->user->name ?? '-' }}</td>
                                         <td>{{ $note->created_at ? $note->created_at->format('Y-m-d') : '-' }}</td>
+                                        <td>{{ $duration->created_at?->format('h:i') ?? '-' }}</td>
                                         <td>{{ Str::limit($note->period_facts, 50, '...') }}</td>
                                         <td>{{ $note->period_start ?? '-' }}</td>
 

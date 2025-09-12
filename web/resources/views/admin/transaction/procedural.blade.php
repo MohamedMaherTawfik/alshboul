@@ -137,7 +137,7 @@
 
                                 </td>
                                 <td>{{ $procedural->userLawyer?->name ?? '-' }}</td>
-                                <td>{{ $procedural->created_at->format('Y-m-d H:i') }}</td>
+                                <td>{{ $procedural->created_at->format('Y-m-d') }}</td>
                                 <td>
                                     @if (Auth::user()->role == 'admin' || Auth::user()->role == 'superadmin')
                                         <a href="{{ route('transactions.procedural.edit', $procedural->id) }}"
@@ -183,6 +183,13 @@
                             <label class="form-label">النوع</label>
                             <input type="text" name="type" class="form-control" readonly value="اجراء">
                         </div>
+
+                        <div class="mb-3">
+                            <label class="form-label">تاريخ الاجراء</label>
+                            <input type="date" name="created_at" class="form-control"
+                                value="{{ now()->format('Y-m-d') }}">
+                        </div>
+
                         <div class="mb-3">
                             <label class="form-label">الإجراء</label>
                             <textarea name="action" class="form-control" rows="2" required></textarea>

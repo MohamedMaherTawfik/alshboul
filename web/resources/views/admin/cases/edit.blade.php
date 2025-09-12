@@ -120,10 +120,14 @@
                             <div class="row">
                                 <div class="form-group col-md-6">
                                     <label class="form-label fw-bold">القضية المقترحة</label>
-                                    <input type="text" value="{{ $case->suggestedCases->name }}" class="form-control"
-                                        style="border-radius: 10px;" readonly>
-                                    <input type="hidden" name="suggested_case_id"
-                                        value="{{ $case->suggested_case_id }}">
+                                    <select name="suggested_case_id" class="form-select" id="">
+                                        @foreach ($caseTypes as $item)
+                                            <option value="{{ $item->id }}" @selected($case->suggested_case_id == $item->id)>
+                                                {{ $item->name }}
+                                            </option>
+                                        @endforeach
+                                    </select>
+
                                 </div>
                             </div>
                             <div class="form-group mt-4">

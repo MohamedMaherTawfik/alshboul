@@ -50,4 +50,9 @@ class ExecutiveCase extends Model
     {
         return $this->hasMany(Settlement::class);
     }
+
+    public function court_session_dates()
+    {
+        return $this->hasMany(court_session_date::class);
+    }
 }

@@ -25,11 +25,13 @@
                                 <input type="text" name="type" id="type" class="form-control">
                             </div>
 
-                            <!-- نوع الإجراء -->
+                            <!-- تاريخ الإجراء -->
                             <div class="mb-3">
                                 <label for="date" class="form-label">تاريخ الإجراء</label>
-                                <input type="date" name="date" id="date" class="form-control">
+                                <input type="date" name="date" id="date" class="form-control"
+                                    value="{{ old('date', now()->toDateString()) }}">
                             </div>
+
 
                             <!-- الإجراء -->
                             <div class="mb-3">

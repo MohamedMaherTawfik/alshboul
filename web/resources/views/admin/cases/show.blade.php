@@ -8,72 +8,74 @@
 @endsection
 
 @section('content')
-    <div class="container-fluid mt-4">
-        <div class="card shadow">
-            <div class="card-header bg-primary text-white fw-bold">
-                تفاصيل القضية
-            </div>
-            <div class="card-body">
-                <div class="table-responsive">
-                    <table class="table table-bordered table-striped text-center w-100">
-                        <thead class="table-dark">
-                            <tr>
-                                <th>رقم الملف</th>
-                                <th>الموكل</th>
-                                <th>الرقم الوطني الأول</th>
-                                <th>اسم الخصم</th>
-                                <th>الرقم الوطني للخصم</th>
-                                <th>حاله القضيه </th>
-                                <th>نوع القضية</th>
-                                <th>رقم الدعوي</th>
-                                <th>المحكمة</th>
-                                <th>قيمة القضية</th>
-                                <th>اسم القاضي</th>
-                                <th>تفاصيل القضية</th>
-                                <th>وصف الموكل</th>
-                                <th>وصف الخصم</th>
-                                <th>أضيف بواسطة</th>
-                            </tr>
-                        </thead>
-                        <tbody>
-                            <tr>
-                                <td>{{ $case->case_number ?? '-' }}</td>
-                                <td>{{ $case->client->name ?? '-' }}</td>
-                                <td>{{ $case->first_national_id ?? '-' }}</td>
-                                <td>
-                                    @foreach ($case->caseOpponents as $item)
-                                        {{ $item->case_opponent_name ?? '-' }} -
-                                    @endforeach
-                                </td>
-                                <td>
-                                    @foreach ($case->caseOpponents as $item)
-                                        {{ $item->case_opponent_national_number ?? '-' }} -
-                                    @endforeach
-                                </td>
-                                <td>{{ $case->suggestedCases->name ?? '-' }}</td>
-                                <td>{{ $case->case_type ?? '-' }}</td>
-                                <td>{{ $case->file_number ?? '-' }}</td>
-                                <td>{{ $case->court_name ?? '-' }}</td>
-                                <td>{{ $case->case_amount ?? '-' }}</td>
-                                <td>{{ $case->jubge_name ?? '-' }}</td>
-                                <td>{{ $case->case_details ?? '-' }}</td>
-                                <td>{{ $case->client_description ?? '-' }}</td>
-                                <td>
-                                    @foreach ($case->caseOpponents as $item)
-                                        {{ $item->case_opponent_description ?? '-' }} -
-                                    @endforeach
-                                </td>
-                                <td>{{ $case->added_by->name ?? '-' }}</td>
-                            </tr>
-                        </tbody>
-                    </table>
-                </div>
+    <div class="card shadow-lg border-0">
+        <div class="card-header bg-dark text-white text-center fw-bold" style="font-size: 1.3rem;">
+            بيانات القضية
+        </div>
+        <div class="card-body p-0">
+            <div class="table-responsive">
+                <table class="table table-bordered table-striped table-hover mb-0 text-center align-middle"
+                    style="font-size: 1.1rem; direction: rtl;">
+                    <thead class="table-dark text-white">
+                        <tr>
+                            <th>اسم المشترك</th>
+                            <th>اسم الموكل</th>
+                            <th>الرقم الوطني</th>
+                            <th>اسم الخصم</th>
+                            <th>الرقم الوطني للخصم</th>
+                            <th>رقم الدعوى</th>
+                            <th>قيمة الدعوى</th>
+                            <th>رقم الملف</th>
+                            <th>المحكمة</th>
+                            <th>اسم القاضي</th>
+                            <th>تاريخ الجلسة القادمة</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        @php
+                            $lastSession = $case->courtSession->first();
+                            $hoursLeft = null;
+                            if ($lastSession && !empty($lastSession->date)) {
+                                $hoursLeft = \Carbon\Carbon::now()->diffInHours(
+                                    \Carbon\Carbon::parse($lastSession->date),
+                                    false,
+                                );
+                            }
+                        @endphp
+                        <tr>
+                            <td>{{ $case->subscriber->name ?? '-' }}</td>
+                            <td>{{ $case->client->name ?? '-' }}</td>
+                            <td>{{ $case->first_national_id ?? '-' }}</td>
+                            <td>
+                                @forelse ($case->caseOpponents as $item)
+                                    {{ $item->case_opponent_name ?? '-' }} <br>
+                                @empty
+                                    -
+                                @endforelse
+                            </td>
+                            <td>
+                                @forelse ($case->caseOpponents as $item)
+                                    {{ $item->case_opponent_national_number ?? '-' }} <br>
+                                @empty
+                                    -
+                                @endforelse
+                            </td>
+                            <td>{{ $case->file_number ?? '-' }}</td>
+                            <td>{{ $case->case_amount ?? '-' }}</td>
+                            <td>{{ $case->case_number ?? '-' }}</td>
+                            <td>{{ $case->court_name ?? '-' }}</td>
+                            <td>{{ $case->jubge_name ?? '-' }}</td>
+                            <td>
+                                {{ $case->courtSession->last()->date ?? 'لا يوجد جلسات' }}
+                            </td>
+                        </tr>
+                    </tbody>
+                </table>
             </div>
         </div>
     </div>
 
-    {{-- ================= جدول مواعيد الجلسات ================= --}}
-    <!-- سكشن الفلترة والإضافة -->
+
     <!-- سكشن الفلترة والإضافة -->
     <section class="mb-5">
         <div class="card shadow-sm">

@@ -65,7 +65,8 @@ class TransactionController extends Controller
 
     public function edit(TransActions $transaction)
     {
-        return view('admin.transaction.edit', compact('transaction'));
+        $transzctionsmains = TransactionsMain::all();
+        return view('admin.transaction.edit', compact('transaction', 'transzctionsmains'));
     }
 
     public function update(Request $request, TransActions $transaction)
@@ -96,6 +97,7 @@ class TransactionController extends Controller
             'action' => 'required|string',
             'note' => 'nullable|string',
             'user_lawyer_id' => 'required|exists:users,id',
+            'created_at' => 'required'
         ]);
         $procedural = ProceduralRecord::create([
             'trans_actions_id' => $transaction->id ?? null,
@@ -103,6 +105,7 @@ class TransactionController extends Controller
             'action' => $data['action'] ?? null,
             'note' => $data['note'] ?? null,
             'type' => $data['type'] ?? null,
+            'created_at' => $data['created_at'] ?? null,
             'user_id' => Auth::user()->id
         ]);
         if ($request->hasFile('files')) {

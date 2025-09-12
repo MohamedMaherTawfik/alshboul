@@ -32,4 +32,9 @@ class court_session_date extends Model
     {
         return $this->belongsTo(User::class, 'lawyer_user_id');
     }
+
+    public function excutiveCases()
+    {
+        return $this->belongsTo(ExecutiveCase::class);
+    }
 }

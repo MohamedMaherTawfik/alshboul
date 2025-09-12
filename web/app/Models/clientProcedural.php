@@ -19,4 +19,13 @@ class clientProcedural extends Model
         return $this->belongsTo(User::class);
     }
 
+    public function subProcedurals()
+    {
+        return $this->hasMany(subrocedural::class);
+    }
+
+    public function lawyer()
+    {
+        return $this->belongsTo(User::class, 'lawyer_id');
+    }
 }
