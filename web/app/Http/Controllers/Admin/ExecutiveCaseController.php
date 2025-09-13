@@ -285,8 +285,8 @@ class ExecutiveCaseController extends Controller
 
     public function addFile(Request $request, ProceduralRecord $executiveCase)
     {
-        if ($request->hasFile('file_path')) {
-            foreach ($request->file('file_path') as $uploadedFile) {
+        if ($request->hasFile('files')) {
+            foreach ($request->file('files') as $uploadedFile) {
                 $path = $uploadedFile->store('ProceduralFiles', 'public');
 
                 ProceduralFile::create([

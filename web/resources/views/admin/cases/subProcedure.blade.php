@@ -17,24 +17,28 @@
             <div class="card-body">
                 <table class="table table-bordered">
                     <tr>
-                        <th>النوع</th>
-                        <td>{{ $case->type }}</td>
+                        <th>اسم المدخل</th>
+                        <td>{{ $case->userLawyer->name ?? '-' }}</td>
                     </tr>
                     <tr>
-                        <th>التاريخ</th>
-                        <td>{{ $case->date }}</td>
+                        <th>النوع</th>
+                        <td>{{ $case->type ?? '-' }}</td>
+                    </tr>
+                    <tr>
+                        <th>تاريخ الادخال</th>
+                        <td>{{ $case->created_at ? date('d/m/Y', strtotime($case->created_at)) : '-' }}</td>
                     </tr>
                     <tr>
                         <th>الإجراء</th>
-                        <td>{{ $case->action }}</td>
+                        <td>{{ $case->action ?? '-' }}</td>
                     </tr>
                     <tr>
                         <th>الملاحظة</th>
-                        <td>{{ $case->note }}</td>
+                        <td>{{ $case->note ?? '-' }}</td>
                     </tr>
                     <tr>
                         <th>المحامي</th>
-                        <td>{{ optional($case->user)->name }}</td>
+                        <td>{{ optional($case->user)->name ?? '-' }}</td>
                     </tr>
                 </table>
             </div>

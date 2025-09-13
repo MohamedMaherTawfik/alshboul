@@ -39,8 +39,8 @@
 
                     <div class="col-md-12 mb-3">
                         <label class="form-label">تاريخ الاجراء القادم </label>
-                        <input type="date" name="next_action_date"
-                            class="form-control">{{ $executiveCase->next_action_date }}</input>
+                        <input type="date" name="next_action_date" value="{{ $executiveCase->next_action_date }}"
+                            class="form-control"></input>
                     </div>
 
 

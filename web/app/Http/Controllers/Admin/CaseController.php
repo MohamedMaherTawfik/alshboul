@@ -312,7 +312,7 @@ class CaseController extends Controller
         }
 
         // الترتيب بالأحدث للأقدم
-        $sessions = $sessions->sortByDesc('created_at')->values();
+        $sessions = $sessions->sortByDesc('id')->values();
 
         return view('admin.cases.show', compact('case', 'sessions'));
     }
