@@ -459,10 +459,6 @@ class CaseController extends Controller
     }
     public function uploadFile(Request $request, court_session_date $case)
     {
-        $request->validate([
-            'files' => 'required',
-            'files.*' => 'mimes:pdf,jpg,png,doc,docx|max:2048',
-        ]);
 
         if ($request->hasFile('files')) {
             foreach ($request->file('files') as $file) {

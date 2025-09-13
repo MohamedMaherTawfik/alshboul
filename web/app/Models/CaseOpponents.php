@@ -11,7 +11,7 @@ class CaseOpponents extends Model
 
     public function case()
     {
-        return $this->belongsTo(Cases::class);
+        return $this->belongsTo(cases::class, 'cases_id');
     }
 
     public function executiveCase()

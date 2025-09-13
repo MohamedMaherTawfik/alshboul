@@ -215,7 +215,7 @@ Route::group(['prefix' => 'admin', 'middleware' => ['auth', roleMiddleware::clas
     Route::get('/procedural-records/{id}/show/{executiveCase?}', [ProceduralRecordController::class, 'show'])->name('procedural-record.show');
 
     Route::get('/public/search', [PublicSearchController::class, 'index'])->name('public.search.index');
-    Route::post('/public/search', [PublicSearchController::class, 'search'])->name('public.search');
+    Route::post('/public/search/find', [PublicSearchController::class, 'search'])->name('public.search.find');
 
     Route::get('/vistiors/reviews/all', [visitorReviewController::class, 'index'])->name('visitors.index');
 

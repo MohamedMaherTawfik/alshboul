@@ -61,4 +61,8 @@ class Client extends Model
     {
         return $this->hasMany(clientProcedural::class);
     }
+    // public function settlements()
+    // {
+    //     return $this->hasMany(Settlement::class);
+    // }
 }
