@@ -280,13 +280,20 @@ class ClientController extends Controller
             'procedural_type' => 'nullable',
             'status' => 'nullable',
             'created_at',
-            'nullable',
             'lawyer_id' => 'nullable',
         ]);
         $data = $request->except('_token');
-        $data['user_id'] = Auth::id();
-        $data['client_id'] = $client->id;
-        clientProcedural::create($data);
+        clientProcedural::create([
+            'procedural' => $data['procedural'] ?? '-',
+            'procedural_facts' => $data['procedural_facts'] ?? '-',
+            'side' => $data['side'] ?? '-',
+            'procedural_type' => $data['procedural_type'] ?? '-',
+            'status' => $data['status'] ?? '-',
+            'created_at' => $data['created_at'] ?? '-',
+            'lawyer_id' => $data['lawyer_id'] ?? '-',
+            'user_id' => Auth::id(),
+            'client_id' => $client->id
+        ]);
         if (!$data) {
             return redirect()->back()->with('error', ' حدث خلل أثناء الاضافة');
         }
