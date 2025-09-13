@@ -96,9 +96,7 @@ class ProceduralRecordController extends Controller
     {
         $data = $request->except('_token', 'file_path');
         $data['created_by'] = Auth::user()->name;
-        // إنشاء الإجراء
         $executiveCase->update([
-            'created_by' => $data['created_by'] ?? null,
             'action' => $data['action'] ?? null,
             'note' => $data['note'] ?? null,
             'type' => $data['type'] ?? null,
