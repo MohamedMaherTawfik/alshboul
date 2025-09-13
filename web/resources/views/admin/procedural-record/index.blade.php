@@ -81,7 +81,7 @@
                     @forelse ($executiveCase->proceduralRecords->sortByDesc('id') as $record)
                         <tr data-type="{{ $record->type }}">
                             <td>{{ $record->userLawyer?->name ?? '-' }}</td>
-                            <td>{{ $record->user?->name ?? '-' }}</td>
+                            <td>{{ $record->user?->name ?? 'بلا' }}</td>
                             <td>{{ $record->type ?? '-' }}</td>
                             <td>{{ $record->action ?? '-' }}</td>
                             <td>{{ $record->note ?? '-' }}</td>
