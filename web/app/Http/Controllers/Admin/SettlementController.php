@@ -4,8 +4,10 @@ namespace App\Http\Controllers\Admin;
 
 use App\Http\Controllers\Controller;
 use App\Models\Client;
+use App\Models\NegligenceDays;
 use App\Models\Settlement;
 use App\Models\SettlementMain;
+use App\Models\trahsedDays;
 use App\Models\User;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
@@ -15,10 +17,53 @@ class SettlementController extends Controller
 {
     public function index(SettlementMain $settlements)
     {
+        // تحميل التسويات الخاصة بالـ main
         $settlements->load('settlements');
-        $settlement = Settlement::where('settlement_main_id', $settlements->id)->get();
-        return view('admin.Settlement.index', compact('settlements', 'settlement'));
+
+        $settlementsList = $settlements->settlements;
+
+        // نجيب إعدادات الإهمال للتسويات
+        $neglectConfig = NegligenceDays::where('settlement_main_id', $settlements->id)->first();
+
+        if ($neglectConfig) {
+            foreach ($settlementsList as $settlement) {
+                $totalEvents = $settlement->proceduralRecords()->count()
+                    + $settlement->files()->count();
+
+                $trashed = trahsedDays::where('settlement_id', $settlement->id)->first();
+
+                if ($trashed) {
+                    if ($totalEvents == $trashed->counts) {
+                        $daysDiff = now()->diffInDays($trashed->updated_at);
+
+                        if ($daysDiff >= 1) {
+                            $trashed->increment('days_passed', $daysDiff);
+                        }
+
+                        if ($trashed->days_passed >= $neglectConfig->days) {
+                            $trashed->update(['is_seen' => 1]);
+                        }
+                    } elseif ($totalEvents > $trashed->counts) {
+                        $trashed->update([
+                            'counts' => $totalEvents,
+                            'days_passed' => 0,
+                            'is_seen' => 0,
+                        ]);
+                    }
+                } else {
+                    trahsedDays::create([
+                        'settlement_id' => $settlement->id,
+                        'counts' => $totalEvents,
+                        'days_passed' => 0,
+                        'is_seen' => 0,
+                    ]);
+                }
+            }
+        }
+
+        return view('admin.Settlement.index', compact('settlements', 'settlementsList'));
     }
+
 
     public function create(SettlementMain $settlements)
     {

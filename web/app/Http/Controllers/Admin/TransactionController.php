@@ -4,8 +4,10 @@ namespace App\Http\Controllers\Admin;
 
 use App\Http\Controllers\Controller;
 use App\Models\Client;
+use App\Models\NegligenceDays;
 use App\Models\ProceduralFile;
 use App\Models\ProceduralRecord;
+use App\Models\trahsedDays;
 use App\Models\TransActions;
 use App\Models\TransactionsMain;
 use App\Models\User;
@@ -17,8 +19,50 @@ class TransactionController extends Controller
     public function index(TransactionsMain $transaction)
     {
         $transaction->load('transactions');
-        return view('admin.transaction.index', compact('transaction'));
+
+        $transactionsList = $transaction->transactions;
+
+        $neglectConfig = NegligenceDays::where('transactions_main_id', $transaction->id)->first();
+
+        if ($neglectConfig) {
+            foreach ($transactionsList as $tran) {
+                $totalEvents = $tran->procedural()->count();
+
+
+                $trashed = trahsedDays::where('trans_actions_id', $tran->id)->first();
+
+                if ($trashed) {
+                    if ($totalEvents == $trashed->counts) {
+                        $daysDiff = now()->diffInDays($trashed->updated_at);
+
+                        if ($daysDiff >= 1) {
+                            $trashed->increment('days_passed', $daysDiff);
+                        }
+
+                        if ($trashed->days_passed >= $neglectConfig->days) {
+                            $trashed->update(['is_seen' => 1]);
+                        }
+                    } elseif ($totalEvents > $trashed->counts) {
+                        $trashed->update([
+                            'counts' => $totalEvents,
+                            'days_passed' => 0,
+                            'is_seen' => 0,
+                        ]);
+                    }
+                } else {
+                    trahsedDays::create([
+                        'trans_actions_id' => $tran->id,
+                        'counts' => $totalEvents,
+                        'days_passed' => 0,
+                        'is_seen' => 0,
+                    ]);
+                }
+            }
+        }
+
+        return view('admin.transaction.index', compact('transaction', 'transactionsList'));
     }
+
 
     public function create(TransactionsMain $transaction)
     {
