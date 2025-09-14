@@ -27,8 +27,8 @@ class SettlementController extends Controller
 
         if ($neglectConfig) {
             foreach ($settlementsList as $settlement) {
-                $totalEvents = $settlement->proceduralRecords()->count()
-                    + $settlement->files()->count();
+                $totalEvents = $settlement->actions()->count()
+                    + $settlement->proceduralRedords()->count();
 
                 $trashed = trahsedDays::where('settlement_id', $settlement->id)->first();
 
