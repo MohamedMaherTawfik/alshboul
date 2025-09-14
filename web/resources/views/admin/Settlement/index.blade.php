@@ -52,7 +52,7 @@
                         </tr>
                     </thead>
                     <tbody>
-                        @forelse ($settlement as $settlemen)
+                        @forelse ($settlements as $settlemen)
                             <tr>
                                 <td>{{ $settlemen->user->name ?? 'غير متوفر' }}</td>
                                 <td>{{ $settlemen->client_name ?? 'غير متوفر' }}</td>

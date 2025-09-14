@@ -63,8 +63,6 @@ class SettlementController extends Controller
 
         return view('admin.Settlement.index', compact('settlements', 'settlementsList'));
     }
-
-
     public function create(SettlementMain $settlements)
     {
         $clients = Client::where('seen', 1)->get();
