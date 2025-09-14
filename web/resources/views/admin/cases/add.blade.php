@@ -71,6 +71,7 @@
                 <form action="{{ route('cases.storeAdd', $case) }}" method="POST" enctype="multipart/form-data">
                     @csrf
                     <input type="hidden" name="type" value="جلسه">
+
                     <!-- معلومات القضية (عرض فقط) -->
                     <div class="row mb-4">
                         <div class="col-md-12">
@@ -84,16 +85,12 @@
                         </div>
                     </div>
 
+                    <!-- التاريخ وتاريخ الإدخال -->
                     <div class="row">
-                        <!-- التاريخ -->
                         <div class="col-md-6 mb-3">
                             <label for="date" class="form-label required-field">تاريخ الجلسة</label>
                             <input type="date" class="form-control" id="date" name="date">
                         </div>
-                    </div>
-
-                    <div class="row">
-                        <!-- التاريخ -->
                         <div class="col-md-6 mb-3">
                             <label for="created_at" class="form-label required-field">تاريخ الإدخال</label>
                             <input type="date" class="form-control" id="created_at" name="created_at"
@@ -101,46 +98,55 @@
                         </div>
                     </div>
 
-
-                    <!-- المحامي -->
-                    <div class="col-md-6 mb-3">
-                        <label for="lawyer_id" class="form-label required-field">المحامي</label>
-                        <select class="form-select" id="lawyer_id" name="lawyer_id">
-                            <option value="" selected disabled>اختر المحامي</option>
-                            @foreach ($lawers as $lawyer)
-                                <option value="{{ $lawyer->id }}">{{ $lawyer->name ?? 'غير محدد' }}</option>
-                            @endforeach
-                        </select>
+                    <!-- الإجراء القادم وتاريخه -->
+                    <div class="row">
+                        <div class="col-md-6 mb-3">
+                            <label for="next_action" class="form-label">الإجراء القادم</label>
+                            <input type="text" class="form-control" id="next_action" name="next_action">
+                        </div>
+                        <div class="col-md-6 mb-3">
+                            <label for="next_action_date" class="form-label">تاريخ الإجراء القادم</label>
+                            <input type="date" class="form-control" id="next_action_date" name="next_action_date">
+                        </div>
                     </div>
 
-
+                    <!-- المحامي والملفات -->
                     <div class="row">
-                        <!-- رفع الملفات -->
-                        <div class="mb-3">
+                        <div class="col-md-6 mb-3">
+                            <label for="lawyer_id" class="form-label required-field">المحامي</label>
+                            <select class="form-select" id="lawyer_id" name="lawyer_id">
+                                <option value="" selected disabled>اختر المحامي</option>
+                                @foreach ($lawers as $lawyer)
+                                    <option value="{{ $lawyer->id }}">{{ $lawyer->name ?? 'غير محدد' }}</option>
+                                @endforeach
+                            </select>
+                        </div>
+                        <div class="col-md-6 mb-3">
                             <label for="file_path" class="form-label">المستندات</label>
                             <input type="file" name="file_path[]" id="file_path" class="form-control" multiple>
                         </div>
                     </div>
 
-                    <!-- الوقائع -->
-                    <div class="mb-3">
-                        <label for="facts" class="form-label required-field">وقائع الجلسة</label>
-                        <textarea class="form-control" id="facts" name="facts" rows="4" required
-                            placeholder="أدخل تفاصيل وقائع الجلسة..."></textarea>
-                    </div>
-
-                    <!-- ملاحظات -->
-                    <div class="mb-4">
-                        <label for="note" class="form-label">ملاحظات</label>
-                        <textarea class="form-control" id="note" name="note" rows="3" placeholder="أدخل أي ملاحظات إضافية..."></textarea>
+                    <!-- الوقائع والملاحظات -->
+                    <div class="row">
+                        <div class="col-md-6 mb-3">
+                            <label for="facts" class="form-label required-field">وقائع الجلسة</label>
+                            <textarea class="form-control" id="facts" name="facts" rows="4" required
+                                placeholder="أدخل تفاصيل وقائع الجلسة..."></textarea>
+                        </div>
+                        <div class="col-md-6 mb-3">
+                            <label for="note" class="form-label">ملاحظات</label>
+                            <textarea class="form-control" id="note" name="note" rows="4" placeholder="أدخل أي ملاحظات إضافية..."></textarea>
+                        </div>
                     </div>
 
                     <!-- أزرار -->
-                    <div class="d-flex justify-content-end gap-2">
+                    <div class="d-flex justify-content-end gap-2 mt-3">
                         <button type="reset" class="btn btn-secondary">مسح الحقول</button>
                         <button type="submit" class="btn btn-primary">حفظ الجلسة</button>
                     </div>
                 </form>
+
             </div>
         </div>
     </div>

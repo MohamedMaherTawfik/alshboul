@@ -3,12 +3,9 @@
 namespace App\Http\Controllers\Admin;
 
 use App\Http\Controllers\Controller;
-use App\Models\court_session_date;
-use App\Models\Lawyer;
 use App\Models\ProceduralFile;
 use App\Models\ProceduralRecord;
 use App\Models\ExecutiveCase;
-use App\Models\sessionfiles;
 use App\Models\User;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
@@ -115,9 +112,8 @@ class ProceduralRecordController extends Controller
 
     public function actions(ExecutiveCase $executiveCase)
     {
-        $executiveCase = $executiveCase->load('proceduralRecords');
+        $executiveCase->load('proceduralRecords');
         $lawyers = User::whereIn('role', ['Lawyer', 'admin', 'superadmin'])->where('active', 1)->get();
-
         return view('admin.procedural-record.index', compact('executiveCase', 'lawyers', ));
     }
 

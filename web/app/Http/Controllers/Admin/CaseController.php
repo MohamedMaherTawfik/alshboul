@@ -175,6 +175,7 @@ class CaseController extends Controller
 
     public function storeAdd(Request $request, Cases $case)
     {
+
         $validated = $request->except('_token');
         if (empty($validated['date'])) {
             $procedural = ProceduralRecord::create([
@@ -184,7 +185,9 @@ class CaseController extends Controller
                 'note' => $validated['note'] ?? null,
                 'type' => 'اجراء' ?? null,
                 'user_id' => $validated['lawyer_id'] ?? null,
-                'created_at' => $validated['created_at'] ?? null
+                'created_at' => $validated['created_at'] ?? null,
+                'next_action' => $validated['next_action'] ?? null,
+                'next_action_date' => $validated['next_action_date'] ?? null
             ]);
 
             if ($request->hasFile('file_path')) {
@@ -201,29 +204,33 @@ class CaseController extends Controller
             }
 
         } else {
-            $court = court_session_date::create([
-                'cases_id' => $case->id ?? null,
-                'date' => $validated['date'] ?? null,
-                'lawyer_user_id' => $validated['lawyer_id'] ?? null,
-                'user_id' => auth()->id(),
+            $procedural = ProceduralRecord::create([
+                'cases_id' => $case->id,
+                'user_lawyer_id' => auth()->id() ?? null,
+                'action' => $validated['facts'] ?? null,
                 'note' => $validated['note'] ?? null,
-                'facts' => $validated['facts'] ?? null,
-                'type' => 'جلسه' ?? null,
-                'created_at' => $validated['created_at'] ?? null
+                'type' => 'حلسه' ?? null,
+                'date' => $validated['date'] ?? null,
+                'user_id' => $validated['lawyer_id'] ?? null,
+                'created_at' => $validated['created_at'] ?? null,
+                'next_action' => $validated['next_action'] ?? null,
+                'next_action_date' => $validated['next_action_date'] ?? null
             ]);
 
             if ($request->hasFile('file_path')) {
-                foreach ($request->file('file_path') as $file) {
-                    $path = $file->store('SessionFiles', 'public');
+                foreach ($request->file('file_path') as $uploadedFile) {
+                    $path = $uploadedFile->store('ProceduralFiles', 'public');
 
-                    sessionfiles::create([
-                        'court_session_date_id' => $court->id,
-                        'file' => $path,
+                    ProceduralFile::create([
+                        'procedural_record_id' => $procedural->id,
+                        'created_by' => auth()->id(),
+                        'file_path' => $path,
+                        'updated_by' => auth()->id(),
                     ]);
                 }
             }
-        }
 
+        }
         return redirect()->route('cases.show', $case)->with('success', 'تمت الإضافة بنجاح');
     }
 
@@ -277,44 +284,12 @@ class CaseController extends Controller
     public function show(Cases $case)
     {
         $case->load([
-            'courtSession.sessionFiles',
-            'proceduralRedords.files'
+            'proceduralRedords'
         ]);
 
-        $sessions = collect();
+        $lawyers = User::whereIn('role', ['Lawyer', 'admin', 'superadmin'])->where('active', 1)->get();
 
-        foreach ($case->courtSession as $session) {
-            $sessions->push([
-                'id' => $session->id,
-                'date' => $session->date ?? '-',
-                'lawyer' => $session->lawyer_user->name ?? 'بلا',
-                'type' => 'جلسة',
-                'facts' => $session->facts ?? '-',
-                'note' => $session->note,
-                'files' => $session->sessionFiles,
-                'user' => $session->user->name,
-                'created_at' => $session->created_at,
-            ]);
-        }
-
-        foreach ($case->proceduralRedords as $record) {
-            $sessions->push([
-                'id' => $record->id,
-                'date' => null,
-                'user' => $record->userLawyer->name ?? '-',
-                'type' => $record->type ?? 'إجراء',
-                'facts' => $record->action ?? '-',
-                'note' => $record->note ?? '-',
-                'files' => $record->files,
-                'lawyer' => $record->user->name ?? 'بلا',
-                'created_at' => $record->created_at,
-            ]);
-        }
-
-        // الترتيب بالأحدث للأقدم
-        $sessions = $sessions->sortByDesc('id')->values();
-
-        return view('admin.cases.show', compact('case', 'sessions'));
+        return view('admin.cases.show', compact('case', 'lawyers'));
     }
 
 

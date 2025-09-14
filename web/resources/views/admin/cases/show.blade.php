@@ -1,11 +1,8 @@
 @extends('layouts.admin')
-@section('title', 'تفاصيل القضية')
-@section('main_title_content', 'تفاصيل القضية')
+
+@section('title', 'تفاصيل السجل الإجرائي')
+@section('main_title_content', 'تفاصيل السجل الإجرائي')
 @section('title_content', 'عرض')
-@section('link_content')
-    <a href="{{ route('cases.all') }}">
-        جميع القضايا</a>
-@endsection
 
 @section('content')
     <div class="card shadow-lg border-0">
@@ -74,32 +71,27 @@
             </div>
         </div>
     </div>
+    <!-- إضافة جلسة أو إجراء + فلترة -->
+    <div class="d-flex justify-content-between mb-3">
+        <a href="{{ route('cases.add', $case) }}" class="btn btn-dark btn-sm px-3 text-white d-flex align-items-center">
+            <i class="bi bi-plus-circle me-1"></i> إضافة جلسة او اجراء
+        </a>
 
-
-    <!-- سكشن الفلترة والإضافة -->
-    <section class="mb-5">
-        <div class="card shadow-sm">
-            <div class="card-body d-flex align-items-center justify-content-between">
-                <!-- زرار إضافة -->
-                <a href="{{ route('cases.add', $case) }}"
-                    class="btn btn-dark btn-sm px-3 text-white d-flex align-items-center">
-                    <i class="bi bi-plus-circle me-1"></i> إضافة جلسة او اجراء
-                </a>
-
-                <!-- أزرار الفلترة -->
-                <div class="d-flex gap-2">
-                    <button class="btn btn-primary btn-sm mr-2" onclick="filterSessions('all')">عرض الكل</button>
-                    <button class="btn btn-success btn-sm mr-2" onclick="filterSessions('session')">الجلسات فقط</button>
-                    <button class="btn btn-info btn-sm mr-2" onclick="filterSessions('procedure')">الإجراءات فقط</button>
-                </div>
-            </div>
+        <!-- فلترة -->
+        <div class="d-flex gap-2 mr-2">
+            <select id="filterType" class="form-select form-select-sm" style="width:auto;"
+                onchange="filterSessions(this.value)">
+                <option value="all">عرض الكل</option>
+                <option value="session">الجلسات فقط</option>
+                <option value="procedure">الإجراءات فقط</option>
+            </select>
         </div>
-    </section>
+    </div>
 
     <!-- جدول الجلسات والإجراءات -->
     <div class="card shadow">
         <div class="card-body">
-            <table class="table table-bordered table-striped text-center">
+            <table class="table table-bordered table-striped text-center align-middle">
                 <thead class="table-dark">
                     <tr>
                         <th>اسم المدخل</th>
@@ -107,52 +99,48 @@
                         <th>تاريخ الإدخال</th>
                         <th>الوقائع</th>
                         <th>ملاحظات</th>
-                        <th>تاريخ الجلسه او الاجراء القادم</th>
+                        <th>تاريخ الجلسة / الإجراء</th>
                         <th>الملفات</th>
                         <th>النوع</th>
                         <th>إجراءات</th>
                     </tr>
                 </thead>
                 <tbody id="sessionsTable">
-                    @forelse ($sessions as $session)
-                        <tr data-type="{{ $session['type'] === 'جلسة' ? 'session' : 'procedure' }}">
-                            <td>{{ $session['user'] ?? '-' }}</td>
-                            <td>{{ $session['lawyer'] ?? '-' }}</td>
-                            <td>{{ $session['created_at'] ? date('d/m/Y', strtotime($session['created_at'])) : '-' }}
-                            </td>
-                            <td>{{ $session['facts'] ?? '-' }}</td>
-                            <td>{{ $session['note'] ?? '-' }}</td>
-                            <td>{{ $session['date'] ?? '-' }}</td>
+                    @forelse ($case->proceduralRedords->sortByDesc('id') as $record)
+                        @php
+                            $type = $record->date ? 'جلسة' : 'إجراء';
+                        @endphp
+                        <tr data-type="{{ $type === 'جلسة' ? 'session' : 'procedure' }}">
+                            <td>{{ $record->userLawyer->name ?? '-' }}</td>
+                            <td>{{ $record->user->name ?? '-' }}</td>
+                            <td>{{ $record->created_at ? $record->created_at->format('d/m/Y') : '-' }}</td>
+                            <td>{{ $record->action ?? '-' }}</td>
+                            <td>{{ $record->note ?? '-' }}</td>
+                            <td>{{ $record->date ?? '-' }}</td>
                             <td>
-                                @foreach ($session['files'] as $file)
+                                @foreach ($record->files as $file)
                                     <a href="{{ asset('storage/' . ($file->file_path ?? $file->file)) }}"
-                                        class="btn btn-sm btn-info mb-1" target="_blank">
-                                        عرض المستند
-                                    </a>
+                                        class="btn btn-sm btn-info mb-1" target="_blank">عرض</a>
                                 @endforeach
-
                                 <button class="btn btn-sm btn-success" data-bs-toggle="modal"
-                                    data-bs-target="#addFileModal-{{ $session['type'] }}-{{ $session['id'] }}">
-                                    +
-                                </button>
+                                    data-bs-target="#addFileModal-{{ $record->id }}">+</button>
                             </td>
-                            <td>{{ $session['type'] }}</td>
-
+                            <td>{{ $type }}</td>
                             <td>
-                                @if ($session['type'] === 'جلسة')
-                                    <a href="{{ route('cases.session.edit', $session['id']) }}"
-                                        class="btn btn-sm btn-warning">تعديل الجلسة</a>
+                                @if ($record->date)
+                                    <a href="{{ route('cases.procedure.edit', $record) }}"
+                                        class="btn btn-sm btn-warning">تعديل
+                                        الجلسة</a>
                                 @else
-                                    <a href="{{ route('cases.procedure.edit', $session['id']) }}"
+                                    <a href="{{ route('cases.procedure.edit', $record) }}"
                                         class="btn btn-sm btn-warning">تعديل الإجراء</a>
-                                    <a href="{{ route('case.procedural.show', $session['id']) }}"
-                                        class="btn btn-sm btn-info">إجراء فرعي</a>
+                                    <a href="{{ route('case.procedural.show', $record) }}"
+                                        class="btn btn-sm btn-info">إجراء
+                                        فرعي</a>
                                 @endif
 
                                 <form
-                                    action="{{ $session['type'] === 'جلسة'
-                                        ? route('cases.session.delete', $session['id'])
-                                        : route('cases.procedure.delete', $session['id']) }}"
+                                    action="{{ $record->type === 'جلسة' ? route('cases.procedure.delete', $record) : route('cases.procedure.delete', $record) }}"
                                     method="POST" style="display:inline-block;">
                                     @csrf
                                     @method('DELETE')
@@ -162,31 +150,21 @@
                             </td>
                         </tr>
 
-                        {{-- مودال رفع ملفات --}}
-                        <div class="modal fade" id="addFileModal-{{ $session['type'] }}-{{ $session['id'] }}"
-                            tabindex="-1" aria-labelledby="addFileModalLabel-{{ $session['id'] }}" aria-hidden="true">
+                        <!-- مودال رفع ملفات -->
+                        <div class="modal fade" id="addFileModal-{{ $record->id }}" tabindex="-1" aria-hidden="true">
                             <div class="modal-dialog">
                                 <div class="modal-content">
                                     <form method="POST"
-                                        action="{{ $session['type'] === 'جلسة'
-                                            ? route('sessions.uploadFile', $session['id'])
-                                            : route('procedural.add.file', $session['id']) }}"
+                                        action="{{ $case->type === 'جلسة' ? route('procedural.add.file', $record) : route('procedural.add.file', $record) }}"
                                         enctype="multipart/form-data">
                                         @csrf
                                         <div class="modal-header">
-                                            <h5 class="modal-title" id="addFileModalLabel-{{ $session['id'] }}">
-                                                رفع مستندات {{ $session['type'] }}
-                                            </h5>
+                                            <h5 class="modal-title">رفع مستندات ({{ $type }})</h5>
                                             <button type="button" class="btn-close" data-bs-dismiss="modal"
                                                 aria-label="إغلاق"></button>
                                         </div>
                                         <div class="modal-body">
-                                            <div class="mb-3">
-                                                <label for="files-{{ $session['id'] }}" class="form-label">اختر
-                                                    الملفات</label>
-                                                <input type="file" name="files[]" id="files-{{ $session['id'] }}"
-                                                    class="form-control" multiple required>
-                                            </div>
+                                            <input type="file" name="files[]" class="form-control" multiple required>
                                         </div>
                                         <div class="modal-footer">
                                             <button type="button" class="btn btn-secondary"
@@ -206,7 +184,6 @@
             </table>
         </div>
     </div>
-
 @endsection
 
 @section('script')
