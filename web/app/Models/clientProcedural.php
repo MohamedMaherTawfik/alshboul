@@ -28,4 +28,9 @@ class clientProcedural extends Model
     {
         return $this->belongsTo(User::class, 'lawyer_id');
     }
+
+    public function clientProceduralFiles()
+    {
+        return $this->hasMany(clientProceduralFiles::class);
+    }
 }

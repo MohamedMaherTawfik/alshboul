@@ -84,6 +84,7 @@
                                         <th class="text-center">وقائع الإجراء</th>
                                         <th class="text-center">الحالة</th>
                                         <th class="text-center">الموكل</th>
+                                        <th class="text-center">المستندات</th>
                                         <th class="text-center">تاريخ الاجراء اللاحق</th>
                                         <th class="text-center">اجراء فرعي</th>
                                         @if (Auth::user()->role == 'admin' || Auth::user()->role == 'superadmin')
@@ -113,6 +114,57 @@
                                                 </span>
                                             </td>
                                             <td class="text-center">{{ $procedural->client->name ?? 'غير محدد' }}</td>
+                                            <td class="text-center">
+                                                @foreach ($procedural->clientProceduralFiles as $item)
+                                                    <a href="{{ asset('storage/' . $item->file) }}"
+                                                        class="btn btn-sm btn-outline-primary" target="_blank">
+                                                        <i class="fas fa-file"></i>
+                                                    </a>
+                                                @endforeach
+                                                <!-- زرار فتح المودال -->
+                                                <button type="button" class="btn btn-sm btn-outline-primary"
+                                                    data-bs-toggle="modal"
+                                                    data-bs-target="#addFileModal{{ $procedural->id }}">
+                                                    <i class="fas fa-plus"></i>
+                                                </button>
+                                                <!-- المودال -->
+                                                <div class="modal fade" id="addFileModal{{ $procedural->id }}"
+                                                    tabindex="-1" aria-hidden="true">
+                                                    <div class="modal-dialog modal-md">
+                                                        <div class="modal-content">
+                                                            <form method="POST"
+                                                                action="{{ route('Client.procedural.add.file', $procedural) }}"
+                                                                enctype="multipart/form-data">
+                                                                @csrf
+                                                                <div class="modal-header bg-primary text-white">
+                                                                    <h5 class="modal-title">رفع مستندات</h5>
+                                                                    <button type="button" class="btn-close btn-close-white"
+                                                                        data-bs-dismiss="modal" aria-label="إغلاق"></button>
+                                                                </div>
+                                                                <div class="modal-body">
+                                                                    <div class="row">
+                                                                        <div class="col-md-12 mb-3">
+                                                                            <label for="file_path"
+                                                                                class="form-label">المستندات</label>
+                                                                            <input type="file" name="file_path[]"
+                                                                                id="file_path" class="form-control"
+                                                                                multiple required>
+                                                                        </div>
+                                                                    </div>
+                                                                </div>
+                                                                <div class="modal-footer">
+                                                                    <button type="button" class="btn btn-secondary"
+                                                                        data-bs-dismiss="modal">إلغاء</button>
+                                                                    <button type="submit"
+                                                                        class="btn btn-primary">رفع</button>
+                                                                </div>
+                                                            </form>
+                                                        </div>
+                                                    </div>
+                                                </div>
+
+
+                                            </td>
                                             <td class="text-center">{{ $procedural->next_action_date ?? 'غير محدد' }}</td>
                                             <td class="text-center">
                                                 <a href="{{ route('client.procedural.sub.index', $procedural) }}">اجراء
@@ -246,47 +298,63 @@
 
     <!-- Modal للإضافة -->
     <div class="modal fade" id="addProceduralModal" tabindex="-1" aria-hidden="true">
-        <div class="modal-dialog">
+        <div class="modal-dialog modal-lg"><!-- كبرت المودال شوية -->
             <div class="modal-content">
-                <div class="modal-header">
+                <div class="modal-header bg-dark text-white">
                     <h5 class="modal-title">إضافة إجراء جديد</h5>
-                    <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                    <button type="button" class="btn-close btn-close-white" data-bs-dismiss="modal"
+                        aria-label="Close"></button>
                 </div>
-                <form action="{{ route('client.procedural.store', $client) }}" method="POST">
+
+                <form action="{{ route('client.procedural.store', $client) }}" method="POST"
+                    enctype="multipart/form-data">
                     @csrf
                     <input type="hidden" name="client_id" value="{{ $client->id }}">
+
                     <div class="modal-body">
-                        <div class="mb-3">
-                            <label class="form-label">نوع الإجراء</label>
-                            <input type="text" class="form-control" name="procedural_type" readonly value="اجراء">
+                        <div class="row">
+                            <div class="col-md-6 mb-3">
+                                <label class="form-label">نوع الإجراء</label>
+                                <input type="text" class="form-control" name="procedural_type" readonly
+                                    value="اجراء">
+                            </div>
+                            <div class="col-md-6 mb-3">
+                                <label class="form-label">تاريخ ادخال الإجراء</label>
+                                <input type="date" class="form-control" name="created_at"
+                                    value="{{ now()->format('Y-m-d') }}">
+                            </div>
                         </div>
 
-                        <div class="mb-3">
-                            <label class="form-label">تاريخ ادخال الإجراء</label>
-                            <input type="date" class="form-control" name="created_at"
-                                value="{{ now()->format('Y-m-d') }}">
+                        <div class="row">
+                            <div class="col-md-6 mb-3">
+                                <label class="form-label">الاجراء الرئيسي</label>
+                                <input type="text" class="form-control" name="procedural" required>
+                            </div>
+                            <div class="col-md-6 mb-3">
+                                <label class="form-label">الجهة</label>
+                                <input type="text" class="form-control" name="side" required>
+                            </div>
                         </div>
 
-                        <div class="mb-3">
-                            <label class="form-label">الاجراء الرئيسي</label>
-                            <input type="text" class="form-control" name="procedural" required>
-                        </div>
-                        <div class="mb-3">
-                            <label class="form-label">الجهة</label>
-                            <input type="text" class="form-control" name="side" required>
-                        </div>
                         <div class="mb-3">
                             <label class="form-label">وقائع الإجراء</label>
                             <textarea class="form-control" name="procedural_facts" rows="3"></textarea>
                         </div>
 
-                        <div class="mb-3">
-                            <label class="form-label">اختر المحامي</label>
-                            <select name="lawyer_id" class="form-select">
-                                @foreach ($lawyers as $item)
-                                    <option value="{{ $item->id }}">{{ $item->name }}</option>
-                                @endforeach
-                            </select>
+                        <div class="row">
+                            <div class="col-md-6 mb-3">
+                                <label for="file_path" class="form-label">المستندات</label>
+                                <input type="file" name="file_path[]" id="file_path" class="form-control" multiple>
+                            </div>
+
+                            <div class="col-md-6 mb-3">
+                                <label class="form-label">اختر المحامي</label>
+                                <select name="lawyer_id" class="form-select">
+                                    @foreach ($lawyers as $item)
+                                        <option value="{{ $item->id }}">{{ $item->name }}</option>
+                                    @endforeach
+                                </select>
+                            </div>
                         </div>
 
                         <div class="mb-3">
@@ -297,6 +365,7 @@
                             </select>
                         </div>
                     </div>
+
                     <div class="modal-footer">
                         <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">إلغاء</button>
                         <button type="submit" class="btn btn-primary">إضافة الإجراء</button>
@@ -305,6 +374,7 @@
             </div>
         </div>
     </div>
+
 
     <style>
         .card {

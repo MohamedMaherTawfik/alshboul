@@ -105,6 +105,7 @@ Route::group(['prefix' => 'admin', 'middleware' => ['auth', roleMiddleware::clas
     Route::get('/action-clients/client/{client}/procedural', [ClientController::class, 'showProcedural'])->name('client.procedural.sub.index');
     Route::post('/action-clients/client/{client}/procedural/storeSub', [ClientController::class, 'storeSub'])->name('subprocedural.store');
     Route::post('/action-clients/client/{client}/store', [ClientController::class, 'clientstoreProcedural'])->name('client.procedural.store');
+    Route::post('/action-clients/client/{client}/store/file/add', [ClientController::class, 'addFile'])->name('Client.procedural.add.file');
     Route::post('/action-clients/client/{client}/update', [ClientController::class, 'clientUpdateProcedural'])->name('client.procedural.update');
     Route::delete('/action-clients/client/{client}/delete', [ClientController::class, 'clientDeleteProcedural'])->name('client.procedural.delete');
     Route::delete('/action-client/delete', [ClientController::class, 'destroy1'])->name('client.action.delete');

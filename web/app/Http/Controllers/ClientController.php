@@ -4,6 +4,7 @@ namespace App\Http\Controllers;
 
 use App\Models\Client;
 use App\Models\clientProcedural;
+use App\Models\clientProceduralFiles;
 use App\Models\MainAction;
 use App\Models\ProceduralRecord;
 use App\Models\SubAction;
@@ -283,7 +284,7 @@ class ClientController extends Controller
             'lawyer_id' => 'nullable',
         ]);
         $data = $request->except('_token');
-        clientProcedural::create([
+        $procedural = clientProcedural::create([
             'procedural' => $data['procedural'] ?? '-',
             'procedural_facts' => $data['procedural_facts'] ?? '-',
             'side' => $data['side'] ?? '-',
@@ -294,6 +295,16 @@ class ClientController extends Controller
             'user_id' => Auth::id(),
             'client_id' => $client->id
         ]);
+        if ($request->hasFile('file_path')) {
+            foreach ($request->file('file_path') as $uploadedFile) {
+                $path = $uploadedFile->store('ProceduralFiles', 'public');
+
+                clientProceduralFiles::create([
+                    'client_procedural_id' => $procedural->id,
+                    'file' => $path,
+                ]);
+            }
+        }
         if (!$data) {
             return redirect()->back()->with('error', ' حدث خلل أثناء الاضافة');
         }
@@ -325,5 +336,21 @@ class ClientController extends Controller
         $data = $request->except('_token');
         subrocedural::create($data);
         return redirect()->back()->with('success', 'تم إضافة الاجراء الفرعي بنجاح');
+    }
+
+    public function addFile(Request $request, clientProcedural $client)
+    {
+
+        if ($request->hasFile('file_path')) {
+            foreach ($request->file('file_path') as $uploadedFile) {
+                $path = $uploadedFile->store('ProceduralFiles', 'public');
+
+                clientProceduralFiles::create([
+                    'client_procedural_id' => $client->id,
+                    'file' => $path,
+                ]);
+            }
+        }
+        return redirect()->back()->with('success', 'تم إضافة الملف بنجاح');
     }
 }

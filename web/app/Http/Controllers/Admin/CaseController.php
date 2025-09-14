@@ -132,7 +132,6 @@ class CaseController extends Controller
                 'added_by_id' => auth()->id(),
             ]);
 
-            // نحذف الخصوم القدام (لو عايز تعيد إدخالهم كل مرة)
             CaseOpponents::where('cases_id', $case->id)->delete();
 
             // نضيف الخصوم من جديد

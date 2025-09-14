@@ -94,17 +94,27 @@
                             <label for="executiveCase">نوع القضية التنفيذية بالسيستم</label>
                             <select id="executiveCase" name="excutive_cases_main_id"
                                 class="form-control @error('executiveCase') is-invalid @enderror">
-                                @foreach ($main as $item)
-                                    <option value="{{ $item->id }}"
-                                        {{ $executiveCase->executiveCase_id == $item->id ? 'selected' : '' }}>
-                                        {{ $item->name }}
+
+                                {{-- أولاً نحط القيمة الحالية فوق --}}
+                                @if ($executiveCase->excutive_cases_main_id)
+                                    <option value="{{ $executiveCase->excutive_cases_main_id }}" selected>
+                                        {{ $main->firstWhere('id', $executiveCase->excutive_cases_main_id)->name ?? '---' }}
                                     </option>
+                                @endif
+
+                                {{-- بعد كدا باقي القيم --}}
+                                @foreach ($main as $item)
+                                    @if ($item->id != $executiveCase->executiveCase_id)
+                                        <option value="{{ $item->id }}">{{ $item->name }}</option>
+                                    @endif
                                 @endforeach
                             </select>
+
                             @error('executiveCase')
                                 <span class="invalid-feedback">{{ $message }}</span>
                             @enderror
                         </div>
+
 
                         <div class="col-md-4">
                             <label>رقم الدعوى</label>

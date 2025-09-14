@@ -152,17 +152,13 @@ class ExecutiveCaseController extends Controller
         try {
             DB::beginTransaction();
 
-            // نحتفظ بالقيمة القديمة
             $oldMainCaseId = $executiveCase->excutive_cases_main_id;
 
-            // نحدث البيانات
             $executiveCase->update($data);
 
-            // لو اتغير نوع القضية (القضية الرئيسية)
             if ($oldMainCaseId != $executiveCase->excutive_cases_main_id) {
-                // نجيب كل أرقام القضايا المرتبطة بنفس القضية الرئيسية الجديدة
                 $numbers = ExecutiveCase::where('excutive_cases_main_id', $executiveCase->excutive_cases_main_id)
-                    ->pluck('case_number')
+                    ->pluck('file_number')
                     ->sort()
                     ->toArray();
 
@@ -177,14 +173,14 @@ class ExecutiveCaseController extends Controller
                 }
 
                 // نحدث رقم القضية بالرقم الجديد
-                $executiveCase->update(['case_number' => $missing]);
+                $executiveCase->update(['file_number' => $missing]);
             }
 
             $maincase = excutiveCasesMain::find($executiveCase->excutive_cases_main_id);
 
             DB::commit();
             return redirect()->route('executive-case.index', $maincase)
-                ->with('success', 'تم تعديل القضية التنفيذية بنجاح، رقم الملف هو: ' . $executiveCase->case_number);
+                ->with('success', 'تم تعديل القضية التنفيذية بنجاح، رقم الملف هو: ' . $executiveCase->file_number);
 
         } catch (\Exception $th) {
             DB::rollBack();
@@ -193,7 +189,6 @@ class ExecutiveCaseController extends Controller
                 ->withInput();
         }
     }
-
 
     /**
      * Remove the specified resource from storage.
