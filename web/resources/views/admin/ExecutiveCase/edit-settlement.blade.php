@@ -117,7 +117,8 @@
                                     <div class="col-md-6 mt-5">
                                         <label for="payment_terms" class="form-label">شروط السداد</label>
                                         <select class="form-select" id="payment_terms" name="payment_terms" required>
-                                            <option value="">-- اختر شرط السداد --</option>
+                                            <option value="{{ $settlement->payment_terms }}">
+                                                {{ $settlement->payment_terms }}</option>
                                             <option value="شهري"
                                                 {{ $settlement->payment_terms == 'شهري' ? 'selected' : '' }}>شهري</option>
                                             <option value="أسبوعي"

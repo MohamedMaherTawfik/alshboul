@@ -234,6 +234,7 @@ class ExecutiveCaseController extends Controller
 
     public function createSettlement(ExecutiveCase $executiveCase)
     {
+        dd($executiveCase);
         $settlements = SettlementMain::all();
         return view('admin.ExecutiveCase.create-settlement', compact('executiveCase', 'settlements'));
     }
@@ -261,10 +262,49 @@ class ExecutiveCaseController extends Controller
 
     public function updateSettlement(Request $request, Settlement $settlement)
     {
-        $data = $request->except('_token', 'case_type', 'case_number');
-        $settlement->update($data);
-        return redirect()->route('executive-case.settlement', $settlement->excutiveCases)->with('success', 'تم تعديل السداد بنجاح');
+        $data = $request->except('_token', 'case_type', 'case_number', 'file_number');
+
+        try {
+            DB::beginTransaction();
+            // نجيب كل أرقام الملفات الخاصة بالـ Main Settlement
+            $numbers = Settlement::where('settlement_main_id', $data['settlement_main_id'])
+                ->where('id', '!=', $settlement->id) // نستثني نفس السجل
+                ->pluck('file_number')
+                ->sort()
+                ->toArray();
+
+            // نحدد أول رقم ناقص
+            $missing = 1;
+            foreach ($numbers as $num) {
+                if ($num == $missing) {
+                    $missing++;
+                } elseif ($num > $missing) {
+                    break;
+                }
+            }
+
+            // نحدد رقم الملف الجديد
+            $data['file_number'] = $missing;
+
+            // نحدث السداد
+            $settlement->update($data);
+
+            DB::commit();
+
+            return redirect()
+                ->route('settlement.index', $settlement->settlementMain)
+                ->with('success', 'تم تعديل السداد بنجاح، رقم الملف هو: ' . $data['file_number']);
+
+        } catch (\Exception $e) {
+            DB::rollBack();
+            return redirect()->back()
+                ->with('error', 'حصل خطأ أثناء التعديل: ' . $e->getMessage())
+                ->withInput();
+        }
     }
+
+
+
 
     public function deleteSettlement(Settlement $settlement)
     {

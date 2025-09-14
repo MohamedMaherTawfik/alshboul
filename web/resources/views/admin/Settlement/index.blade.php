@@ -41,7 +41,6 @@
                             <th>رقم الوطني للخصم</th>
                             <th>رقم هاتف الخصم</th>
                             <th>رقم الملف</th>
-                            <th>رقم الدعوى</th>
                             <th>قيمة الدين</th>
                             <th>نوع القسط</th>
                             <th>قيمة القسط</th>
@@ -57,15 +56,11 @@
                             <tr>
                                 <td>{{ $settlemen->user->name ?? 'غير متوفر' }}</td>
                                 <td>{{ $settlemen->client_name ?? 'غير متوفر' }}</td>
-                                <td>{{ $settlemen->opponent_name ?? 'غير متوفر' }}</td>
-                                <td>{{ $settlemen->excutiveCases?->client_national_id ?? 'غير مرتبط بقضيه' }}</td>
-                                <td>{{ $settlemen->excutiveCases?->opponent_national_id ?? 'غير مرتبط بقضيه' }}</td>
+                                <td>{{ $settlemen->client_national_id ?? 'غير متوفر' }}</td>
+                                <td>{{ $settlemen->opponent_name ?? 'غير مرتبط بقضيه' }}</td>
+                                <td>{{ $settlemen->opponent_national_id ?? 'غير مرتبط بقضيه' }}</td>
                                 <td>{{ $settlemen->opponent_phone ?? 'غير متوفر' }}</td>
-                                <td>{{ $settlemen->opponent_address ?? 'غير متوفر' }}</td>
-                                <td>{{ $settlemen->client_status ?? 'غير متوفر' }}</td>
-                                <td>{{ $settlemen->opponent_status ?? 'غير متوفر' }}</td>
-                                <td>{{ $settlemen->excutiveCases?->file_number ?? 'غير مرتبط بقضيه' }}</td>
-                                <td>{{ $settlemen->excutiveCases?->case_number ?? 'غير مرتبط بقضيه' }}</td>
+                                <td>{{ $settlemen->file_number ?? 'غير متوفر' }}</td>
                                 <td>{{ $settlemen->amount ?? 'غير متوفر' }}</td>
                                 <td>{{ $settlemen->payment_terms ?? 'غير متوفر' }}</td>
                                 <td>{{ $settlemen->payment_value ?? 'غير متوفر' }}
