@@ -50,12 +50,6 @@
 
                 <div class="row">
                     <div class="col-md-6 mb-3">
-                        <label for="file_path" class="form-label">المستندات</label>
-                        <input type="file" name="file_path[]" id="file_path" class="form-control" multiple>
-                        <small class="text-muted">يمكنك اختيار أكثر من ملف</small>
-                    </div>
-
-                    <div class="col-md-6 mb-3">
                         <label class="form-label">اختر المحامي</label>
                         <select name="lawyer_id" class="form-select">
                             @foreach ($lawyers as $item)

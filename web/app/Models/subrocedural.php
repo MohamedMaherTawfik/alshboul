@@ -18,4 +18,14 @@ class subrocedural extends Model
     {
         return $this->belongsTo(clientProcedural::class);
     }
+
+    public function subProcedurals()
+    {
+        return $this->hasMany(subrocedural::class);
+    }
+
+    public function files()
+    {
+        return $this->hasMany(clientProceduralFiles::class);
+    }
 }

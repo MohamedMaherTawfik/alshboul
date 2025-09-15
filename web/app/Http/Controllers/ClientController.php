@@ -249,12 +249,6 @@ class ClientController extends Controller
         $client->update(['active' => 0]);
         return redirect()->route('client.index')->with(['success' => 'تم حذف البيانات بنجاح']);
     }
-    // public function destroy1(Request $request)
-    // {
-
-    //     $client
-    //     return redirect()->route('client.action')->with(['success' => 'تم حذف البيانات بنجاح']);
-    // }
     public function restore(Client $client)
     {
         $client->update(['active' => 1]);
@@ -295,16 +289,6 @@ class ClientController extends Controller
             'user_id' => Auth::id(),
             'client_id' => $client->id
         ]);
-        if ($request->hasFile('file_path')) {
-            foreach ($request->file('file_path') as $uploadedFile) {
-                $path = $uploadedFile->store('ProceduralFiles', 'public');
-
-                clientProceduralFiles::create([
-                    'client_procedural_id' => $procedural->id,
-                    'file' => $path,
-                ]);
-            }
-        }
         if (!$data) {
             return redirect()->back()->with('error', ' حدث خلل أثناء الاضافة');
         }
@@ -333,20 +317,44 @@ class ClientController extends Controller
 
     public function storeSub(Request $request, clientProcedural $client)
     {
-        $data = $request->except('_token');
-        subrocedural::create($data);
-        return redirect()->back()->with('success', 'تم إضافة الاجراء الفرعي بنجاح');
-    }
-
-    public function addFile(Request $request, clientProcedural $client)
-    {
-
+        $data = $request->except('_token', 'file_path');
+        $procedural = subrocedural::create($data);
         if ($request->hasFile('file_path')) {
             foreach ($request->file('file_path') as $uploadedFile) {
                 $path = $uploadedFile->store('ProceduralFiles', 'public');
 
                 clientProceduralFiles::create([
-                    'client_procedural_id' => $client->id,
+                    'subrocedural_id' => $procedural->id,
+                    'file' => $path,
+                ]);
+            }
+        }
+        return redirect()->back()->with('success', 'تم إضافة الاجراء الفرعي بنجاح');
+    }
+
+    public function updateSub(Request $request, subrocedural $client)
+    {
+
+        $data = $request->except(['_token', '_method']);
+        $client->update($data);
+        return redirect()->back()->with('success', 'تم تعديل الاجراء الفرعي بنجاح');
+    }
+
+    public function deleteSub(subrocedural $client)
+    {
+        $client->delete();
+        return redirect()->back()->with('success', 'تم حذف الاجراء الفرعي بنجاح');
+    }
+
+
+    public function addFile(Request $request, subrocedural $client)
+    {
+        if ($request->hasFile('file_path')) {
+            foreach ($request->file('file_path') as $uploadedFile) {
+                $path = $uploadedFile->store('ProceduralFiles', 'public');
+
+                clientProceduralFiles::create([
+                    'subrocedural_id' => $client->id,
                     'file' => $path,
                 ]);
             }
@@ -354,6 +362,11 @@ class ClientController extends Controller
         return redirect()->back()->with('success', 'تم إضافة الملف بنجاح');
     }
 
+    public function deleteFile(clientProceduralFiles $client)
+    {
+        $client->delete();
+        return redirect()->back()->with('success', 'تم حذف الملف بنجاح');
+    }
     public function clientcreateProcedural(Client $client)
     {
         return view('admin.mooakl.createProcedural', compact('client'));

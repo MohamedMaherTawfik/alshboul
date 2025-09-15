@@ -81,7 +81,6 @@
                                         <th class="text-center">وقائع الإجراء</th>
                                         <th class="text-center">الحالة</th>
                                         <th class="text-center">الموكل</th>
-                                        <th class="text-center">المستندات</th>
                                         <th class="text-center">تاريخ الاجراء اللاحق</th>
                                         <th class="text-center">اجراء فرعي</th>
                                         @if (Auth::user()->role == 'admin' || Auth::user()->role == 'superadmin')
@@ -111,57 +110,7 @@
                                                 </span>
                                             </td>
                                             <td class="text-center">{{ $procedural->client->name ?? 'غير محدد' }}</td>
-                                            <td class="text-center">
-                                                @foreach ($procedural->clientProceduralFiles as $item)
-                                                    <a href="{{ asset('storage/' . $item->file) }}"
-                                                        class="btn btn-sm btn-outline-primary" target="_blank">
-                                                        <i class="fas fa-file"></i>
-                                                    </a>
-                                                @endforeach
-                                                <!-- زرار فتح المودال -->
-                                                <button type="button" class="btn btn-sm btn-outline-primary"
-                                                    data-bs-toggle="modal"
-                                                    data-bs-target="#addFileModal{{ $procedural->id }}">
-                                                    <i class="fas fa-plus"></i>
-                                                </button>
-                                                <!-- المودال -->
-                                                <div class="modal fade" id="addFileModal{{ $procedural->id }}"
-                                                    tabindex="-1" aria-hidden="true">
-                                                    <div class="modal-dialog modal-md">
-                                                        <div class="modal-content">
-                                                            <form method="POST"
-                                                                action="{{ route('Client.procedural.add.file', $procedural) }}"
-                                                                enctype="multipart/form-data">
-                                                                @csrf
-                                                                <div class="modal-header bg-primary text-white">
-                                                                    <h5 class="modal-title">رفع مستندات</h5>
-                                                                    <button type="button" class="btn-close btn-close-white"
-                                                                        data-bs-dismiss="modal" aria-label="إغلاق"></button>
-                                                                </div>
-                                                                <div class="modal-body">
-                                                                    <div class="row">
-                                                                        <div class="col-md-12 mb-3">
-                                                                            <label for="file_path"
-                                                                                class="form-label">المستندات</label>
-                                                                            <input type="file" name="file_path[]"
-                                                                                id="file_path" class="form-control"
-                                                                                multiple required>
-                                                                        </div>
-                                                                    </div>
-                                                                </div>
-                                                                <div class="modal-footer">
-                                                                    <button type="button" class="btn btn-secondary"
-                                                                        data-bs-dismiss="modal">إلغاء</button>
-                                                                    <button type="submit"
-                                                                        class="btn btn-primary">رفع</button>
-                                                                </div>
-                                                            </form>
-                                                        </div>
-                                                    </div>
-                                                </div>
 
-
-                                            </td>
                                             <td class="text-center">{{ $procedural->next_action_date ?? 'غير محدد' }}</td>
                                             <td class="text-center">
                                                 <a href="{{ route('client.procedural.sub.index', $procedural) }}">اجراء
