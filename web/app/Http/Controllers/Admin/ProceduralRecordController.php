@@ -96,10 +96,11 @@ class ProceduralRecordController extends Controller
         $executiveCase->update([
             'action' => $data['action'] ?? null,
             'note' => $data['note'] ?? null,
-            'type' => $data['type'] ?? null,
+            'date' => $data['date'] ?? null,
             'user_id' => $data['user_id'] ?? null,
             'next_action' => $data['next_action'] ?? null,
             'next_action_date' => $data['next_action_date'] ?? null,
+            'created_at' => $data['created_at'] ?? null
         ]);
         return redirect()->route('procedural-record.index', ['executiveCase' => $executiveCase->case])->with('success', 'تم تعديل الإجراء بنجاح');
     }

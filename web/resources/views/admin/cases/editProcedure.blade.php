@@ -25,8 +25,15 @@
                             <!-- نوع الإجراء -->
                             <div class="mb-3">
                                 <label for="type" class="form-label">نوع الإجراء</label>
-                                <input type="text" name="type" id="type" class="form-control" value="اجراء" ,
-                                    readonly>
+                                <input type="text" name="type" id="type" class="form-control" value="اجراء">
+                            </div>
+
+                            <!-- نوع الإجراء -->
+
+                            <div class="mb-3">
+                                <label for="type" class="form-label">تاريخ الجلسه</label>
+                                <input type="date" name="date" id="type" class="form-control"
+                                    value="{{ old('date', $case->date) }}">
                             </div>
 
                             <!-- الإجراء -->

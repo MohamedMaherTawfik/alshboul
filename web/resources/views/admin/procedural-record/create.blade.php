@@ -24,7 +24,8 @@
                             <div class="row">
                                 <!-- تاريخ الإجراء -->
                                 <div class="col-md-6 mb-3">
-                                    <label for="date" class="form-label required-field">تاريخ الإجراء</label>
+                                    <label for="date" class="form-label required-field">تاريخ الجلسه (ليس
+                                        للاجراء)</label>
                                     <input type="date" class="form-control" id="date" name="date">
                                 </div>
 
