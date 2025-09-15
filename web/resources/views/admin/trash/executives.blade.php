@@ -1,23 +1,11 @@
 @extends('layouts.admin')
 
-@section('title', 'القضايا التنفيذية')
-@section('main_title_content', 'القضايا التنفيذية')
+@section('title', 'القضايا التنفيذية المهمله')
+@section('main_title_content', 'القضايا التنفيذية المهمله')
 @section('title_content', 'عرض')
-@section('link_content')
-    <a href="{{ route('executive-case.index', $item) }}">قضايا تنفيذية</a>
-@endsection
 
 @section('content')
     <div class="container-fluid">
-        <div class="d-flex justify-content-between align-items-center mb-3">
-            <h4 class="mb-0">القضايا التنفيذية الخاصة بـ
-                <span class="text-primary">{{ $item->name }}</span>
-            </h4>
-            <a href="{{ route('executive-case.create', $item->id) }}" class="btn btn-primary">
-                + إضافة قضية تنفيذية لـ {{ $item->name }}
-            </a>
-        </div>
-
         <div class="card shadow-sm">
             <div class="card-body">
                 <div class="table-responsive">
@@ -45,7 +33,7 @@
                             </tr>
                         </thead>
                         <tbody>
-                            @forelse ($item->excutiveCases as $case)
+                            @forelse ($executiveCases as $case)
                                 <tr>
                                     <td>{{ $case->client?->name }}</td>
                                     <td>{{ $case->client_name }}</td>
@@ -65,7 +53,7 @@
                                     <td>
                                         @if (Auth::user()->role == 'admin' || Auth::user()->role == 'superadmin')
                                             <a href="{{ route('executive-case.edit', $case) }}"
-                                                class="btn btn-warning btn-sm mb-1">تعديل</a>
+                                                class="btn btn-warning btn-sm mb-1"> تعديل</a>
 
                                             <form action="{{ route('executive-case.delete', $case) }}" method="POST"
                                                 class="d-inline">

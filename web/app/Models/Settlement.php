@@ -60,4 +60,9 @@ class Settlement extends Model
     {
         return $this->hasMany(ProceduralRecord::class);
     }
+
+    public function trahsedDays()
+    {
+        return $this->hasMany(trahsedDays::class);
+    }
 }

@@ -55,4 +55,9 @@ class ExecutiveCase extends Model
     {
         return $this->hasMany(court_session_date::class);
     }
+
+    public function trahsedDays()
+    {
+        return $this->hasMany(trahsedDays::class, 'executive_case_id');
+    }
 }

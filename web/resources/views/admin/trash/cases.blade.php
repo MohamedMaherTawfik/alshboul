@@ -1,6 +1,6 @@
 @extends('layouts.admin')
-@section('title', 'أنواع القضايا')
-@section('main_title_content', 'قائمة أنواع القضايا')
+@section('title', ' القضايا المهمله')
+@section('main_title_content', ' القضايا المهمله')
 @section('title_content', 'إضافة')
 @section('link_content')
     <a href="{{ route('cases.all') }}">

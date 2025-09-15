@@ -15,7 +15,7 @@ class trahsedDays extends Model
 
     public function excutiveCases()
     {
-        return $this->belongsTo(ExecutiveCase::class);
+        return $this->belongsTo(ExecutiveCase::class, 'executive_case_id');
     }
 
     public function settlements()
