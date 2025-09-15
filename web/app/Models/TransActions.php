@@ -28,4 +28,9 @@ class TransActions extends Model
     {
         return $this->hasMany(ProceduralRecord::class, 'trans_actions_id');
     }
+
+    public function trashedDays()
+    {
+        return $this->hasMany(trahsedDays::class, 'trans_actions_id');
+    }
 }

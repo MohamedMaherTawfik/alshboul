@@ -16,6 +16,7 @@ use App\Http\Controllers\Admin\SettlementProceduralController;
 use App\Http\Controllers\Admin\SliderController;
 use App\Http\Controllers\Admin\CareerController;
 use App\Http\Controllers\Admin\TransactionController;
+use App\Http\Controllers\Admin\TrashedController;
 use App\Http\Controllers\ApplyCareerController;
 use App\Http\Controllers\User\LoginController as UserLoginController;
 use App\Http\Controllers\User\DashboardController as UserDashboardController;
@@ -311,8 +312,15 @@ Route::group(['prefix' => 'admin', 'middleware' => ['auth', roleMiddleware::clas
     Route::post('/{case}/show/showcase/procedure/update/case', [CaseController::class, 'updateProcedure'])->name('cases.procedure.update');
     Route::delete('/{case}/show/showcase/procedure/delete/case', [CaseController::class, 'deleteProcedure'])->name('cases.procedure.delete');
     Route::post('/{case}/show/showcase/procedure/add/file', [CaseController::class, 'addFile'])->name('procedural.add.file');
-    Route::get('/cases/trashed/{caseType}', [CaseController::class, 'trashedCases'])
+
+    Route::get('/cases/trashed/{caseType}', [TrashedController::class, 'trashedCases'])
         ->name('cases.trashed');
+    Route::get('/settlements/trashed/{settlement}', [TrashedController::class, 'trashedSettlements'])
+        ->name('settlement.trashed');
+    Route::get('/executive/trashed/{executiveCase}', [TrashedController::class, 'trashedExecutives'])
+        ->name('executive.trashed');
+    Route::get('/transactions/trashed/{transaction}', [TrashedController::class, 'trashedTransactions'])
+        ->name('transactions.trashed');
 
     Route::get('/{case}/show/showcase/procedure/sub/procedure', [CaseController::class, 'subProcedure'])->name('case.procedural.show');
     Route::post('/{case}/show/showcase/procedure/sub/store', [CaseController::class, 'storSubProcedure'])->name('cases.subprocedure.store');

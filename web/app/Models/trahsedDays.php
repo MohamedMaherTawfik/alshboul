@@ -22,4 +22,9 @@ class trahsedDays extends Model
     {
         return $this->belongsTo(Settlement::class);
     }
+
+    public function transactions()
+    {
+        return $this->belongsTo(TransActions::class, 'trans_actions_id');
+    }
 }

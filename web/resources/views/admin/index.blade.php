@@ -91,21 +91,37 @@
                     </tr>
                 </thead>
                 <tbody>
-                    @foreach ($caseTypesWithCount as $caseType)
+                    @foreach ($allData as $row)
                         <tr>
-                            <td>{{ $caseType->name }}</td>
+                            <td>{{ $row['name'] }}</td>
                             <td>
-                                {{ $caseType->trashed_count }}
-                                @if ($caseType->trashed_count > 0)
-                                    <a href="{{ route('cases.trashed', $caseType->id) }}" class="ms-2 text-primary">
-                                        <i class="fa fa-eye"></i>
-                                    </a>
+                                {{ $row['trashed_count'] }}
+                                @if ($row['trashed_count'] > 0)
+                                    @if ($row['type'] == 'case_type')
+                                        <a href="{{ route('cases.trashed', $row['id']) }}" class="ms-2 text-primary">
+                                            <i class="fa fa-eye"></i>
+                                        </a>
+                                    @elseif ($row['type'] == 'settlement')
+                                        <a href="{{ route('settlement.trashed', $row['id']) }}" class="ms-2 text-primary">
+                                            <i class="fa fa-eye"></i>
+                                        </a>
+                                    @elseif ($row['type'] == 'executive')
+                                        <a href="{{ route('executive.trashed', $row['id']) }}" class="ms-2 text-primary">
+                                            <i class="fa fa-eye"></i>
+                                        </a>
+                                    @elseif ($row['type'] == 'transaction')
+                                        <a href="{{ route('transactions.trashed', $row['id']) }}"
+                                            class="ms-2 text-primary">
+                                            <i class="fa fa-eye"></i>
+                                        </a>
+                                    @endif
                                 @endif
                             </td>
-                            <td>{{ $caseType->NegligenceDays->first()->days }}</td>
+                            <td>{{ $row['days'] ?? '-' }}</td>
                         </tr>
                     @endforeach
                 </tbody>
+
             </table>
 
 
