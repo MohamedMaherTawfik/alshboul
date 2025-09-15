@@ -66,6 +66,6 @@ class cases extends Model
 
     public function proceduralRedords()
     {
-        return $this->hasMany(ProceduralRecord::class);
+        return $this->hasMany(ProceduralRecord::class, 'cases_id');
     }
 }

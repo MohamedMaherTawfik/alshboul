@@ -208,7 +208,7 @@ class CaseController extends Controller
                 'user_lawyer_id' => auth()->id() ?? null,
                 'action' => $validated['facts'] ?? null,
                 'note' => $validated['note'] ?? null,
-                'type' => 'حلسه' ?? null,
+                'type' => 'جلسه' ?? null,
                 'date' => $validated['date'] ?? null,
                 'user_id' => $validated['lawyer_id'] ?? null,
                 'created_at' => $validated['created_at'] ?? null,
@@ -315,13 +315,17 @@ class CaseController extends Controller
             'date_to' => 'required|date|after_or_equal:date_from',
         ]);
 
-        $sessions = court_session_date::with(['cases', 'lawyer'])
+        $sessions = ProceduralRecord::where('type', 'LIKE', 'جلس%')
+            ->with(['cases'])
             ->whereBetween('date', [$request->date_from, $request->date_to])
             ->get();
-        $sessionPlucks = court_session_date::with(['cases', 'lawyer'])
+        $sessionPlucks = ProceduralRecord::where('type', 'LIKE', 'جلس%')
+            ->with(['cases',])
             ->whereBetween('date', [$request->date_from, $request->date_to])
-            ->pluck('id')->toArray();
-        $files = sessionfiles::whereIn('court_session_date_id', $sessionPlucks)->get();
+            ->pluck('id')
+            ->toArray();
+
+        $files = ProceduralFile::whereIn('procedural_record_id', $sessionPlucks)->get();
         return view('admin.cases.search', compact('sessions', 'files'));
     }
 

@@ -50,11 +50,10 @@
                                 <th>رقم الملف</th>
                                 <th>رقم القضية</th>
                                 <th>اسم القاضي </th>
-                                <th>اسم المحكمة</th>
+                                <th>اسم المحكمة او الدائره</th>
                                 <th>تاريخ الجلسة</th>
                                 <th>الوقائع</th>
                                 <th>المستندات</th>
-                                <th>النوع</th>
                                 <th>المحامي</th>
                                 <th>الملاحظات</th>
                             </tr>
@@ -62,27 +61,48 @@
                         <tbody>
                             @foreach ($sessions as $index => $session)
                                 <tr>
-
-                                    <td>{{ $session->cases->case_number ?? '-' }}</td>
-                                    <td>{{ $session->cases->file_number ?? '-' }}
+                                    @if ($session->cases)
+                                        <td>{{ $session->cases->case_number ?? '-' }}</td>
+                                    @elseif ($session->case)
+                                        <td>{{ $session->case->file_number ?? '-' }}</td>
+                                    @endif
+                                    @if ($session->cases)
+                                        <td>{{ $session->cases->file_number ?? '-' }}
+                                        @elseif ($session->case)
+                                        <td>{{ $session->case->case_number ?? '-' }}
+                                    @endif
+                                    @if ($session->cases)
                                         <a href="{{ route('cases.show', $session->cases) }}">
                                             <i class="fa fa-eye"></i>
                                         </a>
+                                    @elseif ($session->case)
+                                        <a href="{{ route('procedural-record.index', $session->case) }}">
+                                            <i class="fa fa-eye"></i>
+                                        </a>
+                                    @endif
+
                                     </td>
-                                    <td>{{ $session->cases?->jubge_name ?? '-' }}</td>
-                                    <td>{{ $session->cases->court_name ?? '-' }}</td>
+                                    <td>{{ $session->cases?->jubge_name ?? 'بلا' }}</td>
+                                    @if ($session->cases)
+                                        <td>{{ $session->cases->court_name ?? '-' }}</td>
+                                    @else
+                                        <td>{{ $session->case->execution_court ?? '-' }}</td>
+                                    @endif
                                     <td>{{ $session->date ?? '-' }}</td>
-                                    <td>{{ $session->facts ?? '-' }}</td>
+                                    <td>{{ $session->action ?? '-' }}
                                     <td>
                                         @foreach ($files as $item)
-                                            @if ($item->court_session_date_id == $session->id)
-                                                <a href="{{ asset('storage/' . $item->file) }}" target="_blank"
+                                            @if ($item->procedural_record_id == $session->id)
+                                                <a href="{{ asset('storage/' . $item->file_path) }}" target="_blank"
                                                     class="btn btn-sm btn-info">مستند</a>
                                             @endif
                                         @endforeach
                                     </td>
-                                    <td>{{ $session->type ?? '-' }}</td>
-                                    <td>{{ $session->lawyer->name ?? '-' }}</td>
+                                    @if ($session->cases)
+                                        <td>{{ $session->user->name ?? '-' }}</td>
+                                    @elseif ($session->case)
+                                        <td>{{ $session->user->name ?? '-' }}</td>
+                                    @endif
                                     <td>{{ $session->note ?? '-' }}</td>
                                 </tr>
                             @endforeach

@@ -301,7 +301,7 @@ Route::group(['prefix' => 'admin', 'middleware' => ['auth', roleMiddleware::clas
     Route::post('/casetypes/createCase/store/{case}', [CaseController::class, 'storeCase'])->name('casetypes.store.case');
     Route::get('/casetypes/{id}/delete', [CaseTypeController::class, 'destroy'])->name('casetypes.destroy');
     Route::get('/{case}/edit/editcase', [CaseController::class, 'edit'])->name('cases.edit');
-    Route::get('/{case}/show/showcase', [CaseController::class, 'show'])->name('cases.show');
+    Route::get('/{case}/show/showcase/show', [CaseController::class, 'show'])->name('cases.show');
     Route::post('/{case}/show/showcase/session/uploadFile', [CaseController::class, 'uploadFile'])->name('sessions.uploadFile');
     Route::get('/{case}/show/showcase/durations', [CaseController::class, 'showDurations'])->name('cases.show.durations');
     Route::get('/{case}/show/showcase/notes', [CaseController::class, 'showNotes'])->name('cases.show.notes');
