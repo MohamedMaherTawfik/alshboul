@@ -105,6 +105,7 @@ Route::group(['prefix' => 'admin', 'middleware' => ['auth', roleMiddleware::clas
     Route::get('/action-clients/client/{client}', [ClientController::class, 'ClientShowProcedural'])->name('client.show');
     Route::get('/action-clients/client/{client}/procedural', [ClientController::class, 'showProcedural'])->name('client.procedural.sub.index');
     Route::post('/action-clients/client/{client}/procedural/storeSub', [ClientController::class, 'storeSub'])->name('subprocedural.store');
+    Route::get('/action-clients/client/{client}/create', [ClientController::class, 'clientcreateProcedural'])->name('client.procedural.create');
     Route::post('/action-clients/client/{client}/store', [ClientController::class, 'clientstoreProcedural'])->name('client.procedural.store');
     Route::post('/action-clients/client/{client}/store/file/add', [ClientController::class, 'addFile'])->name('Client.procedural.add.file');
     Route::post('/action-clients/client/{client}/update', [ClientController::class, 'clientUpdateProcedural'])->name('client.procedural.update');
@@ -242,6 +243,7 @@ Route::group(['prefix' => 'admin', 'middleware' => ['auth', roleMiddleware::clas
     Route::delete('/transactions/{transaction}/destroy/new', [TransactionController::class, 'destroy'])->name('transactions.destroy');
     Route::get('/transactions/{transaction}/procedural/new', [TransactionController::class, 'allProcedural'])->name('transactions.procedural.create');
     Route::post('/transactions/{transaction}/procedural/new/file', [TransactionController::class, 'addFile'])->name('transactions.procedural.create.file');
+    Route::get('/transactions/{transaction}/procedural/new/newProcedural', [TransactionController::class, 'createProcedural'])->name('transactions.procedural.create.new');
     Route::post('/transactions/{transaction}/procedural/new', [TransactionController::class, 'storeProcedural'])->name('transactions.procedural.store');
     Route::get('/transactions/{transaction}/procedural/edit', [TransactionController::class, 'editProcedural'])->name('transactions.procedural.edit');
     Route::delete('/transactions/{transaction}/procedural/edit/deleteFile', [TransactionController::class, 'deleteFile'])->name('transactions.procedure.file.delete');

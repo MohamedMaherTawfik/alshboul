@@ -6,31 +6,6 @@
     <a href="{{ route('client.index') }}"> موكلين</a>
 @endsection
 @section('content')
-    {{-- Success Message --}}
-    @if (session('success'))
-        <div class="p-4 mb-4 text-green-800 bg-green-100 rounded-lg">
-            {{ session('success') }}
-        </div>
-    @endif
-
-    {{-- Failure / General Error Message --}}
-    @if (session('error'))
-        <div class="p-4 mb-4 text-red-800 bg-red-100 rounded-lg">
-            {{ session('error') }}
-        </div>
-    @endif
-
-    {{-- Validation Errors (multiple) --}}
-    @if ($errors->any())
-        <div class="p-4 mb-4 text-red-800 bg-red-100 rounded-lg">
-            <ul class="list-disc ps-5">
-                @foreach ($errors->all() as $error)
-                    <li>{{ $error }}</li>
-                @endforeach
-            </ul>
-        </div>
-    @endif
-
     <div class="col-12">
         <div class="card">
             <div class="card-header">
@@ -58,7 +33,7 @@
 
                             @foreach ($data as $info)
                                 <tr>
-                                    <td>{{ $info->id }}</td>
+                                    <td>{{ $loop->iteration }}</td>
                                     <td>{{ $info->name }}</td>
                                     <td>{{ $info->address }}</td>
                                     <td>{{ $info->phone }}</td>

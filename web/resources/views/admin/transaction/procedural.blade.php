@@ -57,20 +57,17 @@
             <div class="card-header d-flex justify-content-between align-items-center">
                 <h5 class="mb-0">الإجراءات</h5>
                 <!-- زرار يفتح المودال -->
-                <button type="button" class="btn btn-primary btn-sm" data-bs-toggle="modal"
-                    data-bs-target="#addProceduralModal">
-                    إضافة إجراء
-                </button>
+                <a href="{{ route('transactions.procedural.create.new', $transaction) }}"
+                    class="btn btn-success btn-sm">اضافة اجراء</a>
             </div>
 
             <div class="card-body overflow-auto">
                 <table class="table table-bordered table-hover text-center align-middle">
                     <thead class="custom_thead">
                         <tr>
-                            <th>النوع</th>
+                            <th>اسم المدخل</th>
                             <th>الإجراء</th>
                             <th>الملاحظات</th>
-                            <th>المنشئ</th>
                             <th>المستندات</th>
                             <th>المحامي المسئول</th>
                             <th>تاريخ الإدخال</th>
@@ -81,12 +78,11 @@
                         </tr>
                     </thead>
                     <tbody>
-                        @forelse ($transaction->procedural as $procedural)
+                        @forelse ($transaction->procedural->sortByDesc('id') as $procedural)
                             <tr>
-                                <td>{{ $procedural->type ?? '-' }}</td>
+                                <td>{{ $procedural->user?->name ?? '-' }}</td>
                                 <td>{{ $procedural->action ?? '-' }}</td>
                                 <td>{{ $procedural->note ?? '-' }}</td>
-                                <td>{{ $procedural->user?->name ?? '-' }}</td>
                                 <td>
                                     @foreach ($procedural->files as $item)
                                         <a href="{{ asset('storage/' . $item->file_path) }}" class="mr-2"
@@ -94,7 +90,6 @@
                                             <i class="fa fa-download"></i>
                                         </a>
                                     @endforeach
-                                    {{-- add file <a> --}}
                                     <!-- زر فتح المودال -->
                                     <button type="button"
                                         class="btn btn-dark btn-sm rounded-circle d-inline-flex align-items-center justify-content-center"
@@ -166,61 +161,6 @@
         </div>
     </div>
 
-    <!-- مودال إضافة إجراء -->
-    <div class="modal fade" id="addProceduralModal" tabindex="-1" aria-labelledby="addProceduralModalLabel"
-        aria-hidden="true">
-        <div class="modal-dialog">
-            <form method="POST" action="{{ route('transactions.procedural.store', $transaction->id) }}"
-                enctype="multipart/form-data">
-                @csrf
-                <div class="modal-content">
-                    <div class="modal-header">
-                        <h5 class="modal-title" id="addProceduralModalLabel">إضافة إجراء جديد</h5>
-                        <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="إغلاق"></button>
-                    </div>
-                    <div class="modal-body">
-                        <div class="mb-3">
-                            <label class="form-label">النوع</label>
-                            <input type="text" name="type" class="form-control" readonly value="اجراء">
-                        </div>
-
-                        <div class="mb-3">
-                            <label class="form-label">تاريخ الاجراء</label>
-                            <input type="date" name="created_at" class="form-control"
-                                value="{{ now()->format('Y-m-d') }}">
-                        </div>
-
-                        <div class="mb-3">
-                            <label class="form-label">الإجراء</label>
-                            <textarea name="action" class="form-control" rows="2" required></textarea>
-                        </div>
-                        <div class="mb-3">
-                            <label class="form-label">الملاحظات</label>
-                            <textarea name="note" class="form-control" rows="2"></textarea>
-                        </div>
-                        <div class="mb-3">
-                            <label class="form-label">المحامي المسئول</label>
-                            <select name="user_lawyer_id" class="form-control" required>
-                                <option value="">-- اختر المحامي --</option>
-                                @foreach (\App\Models\User::whereIn('role', ['Lawyer', 'admin', 'superadmin'])->get() as $lawyer)
-                                    <option value="{{ $lawyer->id }}">{{ $lawyer->name }}</option>
-                                @endforeach
-                            </select>
-                        </div>
-                        <div class="mb-3">
-                            <label class="form-label">الملفات</label>
-                            <input type="file" name="files[]" class="form-control" multiple>
-                            <small class="text-muted">يمكنك اختيار أكثر من ملف</small>
-                        </div>
-                    </div>
-                    <div class="modal-footer">
-                        <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">إلغاء</button>
-                        <button type="submit" class="btn btn-success">حفظ</button>
-                    </div>
-                </div>
-            </form>
-        </div>
-    </div>
 
 
 @endsection

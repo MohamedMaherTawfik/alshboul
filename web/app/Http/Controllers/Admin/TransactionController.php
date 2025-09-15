@@ -165,7 +165,7 @@ class TransactionController extends Controller
             }
         }
 
-        return redirect()->back()->with('success', 'تم إضافة الإجراء بنجاح');
+        return redirect()->route('transactions.procedural.create', $transaction)->with('success', 'تم إضافة الإجراء بنجاح');
     }
 
     public function editProcedural(ProceduralRecord $transaction)
@@ -206,5 +206,10 @@ class TransactionController extends Controller
             }
         }
         return redirect()->back()->with('success', 'تم اضافة الملفات بنجاح');
+    }
+
+    public function createProcedural(TransActions $transaction)
+    {
+        return view('admin.transaction.procedural-create', compact('transaction'));
     }
 }

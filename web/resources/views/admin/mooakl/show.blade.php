@@ -4,8 +4,8 @@
 @endphp
 
 @extends('layouts.admin')
-@section('title', 'الموكلين')
-@section('main_title_content', 'قائمة الموكلين')
+@section('title', 'الموكل')
+@section('main_title_content', 'اجراءات الموكل')
 @section('title_content', 'عرض')
 @section('link_content')
     <a href="{{ route('client.visit') }}"> موكلين</a>
@@ -56,10 +56,7 @@
                         <h5 class="card-title mb-0">
                             <i class="fas fa-tasks me-2"></i>الإجراءات
                         </h5>
-                        <button type="button" class="btn btn-light btn-sm" data-bs-toggle="modal"
-                            data-bs-target="#addProceduralModal">
-                            <i class="fas fa-plus me-1"></i> إضافة إجراء
-                        </button>
+                        <a href="{{ route('client.procedural.create', $client) }}" class="btn btn-success">اضافه اجراء</a>
                     </div>
                     <div class="card-body">
 
@@ -93,7 +90,7 @@
                                     </tr>
                                 </thead>
                                 <tbody>
-                                    @forelse($client->clientProcedurals->sortByDesc('created_at') as $procedural)
+                                    @forelse($client->clientProcedurals->sortByDesc('id') as $procedural)
                                         <tr>
                                             <td class="text-center">{{ $procedural->user->name ?? 'غير محدد' }}</td>
                                             <td class="text-center">
@@ -103,10 +100,10 @@
                                             <td class="text-center">
                                                 {{ $procedural->lawyer->name ?? 'غير محدد' }}</td>
                                             <td class="text-center">{{ $procedural->side }}</td>
-                                            <td class="facts-col"
-                                                style="white-space: pre-wrap; word-wrap: break-word; max-width: 400px;">
+                                            <td class="facts-col">
                                                 {{ $procedural->procedural_facts }}
                                             </td>
+
                                             <td class="text-center">
                                                 <span
                                                     class="badge p-2 {{ $procedural->status ? 'bg-success' : 'bg-warning' }}">
@@ -296,86 +293,6 @@
         </div>
     </div>
 
-    <!-- Modal للإضافة -->
-    <div class="modal fade" id="addProceduralModal" tabindex="-1" aria-hidden="true">
-        <div class="modal-dialog modal-lg"><!-- كبرت المودال شوية -->
-            <div class="modal-content">
-                <div class="modal-header bg-dark text-white">
-                    <h5 class="modal-title">إضافة إجراء جديد</h5>
-                    <button type="button" class="btn-close btn-close-white" data-bs-dismiss="modal"
-                        aria-label="Close"></button>
-                </div>
-
-                <form action="{{ route('client.procedural.store', $client) }}" method="POST"
-                    enctype="multipart/form-data">
-                    @csrf
-                    <input type="hidden" name="client_id" value="{{ $client->id }}">
-
-                    <div class="modal-body">
-                        <div class="row">
-                            <div class="col-md-6 mb-3">
-                                <label class="form-label">نوع الإجراء</label>
-                                <input type="text" class="form-control" name="procedural_type" readonly
-                                    value="اجراء">
-                            </div>
-                            <div class="col-md-6 mb-3">
-                                <label class="form-label">تاريخ ادخال الإجراء</label>
-                                <input type="date" class="form-control" name="created_at"
-                                    value="{{ now()->format('Y-m-d') }}">
-                            </div>
-                        </div>
-
-                        <div class="row">
-                            <div class="col-md-6 mb-3">
-                                <label class="form-label">الاجراء الرئيسي</label>
-                                <input type="text" class="form-control" name="procedural" required>
-                            </div>
-                            <div class="col-md-6 mb-3">
-                                <label class="form-label">الجهة</label>
-                                <input type="text" class="form-control" name="side" required>
-                            </div>
-                        </div>
-
-                        <div class="mb-3">
-                            <label class="form-label">وقائع الإجراء</label>
-                            <textarea class="form-control" name="procedural_facts" rows="3"></textarea>
-                        </div>
-
-                        <div class="row">
-                            <div class="col-md-6 mb-3">
-                                <label for="file_path" class="form-label">المستندات</label>
-                                <input type="file" name="file_path[]" id="file_path" class="form-control" multiple>
-                            </div>
-
-                            <div class="col-md-6 mb-3">
-                                <label class="form-label">اختر المحامي</label>
-                                <select name="lawyer_id" class="form-select">
-                                    @foreach ($lawyers as $item)
-                                        <option value="{{ $item->id }}">{{ $item->name }}</option>
-                                    @endforeach
-                                </select>
-                            </div>
-                        </div>
-
-                        <div class="mb-3">
-                            <label class="form-label">الحالة</label>
-                            <select class="form-select" name="status">
-                                <option value="0">غير مكتمل</option>
-                                <option value="1">مكتمل</option>
-                            </select>
-                        </div>
-                    </div>
-
-                    <div class="modal-footer">
-                        <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">إلغاء</button>
-                        <button type="submit" class="btn btn-primary">إضافة الإجراء</button>
-                    </div>
-                </form>
-            </div>
-        </div>
-    </div>
-
-
     <style>
         .card {
             border-radius: 10px;
@@ -396,35 +313,15 @@
         }
     </style>
 
-    <script>
-        // البحث في الإجراء الرئيسي
-        document.getElementById('searchMain').addEventListener('keyup', function() {
-            let filter = this.value.toLowerCase();
-            let rows = document.querySelectorAll('#proceduralTable tbody tr');
+    <style>
+        .facts-col {
+            max-width: 400px;
 
-            rows.forEach(row => {
-                let proceduralText = row.querySelector('.procedural-col')?.textContent.toLowerCase();
-                if (proceduralText && proceduralText.includes(filter)) {
-                    row.style.display = '';
-                } else {
-                    row.style.display = 'none';
-                }
-            });
-        });
+            text-align: justify;
+            /* يوزع الكلام زي المقال */
+            direction: rtl;
+            /* عشان عربي يبدأ من اليمين */
+        }
+    </style>
 
-        // البحث في وقائع الإجراء
-        document.getElementById('searchDetail').addEventListener('keyup', function() {
-            let filter = this.value.toLowerCase();
-            let rows = document.querySelectorAll('#proceduralTable tbody tr');
-
-            rows.forEach(row => {
-                let factsText = row.querySelector('.facts-col')?.textContent.toLowerCase();
-                if (factsText && factsText.includes(filter)) {
-                    row.style.display = '';
-                } else {
-                    row.style.display = 'none';
-                }
-            });
-        });
-    </script>
 @endsection

@@ -308,7 +308,7 @@ class ClientController extends Controller
         if (!$data) {
             return redirect()->back()->with('error', ' حدث خلل أثناء الاضافة');
         }
-        return redirect()->back()->with('success', 'تم إضافة الاجراء بنجاح');
+        return redirect()->route('client.show', $client)->with('success', 'تم إضافة الاجراء بنجاح');
     }
 
     public function clientUpdateProcedural(Request $request, clientProcedural $client)
@@ -352,5 +352,10 @@ class ClientController extends Controller
             }
         }
         return redirect()->back()->with('success', 'تم إضافة الملف بنجاح');
+    }
+
+    public function clientcreateProcedural(Client $client)
+    {
+        return view('admin.mooakl.createProcedural', compact('client'));
     }
 }
