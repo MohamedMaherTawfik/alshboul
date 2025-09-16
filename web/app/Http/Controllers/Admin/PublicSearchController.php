@@ -12,44 +12,46 @@ class PublicSearchController extends Controller
 {
     public function index()
     {
-        $clients = Client::where('seen', 1)->get();
-        $opponents = CaseOpponents::get();
-        return view('admin.public.publicSearch', compact('clients', 'opponents'));
+
+        return view('admin.public.publicSearch', );
     }
 
     public function search(Request $request)
     {
         $data = $request->except('_token');
-        if ($data['client_id']) {
-            $clients = Client::where('seen', 1)->get();
-            $opponents = CaseOpponents::get();
-            $client = Client::with('archives', 'missions', 'cases', 'executiveCases', 'Transactions', 'clientProcedurals')->where('id', $data['client_id'])->first();
-            return view('admin.public.publicSearch', compact('client', 'clients', 'opponents'));
+        if ($data['client_name']) {
+            $client = Client::with([
+                'archives',
+                'missions',
+                'cases',
+                'executiveCases',
+                'transactions',
+                'clientProcedurals'
+            ])
+                ->where('name', 'like', '%' . $data['client_name'] . '%')
+                ->first();
+
+            return view('admin.public.publicSearch', compact('client'));
         }
 
-        if ($data['opponent_id']) {
-            $clients = Client::where('seen', 1)->get();
-            $opponents = CaseOpponents::get();
-            $opponent = CaseOpponents::with('case', 'executiveCase')->where('id', $data['opponent_id'])->first();
-            return view('admin.public.showOpponents', compact('opponent', 'clients', 'opponents'));
+        if ($data['opponent_name']) {
+            $opponent = CaseOpponents::with(['case', 'executiveCase'])
+                ->where('case_opponent_name', 'like', '%' . $data['opponent_name'] . '%')
+                ->first();
+            return view('admin.public.showOpponents', compact('opponent'));
         }
 
         if ($data['case']) {
-            $clients = Client::where('seen', 1)->get();
-            $opponents = CaseOpponents::get();
             $case = cases::with('courtSession', 'legalPeriods', 'caseNotes', 'proceduralRedords')->where('file_number', $data['case'])->first();
-            return view('admin.public.showcases', compact('case', 'clients', 'opponents'));
+            return view('admin.public.showcases', compact('case'));
         }
 
         if ($data['court']) {
-            $clients = Client::where('seen', 1)->get();
-            $opponents = CaseOpponents::get();
-            $court = cases::with('courtSession', 'legalPeriods', 'caseNotes', 'proceduralRedords')->where('court_name', $data['court'])->get();
-            return view('admin.public.showCourts', compact('court', 'clients', 'opponents'));
+            $cases = cases::with('courtSession', 'legalPeriods', 'caseNotes', 'proceduralRedords')->where('court_name', $data['court'])->get();
+            // dd($case);
+            return view('admin.public.showCourts', compact('cases'));
         }
-        $clients = Client::where('seen', 1)->get();
-        $opponents = CaseOpponents::get();
-        return view('admin.public.publicSearch', compact('clients', 'opponents'));
+        return view('admin.public.publicSearch', );
 
     }
 }
