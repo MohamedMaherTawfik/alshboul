@@ -253,6 +253,7 @@
                                     <th class="text-center">الحالة</th>
                                     <th class="text-center">الموكل</th>
                                     <th class="text-center">تاريخ الاجراء اللاحق</th>
+                                    <th class="text-center">اجراء فرعي</th>
                                 </tr>
                             </thead>
                             <tbody>
@@ -276,7 +277,11 @@
                                             </span>
                                         </td>
                                         <td class="text-center">{{ $proc->client->name ?? 'غير محدد' }}</td>
-                                        <td class="text-center">{{ $procedural->next_action_date ?? 'غير محدد' }}</td>
+                                        <td class="text-center">{{ $proc->next_action_date ?? 'غير محدد' }}</td>
+                                        <td class="text-center">
+                                            <a href="{{ route('client.procedural.sub.index', $proc) }}">اجراء
+                                                فرعي</a>
+                                        </td>
                                     </tr>
                                 @empty
                                     <tr>
