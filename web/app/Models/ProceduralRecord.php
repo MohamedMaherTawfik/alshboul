@@ -55,7 +55,7 @@ class ProceduralRecord extends Model
 
     public function settlement()
     {
-        return $this->belongsTo(Settlement::class);
+        return $this->belongsTo(Settlement::class, 'settlement_id');
     }
 
     public function transactions()

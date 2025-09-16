@@ -88,4 +88,16 @@ class User extends Authenticatable
     {
         return $this->hasMany(Cases::class, 'user_id');
     }
+
+
+    #===============================================================================#
+    public function proceduralRecords()
+    {
+        return $this->hasMany(ProceduralRecord::class, 'user_lawyer_id');
+    }
+
+    public function clientProcedurals()
+    {
+        return $this->hasMany(clientProcedural::class, 'user_id');
+    }
 }

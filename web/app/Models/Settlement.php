@@ -58,7 +58,7 @@ class Settlement extends Model
 
     public function proceduralRedords()
     {
-        return $this->hasMany(ProceduralRecord::class);
+        return $this->hasMany(ProceduralRecord::class, 'settlement_id');
     }
 
     public function trahsedDays()

@@ -17,6 +17,7 @@ use App\Http\Controllers\Admin\SliderController;
 use App\Http\Controllers\Admin\CareerController;
 use App\Http\Controllers\Admin\TransactionController;
 use App\Http\Controllers\Admin\TrashedController;
+use App\Http\Controllers\Admin\UserReportsController;
 use App\Http\Controllers\ApplyCareerController;
 use App\Http\Controllers\User\LoginController as UserLoginController;
 use App\Http\Controllers\User\DashboardController as UserDashboardController;
@@ -253,6 +254,8 @@ Route::group(['prefix' => 'admin', 'middleware' => ['auth', roleMiddleware::clas
     Route::post('/transactions/{transaction}/procedural/update', [TransactionController::class, 'updateprocedural'])->name('transactions.procedural.update');
     Route::delete('/transactions/{transaction}/procedural/delete', [TransactionController::class, 'deleteProcedural'])->name('transactions.procedural.destroy');
 
+    Route::get('/search/reports/user', [UserReportsController::class, 'index'])->name('report.index');
+    Route::post('/search/reports/user/go', [UserReportsController::class, 'search'])->name('reports.search');
 
     Route::get('/archives/system', [ArchiveController::class, 'index'])->name('archive.index');
     Route::get('/archives/system/main', [ArchiveController::class, 'createMain'])->name('archive.main.create');

@@ -40,6 +40,7 @@ class SettlementProceduralController extends Controller
             'action' => $data['action'],
             'note' => $data['note'],
             'type' => $data['type'],
+            'user_lawyer_id' => Auth::user()->id,
             'user_id' => $data['user_id'],
         ]);
 
