@@ -5,7 +5,6 @@ namespace App\Http\Controllers\Admin;
 use App\Http\Controllers\Controller;
 use App\Http\Requests\MissionRequest;
 use App\Models\Client;
-use App\Models\Lawyer;
 use App\Models\Missions;
 use App\Models\SubmitfinishedMission;
 use App\Models\User;

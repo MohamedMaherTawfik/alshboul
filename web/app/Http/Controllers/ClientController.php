@@ -247,6 +247,8 @@ class ClientController extends Controller
     public function destroy(Client $client)
     {
         $client->update(['active' => 0]);
+        $user = User::find($client->user_id);
+        $user->update(['active' => 0]);
         return redirect()->route('client.index')->with(['success' => 'تم حذف البيانات بنجاح']);
     }
     public function restore(Client $client)
