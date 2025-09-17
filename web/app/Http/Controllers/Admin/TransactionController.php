@@ -66,7 +66,8 @@ class TransactionController extends Controller
 
     public function create(TransactionsMain $transaction)
     {
-        $clients = Client::where('active', 1)->where('seen', 1)->get();
+
+        $clients = Client::with('user')->where('seen', 1)->where('active', 1)->orderBy('id', 'desc')->get();
 
         $numbers = $transaction->transactions()
             ->pluck('file_number')

@@ -75,7 +75,7 @@ class ExecutiveCaseController extends Controller
      */
     public function create(excutiveCasesMain $item)
     {
-        $allClients = Client::all();
+        $allClients = Client::with('user')->where('seen', 1)->where('active', 1)->orderBy('id', 'desc')->get();
 
         $selectedClientId = old('client_id');
         $clients = $allClients;
@@ -138,7 +138,8 @@ class ExecutiveCaseController extends Controller
      */
     public function edit(ExecutiveCase $executiveCase)
     {
-        $clients = Client::all();
+
+        $clients = Client::with('user')->where('seen', 1)->where('active', 1)->orderBy('id', 'desc')->get();
         return view('admin.ExecutiveCase.edit', compact('executiveCase', 'clients'));
     }
 

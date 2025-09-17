@@ -23,7 +23,7 @@ class DashboardController extends Controller
     public function index()
     {
         $countLawyer = Lawyer::count();
-        $countClient = Client::count();
+        $countClient = Client::where('active', 1)->count();
         $countClientRequest = ClientRequest::count();
         $countUser = User::count();
         $caseTypes = CaseType::with('suggestedCases')->get();

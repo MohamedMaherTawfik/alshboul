@@ -16,7 +16,7 @@ class MissionController extends Controller
     public function create()
     {
         $lawyers = User::whereIn('role', ['Lawyer', 'admin', 'superadmin'])->where('active', 1)->get();
-        $clients = Client::where('seen', 1)->get();
+        $clients = Client::with('user')->where('seen', 1)->where('active', 1)->orderBy('id', 'desc')->get();
         return view('admin.missions.create', compact('lawyers', 'clients'));
     }
     public function store(MissionRequest $request)

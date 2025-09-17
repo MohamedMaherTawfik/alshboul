@@ -30,7 +30,7 @@ class CaseController extends Controller
 
     public function createCase(CaseType $case)
     {
-        $clients = Client::where('active', 1)->where('seen', 1)->get();
+        $clients = Client::with('user')->where('seen', 1)->where('active', 1)->orderBy('id', 'desc')->get();
         $users = User::with('client')->where('role', 'user')->where('active', 1)->get();
 
         $numbers = $case->suggestedCases()->pluck('case_number')->sort()->toArray();
@@ -89,7 +89,7 @@ class CaseController extends Controller
 
     public function edit(Cases $case)
     {
-        $clients = Client::where('seen', 1)->get();
+        $clients = Client::with('user')->where('seen', 1)->where('active', 1)->orderBy('id', 'desc')->get();
         $users = User::with('client')->where('role', 'user')->where('active', 1)->get();
         $caseTypes = CaseType::all();
         return view('admin.cases.edit', compact('case', 'clients', 'users', 'caseTypes'));

@@ -65,7 +65,8 @@ class SettlementController extends Controller
     }
     public function create(SettlementMain $settlements)
     {
-        $clients = Client::where('seen', 1)->get();
+
+        $clients = Client::with('user')->where('seen', 1)->where('active', 1)->orderBy('id', 'desc')->get();
 
         $settlementsForMain = Settlement::where('settlement_main_id', $settlements->id)
             ->orderBy('file_number')
@@ -118,7 +119,8 @@ class SettlementController extends Controller
     public function edit($id)
     {
         $data = Settlement::with(['creator', 'updater'])->findOrFail($id);
-        $clients = Client::all();
+
+        $clients = Client::with('user')->where('seen', 1)->where('active', 1)->orderBy('id', 'desc')->get();
         $partners = User::whereIn('role', ['superadmin', 'admin', 'Lawyer'])->get();
         return view('admin.Settlement.edit', compact('data', 'clients', 'partners'));
     }
