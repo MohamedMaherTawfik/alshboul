@@ -8,92 +8,91 @@
 @endsection
 
 @section('content')
-    <div class="container mt-5">
-        <div class="row justify-content-center">
-            <div class="col-md-6">
-                <div class="card shadow-sm">
-                    <div class="card-header bg-warning text-white text-center">
-                        <h4>تعديل إجراء</h4>
-                    </div>
-                    <div class="card-body">
-                        <form action="{{ route('settlement.procedural.update', $settlement) }}" method="POST"
-                            enctype="multipart/form-data">
-                            @csrf
+    <div class="container my-5">
+        <div class="card shadow-lg border-0">
+            <div class="card-header bg-dark text-white text-center fw-bold">
+                تعديل إجراء
+            </div>
+            <div class="card-body p-4">
+                <form action="{{ route('settlement.procedural.update', $settlement) }}" method="POST"
+                    enctype="multipart/form-data">
+                    @csrf
+                    <div class="row g-3">
 
-                            <!-- نوع الإجراء -->
-                            <div class="mb-3">
-                                <label for="type" class="form-label">نوع الإجراء</label>
-                                <input type="text" name="type" id="type" class="form-control"
-                                    value="{{ old('type', $settlement->type) }}">
-                            </div>
-
-                            <!-- تاريخ الإجراء -->
-                            <div class="mb-3">
-                                <label for="date" class="form-label">تاريخ الإجراء</label>
-                                <input type="date" name="date" id="date" class="form-control"
-                                    value="{{ $settlement->date }}">
-                            </div>
-
-                            <!-- الإجراء -->
-                            <div class="mb-3">
-                                <label for="action" class="form-label">الإجراء</label>
-                                <input type="text" name="action" id="action" class="form-control"
-                                    value="{{ old('action', $settlement->action) }}">
-                            </div>
-
-                            <!-- ملاحظة -->
-                            <div class="mb-3">
-                                <label for="note" class="form-label">ملاحظة</label>
-                                <textarea name="note" id="note" class="form-control" rows="3">{{ old('note', $settlement->note) }}</textarea>
-                            </div>
-
-                            <!-- المحامي -->
-                            <div class="mb-3">
-                                <label for="user_id" class="form-label">المحامي</label>
-                                <select name="user_id" id="user_id" class="form-control">
-                                    <option value="">اختر المحامي</option>
-                                    @foreach ($lawyers as $lawyer)
-                                        <option value="{{ $lawyer->id }}"
-                                            {{ old('user_id', $settlement->user_id) == $lawyer->id ? 'selected' : '' }}>
-                                            {{ $lawyer->name }}
-                                        </option>
-                                    @endforeach
-                                </select>
-                            </div>
-
-                            <!-- زر التحديث -->
-                            <div class="d-grid">
-                                <button type="submit" class="btn btn-warning">تحديث</button>
-                            </div>
-                        </form>
-                        <!-- رفع الملفات -->
-                        <div class="mb-3">
-                            @if ($settlement->files && $settlement->files->count())
-                                <div class="mt-3">
-                                    <p class="fw-bold">المستندات الحالية:</p>
-                                    <div class="d-flex flex-wrap gap-2">
-                                        @foreach ($settlement->files as $file)
-                                            <div class="d-flex align-items-center border rounded p-2">
-                                                <a href="{{ asset('storage/' . $file->file_path) }}"
-                                                    class="btn btn-sm btn-outline-primary me-2" target="_blank">
-                                                    📄 مستند
-                                                </a>
-                                                <form action="{{ route('settlements.files.destroy', $file) }}"
-                                                    method="POST" onsubmit="return confirm('هل أنت متأكد من الحذف؟')"
-                                                    class="mr-2">
-                                                    @csrf
-                                                    @method('DELETE')
-                                                    <button type="submit" class="btn btn-sm btn-danger">🗑️ حذف</button>
-                                                </form>
-                                            </div>
-                                        @endforeach
-                                    </div>
-                                </div>
-                            @endif
+                        <!-- نوع الإجراء -->
+                        <div class="col-md-6">
+                            <label for="type" class="form-label fw-bold">نوع الإجراء</label>
+                            <input type="text" name="type" id="type" class="form-control"
+                                value="{{ old('type', $settlement->type) }}">
                         </div>
 
+                        <!-- تاريخ الإجراء -->
+                        <div class="col-md-6">
+                            <label for="date" class="form-label fw-bold">تاريخ الإجراء</label>
+                            <input type="date" name="date" id="date" class="form-control"
+                                value="{{ $settlement->date }}">
+                        </div>
+
+                        <!-- الإجراء -->
+                        <div class="col-12">
+                            <label for="action" class="form-label fw-bold">الإجراء</label>
+                            <input type="text" name="action" id="action" class="form-control"
+                                value="{{ old('action', $settlement->action) }}">
+                        </div>
+
+                        <!-- ملاحظة -->
+                        <div class="col-12">
+                            <label for="note" class="form-label fw-bold">ملاحظة</label>
+                            <textarea name="note" id="note" class="form-control" rows="3">{{ old('note', $settlement->note) }}</textarea>
+                        </div>
+
+                        <!-- المحامي -->
+                        <div class="col-12">
+                            <label for="user_id" class="form-label fw-bold">المحامي</label>
+                            <select name="user_id" id="user_id" class="form-control">
+                                <option value="">اختر المحامي</option>
+                                @foreach ($lawyers as $lawyer)
+                                    <option value="{{ $lawyer->id }}"
+                                        {{ old('user_id', $settlement->user_id) == $lawyer->id ? 'selected' : '' }}>
+                                        {{ $lawyer->name }}
+                                    </option>
+                                @endforeach
+                            </select>
+                        </div>
                     </div>
-                </div>
+
+                    <!-- زر التحديث -->
+                    <div class="d-flex justify-content-between mt-4">
+                        <a href="{{ route('procedural-record.index', $settlement) }}" class="btn btn-secondary">رجوع</a>
+                        <button type="submit" class="btn btn-dark px-4">تحديث</button>
+                    </div>
+                </form>
+
+                <!-- الملفات الحالية -->
+                @if ($settlement->files && $settlement->files->count())
+                    <div class="mt-4">
+                        <p class="fw-bold">المستندات الحالية:</p>
+                        <div class="d-flex flex-wrap gap-2">
+                            @foreach ($settlement->files as $file)
+                                <div class="d-flex align-items-center border rounded p-2">
+                                    <!-- زر العرض -->
+                                    <a href="{{ asset('storage/' . $file->file_path) }}"
+                                        class="btn btn-sm btn-outline-primary me-2" target="_blank">
+                                        عرض المستند
+                                    </a>
+                                    <!-- زر الحذف -->
+                                    <form action="{{ route('settlements.files.destroy', $file) }}" method="POST"
+                                        onsubmit="return confirm('هل أنت متأكد من الحذف؟')">
+                                        @csrf
+                                        @method('DELETE')
+                                        <button type="submit" class="btn btn-sm btn-danger">🗑️ حذف</button>
+                                    </form>
+                                </div>
+                            @endforeach
+                        </div>
+                    </div>
+                @endif
+
             </div>
         </div>
     </div>

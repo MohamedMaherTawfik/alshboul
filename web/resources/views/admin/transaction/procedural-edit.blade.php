@@ -2,10 +2,6 @@
 @section('title', 'تعديل الإجراء')
 @section('main_title_content', 'تعديل الإجراء')
 @section('title_content', 'تعديل')
-{{--
-@section('link_content')
-    <a href="{{ route('transactions.show', $transaction->id) }}">رجوع للمعاملة</a>
-@endsection --}}
 
 @section('content')
     <div class="col-12">
@@ -21,6 +17,11 @@
                     <div class="mb-3">
                         <label class="form-label">النوع</label>
                         <input type="text" name="type" class="form-control" readonly value="اجراء">
+                    </div>
+
+                    <div class="mb-3">
+                        <label class="form-label">تاريخ الاجراء</label>
+                        <input type="date" name="created_at" class="form-control" value={{ $transaction->created_at }}>
                     </div>
 
                     <div class="mb-3">

@@ -59,6 +59,7 @@ class ClientController extends Controller
             'nationality' => 'required|string',
             'company_name' => 'nullable|string',
             'company_national_number' => 'nullable|string',
+            'password' => 'required',
 
             'additional_clients' => 'nullable|array',
             'additional_clients.*.client_name' => 'nullable|string',
@@ -72,7 +73,7 @@ class ClientController extends Controller
             'name' => $data['name'],
             'phone' => $data['phone'],
             'role' => 'user',
-            'password' => bcrypt($data['email']),
+            'password' => bcrypt($data['password']),
         ]);
 
         Client::create([

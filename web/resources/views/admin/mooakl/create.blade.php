@@ -31,6 +31,12 @@
                             <input type="text" id="email" name="email" value="{{ old('email') }}"
                                 class="form-control" placeholder="">
                         </div>
+
+                        <div class="form-group col-md-4">
+                            <label for="">الرقم السري</label>
+                            <input type="password" id="password" name="password" value="{{ old('password') }}"
+                                class="form-control" placeholder="">
+                        </div>
                         <div class="form-group col-md-4">
                             <label for="">اسم الشركة </label>
                             <input type="text" id="company_name" name="company_name" value="{{ old('company_name') }}"

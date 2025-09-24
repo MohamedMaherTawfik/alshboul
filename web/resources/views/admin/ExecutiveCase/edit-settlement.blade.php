@@ -5,151 +5,222 @@
 @section('title_content', 'تعديل')
 
 @section('content')
-    <div class="container mt-5">
-        <div class="row justify-content-center">
-            <div class="col-lg-8 col-md-10">
-                <div class="card shadow-sm">
-                    <div class="card-header bg-primary text-white text-center">
-                        <h4>تعديل التسوية</h4>
+    <div class="settlement-form-container">
+        <form action="{{ route('executive-case.settlement.update', $settlement) }}" method="POST">
+            @csrf
+
+            <!-- نوع التسوية والالتزام -->
+            <div class="form-section">
+                <h2 class="section-title">إعدادات التسوية</h2>
+                <div class="form-row">
+                    <div class="form-group">
+                        <label for="settlement_main_id">نوع التسوية</label>
+                        <select name="settlement_main_id" id="settlement_main_id" required>
+                            <option value="">-- اختر نوع الدعوي --</option>
+                            @foreach ($settlements as $s)
+                                <option value="{{ $s->id }}"
+                                    {{ $settlement->settlement_main_id == $s->id ? 'selected' : '' }}>
+                                    {{ $s->name }}
+                                </option>
+                            @endforeach
+                        </select>
                     </div>
-                    <div class="card-body">
-
-                        <form action="{{ route('executive-case.settlement.update', $settlement) }}" method="POST">
-                            @csrf
-
-                            <!-- بيانات الدعوى -->
-                            <div class="mb-4">
-                                <h5 class="fw-bold"><i class="bi bi-file-earmark-text me-2"></i>بيانات الدعوى</h5>
-                                <div class="row g-3">
-                                    <div class="col-md-6">
-                                        <label for="case_type" class="form-label">نوع الدعوي</label>
-                                        <input type="text" name="case_type" id="case_type" class="form-control" readonly
-                                            value="{{ $settlement->excutiveCases->case_type ?? '' }}">
-                                    </div>
-                                    <div class="col-md-6">
-                                        <label for="case_number" class="form-label">رقم الدعوي</label>
-                                        <input type="text" name="case_number" id="case_number" class="form-control"
-                                            readonly value="{{ $settlement->excutiveCases->case_number ?? '' }}">
-                                    </div>
-                                </div>
-                            </div>
-
-                            <div class="mb-4">
-                                <div class="row g-3">
-                                    <div class="col-md-6">
-                                        <label for="settlement_main_id" class="form-label">نوع التسويه</label>
-                                        <select name="settlement_main_id" id="settlement_main_id" class="form-select"
-                                            required>
-                                            <option value="">-- اختر نوع الدعوي --</option>
-                                            @foreach ($settlements as $s)
-                                                <option value="{{ $s->id }}"
-                                                    {{ $settlement->settlement_main_id == $s->id ? 'selected' : '' }}>
-                                                    {{ $s->name }}
-                                                </option>
-                                            @endforeach
-                                        </select>
-                                    </div>
-                                    <div class="col-md-6">
-                                        <label for="obligation" class="form-label">الالتزام</label>
-                                        <select class="form-select" id="obligation" name="obligation" required>
-                                            <option value="">-- اختر الالتزام --</option>
-                                            <option value="ملتزم"
-                                                {{ $settlement->obligation == 'ملتزم' ? 'selected' : '' }}>ملتزم</option>
-                                            <option value="غير ملتزم"
-                                                {{ $settlement->obligation == 'غير ملتزم' ? 'selected' : '' }}>غير ملتزم
-                                            </option>
-                                        </select>
-                                    </div>
-                                </div>
-                            </div>
-
-                            <!-- بيانات التسوية -->
-                            <div class="mb-4">
-                                <h5 class="fw-bold"><i class="bi bi-card-checklist me-2"></i>بيانات التسوية</h5>
-                                <div class="row g-3">
-                                    <div class="col-md-6">
-                                        <label for="opponent_phone" class="form-label">هاتف الخصم</label>
-                                        <input type="text" class="form-control" id="opponent_phone" name="opponent_phone"
-                                            value="{{ $settlement->opponent_phone }}" placeholder="أدخل هاتف الخصم">
-                                    </div>
-
-                                    <div class="col-md-6">
-                                        <label for="client_status" class="form-label">صفة الموكل</label>
-                                        <input type="text" class="form-control" id="client_status" name="client_status"
-                                            value="{{ $settlement->client_status }}" placeholder="أدخل صفة الموكل">
-                                    </div>
-
-                                    <div class="col-md-6">
-                                        <label for="opponent_status" class="form-label">صفة الخصم</label>
-                                        <input type="text" class="form-control" id="opponent_status"
-                                            name="opponent_status" value="{{ $settlement->opponent_status }}"
-                                            placeholder="أدخل صفة الخصم">
-                                    </div>
-
-                                    <div class="col-md-6">
-                                        <label for="opponent_name" class="form-label">اسم الخصم</label>
-                                        <input type="text" class="form-control" id="opponent_name" name="opponent_name"
-                                            value="{{ $settlement->opponent_name }}" placeholder="أدخل اسم الخصم">
-                                    </div>
-                                    <div class="col-md-6">
-                                        <label for="client_name" class="form-label">اسم الموكل</label>
-                                        <input type="text" class="form-control" id="client_name" name="client_name"
-                                            value="{{ $settlement->client_name }}" placeholder="أدخل اسم الموكل">
-                                    </div>
-                                </div>
-                            </div>
-
-                            <!-- المعلومات المالية -->
-                            <div class="mb-4">
-                                <h5 class="fw-bold"><i class="bi bi-currency-exchange me-2"></i>المعلومات المالية</h5>
-                                <div class="row g-3">
-                                    <div class="col-md-6">
-                                        <label for="amount" class="form-label">المبلغ</label>
-                                        <input type="number" step="0.01" class="form-control" id="amount"
-                                            name="amount" value="{{ $settlement->amount }}" placeholder="أدخل المبلغ">
-                                    </div>
-                                    <div class="col-md-6">
-                                        <label for="payment_value" class="form-label">قيمة الدفعات</label>
-                                        <input type="number" step="0.01" class="form-control" id="payment_value"
-                                            name="payment_value" value="{{ $settlement->payment_value }}"
-                                            placeholder="أدخل قيمة الدفعات">
-                                    </div>
-                                    <div class="col-md-6 mt-5">
-                                        <label for="payment_terms" class="form-label">شروط السداد</label>
-                                        <select class="form-select" id="payment_terms" name="payment_terms" required>
-                                            <option value="{{ $settlement->payment_terms }}">
-                                                {{ $settlement->payment_terms }}</option>
-                                            <option value="شهري"
-                                                {{ $settlement->payment_terms == 'شهري' ? 'selected' : '' }}>شهري</option>
-                                            <option value="أسبوعي"
-                                                {{ $settlement->payment_terms == 'أسبوعي' ? 'selected' : '' }}>أسبوعي
-                                            </option>
-                                        </select>
-                                    </div>
-                                </div>
-                            </div>
-
-                            <!-- معلومات إضافية -->
-                            <div class="mb-4">
-                                <h5 class="fw-bold"><i class="bi bi-chat-left-text me-2"></i>معلومات إضافية</h5>
-                                <div class="row g-3">
-                                    <div class="col-12">
-                                        <label for="notes" class="form-label">ملاحظات</label>
-                                        <textarea class="form-control" id="notes" name="notes" rows="4" placeholder="أدخل الملاحظات">{{ $settlement->notes }}</textarea>
-                                    </div>
-                                </div>
-                            </div>
-
-                            <!-- زر الحفظ -->
-                            <div class="d-grid mt-3">
-                                <button type="submit" class="btn btn-primary btn-lg">تحديث</button>
-                            </div>
-
-                        </form>
-
+                    <div class="form-group">
+                        <label for="obligation">الالتزام</label>
+                        <select id="obligation" name="obligation" required>
+                            <option value="">-- اختر الالتزام --</option>
+                            <option value="ملتزم" {{ $settlement->obligation == 'ملتزم' ? 'selected' : '' }}>ملتزم</option>
+                            <option value="غير ملتزم" {{ $settlement->obligation == 'غير ملتزم' ? 'selected' : '' }}>غير
+                                ملتزم</option>
+                        </select>
                     </div>
                 </div>
             </div>
-        </div>
+
+            <!-- بيانات التسوية -->
+            <div class="form-section">
+                <h2 class="section-title">بيانات التسوية</h2>
+                <div class="form-row">
+                    <div class="form-group">
+                        <label for="opponent_phone">هاتف الخصم</label>
+                        <input type="text" id="opponent_phone" name="opponent_phone"
+                            value="{{ $settlement->opponent_phone }}">
+                    </div>
+                    <div class="form-group">
+                        <label for="client_status">صفة الموكل</label>
+                        <input type="text" id="client_status" name="client_status"
+                            value="{{ $settlement->client_status }}">
+                    </div>
+                    <div class="form-group">
+                        <label for="opponent_status">صفة الخصم</label>
+                        <input type="text" id="opponent_status" name="opponent_status"
+                            value="{{ $settlement->opponent_status }}">
+                    </div>
+                    <div class="form-group">
+                        <label for="opponent_name">اسم الخصم</label>
+                        <input type="text" id="opponent_name" name="opponent_name"
+                            value="{{ $settlement->opponent_name }}">
+                    </div>
+                    <div class="form-group">
+                        <label for="client_name">اسم الموكل</label>
+                        <input type="text" id="client_name" name="client_name" value="{{ $settlement->client_name }}">
+                    </div>
+                </div>
+            </div>
+
+            <!-- المعلومات المالية -->
+            <div class="form-section">
+                <h2 class="section-title">المعلومات المالية</h2>
+                <div class="form-row">
+                    <div class="form-group">
+                        <label for="amount">المبلغ</label>
+                        <input type="number" step="0.01" id="amount" name="amount"
+                            value="{{ $settlement->amount }}">
+                    </div>
+                    <div class="form-group">
+                        <label for="payment_value">قيمة الدفعات</label>
+                        <input type="number" step="0.01" id="payment_value" name="payment_value"
+                            value="{{ $settlement->payment_value }}">
+                    </div>
+                    <div class="form-group">
+                        <label for="payment_terms">شروط السداد</label>
+                        <select id="payment_terms" name="payment_terms" required>
+                            <option value="{{ $settlement->payment_terms }}">{{ $settlement->payment_terms }}</option>
+                            <option value="شهري" {{ $settlement->payment_terms == 'شهري' ? 'selected' : '' }}>شهري
+                            </option>
+                            <option value="أسبوعي" {{ $settlement->payment_terms == 'أسبوعي' ? 'selected' : '' }}>أسبوعي
+                            </option>
+                        </select>
+                    </div>
+                </div>
+            </div>
+
+            <!-- ملاحظات -->
+            <div class="form-section">
+                <h2 class="section-title">ملاحظات</h2>
+                <div class="form-row">
+                    <div class="form-group" style="flex: 1 0 100%;">
+                        <textarea id="notes" name="notes">{{ $settlement->notes }}</textarea>
+                    </div>
+                </div>
+            </div>
+
+            <!-- زر التحديث -->
+            <div class="form-row">
+                <button type="submit" class="btn-submit">تحديث</button>
+            </div>
+        </form>
     </div>
+
+    {{-- نفس CSS & JS بتاع الفورم الأول --}}
+    <style>
+        .settlement-form-container {
+            max-width: 1000px;
+            margin: 0 auto;
+            background: white;
+            padding: 30px;
+            border-radius: 10px;
+            box-shadow: 0 0 20px rgba(0, 0, 0, 0.1);
+        }
+
+        .form-section {
+            margin-bottom: 30px;
+            padding: 25px;
+            background: #f9f9f9;
+            border-radius: 8px;
+            border-right: 4px solid #3498db;
+            transition: all 0.3s ease;
+        }
+
+        .form-section:hover {
+            box-shadow: 0 6px 15px rgba(0, 0, 0, 0.08);
+        }
+
+        .section-title {
+            color: #2980b9;
+            margin-top: 0;
+            margin-bottom: 25px;
+            padding-bottom: 10px;
+            border-bottom: 1px solid #ddd;
+            font-size: 1.4rem;
+        }
+
+        .form-row {
+            display: flex;
+            flex-wrap: wrap;
+            margin: 0 -10px 20px;
+            gap: 15px;
+        }
+
+        .form-group {
+            flex: 1 0 calc(50% - 20px);
+            min-width: 250px;
+        }
+
+        label {
+            display: block;
+            margin-bottom: 8px;
+            font-weight: 600;
+            color: #444;
+        }
+
+        input,
+        select,
+        textarea {
+            width: 100%;
+            padding: 12px 15px;
+            border: 1px solid #ddd;
+            border-radius: 6px;
+            font-size: 16px;
+            transition: all 0.3s ease;
+        }
+
+        input:focus,
+        select:focus,
+        textarea:focus {
+            border-color: #3498db;
+            outline: none;
+            box-shadow: 0 0 0 3px rgba(52, 152, 219, 0.2);
+        }
+
+        textarea {
+            min-height: 120px;
+            resize: vertical;
+        }
+
+        .btn-submit {
+            background: #3498db;
+            color: white;
+            border: none;
+            padding: 14px 40px;
+            font-size: 18px;
+            font-weight: 600;
+            border-radius: 6px;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            margin: 20px auto;
+            display: block;
+            box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+        }
+
+        .btn-submit:hover {
+            background: #2980b9;
+            transform: translateY(-2px);
+            box-shadow: 0 6px 12px rgba(0, 0, 0, 0.15);
+        }
+
+        @media (max-width: 768px) {
+            .form-group {
+                flex: 1 0 100%;
+            }
+
+            .settlement-form-container {
+                padding: 20px;
+            }
+
+            .form-section {
+                padding: 20px;
+            }
+        }
+    </style>
 @endsection
