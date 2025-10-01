@@ -235,6 +235,7 @@
                         <a class="dropdown-item" href="{{ route('agreement.indexDelete') }}">الاتفاقيات</a>
                         <a class="dropdown-item" href="{{ route('executive-case.indexDelete') }}">القضايا
                             التنفيذية</a>
+                        <a class="dropdown-item" href="{{ route('cases.indexDelete') }}">القضايا</a>
                         <a class="dropdown-item" href="{{ route('settlement.indexDelete') }}">التسويات </a>
                         <a class="dropdown-item" href="{{ route('archive.indexDelete') }}">الارشيف </a>
                         <a class="dropdown-item" href="{{ route('mission.indexDelete') }}">المهام </a>
@@ -256,9 +257,6 @@
 
                     <hr style="font-weight: bold">
 
-                    {{-- <a class="dropdown-item" href="{{ route('mission.add') }}">تقارير المحامي</a>
-                    <a class="dropdown-item" href="{{ route('mission.finished') }}">المهام المنجزه</a> --}}
-
                 </div>
             </li>
 
@@ -274,7 +272,6 @@
                         <a class="dropdown-item" href="{{ route('archive.index') }}">نظام الارشفه</a>
                         <a class="dropdown-item" href="{{ route('archive.reports') }}">تقارير الارشفه</a>
                         <a class="dropdown-item" href="{{ route('archive.main.create') }}"> اضافه قوائم رئيسيه</a>
-
                     </div>
                 </li>
             @endif

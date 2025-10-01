@@ -158,7 +158,11 @@
                                 <th>المعتمد الأول</th>
                                 <th>المعتمد الثاني</th>
                                 @if (Auth::user()->role == 'admin' || Auth::user()->role == 'superadmin')
-                                    <th>إجراء</th>
+                                    <th>الانجاز</th>
+                                @endif
+
+                                @if (Auth::user()->role == 'admin' || Auth::user()->role == 'superadmin')
+                                    <th>الاجراءات</th>
                                 @endif
 
                             </tr>
@@ -169,13 +173,15 @@
                                     $case = $duration->case;
 
                                     $showRow = false;
-                                    $isNear = false; // لو قريب (اليوم أو بكرة)
-                                    $isToday = false; // لو النهارده
+                                    $isNear = false;
+                                    $isToday = false;
 
                                     if (!empty($duration->period_end)) {
-                                        // نحسب التاريخ حسب توقيت الأردن
-                                        $endDate = new DateTime($duration->period_end, new DateTimeZone('Asia/Amman'));
-                                        $today = new DateTime('now', new DateTimeZone('Asia/Amman'));
+                                        $endDate = new DateTime($duration->period_end);
+                                        $endDate->modify('+3 hours');
+
+                                        $today = new DateTime('now');
+                                        $today->modify('+3 hours');
 
                                         $endDateStr = $endDate->format('Y-m-d');
                                         $todayStr = $today->format('Y-m-d');
@@ -185,25 +191,20 @@
 
                                         $diffDays = (int) floor(($endTimestamp - $todayTimestamp) / 86400);
 
-                                        // لو باقي 0..6 يوم -> نظهر الصف
                                         if ($diffDays >= 0 && $diffDays <= 6) {
                                             $showRow = true;
                                         }
-
-                                        // لو باقي 0 -> النهارده
                                         if ($diffDays === 0) {
                                             $isToday = true;
                                         }
-
-                                        // لو باقي 0 أو 1 -> قريبة
-                                        if ($diffDays === 0 || $diffDays === 1) {
+                                        if ($diffDays === 0) {
                                             $isNear = true;
                                         }
                                     }
                                 @endphp
 
                                 @if ($showRow)
-                                    <tr class="{{ $isToday ? ' bg-danger text-white fw-bold' : '' }}">
+                                    <tr class="{{ $isToday ? 'bg-danger text-white fw-bold' : '' }}">
                                         <td>{{ $case->case_number ?? '-' }}</td>
                                         <td>
                                             {{ $case->file_number ?? '-' }}
@@ -214,17 +215,26 @@
                                             @endif
                                         </td>
                                         <td>{{ $duration->user->name ?? '-' }}</td>
-                                        <td>{{ $duration->created_at?->format('Y-m-d') ?? '-' }}</td>
-                                        <td>{{ $duration->created_at?->format('h:i') ?? '-' }}</td>
+                                        @php
+                                            $createdAt = $duration->created_at
+                                                ? (clone $duration->created_at)->addHours(3)
+                                                : null;
+                                        @endphp
+
+                                        <td>{{ $createdAt?->format('Y-m-d') ?? '-' }}</td>
+                                        <td>{{ $createdAt?->format('H:i') ?? '-' }}</td>
+
                                         <td>{{ Str::limit($duration->period_facts, 50, '...') }}</td>
                                         <td>{{ $duration->period_start ?? '-' }}</td>
 
-                                        <td class="{{ $isNear && !$isToday ? 'text-white bg-danger fw-bold' : '' }}">
-                                            {{ $endDateStr ?? ($duration->period_end ?? '-') }}
-                                        </td>
+                                        <td>{{ $endDateStr ?? ($duration->period_end ?? '-') }}</td>
 
                                         <td>{{ $case->client->name ?? '-' }}</td>
-                                        <td>{{ $case->opponent_name ?? '-' }}</td>
+                                        <td>
+                                            @foreach ($case->caseOpponents as $item)
+                                                {{ $item->case_opponent_name }} -
+                                            @endforeach
+                                        </td>
                                         <td>{{ $case->court_name ?? '-' }}</td>
                                         <td>{{ Str::limit($duration->notes, 40, '...') ?? '-' }}</td>
                                         <td>{{ $duration->firstSubmitter->name ?? '-' }}</td>
@@ -240,14 +250,35 @@
                                                 </form>
                                             </td>
                                         @endif
+                                        @if (Auth::user()->role == 'admin' || Auth::user()->role == 'superadmin')
+                                            <td class="text-center">
+                                                <div class="d-flex justify-content-center gap-2">
 
+                                                    <!-- زر تعديل -->
+                                                    <a href="{{ route('cases.durations.edit', $duration) }}"
+                                                        class="btn btn-sm btn-info d-flex align-items-center ml-2">
+                                                        <i class="fas fa-edit me-1"></i> تعديل
+                                                    </a>
+
+                                                    <!-- زر حذف -->
+                                                    <form action="{{ route('cases.durations.delete', $duration) }}"
+                                                        method="POST"
+                                                        onsubmit="return confirm('هل أنت متأكد من حذف هذه المدة؟');">
+                                                        @csrf
+                                                        @method('DELETE')
+                                                        <button type="submit"
+                                                            class="btn btn-sm btn-dark d-flex align-items-center">
+                                                            <i class="fas fa-trash me-1"></i> حذف
+                                                        </button>
+                                                    </form>
+
+                                                </div>
+                                            </td>
+                                        @endif
                                     </tr>
                                 @endif
                             @endforeach
                         </tbody>
-
-
-
                     </table>
                 </div>
             </div>
@@ -286,9 +317,11 @@
                                 <th>المعتمد الأول</th>
                                 <th>المعتمد الثاني</th>
                                 @if (Auth::user()->role == 'admin' || Auth::user()->role == 'superadmin')
-                                    <th>إجراء</th>
+                                    <th>الانجاز</th>
                                 @endif
-
+                                @if (Auth::user()->role == 'admin' || Auth::user()->role == 'superadmin')
+                                    <th>الاجراءات</th>
+                                @endif
                             </tr>
                         </thead>
                         <tbody>
@@ -298,9 +331,13 @@
                                     $showRow = false;
                                     $rowClass = '';
 
+                                    // تعديل period_end +3 ساعات
                                     if (!empty($note->period_end)) {
-                                        $endDateObj = new DateTime($note->period_end, new DateTimeZone('Asia/Amman'));
-                                        $todayObj = new DateTime('now', new DateTimeZone('Asia/Amman'));
+                                        $endDateObj = new DateTime($note->period_end);
+                                        $endDateObj->modify('+3 hours');
+
+                                        $todayObj = new DateTime('now');
+                                        $todayObj->modify('+3 hours');
 
                                         $endDateStr = $endDateObj->format('Y-m-d');
                                         $todayStr = $todayObj->format('Y-m-d');
@@ -317,8 +354,10 @@
                                             }
                                         }
                                     }
-                                @endphp
 
+                                    // تعديل created_at +3 ساعات
+                                    $createdAt = $note->created_at ? (clone $note->created_at)->addHours(3) : null;
+                                @endphp
 
                                 @if ($showRow)
                                     <tr class="{{ $rowClass }}">
@@ -332,17 +371,19 @@
                                             @endif
                                         </td>
                                         <td>{{ $note->user->name ?? '-' }}</td>
-                                        <td>{{ $note->created_at ? $note->created_at->format('Y-m-d') : '-' }}</td>
-                                        <td>{{ $note->created_at?->format('h:i') ?? '-' }}</td>
+                                        <td>{{ $createdAt?->format('Y-m-d') ?? '-' }}</td>
+                                        <td>{{ $createdAt?->format('H:i') ?? '-' }}</td>
                                         <td>{{ Str::limit($note->period_facts, 50, '...') }}</td>
                                         <td>{{ $note->period_start ?? '-' }}</td>
 
-                                        <td>
-                                            {{ $endDateStr ?? ($note->period_end ?? '-') }}
-                                        </td>
+                                        <td>{{ $endDateStr ?? ($note->period_end ?? '-') }}</td>
 
                                         <td>{{ $case->client->name ?? '-' }}</td>
-                                        <td>{{ $case->opponent_name ?? '-' }}</td>
+                                        <td>
+                                            @foreach ($case->caseOpponents as $item)
+                                                {{ $item->case_opponent_name }} -
+                                            @endforeach
+                                        </td>
                                         <td>{{ $case->court_name ?? '-' }}</td>
                                         <td>{{ Str::limit($note->notes, 40, '...') ?? '-' }}</td>
                                         <td>{{ $note->firstSubmitter->name ?? '-' }}</td>
@@ -357,13 +398,35 @@
                                                 </form>
                                             </td>
                                         @endif
+                                        @if (Auth::user()->role == 'admin' || Auth::user()->role == 'superadmin')
+                                            <td class="text-center">
+                                                <div class="d-flex justify-content-center gap-2">
+
+                                                    <!-- زر تعديل -->
+                                                    <a href="{{ route('cases.notes.edit', $note) }}"
+                                                        class="btn btn-sm btn-info d-flex align-items-center ml-2">
+                                                        <i class="fas fa-edit me-1"></i> تعديل
+                                                    </a>
+
+                                                    <!-- زر حذف -->
+                                                    <form action="{{ route('cases.notes.delete', $note) }}"
+                                                        method="POST"
+                                                        onsubmit="return confirm('هل أنت متأكد من حذف هذه المدة؟');">
+                                                        @csrf
+                                                        @method('DELETE')
+                                                        <button type="submit"
+                                                            class="btn btn-sm btn-dark d-flex align-items-center">
+                                                            <i class="fas fa-trash me-1"></i> حذف
+                                                        </button>
+                                                    </form>
+
+                                                </div>
+                                            </td>
+                                        @endif
                                     </tr>
                                 @endif
                             @endforeach
                         </tbody>
-
-
-
                     </table>
                 </div>
             </div>

@@ -257,13 +257,7 @@
                 <h5 class="m-0 flex-grow-1" style="font-size: 1.6rem; font-weight: bold;">
                     <i class="fas fa-balance-scale me-2"></i>جميع القضايا
                 </h5>
-                @if (Auth::user()->role == 'admin' || Auth::user()->role == 'superadmin')
-                    <a href="{{ route('casetypes.create.case', request('casetype')) }}" class="btn btn-light btn-lg ms-auto">
-                        <i class="fas fa-plus"></i> انشاء قضية جديدة
-                    </a>
-                @endif
             </div>
-
             <div class="card-body p-0">
                 <div class="table-responsive">
                     <table class="table table-striped table-hover mb-0 text-center align-middle"
@@ -283,8 +277,6 @@
                                 <th>اخر نشاظ</th>
                                 <th>تاريخ الجلسة القادمة</th>
                                 <th>الوقائع</th>
-                                <th>وقائع الدعوي</th>
-                                <th>المدة</th>
                                 @if (Auth::user()->role == 'admin' || Auth::user()->role == 'superadmin')
                                     <th>الاجراءات</th>
                                 @endif
@@ -342,36 +334,11 @@
                                     </td>
 
 
-                                    <td><a href="{{ route('cases.show', $case) }}" class="btn btn-sm btn-info">وقائع
-                                            الدعوي</a></td>
-                                    <td>
-                                        <div class="dual-buttons d-flex gap-2">
-                                            <a href="{{ route('cases.show.durations', $case) }}"
-                                                class="btn btn-lg btn-outline-primary flex-fill">المدد</a>
-                                            <a href="{{ route('cases.show.notes', $case) }}"
-                                                class="btn btn-lg btn-outline-secondary flex-fill">المذكرات</a>
-                                        </div>
-                                    </td>
+
                                     <td>
                                         @if (Auth::user()->role == 'admin' || Auth::user()->role == 'superadmin')
-                                            <a href="{{ route('cases.edit', $case) }}"
-                                                class="btn btn-lg btn-warning w-100">تعديل</a>
-
-                                            <form action="{{ route('cases.destroy', $case) }}" method="POST"
-                                                onsubmit="return confirm('هل أنت متأكد من الحذف؟');" class="w-100">
-                                                @csrf
-                                                @method('DELETE')
-                                                <button type="submit" class="btn btn-lg btn-danger w-100">حذف</button>
-                                            </form>
-
-                                            <div class="d-flex flex-column gap-2">
-
-                                                <a href="{{ route('cases.settlement', $case) }}"
-                                                    class="btn btn-lg btn-info w-100"> + تسويه </a>
-                                                <a href="{{ route('cases.expenses', $case) }}"
-                                                    class="btn btn-lg btn-dark w-100">المصاريف</a>
-
-                                            </div>
+                                            <a href="{{ route('cases.restore', $case) }}"
+                                                class="btn btn-lg btn-warning w-100">استرجاع</a>
                                         @endif
 
                                     </td>

@@ -117,6 +117,7 @@
                             <th>المعتمد الأول</th>
                             <th>المعتمد الثاني</th>
                             @if (Auth::user()->role == 'admin' || Auth::user()->role == 'superadmin')
+                                <th>الانجاز</th>
                                 <th>الاجراءات</th>
                             @endif
 
@@ -175,6 +176,28 @@
                                                 <i class="fas fa-check"></i> انجاز
                                             </button>
                                         </form>
+                                    </td>
+                                    <td class="text-center">
+                                        <div class="d-flex justify-content-center gap-2">
+
+                                            <!-- زر تعديل -->
+                                            <a href="{{ route('cases.durations.edit', $duration) }}"
+                                                class="btn btn-sm btn-info d-flex align-items-center ml-2">
+                                                <i class="fas fa-edit me-1"></i> تعديل
+                                            </a>
+
+                                            <!-- زر حذف -->
+                                            <form action="{{ route('cases.durations.delete', $duration) }}" method="POST"
+                                                onsubmit="return confirm('هل أنت متأكد من حذف هذه المدة؟');">
+                                                @csrf
+                                                @method('DELETE')
+                                                <button type="submit"
+                                                    class="btn btn-sm btn-dark d-flex align-items-center">
+                                                    <i class="fas fa-trash me-1"></i> حذف
+                                                </button>
+                                            </form>
+
+                                        </div>
                                     </td>
                                 @endif
                             </tr>

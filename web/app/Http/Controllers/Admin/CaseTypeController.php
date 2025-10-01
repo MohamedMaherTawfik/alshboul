@@ -31,7 +31,7 @@ class CaseTypeController extends Controller
     public function show(CaseType $casetype)
     {
         $cases = Cases::with('caseOpponents')
-            ->where('suggested_case_id', $casetype->id)
+            ->where('suggested_case_id', $casetype->id)->where('active', 1)
             ->orderBy('case_number', 'asc')
             ->get();
 
@@ -77,7 +77,6 @@ class CaseTypeController extends Controller
 
         return view('admin.CaseTypes.show', compact('casetype', 'cases'));
     }
-
 
 
     /**

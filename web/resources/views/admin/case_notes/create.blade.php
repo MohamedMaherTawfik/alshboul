@@ -225,22 +225,29 @@
                                         placeholder="اختر تاريخ النهاية" required>
                                 </div>
                             </div>
-
-                            <script>
-                                const startInput = document.getElementById('period_start');
-                                const endInput = document.getElementById('period_end');
-
-                                startInput.addEventListener('change', function() {
-                                    endInput.min = this.value; // تاريخ النهاية يبدأ من تاريخ البداية
-                                    if (endInput.value < this.value) {
-                                        endInput.value = this.value; // يمنع اختيار تاريخ قبل البداية
-                                    }
-                                });
-                            </script>
-
                         </div>
 
-                        <div class="row">
+                        <script>
+                            const startInput = document.getElementById('period_start');
+                            const endInput = document.getElementById('period_end');
+                            const today = new Date().toISOString().split('T')[0];
+
+                            // بداية المدة: لا يتعدى النهارده
+                            startInput.max = today;
+
+                            // نهاية المدة: لا يقل عن النهارده
+                            endInput.min = today;
+
+                            // شرط إضافي: نهاية المدة لازم تكون >= البداية
+                            startInput.addEventListener('change', function() {
+                                endInput.min = this.value < today ? today : this.value;
+                                if (endInput.value < endInput.min) {
+                                    endInput.value = endInput.min;
+                                }
+                            });
+                        </script>
+
+                        <div class="row mt-3">
                             <div class="col-12 mb-3">
                                 <label for="period_facts" class="form-label">وقائع المدة</label>
                                 <textarea class="form-control" id="period_facts" name="period_facts" rows="4"

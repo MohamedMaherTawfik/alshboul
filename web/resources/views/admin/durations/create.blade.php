@@ -230,10 +230,22 @@
                                 const startInput = document.getElementById('period_start');
                                 const endInput = document.getElementById('period_end');
 
+                                // تحديد التاريخ الحالي
+                                const today = new Date().toISOString().split('T')[0];
+
+                                // بداية المدة: لا يسمح بتاريخ بعد النهارده
+                                startInput.max = today;
+
+                                // نهاية المدة: لا يسمح بتاريخ قبل النهارده
+                                endInput.min = today;
+
+                                // ضبط العلاقة بين البداية والنهاية
                                 startInput.addEventListener('change', function() {
-                                    endInput.min = this.value; // تاريخ النهاية يبدأ من تاريخ البداية
-                                    if (endInput.value < this.value) {
-                                        endInput.value = this.value; // يمنع اختيار تاريخ قبل البداية
+                                    // لازم النهاية تكون مساوية أو بعد البداية، وكمان مش قبل النهارده
+                                    endInput.min = this.value > today ? this.value : today;
+
+                                    if (endInput.value < endInput.min) {
+                                        endInput.value = endInput.min;
                                     }
                                 });
                             </script>

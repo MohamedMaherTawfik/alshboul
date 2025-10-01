@@ -312,6 +312,12 @@ Route::group(['prefix' => 'admin', 'middleware' => ['auth', roleMiddleware::clas
     Route::get('/{case}/show/showcase/show', [CaseController::class, 'show'])->name('cases.show');
     Route::post('/{case}/show/showcase/session/uploadFile', [CaseController::class, 'uploadFile'])->name('sessions.uploadFile');
     Route::get('/{case}/show/showcase/durations', [CaseController::class, 'showDurations'])->name('cases.show.durations');
+    Route::get('/{case}/show/showcase/durations/edit', [CaseController::class, 'editDurations'])->name('cases.durations.edit');
+    Route::get('/{case}/show/showcase/notes/edit', [CaseController::class, 'editNotes'])->name('cases.notes.edit');
+    Route::post('/{case}/show/showcase/durations/update', [CaseController::class, 'updateDurations'])->name('cases.durations.update');
+    Route::post('/{case}/show/showcase/notes/update', [CaseController::class, 'updateNotes'])->name('cases.notes.update');
+    Route::delete('/{case}/show/showcase/durations/delete', [CaseController::class, 'deleteDurations'])->name('cases.durations.delete');
+    Route::delete('/{case}/show/showcase/notes/delete', [CaseController::class, 'deleteNotes'])->name('cases.notes.delete');
     Route::get('/{case}/show/showcase/notes', [CaseController::class, 'showNotes'])->name('cases.show.notes');
     Route::get('/{case}/show/showcase/procedure', [CaseController::class, 'showProcedure'])->name('cases.procedure');
     Route::get('/{case}/show/showcase/procedure/create', [CaseController::class, 'createProcedure'])->name('cases.procedure.create');
@@ -342,6 +348,8 @@ Route::group(['prefix' => 'admin', 'middleware' => ['auth', roleMiddleware::clas
     Route::get('/{case}/log', [CaseController::class, 'log'])->name('cases.logs');
     Route::post('/{case}/update', [CaseController::class, 'update'])->name('cases.update');
     Route::delete('/{case}/delete', [CaseController::class, 'destroy'])->name('cases.destroy');
+    Route::get('/indexDelete', [CaseController::class, 'indexDelete'])->name('cases.indexDelete');
+    Route::get('/restore/{case}/go/action', [CaseController::class, 'restore'])->name('cases.restore');
     Route::get('/{case}/add', [CaseController::class, 'add'])->name('cases.add');
     Route::post('/{case}/add', [CaseController::class, 'storeAdd'])->name('cases.storeAdd');
     Route::get('/{case}/sessions/all', [CaseController::class, 'caseSessions'])->name('cases.sessions');

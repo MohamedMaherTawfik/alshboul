@@ -4,12 +4,14 @@ namespace App\Http\Controllers\Admin;
 
 use App\Http\Controllers\Controller;
 use App\Http\Requests\CaseRequest;
+use App\Models\CaseNotes;
 use App\Models\CaseOpponents;
 use App\Models\cases;
 use App\Models\CaseType;
 use App\Models\Client;
 use App\Models\court_session_date;
 use App\Models\Lawyer;
+use App\Models\LegalPeriods;
 use App\Models\Missions;
 use App\Models\ProceduralFile;
 use App\Models\ProceduralRecord;
@@ -161,8 +163,20 @@ class CaseController extends Controller
     // حذف
     public function destroy(Cases $case)
     {
-        $case->delete();
+        $case->update(['active' => 0]);
         return redirect()->back()->with('success', 'تم حذف القضية بنجاح');
+    }
+
+    public function indexDelete()
+    {
+        $cases = cases::where('active', 0)->get();
+        return view('admin.cases.indexDelete', compact('cases'));
+    }
+
+    public function restore(Cases $case)
+    {
+        $case->update(['active' => 1]);
+        return redirect()->back()->with('success', 'تم استعادة القضية بنجاح');
     }
 
     // إضافة بيانات للقضية
@@ -290,12 +304,46 @@ class CaseController extends Controller
 
         return view('admin.cases.show', compact('case', 'lawyers'));
     }
-
-
     public function showDurations(Cases $case)
     {
         $case->load('legalPeriods', );
         return view('admin.cases.caseDurations', compact('case'));
+    }
+
+    public function editDurations(LegalPeriods $case)
+    {
+        return view('admin.durations.edit', compact('case'));
+    }
+
+    public function updateDurations(Request $request, LegalPeriods $case)
+    {
+        $data = $request->except('_token');
+        $case->update($data);
+        return redirect()->route('cases.show.durations', $case->case)->with('success', 'تم التحديث بنجاح');
+    }
+
+    public function deleteDurations(LegalPeriods $case)
+    {
+        $case->delete();
+        return redirect()->route('cases.show.durations', $case->case)->with('success', 'تم الحذف بنجاح');
+    }
+
+    public function editNotes(CaseNotes $case)
+    {
+        return view('admin.case_notes.edit', compact('case'));
+    }
+
+    public function updateNotes(Request $request, CaseNotes $case)
+    {
+        $data = $request->except('_token');
+        $case->update($data);
+        return redirect()->route('cases.show.notes', $case->case)->with('success', 'تم التحديث بنجاح');
+    }
+
+    public function deleteNotes(CaseNotes $case)
+    {
+        $case->delete();
+        return redirect()->route('cases.show.notes', $case->case)->with('success', 'تم الحذف بنجاح');
     }
 
     public function showNotes(Cases $case)
