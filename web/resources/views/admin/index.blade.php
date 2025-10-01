@@ -333,7 +333,7 @@
                                         </td>
                                         <td>{{ $note->user->name ?? '-' }}</td>
                                         <td>{{ $note->created_at ? $note->created_at->format('Y-m-d') : '-' }}</td>
-                                        <td>{{ $duration->created_at?->format('h:i') ?? '-' }}</td>
+                                        <td>{{ $note->created_at?->format('h:i') ?? '-' }}</td>
                                         <td>{{ Str::limit($note->period_facts, 50, '...') }}</td>
                                         <td>{{ $note->period_start ?? '-' }}</td>
 

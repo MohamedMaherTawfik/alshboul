@@ -350,6 +350,7 @@
     </div>
 
     <!-- Modal: إضافة أرشيف جديد -->
+    <!-- Modal: إضافة أرشيف جديد -->
     <div class="modal fade" id="addArchiveModal" tabindex="-1" aria-labelledby="addArchiveModalLabel"
         aria-hidden="true">
         <div class="modal-dialog modal-lg modal-dialog-scrollable">
@@ -369,28 +370,28 @@
 
                         <div class="row g-3">
 
-                            <!-- اسم المشترك -->
+                            <!-- اسم المشترك (Autocomplete) -->
                             <div class="col-md-6">
-                                <div class="mb-3">
-                                    <label for="client_id" class="form-label fw-bold text-dark">
+                                <div class="mb-3 position-relative">
+                                    <label for="client_name" class="form-label fw-bold text-dark">
                                         <i class="fas fa-user me-2 text-primary"></i>
                                         اسم المشترك <span class="text-danger">*</span>
                                     </label>
-                                    <select name="client_id" id="client_id"
-                                        class="form-select border-2 border-primary rounded-4 py-2 @error('client_id') is-invalid @enderror"
-                                        required>
-                                        <option value="" disabled selected>-- اختر من القائمة --</option>
-                                        @foreach ($clients as $client)
-                                            <option value="{{ $client->id }}">{{ $client->name }}</option>
-                                        @endforeach
-                                    </select>
+                                    <input type="text" id="client_name"
+                                        class="form-control border-2 border-primary rounded-4 py-2 @error('client_id') is-invalid @enderror"
+                                        placeholder="اكتب اسم المشترك" autocomplete="off" required>
+                                    <input type="hidden" name="client_id" id="client_id">
+                                    <!-- الاقتراحات -->
+                                    <div id="client_suggestions" class="list-group position-absolute w-100"
+                                        style="z-index: 1000; max-height: 200px; overflow-y: auto; display: none;">
+                                    </div>
                                     @error('client_id')
                                         <div class="invalid-feedback d-block mt-1">{{ $message }}</div>
                                     @enderror
                                 </div>
                             </div>
 
-                            <!-- أطراف أخرى (label جنب input + input صغير) -->
+                            <!-- أطراف أخرى -->
                             <div class="col-md-6">
                                 <div class="mb-3 d-flex align-items-center">
                                     <label for="another_names" class="form-label fw-bold text-dark me-2">
@@ -430,9 +431,7 @@
                                 </div>
                             </div>
 
-
-
-                            <!-- التاريخ (label جنب input + input صغير) -->
+                            <!-- التاريخ -->
                             <div class="col-md-6">
                                 <div class="mb-3 d-flex align-items-center">
                                     <label for="time" class="form-label fw-bold text-dark me-2 ml-2">
@@ -451,7 +450,7 @@
                                 <div class="mb-3">
                                     <label for="sub_menu_id" class="form-label fw-bold text-dark">
                                         <i class="fas fa-list me-2 text-primary"></i>
-                                        قسم الفرعيي <span class="text-danger">*</span>
+                                        قسم الفرعي <span class="text-danger">*</span>
                                     </label>
                                     <select name="sub_menu_id" id="sub_menu_id"
                                         class="form-select border-2 border-primary rounded-4 py-2 @error('sub_menu_id') is-invalid @enderror"
@@ -470,7 +469,7 @@
                                 </div>
                             </div>
 
-                            <!-- رفع الملف (label جنب input + input صغير) -->
+                            <!-- رفع الملف -->
                             <div class="col-md-6">
                                 <div class="mb-3 d-flex align-items-center">
                                     <label for="file" class="form-label fw-bold text-dark me-2">
@@ -517,6 +516,57 @@
             </div>
         </div>
     </div>
+
+    <!-- Autocomplete Script -->
+    <script>
+        document.addEventListener("DOMContentLoaded", function() {
+            const clientInput = document.getElementById("client_name");
+            const clientHidden = document.getElementById("client_id");
+            const suggestionsBox = document.getElementById("client_suggestions");
+
+            const clients = @json($clients);
+
+            clientInput.addEventListener("input", function() {
+                const query = this.value.toLowerCase();
+                suggestionsBox.innerHTML = "";
+                clientHidden.value = "";
+
+                if (query.length < 1) {
+                    suggestionsBox.style.display = "none";
+                    return;
+                }
+
+                let filtered = clients.filter(client => client.name.toLowerCase().includes(query));
+
+                if (filtered.length === 0) {
+                    suggestionsBox.style.display = "none";
+                    return;
+                }
+
+                filtered.forEach(client => {
+                    let item = document.createElement("button");
+                    item.type = "button";
+                    item.className = "list-group-item list-group-item-action";
+                    item.textContent = client.name;
+                    item.onclick = function() {
+                        clientInput.value = client.name;
+                        clientHidden.value = client.id;
+                        suggestionsBox.style.display = "none";
+                    };
+                    suggestionsBox.appendChild(item);
+                });
+
+                suggestionsBox.style.display = "block";
+            });
+
+            document.addEventListener("click", function(e) {
+                if (!clientInput.contains(e.target) && !suggestionsBox.contains(e.target)) {
+                    suggestionsBox.style.display = "none";
+                }
+            });
+        });
+    </script>
+
 
     <!-- Modal لإضافة قائمة رئيسية -->
     <div class="modal fade" id="createMainModal" tabindex="-1" aria-labelledby="createMainModalLabel"

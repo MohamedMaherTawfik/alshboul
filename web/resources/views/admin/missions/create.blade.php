@@ -27,15 +27,16 @@
                     <div class="row">
                         <!-- العمود الشمال -->
                         <div class="col-md-6">
-                            <!-- Client -->
-                            <div class="mb-3">
-                                <label for="client_id" class="form-label">اختر اسم الموكل هنا</label>
-                                <select name="client_id" id="client1" class="form-control" required>
-                                    <option value="">-- اختر العميل --</option>
-                                    @foreach ($clients as $client)
-                                        <option value="{{ $client->id }}">{{ $client->name }}</option>
-                                    @endforeach
-                                </select>
+                            <!-- Client (Autocomplete) -->
+                            <div class="mb-3 position-relative">
+                                <label for="client_name" class="form-label">اختر اسم الموكل هنا</label>
+                                <input type="text" id="client_name" class="form-control" placeholder="اكتب اسم الموكل"
+                                    autocomplete="off" required>
+                                <input type="hidden" name="client_id" id="client_id">
+                                <!-- الاقتراحات -->
+                                <div id="client_suggestions" class="list-group position-absolute w-100"
+                                    style="z-index: 1000; max-height: 200px; overflow-y: auto; display: none;">
+                                </div>
                             </div>
 
                             <!-- Lawyer 1-->
@@ -96,16 +97,64 @@
                         </button>
                     </div>
                 </form>
-
-                <!-- JavaScript -->
-                <script>
-                    document.getElementById('deadlineCheck').addEventListener('change', function() {
-                        document.getElementById('deadlineWrapper').style.display = this.checked ? 'block' : 'none';
-                    });
-                </script>
-
             </div>
         </div>
     </div>
 
+    <!-- JavaScript -->
+    <script>
+        document.addEventListener("DOMContentLoaded", function() {
+            const checkbox = document.getElementById('deadlineCheck');
+            const deadlineWrapper = document.getElementById('deadlineWrapper');
+            checkbox.addEventListener('change', function() {
+                deadlineWrapper.style.display = this.checked ? 'block' : 'none';
+            });
+
+            // Autocomplete للموكل
+            const clientInput = document.getElementById("client_name");
+            const clientHidden = document.getElementById("client_id");
+            const suggestionsBox = document.getElementById("client_suggestions");
+
+            const clients = @json($clients);
+
+            clientInput.addEventListener("input", function() {
+                const query = this.value.toLowerCase();
+                suggestionsBox.innerHTML = "";
+                clientHidden.value = "";
+
+                if (query.length < 1) {
+                    suggestionsBox.style.display = "none";
+                    return;
+                }
+
+                let filtered = clients.filter(client => client.name.toLowerCase().includes(query));
+
+                if (filtered.length === 0) {
+                    suggestionsBox.style.display = "none";
+                    return;
+                }
+
+                filtered.forEach(client => {
+                    let item = document.createElement("button");
+                    item.type = "button";
+                    item.className = "list-group-item list-group-item-action";
+                    item.textContent = client.name;
+                    item.onclick = function() {
+                        clientInput.value = client.name;
+                        clientHidden.value = client.id;
+                        suggestionsBox.style.display = "none";
+                    };
+                    suggestionsBox.appendChild(item);
+                });
+
+                suggestionsBox.style.display = "block";
+            });
+
+            document.addEventListener("click", function(e) {
+                if (!clientInput.contains(e.target) && !suggestionsBox.contains(e.target)) {
+                    suggestionsBox.style.display = "none";
+                }
+            });
+        });
+    </script>
 @endsection

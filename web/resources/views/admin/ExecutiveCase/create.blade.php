@@ -37,19 +37,14 @@
 
                         <!-- المشترك -->
                         <div class="col-md-6">
-                            <div class="form-group">
-                                <label for="user_id">المشترك</label>
-                                <select id="user_id" name="client_id"
-                                    class="form-control @error('client_id') is-invalid @enderror">
-                                    <option value="" selected>اختر المشترك</option>
-                                    @foreach ($clients->groupBy('user_id') as $userId => $userClients)
-                                        @php $user = $userClients->first(); @endphp
-                                        <option value="{{ $userId }}" data-code="{{ $user->id }}">
-                                            {{ $user->name }}
-                                        </option>
-                                    @endforeach
-                                </select>
-                                @error('client_id')
+                            <div class="form-group position-relative">
+                                <label for="subscriber_name">المشترك</label>
+                                <input type="text" id="subscriber_name" class="form-control"
+                                    placeholder="ابحث عن المشترك..." autocomplete="off">
+                                <input type="hidden" name="user_id" id="user_id" value="{{ old('user_id') }}">
+                                <div id="subscriber_suggestions" class="list-group position-absolute w-100"
+                                    style="z-index: 1000; max-height: 200px; overflow-y: auto; display:none;"></div>
+                                @error('user_id')
                                     <span class="invalid-feedback">{{ $message }}</span>
                                 @enderror
                             </div>
@@ -82,36 +77,7 @@
                             </div>
                         </div>
 
-                        <script>
-                            const clients = @json($clients);
-
-                            document.getElementById('user_id').addEventListener('change', function() {
-                                let userId = this.value;
-                                let userCode = this.options[this.selectedIndex].dataset.code;
-
-                                document.getElementById('subscriber_number').value = userCode;
-
-                                let filteredClients = clients.filter(c => c.user_id == userId);
-
-                                let clientSelect = document.getElementById('client_name');
-                                clientSelect.innerHTML = '<option value="">اختر الموكل</option>';
-                                filteredClients.forEach(c => {
-                                    let opt = document.createElement('option');
-                                    opt.value = c.name;
-                                    opt.textContent = c.name;
-                                    opt.dataset.nationalId = c.national_id;
-                                    clientSelect.appendChild(opt);
-                                });
-                            });
-
-                            document.getElementById('client_name').addEventListener('change', function() {
-                                let nationalId = this.options[this.selectedIndex].dataset.nationalId || '';
-                                document.getElementById('client_national_id').value = nationalId;
-                            });
-                        </script>
-
-
-                        <!-- الخصم -->
+                        <!-- باقي الحقول زي ما هي -->
                         <div class="col-md-6">
                             <div class="form-group">
                                 <label for="opponent_name">اسم الخصم</label>
@@ -137,7 +103,6 @@
                         </div>
 
                         <!-- أرقام الملفات -->
-
                         <div class="col-md-4">
                             <div class="form-group">
                                 <label for="case_number">رقم الدعوى</label>
@@ -294,4 +259,68 @@
         </div>
 
     </div>
+
+    <!-- اسكريبت البحث الحي -->
+    <script>
+        const users = @json($clients->groupBy('user_id')->map->first());
+        const allClients = @json($clients);
+
+        const subscriberInput = document.getElementById("subscriber_name");
+        const subscriberHidden = document.getElementById("user_id");
+        const subscriberNumber = document.getElementById("subscriber_number");
+        const suggestionsBox = document.getElementById("subscriber_suggestions");
+        const clientSelect = document.getElementById("client_name");
+        const clientNationalId = document.getElementById("client_national_id");
+
+        subscriberInput.addEventListener("input", function() {
+            let query = this.value.toLowerCase();
+            suggestionsBox.innerHTML = "";
+            subscriberHidden.value = "";
+            subscriberNumber.value = "";
+
+            if (query.length < 1) {
+                suggestionsBox.style.display = "none";
+                return;
+            }
+
+            let filtered = Object.values(users).filter(user => user.name.toLowerCase().includes(query));
+
+            if (filtered.length === 0) {
+                suggestionsBox.style.display = "none";
+                return;
+            }
+
+            filtered.forEach(user => {
+                let item = document.createElement("button");
+                item.type = "button";
+                item.className = "list-group-item list-group-item-action";
+                item.textContent = user.name;
+                item.onclick = function() {
+                    subscriberInput.value = user.name;
+                    subscriberHidden.value = user.user_id;
+                    subscriberNumber.value = user.id;
+                    suggestionsBox.style.display = "none";
+
+                    // تحميل الموكلين
+                    let filteredClients = allClients.filter(c => c.user_id == user.user_id);
+                    clientSelect.innerHTML = '<option value="">اختر الموكل</option>';
+                    filteredClients.forEach(c => {
+                        let opt = document.createElement("option");
+                        opt.value = c.name;
+                        opt.textContent = c.name;
+                        opt.dataset.nationalId = c.national_id;
+                        clientSelect.appendChild(opt);
+                    });
+                };
+                suggestionsBox.appendChild(item);
+            });
+
+            suggestionsBox.style.display = "block";
+        });
+
+        clientSelect.addEventListener("change", function() {
+            let nationalId = this.options[this.selectedIndex].dataset.nationalId || "";
+            clientNationalId.value = nationalId;
+        });
+    </script>
 @endsection

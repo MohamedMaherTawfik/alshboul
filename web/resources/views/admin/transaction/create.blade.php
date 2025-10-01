@@ -23,17 +23,14 @@
                     <input type="hidden" name="user_id" value="{{ auth()->id() }}">
 
                     <div class="row">
-                        <div class="form-group col-md-6">
-                            <label for="subscriber_id">المشترك</label>
-                            <select name="subscriber_id" id="subscriber_id" class="form-control">
-                                <option value="">اختر المشترك</option>
-                                @foreach ($clients as $client)
-                                    <option value="{{ $client->id }}" data-user="{{ $client->user_id }}"
-                                        data-clients='@json($client->user ? $client->user->client : [])'>
-                                        {{ $client->name }}
-                                    </option>
-                                @endforeach
-                            </select>
+                        <!-- المشترك -->
+                        <div class="form-group col-md-6 position-relative">
+                            <label for="subscriber_name">المشترك</label>
+                            <input type="text" id="subscriber_name" class="form-control" placeholder="اكتب اسم المشترك"
+                                autocomplete="off">
+                            <input type="hidden" name="subscriber_id" id="subscriber_id_hidden">
+                            <div id="subscriberSuggestions" class="list-group position-absolute w-100"
+                                style="z-index: 1000; max-height: 200px; overflow-y: auto; display: none;"></div>
                             @error('subscriber_id')
                                 <small class="text-danger">{{ $message }}</small>
                             @enderror
@@ -117,36 +114,67 @@
     </div>
 @endsection
 
-{{-- JSON بكل العملاء --}}
 <script>
     document.addEventListener("DOMContentLoaded", function() {
-        const subscriberSelect = document.getElementById("subscriber_id");
+        const subscribers = @json($clients);
+
+        const subscriberInput = document.getElementById("subscriber_name");
+        const subscriberHidden = document.getElementById("subscriber_id_hidden");
+        const suggestionsBox = document.getElementById("subscriberSuggestions");
+
         const clientSelect = document.getElementById("client_id");
 
-        subscriberSelect.addEventListener("change", function() {
-            clientSelect.innerHTML = '<option value="">اختر الموكل</option>';
-            clientSelect.disabled = true;
+        subscriberInput.addEventListener("input", function() {
+            const query = this.value.toLowerCase();
+            suggestionsBox.innerHTML = '';
+            subscriberHidden.value = '';
 
-            const selectedOption = this.options[this.selectedIndex];
-            const clients = selectedOption.getAttribute("data-clients");
+            if (query.length < 1) {
+                suggestionsBox.style.display = 'none';
+                return;
+            }
 
-            if (clients) {
-                let parsedClients = [];
-                try {
-                    parsedClients = JSON.parse(clients);
-                } catch (e) {
-                    parsedClients = [];
-                }
+            let filtered = subscribers.filter(sub => sub.name.toLowerCase().includes(query));
 
-                if (parsedClients.length > 0) {
-                    parsedClients.forEach(client => {
-                        let option = document.createElement("option");
-                        option.value = client.name;
-                        option.textContent = client.name;
-                        clientSelect.appendChild(option);
-                    });
-                    clientSelect.disabled = false;
-                }
+            if (filtered.length === 0) {
+                suggestionsBox.style.display = 'none';
+                return;
+            }
+
+            filtered.forEach(sub => {
+                let item = document.createElement('button');
+                item.type = 'button';
+                item.className = 'list-group-item list-group-item-action';
+                item.textContent = sub.name;
+                item.onclick = function() {
+                    subscriberInput.value = sub.name;
+                    subscriberHidden.value = sub.id;
+
+                    // تفريغ الموكلين وإعادة ملؤهم
+                    clientSelect.innerHTML = '<option value="">اختر الموكل</option>';
+                    clientSelect.disabled = true;
+
+                    if (sub.user && sub.user.client && sub.user.client.length > 0) {
+                        sub.user.client.forEach(client => {
+                            let option = document.createElement("option");
+                            option.value = client.name;
+                            option.textContent = client.name;
+                            clientSelect.appendChild(option);
+                        });
+                        clientSelect.disabled = false;
+                    }
+
+                    suggestionsBox.style.display = 'none';
+                };
+                suggestionsBox.appendChild(item);
+            });
+
+            suggestionsBox.style.display = 'block';
+        });
+
+        document.addEventListener('click', function(e) {
+            if (!subscriberInput.contains(e.target) && !suggestionsBox.contains(e.target)) {
+                suggestionsBox.style.display = 'none';
             }
         });
     });

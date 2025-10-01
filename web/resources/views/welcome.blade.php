@@ -149,20 +149,7 @@
             <div class="swiper-pagination"></div>
         </div>
 
-        <!-- SwiperJS -->
-        <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/swiper@11/swiper-bundle.min.css" />
-        <script src="https://cdn.jsdelivr.net/npm/swiper@11/swiper-bundle.min.js"></script>
 
-        <script>
-            const swiper = new Swiper(".mySwiper", {
-                direction: "horizontal", // تقدر تخليها vertical لو عايز
-                loop: true,
-                autoplay: {
-                    delay: 5000, // كل 5 ثواني
-                    disableOnInteraction: false,
-                },
-            });
-        </script>
 
         <!-- Hero Slider -->
         <div class="swiper heroSwiper w-full rounded-lg shadow-md">

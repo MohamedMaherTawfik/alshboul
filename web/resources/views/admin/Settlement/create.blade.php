@@ -13,17 +13,13 @@
                 <h2 class="section-title">معلومات الموكل</h2>
 
                 <div class="form-row">
-                    <div class="form-group">
+                    <div class="form-group position-relative">
                         <label for="clientName">اسم الموكل *</label>
-                        <select id="clientName" name="client_name" required>
-                            <option value="">اختر الموكل</option>
-                            <?php foreach($clients as $client): ?>
-                            <option value="<?= $client->name ?>" data-nationalid="<?= $client->national_id ?>"
-                                data-address="<?= $client->address ?>" data-role="<?= $client->role ?>">
-                                <?= $client->name ?>
-                            </option>
-                            <?php endforeach; ?>
-                        </select>
+                        <input type="text" id="clientName" class="form-control" placeholder="اكتب اسم الموكل"
+                            autocomplete="off" required>
+                        <input type="hidden" name="client_name" id="clientNameHidden">
+                        <div id="clientSuggestions" class="list-group position-absolute w-100"
+                            style="z-index: 1000; max-height: 200px; overflow-y: auto; display: none;"></div>
                     </div>
                     <div class="form-group">
                         <label for="clientNationalId">الرقم الوطني للموكل *</label>
@@ -241,16 +237,56 @@
     </style>
 
     <script>
-        const clientSelect = document.getElementById('clientName');
+        const clients = @json($clients);
+
+        const clientInput = document.getElementById('clientName');
+        const clientHidden = document.getElementById('clientNameHidden');
+        const suggestionsBox = document.getElementById('clientSuggestions');
+
         const nationalIdInput = document.getElementById('clientNationalId');
         const addressInput = document.getElementById('clientAddress');
         const roleInput = document.getElementById('clientRole');
 
-        clientSelect.addEventListener('change', function() {
-            const selectedOption = this.options[this.selectedIndex];
-            nationalIdInput.value = selectedOption.dataset.nationalid || '';
-            addressInput.value = selectedOption.dataset.address || '';
-            roleInput.value = selectedOption.dataset.role || '';
+        clientInput.addEventListener('input', function() {
+            const query = this.value.toLowerCase();
+            suggestionsBox.innerHTML = '';
+            clientHidden.value = '';
+
+            if (query.length < 1) {
+                suggestionsBox.style.display = 'none';
+                return;
+            }
+
+            let filtered = clients.filter(client => client.name.toLowerCase().includes(query));
+
+            if (filtered.length === 0) {
+                suggestionsBox.style.display = 'none';
+                return;
+            }
+
+            filtered.forEach(client => {
+                let item = document.createElement('button');
+                item.type = 'button';
+                item.className = 'list-group-item list-group-item-action';
+                item.textContent = client.name;
+                item.onclick = function() {
+                    clientInput.value = client.name;
+                    clientHidden.value = client.name;
+                    nationalIdInput.value = client.national_id || '';
+                    addressInput.value = client.address || '';
+                    roleInput.value = client.role || '';
+                    suggestionsBox.style.display = 'none';
+                };
+                suggestionsBox.appendChild(item);
+            });
+
+            suggestionsBox.style.display = 'block';
+        });
+
+        document.addEventListener('click', function(e) {
+            if (!clientInput.contains(e.target) && !suggestionsBox.contains(e.target)) {
+                suggestionsBox.style.display = 'none';
+            }
         });
     </script>
 @endsection
