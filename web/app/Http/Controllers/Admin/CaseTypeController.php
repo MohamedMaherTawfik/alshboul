@@ -31,9 +31,11 @@ class CaseTypeController extends Controller
     public function show(CaseType $casetype)
     {
         $cases = Cases::with('caseOpponents')
-            ->where('suggested_case_id', $casetype->id)->where('active', 1)
-            ->orderBy('case_number', 'asc')
-            ->get();
+            ->where('suggested_case_id', $casetype->id)
+            ->where('active', 1)
+            ->get()
+            ->sortBy('case_number'); // تصاعدي
+
 
         $neglectConfig = NegligenceDays::where('case_type_id', $casetype->id)->first();
 
