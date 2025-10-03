@@ -101,23 +101,76 @@
                             <option value="غير ملتزم">غير ملتزم</option>
                         </select>
                     </div>
+
                     <div class="form-group">
                         <label for="debtValue">قيمة الدين</label>
                         <input type="text" id="debtValue" name="amount">
                     </div>
+
                     <div class="form-group">
                         <label for="paymentValue">قيمة الدفعة</label>
                         <input type="text" id="paymentValue" name="payment_value">
                     </div>
+
                     <div class="form-group">
                         <label for="paymentFrequency">تكرار الدفع</label>
                         <select name="payment_terms" id="paymentFrequency">
+                            <option value="">-- اختر --</option>
                             <option value="شهري">شهري</option>
-                            <option value="اسبوعي">اسبوعي</option>
+                            <option value="أسبوعي">أسبوعي</option>
                         </select>
                     </div>
                 </div>
+
+                <!-- الحقول الإضافية -->
+                <div class="form-row" style="margin-top:15px;">
+                    <!-- خانة الشهر -->
+                    <div class="form-group monthly-field" style="display:none;">
+                        <label for="day">رقم اليوم</label>
+                        <input type="number" id="day" name="day" class="form-control"
+                            placeholder="رقم اليوم">
+                    </div>
+
+                    <!-- خانات الأسابيع -->
+                    <div class="form-group weekly-field" style="display:none;">
+                        <label>الأسبوع 1</label>
+                        <input type="number" name="week_1" class="form-control" placeholder="الأسبوع 1">
+                    </div>
+                    <div class="form-group weekly-field" style="display:none;">
+                        <label>الأسبوع 2</label>
+                        <input type="number" name="week_2" class="form-control" placeholder="الأسبوع 2">
+                    </div>
+                    <div class="form-group weekly-field" style="display:none;">
+                        <label>الأسبوع 3</label>
+                        <input type="number" name="week_3" class="form-control" placeholder="الأسبوع 3">
+                    </div>
+                    <div class="form-group weekly-field" style="display:none;">
+                        <label>الأسبوع 4</label>
+                        <input type="number" name="week_4" class="form-control" placeholder="الأسبوع 4">
+                    </div>
+                </div>
             </div>
+
+            <script>
+                const paymentFrequency = document.getElementById("paymentFrequency");
+                const monthlyFields = document.querySelectorAll(".monthly-field");
+                const weeklyFields = document.querySelectorAll(".weekly-field");
+
+                paymentFrequency.addEventListener("change", function() {
+                    if (this.value === "شهري") {
+                        monthlyFields.forEach(f => f.style.display = "block");
+                        weeklyFields.forEach(f => f.style.display = "none");
+                    } else if (this.value === "أسبوعي") {
+                        monthlyFields.forEach(f => f.style.display = "none");
+                        weeklyFields.forEach(f => f.style.display = "block");
+                    } else {
+                        monthlyFields.forEach(f => f.style.display = "none");
+                        weeklyFields.forEach(f => f.style.display = "none");
+                    }
+                });
+            </script>
+
+
 
             <div class="form-row">
                 <button type="submit" class="btn-submit">حفظ البيانات</button>

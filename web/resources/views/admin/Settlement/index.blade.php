@@ -67,7 +67,14 @@
                                 <td>{{ $settlemen->opponent_phone ?? 'غير متوفر' }}</td>
                                 <td>{{ $settlemen->file_number ?? 'غير متوفر' }}</td>
                                 <td>{{ $settlemen->amount ?? 'غير متوفر' }}</td>
-                                <td>{{ $settlemen->payment_terms ?? 'غير متوفر' }}</td>
+                                <td>{{ $settlemen->payment_terms ?? 'غير متوفر' }}
+                                    @if ($settlemen->payment_terms == 'شهري')
+                                        - يوم {{ $settlemen->day }}
+                                    @else
+                                        - {{ $settlemen->week_1 }} -{{ $settlemen->week_2 }} -
+                                        {{ $settlemen->week_3 }} - {{ $settlemen->week_4 }}
+                                    @endif
+                                </td>
                                 <td>{{ $settlemen->payment_value ?? 'غير متوفر' }}
                                 </td>
                                 <td>{{ $settlemen->notes ?? 'لا توجد ملاحظات' }}</td>
