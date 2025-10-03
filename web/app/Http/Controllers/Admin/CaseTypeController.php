@@ -34,7 +34,7 @@ class CaseTypeController extends Controller
             ->where('suggested_case_id', $casetype->id)
             ->where('active', 1)
             ->get()
-            ->sortBy('case_number'); // تصاعدي
+            ->sortBy('case_number');
 
 
         $neglectConfig = NegligenceDays::where('case_type_id', $casetype->id)->first();

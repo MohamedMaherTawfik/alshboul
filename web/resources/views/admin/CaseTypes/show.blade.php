@@ -250,12 +250,12 @@
 </style>
 
 @section('content')
-    <div class="container-fluid my-4"> {{-- خليتها container-fluid عشان تاخد العرض كامل --}}
+    <div class="container-fluid my-4">
         <div class="card shadow-lg border-0">
             <div class="card-header d-flex justify-content-between align-items-center"
                 style="background: var(--primary-color); color: #fff; font-size: 1.4rem;">
                 <h5 class="m-0 flex-grow-1" style="font-size: 1.6rem; font-weight: bold;">
-                    <i class="fas fa-balance-scale me-2"></i>جميع القضايا
+                    جميع القضايا {{ $casetype->name }} : {{ count($casetype->suggestedCases) }}
                 </h5>
                 @if (Auth::user()->role == 'admin' || Auth::user()->role == 'superadmin')
                     <a href="{{ route('casetypes.create.case', request('casetype')) }}" class="btn btn-light btn-lg ms-auto">
@@ -266,21 +266,48 @@
 
             <div class="card-body p-0">
                 <div class="table-responsive">
-                    <table class="table table-striped table-hover mb-0 text-center align-middle"
+
+                    {{-- ✅ صف البحث --}}
+                    <div class="p-3 border-bottom" style="background-color: var(--primary-color);">
+                        <div class="row g-2">
+                            <div class="col-md-2">
+                                <input type="text" id="search-subscriber" class="form-control border-0"
+                                    placeholder="بحث باسم المشترك">
+                            </div>
+                            <div class="col-md-2">
+                                <input type="text" id="search-client" class="form-control border-0"
+                                    placeholder="بحث باسم الموكل">
+                            </div>
+                            <div class="col-md-2">
+                                <input type="text" id="search-opponent" class="form-control border-0"
+                                    placeholder="بحث باسم الخصم">
+                            </div>
+                            <div class="col-md-2">
+                                <input type="text" id="search-case-number" class="form-control border-0"
+                                    placeholder="بحث برقم الدعوي">
+                            </div>
+                            <div class="col-md-2">
+                                <input type="text" id="search-court" class="form-control border-0"
+                                    placeholder="بحث بالمحكمة">
+                            </div>
+                        </div>
+                    </div>
+
+                    <table id="cases-table" class="table table-striped table-hover mb-0 text-center align-middle"
                         style="font-size: 1.2rem; width: 100%;">
                         <thead style="font-size: 1.3rem; font-weight: bold;">
                             <tr>
-                                <th> اسم المشترك</th>
-                                <th> اسم الموكل</th>
-                                <th>الرقم الوطني </th>
+                                <th>اسم المشترك</th>
+                                <th>اسم الموكل</th>
+                                <th>الرقم الوطني</th>
                                 <th>اسم الخصم</th>
                                 <th>الرقم الوطني للخصم</th>
-                                <th> رقم الدعوي</th>
-                                <th> قيمه الدعوي</th>
+                                <th>رقم الدعوي</th>
+                                <th>قيمه الدعوي</th>
                                 <th>رقم الملف</th>
-                                <th> المحكمه</th>
+                                <th>المحكمه</th>
                                 <th>اسم القاضي</th>
-                                <th>اخر نشاظ</th>
+                                <th>اخر نشاط</th>
                                 <th>تاريخ الجلسة القادمة</th>
                                 <th>الوقائع</th>
                                 <th>وقائع الدعوي</th>
@@ -288,21 +315,10 @@
                                 @if (Auth::user()->role == 'admin' || Auth::user()->role == 'superadmin')
                                     <th>الاجراءات</th>
                                 @endif
-
                             </tr>
                         </thead>
                         <tbody style="font-size: 1.2rem;">
                             @foreach ($cases as $case)
-                                @php
-                                    $lastSession = $case->proceduralRedords->first();
-                                    $hoursLeft = null;
-                                    if ($lastSession && !empty($lastSession->date)) {
-                                        $hoursLeft = \Carbon\Carbon::now()->diffInHours(
-                                            \Carbon\Carbon::parse($lastSession->date),
-                                            false,
-                                        );
-                                    }
-                                @endphp
                                 <tr>
                                     <td>{{ $case->subscriber->name ?? '-' }}</td>
                                     <td>{{ $case->client->name ?? '-' }}</td>
@@ -312,36 +328,24 @@
                                             {{ $item->case_opponent_name ?? '-' }} -
                                         @endforeach
                                     </td>
-
                                     <td>
                                         @foreach ($case->caseOpponents as $item)
                                             {{ $item->case_opponent_national_number }} -
                                         @endforeach
                                     </td>
-
-                                    <td>
-                                        {{ $case->file_number ?? '-' }}
-                                    </td>
+                                    <td>{{ $case->file_number ?? '-' }}</td>
                                     <td>{{ $case->case_amount ?? '-' }}</td>
                                     <td>{{ $case->case_number ?? '-' }}</td>
                                     <td>{{ $case->court_name ?? '-' }}</td>
                                     <td>{{ $case->jubge_name ?? '-' }}</td>
-                                    <td>
-                                        {{ $case->proceduralRedords->last()->date ?? 'لا يوجد جلسات' }}
-                                    </td>
-
+                                    <td>{{ $case->proceduralRedords->last()->date ?? 'لا يوجد جلسات' }}</td>
                                     <td>
                                         @php
                                             $lastSession = $case->proceduralRedords->where('type', 'جلسه')->last();
                                         @endphp
-
                                         {{ $lastSession ? $lastSession->date : '-' }}
                                     </td>
-                                    <td>
-                                        {{ $case->proceduralRedords->last()->action ?? 'لا يوجد وقائع' }}
-                                    </td>
-
-
+                                    <td>{{ $case->proceduralRedords->last()->action ?? 'لا يوجد وقائع' }}</td>
                                     <td><a href="{{ route('cases.show', $case) }}" class="btn btn-sm btn-info">وقائع
                                             الدعوي</a></td>
                                     <td>
@@ -356,26 +360,20 @@
                                         @if (Auth::user()->role == 'admin' || Auth::user()->role == 'superadmin')
                                             <a href="{{ route('cases.edit', $case) }}"
                                                 class="btn btn-lg btn-warning w-100">تعديل</a>
-
                                             <form action="{{ route('cases.destroy', $case) }}" method="POST"
                                                 onsubmit="return confirm('هل أنت متأكد من الحذف؟');" class="w-100">
                                                 @csrf
                                                 @method('DELETE')
                                                 <button type="submit" class="btn btn-lg btn-danger w-100">حذف</button>
                                             </form>
-
                                             <div class="d-flex flex-column gap-2">
-
                                                 <a href="{{ route('cases.settlement', $case) }}"
-                                                    class="btn btn-lg btn-info w-100"> + تسويه </a>
+                                                    class="btn btn-lg btn-info w-100">+ تسويه</a>
                                                 <a href="{{ route('cases.expenses', $case) }}"
                                                     class="btn btn-lg btn-dark w-100">المصاريف</a>
-
                                             </div>
                                         @endif
-
                                     </td>
-
                                 </tr>
                             @endforeach
                         </tbody>
@@ -384,4 +382,51 @@
             </div>
         </div>
     </div>
+
+    {{-- ✅ JavaScript live search --}}
+    <script>
+        document.addEventListener("DOMContentLoaded", function() {
+            const table = document.getElementById("cases-table").getElementsByTagName("tbody")[0];
+            const filters = {
+                subscriber: document.getElementById("search-subscriber"),
+                client: document.getElementById("search-client"),
+                opponent: document.getElementById("search-opponent"),
+                caseNumber: document.getElementById("search-case-number"),
+                court: document.getElementById("search-court"),
+            };
+
+            function filterTable() {
+                const rows = table.getElementsByTagName("tr");
+                const searchValues = {
+                    subscriber: filters.subscriber.value.toLowerCase(),
+                    client: filters.client.value.toLowerCase(),
+                    opponent: filters.opponent.value.toLowerCase(),
+                    caseNumber: filters.caseNumber.value.toLowerCase(),
+                    court: filters.court.value.toLowerCase(),
+                };
+
+                for (let row of rows) {
+                    const cells = row.getElementsByTagName("td");
+                    let show = true;
+
+                    if (searchValues.subscriber && !cells[0].innerText.toLowerCase().includes(searchValues
+                            .subscriber)) show = false;
+                    if (searchValues.client && !cells[1].innerText.toLowerCase().includes(searchValues.client))
+                        show = false;
+                    if (searchValues.opponent && !cells[3].innerText.toLowerCase().includes(searchValues.opponent))
+                        show = false;
+                    if (searchValues.caseNumber && !cells[5].innerText.toLowerCase().includes(searchValues
+                            .caseNumber)) show = false;
+                    if (searchValues.court && !cells[8].innerText.toLowerCase().includes(searchValues.court)) show =
+                        false;
+
+                    row.style.display = show ? "" : "none";
+                }
+            }
+
+            Object.values(filters).forEach(input => {
+                input.addEventListener("keyup", filterTable);
+            });
+        });
+    </script>
 @endsection
