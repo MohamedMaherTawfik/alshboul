@@ -11,7 +11,7 @@
     <div class="container-fluid">
         <div class="d-flex justify-content-between align-items-center mb-3">
             <h4 class="mb-0">القضايا التنفيذية
-                <span class="text-dark">{{ $item->name }} - {{ count($item->excutiveCases) }}</span>
+                <span class="text-dark">{{ $item->name }} : {{ count($item->excutiveCases) }}</span>
             </h4>
             <a href="{{ route('executive-case.create', $item->id) }}" class="btn btn-primary">
                 + إضافة قضية تنفيذية لـ {{ $item->name }}
