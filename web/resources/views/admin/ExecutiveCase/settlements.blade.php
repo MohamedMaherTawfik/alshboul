@@ -15,13 +15,12 @@
                     <thead class="table-dark">
                         <tr>
                             <th>المستخدم</th>
-                            <th>الموكل</th>
+                            <th>اسم المشترك</th>
                             <th>رقم المشترك</th>
                             <th>اسم الموكل</th>
                             <th>الرقم الوطني للموكل</th>
                             <th>اسم الخصم</th>
                             <th>الرقم الوطني للخصم</th>
-                            <th>رقم الملف المكتبي</th>
                             <th>رقم الدعوى</th>
                             <th>رقم الملف</th>
                             <th>نوع القضايا التنفيذية</th>
@@ -29,8 +28,6 @@
                             <th>قيمة الدعوى</th>
                             <th>الدائرة التنفيذية</th>
                             <th>نوع السند التنفيذي</th>
-                            <th>المحكوم له</th>
-                            <th>المحكوم عليه</th>
                             <th>تاريخ التسجيل</th>
                             <th>رقم السند التنفيذي</th>
                             <th>صفة المحكوم له</th>
@@ -47,7 +44,6 @@
                             <td>{{ $executiveCase->client_national_id }}</td>
                             <td>{{ $executiveCase->opponent_name }}</td>
                             <td>{{ $executiveCase->opponent_national_id }}</td>
-                            <td>{{ $executiveCase->office_file_number }}</td>
                             <td>{{ $executiveCase->case_number }}</td>
                             <td>{{ $executiveCase->file_number }}</td>
                             <td>{{ $executiveCase->case_type }}</td>
@@ -55,8 +51,6 @@
                             <td>{{ $executiveCase->case_value }}</td>
                             <td>{{ $executiveCase->execution_court }}</td>
                             <td>{{ $executiveCase->execution_document_type }}</td>
-                            <td>{{ $executiveCase->judged_for }}</td>
-                            <td>{{ $executiveCase->judged_against }}</td>
                             <td>{{ $executiveCase->registration_date }}</td>
                             <td>{{ $executiveCase->execution_document_number }}</td>
                             <td>{{ $executiveCase->judged_for_status }}</td>
@@ -82,9 +76,8 @@
             <table class="table table-striped table-bordered">
                 <thead class="table-dark text-center">
                     <tr>
-                        <th>نوع الدعوي</th>
-                        <th>رقم الدعوي</th>
                         <th>الالتزام</th>
+                        <th>الوقائع</th>
                         <th>الرقم الوطني للخصم</th>
                         <th>اسم الموكل</th>
                         <th>اسم الخصم</th>
@@ -97,15 +90,21 @@
                 <tbody>
                     @forelse ($executiveCase->settlements as $settlement)
                         <tr class="text-center">
-                            <td>{{ $executiveCase->case_type ?? '-' }}</td>
-                            <td>{{ $executiveCase->case_number ?? '-' }}</td>
                             <td>{{ $settlement->obligation ?? '-' }}</td>
+                            <td>{{ $settlement->partner_name ?? '-' }}</td>
                             <td>{{ $settlement->opponent_national_id ?? '-' }}</td>
                             <td>{{ $settlement->client_name ?? '-' }}</td>
                             <td>{{ $settlement->opponent_name ?? '-' }}</td>
                             <td>{{ $settlement->amount ?? '-' }}</td>
                             <td>{{ $settlement->payment_value ?? '-' }}</td>
-                            <td>{{ $settlement->payment_terms ?? '-' }}</td>
+                            <td>{{ $settlement->payment_terms ?? '-' }}
+                                @if ($settlement->payment_terms == 'شهري')
+                                    - يوم {{ $settlement->day }}
+                                @else
+                                    - {{ $settlement->week_1 }} - {{ $settlement->week_2 }} -
+                                    {{ $settlement->week_3 }} - {{ $settlement->week_4 }}
+                                @endif
+                            </td>
                             <td>{{ $settlement->notes ?? '-' }}</td>
                         </tr>
                     @empty

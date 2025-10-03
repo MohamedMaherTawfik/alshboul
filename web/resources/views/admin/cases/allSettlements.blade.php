@@ -82,9 +82,10 @@
                 <thead class="table-dark text-center">
                     <tr>
                         <th>الالتزام</th>
+                        <th>وقائع التسويه</th>
                         <th>الرقم الوطني للخصم</th>
-                        <th>اسم الموكل</th>
-                        <th>اسم الخصم</th>
+                        <th>صفه الموكل</th>
+                        <th>صفه الخصم</th>
                         <th>قيمه الدين</th>
                         <th>قيمه الدفعات</th>
                         <th>واقع الاقساط</th>
@@ -95,12 +96,20 @@
                     @forelse ($settlements as $settlement)
                         <tr class="text-center">
                             <td>{{ $settlement->obligation ?? '-' }}</td>
+                            <td>{{ $settlement->partner_name ?? '-' }}</td>
                             <td>{{ $settlement->opponent_national_id ?? '-' }}</td>
                             <td>{{ $settlement->client_name ?? '-' }}</td>
                             <td>{{ $settlement->opponent_name ?? '-' }}</td>
                             <td>{{ $settlement->amount ?? '-' }}</td>
                             <td>{{ $settlement->payment_value ?? '-' }}</td>
-                            <td>{{ $settlement->payment_terms ?? '-' }}</td>
+                            <td>{{ $settlement->payment_terms ?? '-' }}
+                                @if ($settlement->payment_terms == 'شهري')
+                                    - يوم {{ $settlement->day }}
+                                @else
+                                    - {{ $settlement->week_1 }} - {{ $settlement->week_2 }} -
+                                    {{ $settlement->week_3 }} - {{ $settlement->week_4 }}
+                                @endif
+                            </td>
                             <td>{{ $settlement->notes ?? '-' }}</td>
                         </tr>
                     @empty

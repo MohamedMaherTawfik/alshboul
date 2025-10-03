@@ -124,37 +124,47 @@
                     <div class="mb-4">
                         <h5 class="section-title"><i class="bi bi-card-checklist me-2"></i>بيانات التسوية</h5>
                         <div class="row">
+                            <!-- بيانات الخصم -->
                             <div class="col-md-6 mb-3">
-                                <label class="form-label">الالتزام</label>
-                                <select class="form-select" name="obligation" required>
-                                    <option value="">-- اختر الالتزام --</option>
-                                    <option value="ملتزم">ملتزم</option>
-                                    <option value="غير ملتزم">غير ملتزم</option>
-                                </select>
+                                <label class="form-label">صفه الخصم</label>
+                                <input type="text" class="form-control readonly-field" name="opponent_name">
                             </div>
                             <div class="col-md-6 mb-3">
                                 <label class="form-label">الرقم الوطني للخصم</label>
                                 <input type="text" class="form-control readonly-field" name="opponent_national_id"
                                     value="{{ $case->caseOpponents->first()->case_opponent_national_number }}" readonly>
                             </div>
+
+                            <!-- بيانات الموكل -->
                             <div class="col-md-6 mb-3">
-                                <label class="form-label">اسم الخصم</label>
-                                <input type="text" class="form-control readonly-field" name="opponent_name"
-                                    value="{{ $case->caseOpponents->first()->case_opponent_name }}" readonly>
-                            </div>
-                            <div class="col-md-4 mb-3">
-                                <label class="form-label">اسم المشترك</label>
-                                <input type="text" class="form-control readonly-field" value="{{ $case->client->name }}"
-                                    readonly>
-                                <input type="hidden" name="client_name" value="{{ $case->client->name }}">
+                                <label class="form-label">صفه الموكل</label>
+                                <input type="text" class="form-control readonly-field" name="client_name">
                             </div>
                             <div class="col-md-6 mb-3">
                                 <label class="form-label">الرقم الوطني للموكل</label>
                                 <input type="text" class="form-control readonly-field" name="client_national_id"
                                     value="{{ $case->client->national_id }}" readonly>
                             </div>
+
+                            <!-- الالتزام -->
+                            <div class="col-md-12 mb-3 mt-2">
+                                <label class="form-label mt-2">الالتزام</label>
+                                <select class="form-select mt-2" name="obligation" required>
+                                    <option value="">-- اختر الالتزام --</option>
+                                    <option value="ملتزم">ملتزم</option>
+                                    <option value="غير ملتزم">غير ملتزم</option>
+                                </select>
+                            </div>
+
+                            <!-- وقائع التسوية -->
+                            <div class="col-md-12 mb-3">
+                                <label class="form-label">وقائع التسوية</label>
+                                <textarea class="form-control" name="partner_name" rows="4" placeholder="أدخل وقائع التسوية..."></textarea>
+                            </div>
                         </div>
                     </div>
+
+
 
                     <!-- المعلومات المالية -->
                     <div class="mb-4">
@@ -170,14 +180,56 @@
                                 <input type="number" step="0.01" class="form-control" name="payment_value"
                                     placeholder="أدخل قيمة الدفعات">
                             </div>
-                            <div class="col-md-6 mb-3">
-                                <label class="form-label">شروط السداد</label>
-                                <select class="form-select" name="payment_terms" required>
-                                    <option value="">-- اختر شرط السداد --</option>
-                                    <option value="شهري">شهري</option>
-                                    <option value="أسبوعي">أسبوعي</option>
-                                </select>
+                            <div class="row">
+                                <div class="col-md-6 mb-3">
+                                    <label class="form-label">شروط السداد</label>
+                                    <select class="form-select" name="payment_terms" id="payment_terms" required>
+                                        <option value="">-- اختر شرط السداد --</option>
+                                        <option value="شهري">شهري</option>
+                                        <option value="أسبوعي">أسبوعي</option>
+                                    </select>
+                                </div>
+
+                                <!-- خانة شهرية -->
+                                <div class="col-md-6 mb-3 d-none" id="monthly_input">
+                                    <label class="form-label">اليوم</label>
+                                    <input type="number" class="form-control" name="day" min="1"
+                                        placeholder="أدخل اليوم">
+                                </div>
+
+                                <!-- خانات أسبوعية -->
+                                <div class="col-md-6 mb-3 d-none" id="weekly_inputs">
+                                    <label class="form-label">الايام</label>
+                                    <div class="d-flex gap-2">
+                                        <input type="number" class="form-control ml-1" name="week_1" min="1"
+                                            placeholder="الاسبوع الاول">
+                                        <input type="number" class="form-control ml-1" name="week_2" min="1"
+                                            placeholder="الاسبوع الثاني">
+                                        <input type="number" class="form-control ml-1" name="week_3" min="1"
+                                            placeholder="الاسبوع الثالث">
+                                        <input type="number" class="form-control ml-1" name="week_4" min="1"
+                                            placeholder="الاسبوع الرابع">
+                                    </div>
+                                </div>
                             </div>
+
+                            <script>
+                                document.getElementById('payment_terms').addEventListener('change', function() {
+                                    let monthlyInput = document.getElementById('monthly_input');
+                                    let weeklyInputs = document.getElementById('weekly_inputs');
+
+                                    // إخفاء الاثنين في البداية
+                                    monthlyInput.classList.add('d-none');
+                                    weeklyInputs.classList.add('d-none');
+
+                                    if (this.value === 'شهري') {
+                                        monthlyInput.classList.remove('d-none');
+                                    } else if (this.value === 'أسبوعي') {
+                                        weeklyInputs.classList.remove('d-none');
+                                    }
+                                });
+                            </script>
+
                         </div>
                     </div>
 
