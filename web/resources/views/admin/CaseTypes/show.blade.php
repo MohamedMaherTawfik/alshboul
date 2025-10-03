@@ -367,7 +367,7 @@
                                                 <button type="submit" class="btn btn-lg btn-danger w-100">حذف</button>
                                             </form>
                                             <div class="d-flex flex-column gap-2">
-                                                <a href="{{ route('cases.settlement', $case) }}"
+                                                <a href="{{ route('cases.settlement.all', $case) }}"
                                                     class="btn btn-lg btn-info w-100">+ تسويه</a>
                                                 <a href="{{ route('cases.expenses', $case) }}"
                                                     class="btn btn-lg btn-dark w-100">المصاريف</a>

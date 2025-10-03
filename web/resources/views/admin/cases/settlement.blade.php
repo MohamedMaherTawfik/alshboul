@@ -1,255 +1,178 @@
 @extends('layouts.admin')
-@section('title', 'اضافه تسويه')
-@section('main_title_content', 'اضافه تسويه')
+@section('title', 'إضافة تسوية')
+@section('main_title_content', 'إضافة تسوية')
 @section('title_content', 'إضافة')
 @section('link_content')
     <a href="{{ route('cases.all') }}">جميع القضايا</a>
 @endsection
-<style>
-    :root {
-        --primary-color: #3498db;
-        --secondary-color: #2c3e50;
-        --accent-color: #f8f9fa;
-        --border-color: #dee2e6;
-    }
 
-    body {
-        background-color: #f8f9fa;
-        font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
-        color: #333;
-    }
-
-    .header-title {
-        color: var(--secondary-color);
-        border-right: 4px solid var(--primary-color);
-        padding-right: 15px;
-        font-weight: 700;
-    }
-
-    .breadcrumb {
-        background-color: transparent;
-        padding: 0;
-    }
-
-    .breadcrumb-item a {
-        color: var(--primary-color);
-        text-decoration: none;
-    }
-
-    .breadcrumb-item.active {
-        color: var(--secondary-color);
-    }
-
-    .card {
-        border: none;
-        border-radius: 10px;
-        box-shadow: 0 0 20px rgba(0, 0, 0, 0.08);
-        margin-bottom: 2rem;
-    }
-
-    .card-header {
-        background: linear-gradient(to right, #f8f9fa, #e9ecef);
-        border-bottom: 1px solid var(--border-color);
-        padding: 1.2rem 1.5rem;
-        font-weight: 600;
-        color: var(--secondary-color);
-    }
-
-    .section-title {
-        color: var(--primary-color);
-        font-weight: 600;
-        margin-bottom: 1.2rem;
-        padding-bottom: 0.5rem;
-        border-bottom: 2px solid var(--primary-color);
-    }
-
-    .form-label {
-        font-weight: 600;
-        margin-bottom: 0.5rem;
-        color: var(--secondary-color);
-    }
-
-    .form-control,
-    .form-select {
-        border-radius: 6px;
-        padding: 0.75rem 1rem;
-        border: 1px solid var(--border-color);
-        transition: all 0.3s;
-    }
-
-    .form-control:focus,
-    .form-select:focus {
-        border-color: var(--primary-color);
-        box-shadow: 0 0 0 0.25rem rgba(52, 152, 219, 0.25);
-    }
-
-    .readonly-field {
-        background-color: #f8f9fa;
-        color: #6c757d;
-    }
-
-    .btn-primary {
-        background-color: var(--primary-color);
-        border-color: var(--primary-color);
-        padding: 0.75rem 1.5rem;
-        font-weight: 600;
-        border-radius: 6px;
-        transition: all 0.3s;
-    }
-
-    .btn-primary:hover {
-        background-color: #2980b9;
-        border-color: #2980b9;
-        transform: translateY(-2px);
-    }
-
-    .btn-outline-secondary {
-        padding: 0.75rem 1.5rem;
-        font-weight: 600;
-        border-radius: 6px;
-        transition: all 0.3s;
-    }
-
-    .btn-outline-secondary:hover {
-        transform: translateY(-2px);
-    }
-
-    .input-group-text {
-        background-color: #e9ecef;
-        border: 1px solid var(--border-color);
-    }
-
-    .form-section {
-        margin-bottom: 2rem;
-        padding: 1.5rem;
-        background-color: white;
-        border-radius: 8px;
-        box-shadow: 0 0 10px rgba(0, 0, 0, 0.03);
-    }
-
-    @media (max-width: 768px) {
-        .form-section {
-            padding: 1rem;
-        }
-    }
-</style>
 @section('content')
-    <div class="container py-5">
+    <style>
+        body {
+            background-color: #f4f6f9;
+            direction: rtl;
+        }
+
+        .card {
+            border: none;
+            border-radius: 12px;
+            box-shadow: 0 4px 15px rgba(0, 0, 0, .05);
+        }
+
+        .card-header {
+            background: linear-gradient(to left, #3498db, #2980b9);
+            color: #fff;
+            border-radius: 12px 12px 0 0;
+            padding: 1rem 1.25rem;
+            font-weight: bold;
+        }
+
+        .section-title {
+            font-size: 1.1rem;
+            font-weight: 600;
+            color: #2c3e50;
+            margin-bottom: 1rem;
+            border-bottom: 2px solid #3498db;
+            padding-bottom: .3rem;
+        }
+
+        .form-control,
+        .form-select {
+            border-radius: 8px;
+            padding: .65rem .9rem;
+        }
+
+        .form-control:focus,
+        .form-select:focus {
+            border-color: #3498db;
+            box-shadow: 0 0 0 0.2rem rgba(52, 152, 219, .2);
+        }
+
+        .readonly-field {
+            background: #f1f3f5;
+            color: #6c757d;
+            font-weight: 500;
+        }
+
+        .btn-primary {
+            background: #3498db;
+            border: none;
+            border-radius: 8px;
+            padding: .65rem 1.5rem;
+            font-weight: 600;
+        }
+
+        .btn-primary:hover {
+            background: #2980b9;
+        }
+
+        .btn-outline-secondary {
+            border-radius: 8px;
+            padding: .65rem 1.5rem;
+            font-weight: 600;
+        }
+    </style>
+
+    <div class="container py-4">
+        <!-- العنوان والمسار -->
         <div class="row mb-4">
             <div class="col">
-                <h2 class="header-title">اضافه تسويه</h2>
+                <h2 class="fw-bold text-dark">إضافة تسوية</h2>
                 <nav aria-label="breadcrumb">
-                    <ol class="breadcrumb">
+                    <ol class="breadcrumb bg-transparent p-0">
                         <li class="breadcrumb-item"><a href="#">الرئيسية</a></li>
                         <li class="breadcrumb-item"><a href="{{ route('cases.all') }}">جميع القضايا</a></li>
-                        <li class="breadcrumb-item active" aria-current="page">إضافة تسوية</li>
+                        <li class="breadcrumb-item active">إضافة تسوية</li>
                     </ol>
                 </nav>
             </div>
         </div>
 
+        <!-- الفورم -->
         <div class="card">
             <div class="card-header">
-                <h5 class="mb-0"><i class="bi bi-file-earmark-text me-2"></i>نموذج إضافة تسوية جديدة</h5>
+                <i class="bi bi-file-earmark-text me-2"></i> نموذج إضافة تسوية جديدة
             </div>
             <div class="card-body">
                 <form action="{{ route('cases.storeSettlement', $case) }}" method="POST">
                     @csrf
 
-                    <!-- معلومات القضية (غير قابلة للتعديل) -->
-                    <div class="form-section">
+                    <!-- معلومات القضية -->
+                    <div class="mb-4">
                         <h5 class="section-title"><i class="bi bi-folder me-2"></i>معلومات القضية</h5>
                         <div class="row">
                             <div class="col-md-4 mb-3">
-                                <label for="lawsuit_type" class="form-label">نوع الدعوى</label>
-                                <input type="text" class="form-control readonly-field" id="lawsuit_type"
-                                    name="lawsuit_type" value="{{ $case->suggestedCases->name }}" readonly>
+                                <label class="form-label">نوع الدعوى</label>
+                                <input type="text" class="form-control readonly-field"
+                                    value="{{ $case->suggestedCases->name }}" readonly>
                             </div>
                             <div class="col-md-4 mb-3">
-                                <label for="lawsuit_number" class="form-label">رقم الدعوى</label>
-                                <input type="text" class="form-control readonly-field" id="lawsuit_number"
-                                    name="lawsuit_number" value="{{ $case->case_number }}" readonly>
+                                <label class="form-label">رقم الدعوى</label>
+                                <input type="text" class="form-control readonly-field" value="{{ $case->file_number }}"
+                                    readonly>
                             </div>
                             <div class="col-md-4 mb-3">
-                                <label for="subscriber_name" class="form-label">اسم المشترك</label>
-                                <input type="text" class="form-control" id="subscriber_name"
+                                <label class="form-label">اسم المشترك</label>
+                                <input type="text" class="form-control readonly-field"
                                     value="{{ $case->subscriber->name }}" readonly>
                                 <input type="hidden" name="user_id" value="{{ $case->subscriber->id }}">
                             </div>
-
                         </div>
                     </div>
 
                     <!-- بيانات التسوية -->
-                    <div class="form-section">
+                    <div class="mb-4">
                         <h5 class="section-title"><i class="bi bi-card-checklist me-2"></i>بيانات التسوية</h5>
                         <div class="row">
                             <div class="col-md-6 mb-3">
-                                <label for="obligation" class="form-label">الالتزام</label>
-                                <select class="form-select" id="obligation" name="obligation" required>
+                                <label class="form-label">الالتزام</label>
+                                <select class="form-select" name="obligation" required>
                                     <option value="">-- اختر الالتزام --</option>
                                     <option value="ملتزم">ملتزم</option>
                                     <option value="غير ملتزم">غير ملتزم</option>
                                 </select>
                             </div>
                             <div class="col-md-6 mb-3">
-                                <label for="opponent_phone" class="form-label">هاتف الخصم</label>
-                                <input type="text" class="form-control" id="opponent_phone" name="opponent_phone"
-                                    placeholder="أدخل هاتف الخصم">
-                            </div>
-                        </div>
-
-                        <div class="row">
-                            <div class="col-md-6 mb-3">
-                                <label for="client_status" class="form-label">صفة الموكل</label>
-                                <input type="text" class="form-control" id="client_status" name="client_status"
-                                    placeholder="أدخل صفة الموكل">
+                                <label class="form-label">الرقم الوطني للخصم</label>
+                                <input type="text" class="form-control readonly-field" name="opponent_national_id"
+                                    value="{{ $case->caseOpponents->first()->case_opponent_national_number }}" readonly>
                             </div>
                             <div class="col-md-6 mb-3">
-                                <label for="opponent_status" class="form-label">صفة الخصم</label>
-                                <input type="text" class="form-control" id="opponent_status" name="opponent_status"
-                                    placeholder="أدخل صفة الخصم">
+                                <label class="form-label">اسم الخصم</label>
+                                <input type="text" class="form-control readonly-field" name="opponent_name"
+                                    value="{{ $case->caseOpponents->first()->case_opponent_name }}" readonly>
                             </div>
-                        </div>
-
-                        <div class="row">
-                            <div class="col-md-6 mb-3">
-                                <label for="opponent_name" class="form-label">اسم الخصم</label>
-                                <input type="text" class="form-control" id="opponent_name" name="opponent_name"
-                                    placeholder="أدخل اسم الخصم">
+                            <div class="col-md-4 mb-3">
+                                <label class="form-label">اسم المشترك</label>
+                                <input type="text" class="form-control readonly-field" value="{{ $case->client->name }}"
+                                    readonly>
+                                <input type="hidden" name="client_name" value="{{ $case->client->name }}">
                             </div>
                             <div class="col-md-6 mb-3">
-                                <label for="client_name" class="form-label">اسم الموكل</label>
-                                <input type="text" class="form-control" id="client_name" name="client_name"
-                                    placeholder="أدخل اسم الموكل">
+                                <label class="form-label">الرقم الوطني للموكل</label>
+                                <input type="text" class="form-control readonly-field" name="client_national_id"
+                                    value="{{ $case->client->national_id }}" readonly>
                             </div>
                         </div>
                     </div>
 
                     <!-- المعلومات المالية -->
-                    <div class="form-section">
+                    <div class="mb-4">
                         <h5 class="section-title"><i class="bi bi-currency-exchange me-2"></i>المعلومات المالية</h5>
                         <div class="row">
                             <div class="col-md-6 mb-3">
-                                <label for="amount" class="form-label">المبلغ</label>
-                                <div class="input-group">
-                                    <input type="number" step="0.01" class="form-control" id="amount"
-                                        name="amount" placeholder="أدخل المبلغ">
-                                </div>
+                                <label class="form-label">المبلغ</label>
+                                <input type="number" step="0.01" class="form-control" name="amount"
+                                    placeholder="أدخل المبلغ">
                             </div>
                             <div class="col-md-6 mb-3">
-                                <label for="payment_value" class="form-label">قيمة الدفعات</label>
-                                <div class="input-group">
-                                    <input type="number" step="0.01" class="form-control" id="payment_value"
-                                        name="payment_value" placeholder="أدخل قيمة الدفعات">
-                                </div>
+                                <label class="form-label">قيمة الدفعات</label>
+                                <input type="number" step="0.01" class="form-control" name="payment_value"
+                                    placeholder="أدخل قيمة الدفعات">
                             </div>
-                        </div>
-
-                        <div class="row">
                             <div class="col-md-6 mb-3">
-                                <label for="payment_terms" class="form-label">شروط السداد</label>
-                                <select class="form-select" id="payment_terms" name="payment_terms" required>
+                                <label class="form-label">شروط السداد</label>
+                                <select class="form-select" name="payment_terms" required>
                                     <option value="">-- اختر شرط السداد --</option>
                                     <option value="شهري">شهري</option>
                                     <option value="أسبوعي">أسبوعي</option>
@@ -259,30 +182,22 @@
                     </div>
 
                     <!-- معلومات إضافية -->
-                    <div class="form-section">
-                        <h5 class="section-title"><i class="bi bi-chat-left-text me-2"></i>معلومات إضافية</h5>
-                        <div class="row">
-                            <div class="col-12 mb-3">
-                                <label for="notes" class="form-label">ملاحظات</label>
-                                <textarea class="form-control" id="notes" name="notes" rows="4" placeholder="أدخل الملاحظات"></textarea>
-                            </div>
-                        </div>
+                    <div class="mb-4">
+                        <h5 class="section-title"><i class="bi bi-chat-left-text me-2"></i>ملاحظات</h5>
+                        <textarea class="form-control" name="notes" rows="4" placeholder="أدخل الملاحظات"></textarea>
                     </div>
 
-                    <!-- أزرار الحفظ -->
-                    <div class="row mt-4">
-                        <div class="col-12 text-start">
-                            <button type="submit" class="btn btn-primary px-4">
-                                <i class="bi bi-check2-circle me-2"></i>حفظ التسوية
-                            </button>
-                            <button type="reset" class="btn btn-outline-secondary px-4 me-2">
-                                <i class="bi bi-x-circle me-2"></i>إلغاء
-                            </button>
-                        </div>
+                    <!-- الأزرار -->
+                    <div class="text-start">
+                        <button type="submit" class="btn btn-primary">
+                            <i class="bi bi-check2-circle me-1"></i> حفظ التسوية
+                        </button>
+                        <button type="reset" class="btn btn-outline-secondary me-2">
+                            <i class="bi bi-x-circle me-1"></i> إلغاء
+                        </button>
                     </div>
                 </form>
             </div>
         </div>
     </div>
-
 @endsection

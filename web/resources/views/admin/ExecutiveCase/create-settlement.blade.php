@@ -37,16 +37,6 @@
                             <div class="mb-4">
                                 <div class="row g-3">
                                     <div class="col-md-6">
-                                        <label for="settlement_main_id" class="form-label">نوع التسويه</label>
-                                        <select name="settlement_main_id" id="settlement_main_id" class="form-select"
-                                            required>
-                                            <option value="">-- اختر نوع الدعوي --</option>
-                                            @foreach ($settlements as $settlement)
-                                                <option value="{{ $settlement->id }}">{{ $settlement->name }}</option>
-                                            @endforeach
-                                        </select>
-                                    </div>
-                                    <div class="col-md-6">
                                         <label for="obligation" class="form-label">الالتزام</label>
                                         <select class="form-select" id="obligation" name="obligation" required>
                                             <option value="">-- اختر الالتزام --</option>
@@ -63,31 +53,20 @@
                                 <div class="row g-3">
 
                                     <div class="col-md-6">
-                                        <label for="opponent_phone" class="form-label">هاتف الخصم</label>
-                                        <input type="text" class="form-control" id="opponent_phone" name="opponent_phone"
-                                            placeholder="أدخل هاتف الخصم">
+                                        <label for="opponent_national_id" class="form-label">الرقم الوطني للخصم</label>
+                                        <input type="text" class="form-control" id="opponent_national_id"
+                                            name="opponent_national_id" value="{{ $executiveCase->opponent_national_id }}"
+                                            readonly>
                                     </div>
-
-                                    <div class="col-md-6">
-                                        <label for="client_status" class="form-label">صفة الموكل</label>
-                                        <input type="text" class="form-control" id="client_status" name="client_status"
-                                            placeholder="أدخل صفة الموكل">
-                                    </div>
-                                    <div class="col-md-6">
-                                        <label for="opponent_status" class="form-label">صفة الخصم</label>
-                                        <input type="text" class="form-control" id="opponent_status"
-                                            name="opponent_status" placeholder="أدخل صفة الخصم">
-                                    </div>
-
                                     <div class="col-md-6">
                                         <label for="opponent_name" class="form-label">اسم الخصم</label>
                                         <input type="text" class="form-control" id="opponent_name" name="opponent_name"
-                                            placeholder="أدخل اسم الخصم">
+                                            value= "{{ $executiveCase->opponent_name }}" readonly>
                                     </div>
                                     <div class="col-md-6">
                                         <label for="client_name" class="form-label">اسم الموكل</label>
                                         <input type="text" class="form-control" id="client_name" name="client_name"
-                                            placeholder="أدخل اسم الموكل">
+                                            value="{{ $executiveCase->client_name }}" readonly>
                                     </div>
                                 </div>
                             </div>

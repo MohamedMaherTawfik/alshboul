@@ -357,6 +357,7 @@ Route::group(['prefix' => 'admin', 'middleware' => ['auth', roleMiddleware::clas
     Route::post('/{session}/edit/session', [CaseController::class, 'updateSession'])->name('cases.session.update');
     Route::delete('/{session}/delete/session', [CaseController::class, 'destroySession'])->name('cases.session.delete');
     Route::delete('/{session}/delete/session/file/go', [CaseController::class, 'deleteSessionFile'])->name('cases.session.delete.files');
+    Route::get('/{case}/settlement/all', [CaseController::class, 'allSettlements'])->name('cases.settlement.all');
     Route::get('/{case}/settlement', [CaseController::class, 'settlement'])->name('cases.settlement');
     Route::post('/{case}/settlement', [CaseController::class, 'storeSettlement'])->name('cases.storeSettlement');
     Route::get('/{case}/expenses', [CaseController::class, 'expenses'])->name('cases.expenses');

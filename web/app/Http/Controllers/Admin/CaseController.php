@@ -254,6 +254,12 @@ class CaseController extends Controller
         return view('admin.cases.caseSessions', compact('case'));
     }
 
+    public function allSettlements(Cases $case)
+    {
+        $settlements = Settlement::where('cases_id', $case->id)->get();
+        return view('admin.cases.allSettlements', compact('case', 'settlements'));
+    }
+
     public function settlement(Cases $case)
     {
         return view('admin.cases.settlement', compact('case'));
@@ -264,7 +270,7 @@ class CaseController extends Controller
         $data = $request->except('_token', 'lawsuit_type', 'lawsuit_number');
         $data['cases_id'] = $case->id;
         Settlement::create($data);
-        return redirect()->route('cases.show', $case ?? '')->with('success', 'تم تسجيل التسوية بنجاح');
+        return redirect()->route('cases.settlement.all', $case ?? '')->with('success', 'تم تسجيل التسوية بنجاح');
     }
 
     public function expenses(Cases $case)

@@ -235,7 +235,6 @@ class ExecutiveCaseController extends Controller
 
     public function createSettlement(ExecutiveCase $executiveCase)
     {
-        dd($executiveCase);
         $settlements = SettlementMain::all();
         return view('admin.ExecutiveCase.create-settlement', compact('executiveCase', 'settlements'));
     }

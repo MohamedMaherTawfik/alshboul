@@ -85,9 +85,9 @@
                         <th>نوع الدعوي</th>
                         <th>رقم الدعوي</th>
                         <th>الالتزام</th>
-                        <th>هاتف الخصم</th>
-                        <th>صفه الموكل</th>
-                        <th>صفه الخصم</th>
+                        <th>الرقم الوطني للخصم</th>
+                        <th>اسم الموكل</th>
+                        <th>اسم الخصم</th>
                         <th>قيمه الدين</th>
                         <th>قيمه الدفعات</th>
                         <th>واقع الاقساط</th>
@@ -100,9 +100,9 @@
                             <td>{{ $executiveCase->case_type ?? '-' }}</td>
                             <td>{{ $executiveCase->case_number ?? '-' }}</td>
                             <td>{{ $settlement->obligation ?? '-' }}</td>
-                            <td>{{ $settlement->opponent_phone ?? '-' }}</td>
-                            <td>{{ $settlement->client_status ?? '-' }}</td>
-                            <td>{{ $settlement->opponent_status ?? '-' }}</td>
+                            <td>{{ $settlement->opponent_national_id ?? '-' }}</td>
+                            <td>{{ $settlement->client_name ?? '-' }}</td>
+                            <td>{{ $settlement->opponent_name ?? '-' }}</td>
                             <td>{{ $settlement->amount ?? '-' }}</td>
                             <td>{{ $settlement->payment_value ?? '-' }}</td>
                             <td>{{ $settlement->payment_terms ?? '-' }}</td>
