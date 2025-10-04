@@ -4,6 +4,7 @@ use App\Http\Middleware\SetLanguage;
 use Illuminate\Foundation\Application;
 use Illuminate\Foundation\Configuration\Exceptions;
 use Illuminate\Foundation\Configuration\Middleware;
+use Illuminate\Console\Scheduling\Schedule;
 
 return Application::configure(basePath: dirname(__DIR__))
     ->withRouting(
@@ -14,10 +15,14 @@ return Application::configure(basePath: dirname(__DIR__))
     ->withMiddleware(function (Middleware $middleware) {
         $middleware->alias([
             'check_role' => \App\Http\Middleware\CheckUserRole::class,
-            'setLanguage' => SetLanguage::class
-
+            'setLanguage' => SetLanguage::class,
         ]);
     })
     ->withExceptions(function (Exceptions $exceptions) {
         //
-    })->create();
+    })
+    ->withSchedule(function (Schedule $schedule) {
+        // تشغيل الكوماند كل ساعة
+        $schedule->command('cases:check-neglected')->hourly();
+    })
+    ->create();
