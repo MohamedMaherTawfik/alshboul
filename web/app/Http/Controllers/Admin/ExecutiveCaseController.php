@@ -42,7 +42,7 @@ class ExecutiveCaseController extends Controller
                 if ($totalEvents == $trashed->counts) {
                     $daysDiff = now()->diffInDays($trashed->updated_at);
 
-                    if ($daysDiff >= 1) {
+                    if ($daysDiff >= 0) {
                         $trashed->increment('days_passed', $daysDiff);
                     }
 

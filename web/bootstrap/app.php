@@ -22,6 +22,9 @@ return Application::configure(basePath: dirname(__DIR__))
         //
     })
     ->withSchedule(function (Schedule $schedule) {
-        $schedule->command('cases:check-neglected')->hourly();
+        $schedule->command('cases:check-neglected')->everyMinute();
+        $schedule->command('executive-cases:check-neglected')->everyMinute();
+        $schedule->command('settlements:check-neglected')->everyMinute();
+        $schedule->command('check:transactions')->everyMinute();
     })
     ->create();

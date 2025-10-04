@@ -3,50 +3,44 @@
 namespace App\Console\Commands;
 
 use Illuminate\Console\Command;
-use App\Models\cases;
-use App\Models\CaseType;
+use App\Models\ExecutiveCase;
+use App\Models\excutiveCasesMain;
 use App\Models\NegligenceDays;
 use App\Models\trahsedDays;
 
-class CheckNeglectedCases extends Command
+class CheckNeglectedExecutiveCases extends Command
 {
     /**
      * اسم الكوماند اللي ممكن نشغله يدويًا
      */
-    protected $signature = 'cases:check-neglected';
+    protected $signature = 'executive-cases:check-neglected';
 
     /**
      * وصف الكوماند
      */
-    protected $description = 'Check for neglected cases and update trashedDays table accordingly';
+    protected $description = 'Check for neglected executive cases and update trashedDays table accordingly';
 
     public function handle()
     {
-        $caseTypes = CaseType::all();
+        $mainCases = excutiveCasesMain::all();
 
-        foreach ($caseTypes as $casetype) {
-            $cases = cases::with('caseOpponents')
-                ->where('suggested_case_id', $casetype->id)
-                ->where('active', 1)
-                ->get()
-                ->sortBy('case_number');
+        foreach ($mainCases as $mainCase) {
+            $executiveCases = ExecutiveCase::where('excutive_cases_main_id', $mainCase->id)->get();
 
-            $neglectConfig = NegligenceDays::where('case_type_id', $casetype->id)->first();
+            $neglectConfig = NegligenceDays::where('excutive_cases_main_id', $mainCase->id)->first();
 
             if (!$neglectConfig) {
                 continue;
             }
 
-            foreach ($cases as $case) {
-                $totalEvents = $case->courtSession()->count()
-                    + $case->legalPeriods()->count()
-                    + $case->caseNotes()->count()
-                    + $case->proceduralRedords()->count();
+            foreach ($executiveCases as $case) {
+                $totalEvents = $case->proceduralRecords()->count()
+                    + $case->settlements()->count();
 
-                $trashed = trahsedDays::where('cases_id', $case->id)->first();
+                $trashed = trahsedDays::where('executive_case_id', $case->id)->first();
 
                 if ($trashed) {
-                    $daysDiff = now()->diffInDays($trashed->created_at);
+                    $daysDiff = now()->diffInDays($trashed->updated_at);
 
                     if ($totalEvents == $trashed->counts) {
                         if ($daysDiff >= 0) {
@@ -65,7 +59,7 @@ class CheckNeglectedCases extends Command
                     }
                 } else {
                     trahsedDays::create([
-                        'cases_id' => $case->id,
+                        'executive_case_id' => $case->id,
                         'counts' => $totalEvents,
                         'days_passed' => 0,
                         'is_seen' => 0,
@@ -74,6 +68,6 @@ class CheckNeglectedCases extends Command
             }
         }
 
-        $this->info('Neglected cases checked successfully!');
+        $this->info('Neglected executive cases checked successfully!');
     }
 }
