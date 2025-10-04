@@ -26,48 +26,57 @@ class ExecutiveCaseController extends Controller
     {
         $executiveCases = ExecutiveCase::where('excutive_cases_main_id', $item->id)->get();
 
+        $casesId = $executiveCases->pluck('id')->toArray();
         $neglectConfig = NegligenceDays::where('excutive_cases_main_id', $item->id)->first();
 
-        if (!$neglectConfig) {
-            return view('admin.ExecutiveCase.index', compact('item', 'executiveCases'));
-        }
+        $more = 0;
+        $settlements = Settlement::whereIn('executive_case_id', $casesId)->first();
 
-        foreach ($executiveCases as $case) {
-            $totalEvents = $case->proceduralRecords()->count()
-                + $case->settlements()->count();
 
-            $trashed = trahsedDays::where('executive_case_id', $case->id)->first();
+        if ($neglectConfig) {
+            foreach ($executiveCases as $case) {
+                $totalEvents = $case->proceduralRecords()->count()
+                    + $case->settlements()->count();
 
-            if ($trashed) {
-                if ($totalEvents == $trashed->counts) {
-                    $daysDiff = now()->diffInDays($trashed->updated_at);
+                $trashed = trahsedDays::where('executive_case_id', $case->id)->first();
 
-                    if ($daysDiff >= 0) {
-                        $trashed->increment('days_passed', $daysDiff);
+                if ($trashed) {
+                    if ($totalEvents == $trashed->counts) {
+                        $daysDiff = now()->diffInDays($trashed->updated_at);
+
+                        if ($daysDiff >= 0) {
+                            $trashed->increment('days_passed', $daysDiff);
+                        }
+
+                        if ($trashed->days_passed >= $neglectConfig->days) {
+                            $trashed->update(['is_seen' => 1]);
+                        }
+                    } elseif ($totalEvents > $trashed->counts) {
+                        $trashed->update([
+                            'counts' => $totalEvents,
+                            'days_passed' => 0,
+                            'is_seen' => 0,
+                        ]);
                     }
-
-                    if ($trashed->days_passed >= $neglectConfig->days) {
-                        $trashed->update(['is_seen' => 1]);
-                    }
-                } elseif ($totalEvents > $trashed->counts) {
-                    $trashed->update([
+                } else {
+                    // مفيش سجل → نعمل واحد جديد
+                    trahsedDays::create([
+                        'executive_case_id' => $case->id,
                         'counts' => $totalEvents,
                         'days_passed' => 0,
                         'is_seen' => 0,
                     ]);
                 }
-            } else {
-                // مفيش سجل → نعمل واحد جديد
-                trahsedDays::create([
-                    'executive_case_id' => $case->id,
-                    'counts' => $totalEvents,
-                    'days_passed' => 0,
-                    'is_seen' => 0,
-                ]);
             }
+            if ($settlements) {
+                $more = $settlements->executive_case_id;
+            }
+            return view('admin.ExecutiveCase.index', compact('item', 'executiveCases', 'neglectConfig', 'more'));
         }
-
-        return view('admin.ExecutiveCase.index', compact('item', 'executiveCases'));
+        if ($settlements) {
+            $more = $settlements->executive_case_id;
+        }
+        return view('admin.ExecutiveCase.index', compact('item', 'executiveCases', 'more'));
     }
 
     /**

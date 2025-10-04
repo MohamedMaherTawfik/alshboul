@@ -115,7 +115,8 @@
                                 <label class="form-label">اسم المشترك</label>
                                 <input type="text" class="form-control readonly-field"
                                     value="{{ $case->subscriber->name }}" readonly>
-                                <input type="hidden" name="user_id" value="{{ $case->subscriber->id }}">
+                                <input type="hidden" name="client_name" value="{{ $case->subscriber->name }}">
+                                <input type="hidden" name="user_id" value="{{ Auth::user()->id }}">
                             </div>
                         </div>
                     </div>

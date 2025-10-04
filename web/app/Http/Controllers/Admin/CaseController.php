@@ -35,7 +35,7 @@ class CaseController extends Controller
         $clients = Client::with('user')->where('seen', 1)->where('active', 1)->orderBy('id', 'desc')->get();
         $users = User::with('client')->where('role', 'user')->where('active', 1)->get();
 
-        $numbers = $case->suggestedCases()->pluck('case_number')->sort()->toArray();
+        $numbers = $case->suggestedCases()->where('active', 1)->where('case_number', '!=', '')->pluck('case_number')->sort()->toArray();
 
         $missing = 1;
         foreach ($numbers as $num) {
@@ -160,7 +160,6 @@ class CaseController extends Controller
         }
     }
 
-    // حذف
     public function destroy(Cases $case)
     {
         $case->update(['active' => 0]);
@@ -302,13 +301,18 @@ class CaseController extends Controller
 
     public function show(Cases $case)
     {
+        $more = 0;
         $case->load([
             'proceduralRedords'
         ]);
 
         $lawyers = User::whereIn('role', ['Lawyer', 'admin', 'superadmin'])->where('active', 1)->get();
-
-        return view('admin.cases.show', compact('case', 'lawyers'));
+        $settlements = Settlement::where('cases_id', $case->id)->first();
+        if ($settlements) {
+            $more = $settlements->id;
+            return view('admin.cases.show', compact('case', 'lawyers', 'more'));
+        }
+        return view('admin.cases.show', compact('case', 'lawyers', 'more'));
     }
     public function showDurations(Cases $case)
     {

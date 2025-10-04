@@ -18,7 +18,6 @@
             </a>
         </div>
 
-        {{-- 🔍 خانات البحث --}}
         <div class="row mb-3">
             <div class="col-md-2">
                 <input type="text" id="searchClient" class="form-control" placeholder="بحث باسم المشترك">
@@ -58,8 +57,9 @@
                                 <th>نوع السند التنفيذي</th>
                                 <th>رقم السند التنفيذي</th>
                                 <th>تاريخ الجلسة الإجرائية</th>
+                                <th> الاجراءات</th>
                                 @if (Auth::user()->role == 'admin' || Auth::user()->role == 'superadmin')
-                                    <th>الاجراءات</th>
+                                    <th>العمليات</th>
                                 @endif
                             </tr>
                         </thead>
@@ -82,6 +82,16 @@
                                     <td>{{ $case->execution_document_number }}</td>
                                     <td>{{ $case->procedural_session_date }}</td>
                                     <td>
+                                        @if ($more == $case->id)
+                                            <a href="{{ route('procedural-record.index', $case) }}" class="">تم تحويل
+                                                القضيه الي جميع التسويات</a>
+                                        @else
+                                            <a href="{{ route('procedural-record.index', $case) }}"
+                                                class="btn btn-info btn-sm mb-1">الإجراءات</a>
+                                        @endif
+
+                                    </td>
+                                    <td>
                                         @if (Auth::user()->role == 'admin' || Auth::user()->role == 'superadmin')
                                             <a href="{{ route('executive-case.edit', $case) }}"
                                                 class="btn btn-warning btn-sm mb-1">تعديل</a>
@@ -96,9 +106,6 @@
                                                 </button>
                                             </form>
                                         @endif
-                                        <a href="{{ route('procedural-record.index', $case) }}"
-                                            class="btn btn-info btn-sm mb-1">الإجراءات</a>
-
                                         <a href="{{ route('executive-case.settlement', $case) }}"
                                             class="btn btn-success btn-sm mb-1">إضافة تسوية</a>
 
@@ -118,7 +125,6 @@
         </div>
     </div>
 
-    {{-- 🔎 سكريبت البحث --}}
     <script>
         document.addEventListener("DOMContentLoaded", function() {
             const searchClient = document.getElementById("searchClient");

@@ -151,6 +151,7 @@
                                 {{ $type->name }}
                             </a>
                         @endforeach
+                        <a class="dropdown-item" href="{{ route('settlement.all') }}">جميع التسويات</a>
                     </div>
                 </li>
             @endif

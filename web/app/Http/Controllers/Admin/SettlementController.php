@@ -17,12 +17,10 @@ class SettlementController extends Controller
 {
     public function index(SettlementMain $settlements)
     {
-        // تحميل التسويات الخاصة بالـ main
         $settlements->load('settlements');
 
         $settlementsList = $settlements->settlements;
 
-        // نجيب إعدادات الإهمال للتسويات
         $neglectConfig = NegligenceDays::where('settlement_main_id', $settlements->id)->first();
 
         if ($neglectConfig) {
@@ -63,6 +61,16 @@ class SettlementController extends Controller
 
         return view('admin.Settlement.index', compact('settlements', 'settlementsList'));
     }
+
+    public function all()
+    {
+        $settlements = Settlement::whereNotNull('cases_id')
+            ->orWhereNotNull('executive_case_id')
+            ->get();
+
+        return view('admin.Settlement.all', compact('settlements'));
+    }
+
     public function create(SettlementMain $settlements)
     {
 

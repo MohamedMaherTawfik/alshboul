@@ -6,6 +6,7 @@ use App\Http\Controllers\Controller;
 use App\Models\ProceduralFile;
 use App\Models\ProceduralRecord;
 use App\Models\ExecutiveCase;
+use App\Models\Settlement;
 use App\Models\User;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
@@ -113,9 +114,14 @@ class ProceduralRecordController extends Controller
 
     public function actions(ExecutiveCase $executiveCase)
     {
+        $more = 0;
+        $settlements = Settlement::where('executive_case_id', $executiveCase->id)->first();
+        if ($settlements) {
+            $more = $settlements->id;
+        }
         $executiveCase->load('proceduralRecords');
         $lawyers = User::whereIn('role', ['Lawyer', 'admin', 'superadmin'])->where('active', 1)->get();
-        return view('admin.procedural-record.index', compact('executiveCase', 'lawyers', ));
+        return view('admin.procedural-record.index', compact('executiveCase', 'lawyers', 'more'));
     }
 
 

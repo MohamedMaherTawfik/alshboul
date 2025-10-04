@@ -22,13 +22,13 @@ class CaseRequest extends FormRequest
     public function rules(): array
     {
         return [
-            'client_id' => 'required',
+            'client_id' => 'nullable',
             'subscriber_id' => 'nullable',
             'first_national_id' => 'nullable',
             'second_national_id' => 'nullable',
             'third_national_id' => 'nullable',
-            'suggested_case_id' => 'required',
-            'case_type' => 'required',
+            'suggested_case_id' => 'nullable',
+            'case_type' => 'nullable',
             'case_number' => 'nullable',
             'court_name' => 'nullable',
             'case_amount' => 'nullable',

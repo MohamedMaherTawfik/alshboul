@@ -347,8 +347,15 @@
                                         {{ $lastSession ? $lastSession->date : '-' }}
                                     </td>
                                     <td>{{ $case->proceduralRedords->last()->action ?? 'لا يوجد وقائع' }}</td>
-                                    <td><a href="{{ route('cases.show', $case) }}" class="btn btn-sm btn-info">وقائع
-                                            الدعوي</a></td>
+                                    @if ($more == $case->id)
+                                        <td><a href="{{ route('cases.show', $case) }}" class=""> تم
+                                                تحويل القضيه اللي جميع التسويات
+                                            </a></td>
+                                    @else
+                                        <td><a href="{{ route('cases.show', $case) }}" class="btn btn-sm btn-info">وقائع
+                                                الدعوي</a></td>
+                                    @endif
+
                                     <td>
                                         <div class="dual-buttons d-flex gap-2">
                                             <a href="{{ route('cases.show.durations', $case) }}"

@@ -81,6 +81,7 @@
             <table class="table table-striped table-bordered">
                 <thead class="table-dark text-center">
                     <tr>
+                        <th>اسم المدخل</th>
                         <th>الالتزام</th>
                         <th>وقائع التسويه</th>
                         <th>الرقم الوطني للخصم</th>
@@ -95,6 +96,7 @@
                 <tbody>
                     @forelse ($settlements as $settlement)
                         <tr class="text-center">
+                            <td>{{ $settlement->user->name ?? '-' }}</td>
                             <td>{{ $settlement->obligation ?? '-' }}</td>
                             <td>{{ $settlement->partner_name ?? '-' }}</td>
                             <td>{{ $settlement->opponent_national_id ?? '-' }}</td>
