@@ -3,7 +3,7 @@
 namespace App\Console\Commands;
 
 use Illuminate\Console\Command;
-use App\Models\Cases;
+use App\Models\cases;
 use App\Models\CaseType;
 use App\Models\NegligenceDays;
 use App\Models\trahsedDays;
@@ -25,7 +25,7 @@ class CheckNeglectedCases extends Command
         $caseTypes = CaseType::all();
 
         foreach ($caseTypes as $casetype) {
-            $cases = Cases::with('caseOpponents')
+            $cases = cases::with('caseOpponents')
                 ->where('suggested_case_id', $casetype->id)
                 ->where('active', 1)
                 ->get()

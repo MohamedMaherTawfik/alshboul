@@ -22,7 +22,6 @@ return Application::configure(basePath: dirname(__DIR__))
         //
     })
     ->withSchedule(function (Schedule $schedule) {
-        // تشغيل الكوماند كل ساعة
         $schedule->command('cases:check-neglected')->hourly();
     })
     ->create();
