@@ -105,7 +105,7 @@
                             <input type="text" class="form-control" id="next_action" name="next_action">
                         </div>
                         <div class="col-md-6 mb-3">
-                            <label for="next_action_date" class="form-label">تاريخ الجلسه القادم</label>
+                            <label for="next_action_date" class="form-label">تاريخ الاجراء القادم</label>
                             <input type="date" class="form-control" id="next_action_date" name="next_action_date">
                         </div>
                     </div>

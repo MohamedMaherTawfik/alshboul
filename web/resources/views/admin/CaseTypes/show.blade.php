@@ -338,7 +338,8 @@
                                     <td>{{ $case->case_number ?? '-' }}</td>
                                     <td>{{ $case->court_name ?? '-' }}</td>
                                     <td>{{ $case->jubge_name ?? '-' }}</td>
-                                    <td>{{ $case->proceduralRedords->last()->date ?? 'لا يوجد جلسات' }}</td>
+                                    <td>{{ $case->proceduralRedords->last()->created_at->format('Y-m-d') ?? 'لا يوجد جلسات' }}
+                                    </td>
                                     <td>
                                         @php
                                             $lastSession = $case->proceduralRedords->where('type', 'جلسه')->last();
