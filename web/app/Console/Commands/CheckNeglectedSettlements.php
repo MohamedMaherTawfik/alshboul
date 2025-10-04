@@ -30,6 +30,9 @@ class CheckNeglectedSettlements extends Command
                 continue;
             }
 
+            // لو الأيام = 0 نخليها 1
+            $daysLimit = max(1, $neglectConfig->days);
+
             foreach ($main->settlements as $settlement) {
                 $totalEvents = $settlement->actions()->count()
                     + $settlement->proceduralRedords()->count();
@@ -44,7 +47,7 @@ class CheckNeglectedSettlements extends Command
                             $trashed->increment('days_passed', 1);
                         }
 
-                        if ($trashed->days_passed >= $neglectConfig->days) {
+                        if ($trashed->days_passed >= $daysLimit) {
                             $trashed->update(['is_seen' => 1]);
                         }
                     } elseif ($totalEvents > $trashed->counts) {

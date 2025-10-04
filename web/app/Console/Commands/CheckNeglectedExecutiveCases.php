@@ -33,6 +33,9 @@ class CheckNeglectedExecutiveCases extends Command
                 continue;
             }
 
+            // لو الأيام = 0 نخليها 1
+            $daysLimit = max(1, $neglectConfig->days);
+
             foreach ($executiveCases as $case) {
                 $totalEvents = $case->proceduralRecords()->count()
                     + $case->settlements()->count();
@@ -47,7 +50,7 @@ class CheckNeglectedExecutiveCases extends Command
                             $trashed->increment('days_passed', 1);
                         }
 
-                        if ($trashed->days_passed >= $neglectConfig->days) {
+                        if ($trashed->days_passed >= $daysLimit) {
                             $trashed->update(['is_seen' => 1]);
                         }
                     } elseif ($totalEvents > $trashed->counts) {

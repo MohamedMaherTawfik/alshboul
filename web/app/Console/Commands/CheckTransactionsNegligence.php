@@ -21,20 +21,23 @@ class CheckTransactionsNegligence extends Command
             $neglectConfig = NegligenceDays::where('transactions_main_id', $transaction->id)->first();
 
             if ($neglectConfig) {
+                // لو الأيام = 0 نخليها 1
+                $daysLimit = max(1, $neglectConfig->days);
+
                 foreach ($transactionsList as $tran) {
                     $totalEvents = $tran->procedural()->count();
 
                     $trashed = trahsedDays::where('trans_actions_id', $tran->id)->first();
 
                     if ($trashed) {
-                        if ($totalEvents == $trashed->counts) {
-                            $daysDiff = now()->diffInDays($trashed->updated_at);
+                        $daysDiff = now()->diffInDays($trashed->updated_at);
 
+                        if ($totalEvents == $trashed->counts) {
                             if ($daysDiff >= 0) {
                                 $trashed->increment('days_passed', 1);
                             }
 
-                            if ($trashed->days_passed >= $neglectConfig->days) {
+                            if ($trashed->days_passed >= $daysLimit) {
                                 $trashed->update(['is_seen' => 1]);
                             }
                         } elseif ($totalEvents > $trashed->counts) {

@@ -37,6 +37,9 @@ class CheckNeglectedCases extends Command
                 continue;
             }
 
+            // لو الأيام = 0 نخليها 1
+            $daysLimit = max(1, $neglectConfig->days);
+
             foreach ($cases as $case) {
                 $totalEvents = $case->courtSession()->count()
                     + $case->legalPeriods()->count()
@@ -49,11 +52,11 @@ class CheckNeglectedCases extends Command
                     $daysDiff = now()->diffInDays($trashed->created_at);
 
                     if ($totalEvents == $trashed->counts) {
-                        if ($daysDiff >= 0) {
+                        if ($daysDiff >= 1) {
                             $trashed->increment('days_passed', 1);
                         }
 
-                        if ($trashed->days_passed >= $neglectConfig->days) {
+                        if ($trashed->days_passed >= $daysLimit) {
                             $trashed->update(['is_seen' => 1]);
                         }
                     } elseif ($totalEvents > $trashed->counts) {
