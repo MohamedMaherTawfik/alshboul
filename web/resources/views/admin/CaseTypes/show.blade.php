@@ -338,7 +338,7 @@
                                     <td>{{ $case->case_number ?? '-' }}</td>
                                     <td>{{ $case->court_name ?? '-' }}</td>
                                     <td>{{ $case->jubge_name ?? '-' }}</td>
-                                    <td>{{ $case->proceduralRedords->last()->created_at->format('Y-m-d') ?? 'لا يوجد جلسات' }}
+                                    <td>{{ $case->proceduralRedords->last()->created_at->format('Y-m-d') ?? 'لا يوجد نشاط' }}
                                     </td>
                                     <td>
                                         @php
