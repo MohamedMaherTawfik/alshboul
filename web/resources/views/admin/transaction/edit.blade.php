@@ -12,7 +12,7 @@
         <div class="card">
             <div class="card-header">
                 <h3 class="card-title card_title_center">
-                    تعديل معاملة - ({{ $transaction->name ?? '-' }})
+                    تعديل معاملة - ({{ $transaction->file_number ?? '-' }})
                 </h3>
             </div>
             <div class="card-body">

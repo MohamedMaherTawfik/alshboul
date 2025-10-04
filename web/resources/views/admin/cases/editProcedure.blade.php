@@ -4,98 +4,154 @@
 @section('main_title_content', 'قائمة القضايا التنفيذية')
 @section('title_content', 'تعديل')
 @section('link_content')
-    <a href="{{ route('procedural-record.index', $case) }}">السجلات الجرائية </a>
+    <a href="{{ route('procedural-record.index', $case) }}">السجلات الإجرائية</a>
 @endsection
 
+<style>
+    :root {
+        --primary-color: #2c3e50;
+        --secondary-color: #3498db;
+        --accent-color: #e74c3c;
+    }
+
+    body {
+        background-color: #f8f9fa;
+        font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+    }
+
+    .card {
+        box-shadow: 0 0 15px rgba(0, 0, 0, 0.1);
+        border-radius: 10px;
+        border: none;
+    }
+
+    .card-header {
+        background-color: var(--primary-color);
+        color: white;
+        border-radius: 10px 10px 0 0 !important;
+    }
+
+    .btn-primary {
+        background-color: var(--secondary-color);
+        border: none;
+    }
+
+    .btn-primary:hover {
+        background-color: #2980b9;
+    }
+
+    .btn-warning {
+        background-color: #f39c12;
+        border: none;
+    }
+
+    .btn-warning:hover {
+        background-color: #e67e22;
+    }
+
+    .required-field::after {
+        content: " *";
+        color: var(--accent-color);
+    }
+
+    .form-label {
+        font-weight: 500;
+    }
+
+    .page-title {
+        color: var(--primary-color);
+        border-right: 4px solid var(--secondary-color);
+        padding-right: 15px;
+    }
+</style>
+
 @section('content')
-    <div class="container mt-5">
-        <div class="row justify-content-center">
-            <div class="col-md-6">
-                <div class="card shadow-sm">
-                    <div class="card-header bg-warning text-dark text-center">
-                        <h4>تعديل الإجراء</h4>
+    <div class="container py-5">
+        <div class="row mb-4">
+            <div class="col">
+                <h2 class="page-title">تعديل سجل إجرائي</h2>
+                <p class="text-muted">قم بتعديل بيانات السجل الإجرائي الخاص بالقضية</p>
+            </div>
+        </div>
+
+        <div class="card">
+            <div class="card-header py-3">
+                <h5 class="card-title mb-0"><i class="bi bi-pencil-square me-2"></i>نموذج تعديل الإجراء</h5>
+            </div>
+
+            <div class="card-body">
+                <form action="{{ route('cases.procedure.update', $case) }}" method="POST" enctype="multipart/form-data">
+                    @csrf
+
+                    <!-- نوع الإجراء -->
+                    <div class="row mb-3">
+                        <div class="col-md-6">
+                            <label for="type" class="form-label required-field">نوع الإجراء</label>
+                            <input type="text" name="type" id="type" class="form-control"
+                                value="{{ old('type', 'إجراء') }}" readonly>
+                        </div>
+
+                        <div class="col-md-6">
+                            <label for="date" class="form-label required-field">تاريخ الجلسة</label>
+                            <input type="date" name="date" id="date" class="form-control"
+                                value="{{ old('date', $case->date) }}">
+                        </div>
                     </div>
-                    <div class="card-body">
 
-                        {{-- فورم التعديل --}}
-                        <form action="{{ route('cases.procedure.update', $case) }}" method="POST"
-                            enctype="multipart/form-data">
-                            @csrf
+                    <!-- تفاصيل الإجراء -->
+                    <div class="mb-3">
+                        <label for="action" class="form-label required-field">تفاصيل الإجراء</label>
+                        <input type="text" name="action" id="action" class="form-control"
+                            value="{{ old('action', $case->action) }}" placeholder="أدخل تفاصيل الإجراء...">
+                    </div>
 
-                            <!-- نوع الإجراء -->
-                            <div class="mb-3">
-                                <label for="type" class="form-label">نوع الإجراء</label>
-                                <input type="text" name="type" id="type" class="form-control" value="اجراء">
-                            </div>
+                    <!-- الملاحظات -->
+                    <div class="mb-3">
+                        <label for="note" class="form-label">ملاحظات</label>
+                        <textarea name="note" id="note" class="form-control" rows="3" placeholder="أدخل ملاحظات إضافية...">{{ old('note', $case->note) }}</textarea>
+                    </div>
 
-                            <!-- نوع الإجراء -->
+                    <!-- المحامي -->
+                    <div class="mb-4">
+                        <label for="user_id" class="form-label required-field">المحامي المسؤول</label>
+                        <select name="user_id" id="user_id" class="form-select">
+                            <option value="">اختر المحامي</option>
+                            @foreach ($lawyers as $lawyer)
+                                <option value="{{ $lawyer->id }}"
+                                    {{ old('user_id', $case->user_id) == $lawyer->id ? 'selected' : '' }}>
+                                    {{ $lawyer->name }}
+                                </option>
+                            @endforeach
+                        </select>
+                    </div>
 
-                            <div class="mb-3">
-                                <label for="type" class="form-label">تاريخ الجلسه</label>
-                                <input type="date" name="date" id="type" class="form-control"
-                                    value="{{ old('date', $case->date) }}">
-                            </div>
 
-                            <!-- الإجراء -->
-                            <div class="mb-3">
-                                <label for="action" class="form-label">الإجراء</label>
-                                <input type="text" name="action" id="action" class="form-control"
-                                    value="{{ old('action', $case->action) }}">
-                            </div>
-                            <!-- ملاحظة -->
-                            <div class="mb-3">
-                                <label for="note" class="form-label">ملاحظة</label>
-                                <textarea name="note" id="note" class="form-control" rows="3">{{ old('note', $case->note) }}</textarea>
-                            </div>
-
-                            <!-- المحامي -->
-                            <div class="mb-3">
-                                <label for="user_id" class="form-label">المحامي</label>
-                                <select name="user_id" id="user_id" class="form-control">
-                                    <option value="">اختر المحامي</option>
-                                    @foreach ($lawyers as $lawyer)
-                                        <option value="{{ $lawyer->id }}"
-                                            {{ old('user_id', $case->user_id) == $lawyer->id ? 'selected' : '' }}>
-                                            {{ $lawyer->name }}
-                                        </option>
-                                    @endforeach
-                                </select>
-                            </div>
-
-                            <!-- زر الحفظ -->
-                            <div class="d-grid">
-                                <button type="submit" class="btn btn-warning">تحديث</button>
-                            </div>
-                        </form>
-
-                        <!-- الملفات الحالية (خارج فورم التحديث) -->
-                        @if ($case->files && $case->files->count())
-                            <div class="mt-4">
-                                <p>الملفات الحالية:</p>
+                    <!-- الملفات الحالية -->
+                    @if ($case->files && $case->files->count())
+                        <div class="mb-4">
+                            <h6 class="fw-bold"><i class="bi bi-file-earmark-text me-2"></i>الملفات الحالية:</h6>
+                            <ul class="list-group">
                                 @foreach ($case->files as $file)
-                                    <div class="mb-2 d-flex align-items-center">
-                                        <!-- زر عرض -->
-                                        <a href="{{ asset('storage/' . $file->file_path) }}"
-                                            class="btn btn-sm btn-info me-2" target="_blank">
-                                            عرض المستند
-                                        </a>
-
-                                        <!-- زر الحذف -->
+                                    <li class="list-group-item d-flex justify-content-between align-items-center">
+                                        <a href="{{ asset('storage/' . $file->file_path) }}" target="_blank">عرض المستند</a>
                                         <form action="{{ route('cases.procedure.file.delete', $file->id) }}" method="POST"
-                                            onsubmit="return confirm('هل أنت متأكد من الحذف؟')" class="mr-2">
+                                            onsubmit="return confirm('هل أنت متأكد من حذف هذا الملف؟')">
                                             @csrf
                                             @method('DELETE')
-                                            <button type="submit" class="btn btn-sm btn-danger">
-                                                حذف
-                                            </button>
+                                            <button type="submit" class="btn btn-sm btn-danger">حذف</button>
                                         </form>
-                                    </div>
+                                    </li>
                                 @endforeach
-                            </div>
-                        @endif
+                            </ul>
+                        </div>
+                    @endif
 
+                    <!-- الأزرار -->
+                    <div class="d-flex justify-content-end gap-2">
+                        <a href="{{ url()->previous() }}" class="btn btn-secondary">إلغاء</a>
+                        <button type="submit" class="btn btn-warning">تحديث</button>
                     </div>
-                </div>
+                </form>
             </div>
         </div>
     </div>
