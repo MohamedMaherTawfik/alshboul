@@ -16,9 +16,11 @@ class admin
      */
     public function handle(Request $request, Closure $next): Response
     {
-        if (in_array(strtolower(Auth::user()->role), ['superadmin', 'admin', 'lawyer'])) {
+        if (Auth::user()->role == 'superadmin' || Auth::user()->role == 'admin') {
+            dd(Auth::user()->role);
             return $next($request);
         }
+        dd(Auth::user()->role);
         return $next($request);
     }
 }
