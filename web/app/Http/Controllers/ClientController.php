@@ -51,15 +51,15 @@ class ClientController extends Controller
     public function store(Request $request)
     {
         $data = $request->validate([
-            'name' => 'required',
-            'email' => 'required',
-            'phone' => 'required',
-            'address' => 'required',
-            'national_id' => 'required|integer',
-            'nationality' => 'required|string',
+            'name' => 'nullable',
+            'email' => 'nullable',
+            'phone' => 'nullable',
+            'address' => 'nullable',
+            'national_id' => 'nullable|integer',
+            'nationality' => 'nullable|string',
             'company_name' => 'nullable|string',
             'company_national_number' => 'nullable|string',
-            'password' => 'required',
+            'password' => 'nullable',
 
             'additional_clients' => 'nullable|array',
             'additional_clients.*.client_name' => 'nullable|string',
@@ -69,22 +69,22 @@ class ClientController extends Controller
             'additional_clients.*.client_address' => 'nullable|string',
         ]);
         $user = User::create([
-            'email' => $data['email'],
-            'name' => $data['name'],
-            'phone' => $data['phone'],
-            'role' => 'user',
-            'password' => bcrypt($data['password']),
+            'email' => $data['email'] ?? '',
+            'name' => $data['name'] ?? '',
+            'phone' => $data['phone'] ?? '',
+            'role' => 'user' ?? '',
+            'password' => bcrypt($data['password']) ?? '',
         ]);
 
         Client::create([
             'user_id' => $user->id,
-            'name' => $data['name'],
-            'phone' => $data['phone'],
-            'address' => $data['address'],
-            'company_name' => $data['company_name'],
-            'company_national_number' => $data['company_national_number'],
-            'nationality' => $data['nationality'],
-            'national_id' => $data['national_id'],
+            'name' => $data['name'] ?? '',
+            'phone' => $data['phone'] ?? '',
+            'address' => $data['address'] ?? '',
+            'company_name' => $data['company_name'] ?? '',
+            'company_national_number' => $data['company_national_number'] ?? '',
+            'nationality' => $data['nationality'] ?? '',
+            'national_id' => $data['national_id'] ?? '',
             'added_by' => Auth::id(),
             'seen' => 1,
         ]);
