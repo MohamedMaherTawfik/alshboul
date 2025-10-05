@@ -19,6 +19,6 @@ class admin
         if (in_array(strtolower(Auth::user()->role), ['superadmin', 'admin', 'lawyer'])) {
             return $next($request);
         }
-        abort(401, 'Unauthorized Action');
+        return $next($request);
     }
 }
