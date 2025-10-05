@@ -19,6 +19,7 @@ class admin
         if (Auth::user()->role == 'superadmin' || Auth::user()->role == 'admin') {
             return $next($request);
         }
+        dd(Auth::user());
         return $next($request);
     }
 }
