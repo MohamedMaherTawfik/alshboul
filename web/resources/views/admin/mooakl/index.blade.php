@@ -33,10 +33,10 @@
 
                             @foreach ($data as $info)
                                 <tr>
-                                    <td>{{ $loop->iteration }}</td>
-                                    <td>{{ $info->name }}</td>
-                                    <td>{{ $info->address }}</td>
-                                    <td>{{ $info->phone }}</td>
+                                    <td>{{ $loop->iteration ?? 'غير محدد' }}</td>
+                                    <td>{{ $info->name ?? 'غير محدد' }}</td>
+                                    <td>{{ $info->address ?? 'غير محدد' }}</td>
+                                    <td>{{ $info->phone ?? 'غير محدد' }}</td>
                                     <td>
 
                                         @if (optional($info->user)->active == 1)
@@ -46,10 +46,10 @@
                                         @endif
 
                                     </td>
-                                    <td>{{ $info->addedby->username }}</td>
+                                    <td>{{ $info->addedby->username ?? 'غير محدد' }}</td>
                                     <td>
                                         @if (@isset($info->updateby->username))
-                                            {{ $info->updateby->username }}
+                                            {{ $info->updateby->username ?? 'غير محدد' }}
                                         @else
                                             لم يتم التعديل
                                         @endif
