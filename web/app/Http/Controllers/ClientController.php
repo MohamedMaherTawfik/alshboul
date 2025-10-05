@@ -179,12 +179,12 @@ class ClientController extends Controller
     public function update(Request $request, Client $client)
     {
         $data = $request->validate([
-            'name' => 'required',
-            'email' => 'required',
-            'phone' => 'required',
-            'address' => 'required',
-            'national_id' => 'required|integer',
-            'nationality' => 'required|string',
+            'name' => 'nullable',
+            'email' => 'nullable',
+            'phone' => 'nullable',
+            'address' => 'nullable',
+            'national_id' => 'nullable|integer',
+            'nationality' => 'nullable|string',
             'company_name' => 'nullable|string',
             'company_national_number' => 'nullable|string',
 
@@ -198,20 +198,20 @@ class ClientController extends Controller
 
         // تحديث user
         $client->user->update([
-            'email' => $data['email'],
-            'name' => $data['name'],
-            'phone' => $data['phone'],
+            'email' => $data['email'] ?? '',
+            'name' => $data['name'] ?? '',
+            'phone' => $data['phone'] ?? '',
         ]);
 
         // تحديث client الأساسي
         $client->update([
-            'name' => $data['name'],
-            'phone' => $data['phone'],
-            'address' => $data['address'],
-            'company_name' => $data['company_name'],
-            'company_national_number' => $data['company_national_number'],
-            'nationality' => $data['nationality'],
-            'national_id' => $data['national_id'],
+            'name' => $data['name'] ?? '',
+            'phone' => $data['phone'] ?? '',
+            'address' => $data['address'] ?? '',
+            'company_name' => $data['company_name'] ?? '',
+            'company_national_number' => $data['company_national_number'] ?? '',
+            'nationality' => $data['nationality'] ?? '',
+            'national_id' => $data['national_id'] ?? '',
         ]);
 
         // امسح الموكلين الإضافيين القدام
@@ -225,13 +225,13 @@ class ClientController extends Controller
                 if (!empty($add['client_name'])) {
                     Client::create([
                         'user_id' => $client->user_id,
-                        'name' => $add['client_name'],
-                        'phone' => $add['client_phone'] ?? null,
-                        'company_name' => $data['company_name'],
-                        'address' => $add['client_address'] ?? null,
-                        'company_national_number' => $data['company_national_number'],
-                        'nationality' => $add['client_nationality'] ?? null,
-                        'national_id' => $add['client_national_id'] ?? null,
+                        'name' => $add['client_name'] ?? '',
+                        'phone' => $add['client_phone'] ?? '',
+                        'company_name' => $data['company_name'] ?? '',
+                        'address' => $add['client_address'] ?? '',
+                        'company_national_number' => $data['company_national_number'] ?? '',
+                        'nationality' => $add['client_nationality'] ?? '',
+                        'national_id' => $add['client_national_id'] ?? '',
                         'added_by' => Auth::id(),
                         'seen' => 0,
                     ]);
