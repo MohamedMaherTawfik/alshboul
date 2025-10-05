@@ -27,6 +27,7 @@ use App\Http\Controllers\LawyerController;
 use App\Http\Controllers\ProfileController;
 use App\Http\Controllers\UserController;
 use App\Http\Controllers\visitorReviewController;
+use App\Http\Middleware\admin;
 use App\Http\Middleware\roleMiddleware;
 use App\Http\Controllers\Message;
 use App\Http\Controllers\Admin\MoveBarController;
@@ -95,7 +96,7 @@ Route::middleware('auth')->group(function () {
 });
 
 
-Route::group(['prefix' => 'admin', 'middleware' => ['auth']], function () {
+Route::group(['prefix' => 'admin', 'middleware' => ['auth', admin::class]], function () {
     Route::get('/dashboard', [DashboardController::class, 'index'])->name('admin.dashboard');
     Route::get('/logout', [LoginController::class, 'logout'])->name('admin.logout');
 
