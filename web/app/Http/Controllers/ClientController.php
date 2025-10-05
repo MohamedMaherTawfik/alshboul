@@ -94,13 +94,13 @@ class ClientController extends Controller
                 if (!empty($client['client_name'])) {
                     Client::create([
                         'user_id' => $user->id,
-                        'name' => $client['client_name'],
-                        'phone' => $client['client_phone'] ?? null,
-                        'company_name' => $data['company_name'],
-                        'address' => $client['client_address'] ?? null,
-                        'company_national_number' => $data['company_national_number'],
-                        'nationality' => $client['client_nationality'] ?? null,
-                        'national_id' => $client['client_national_id'] ?? null,
+                        'name' => $client['client_name'] ?? '',
+                        'phone' => $client['client_phone'] ?? '',
+                        'company_name' => $data['company_name'] ?? '',
+                        'address' => $client['client_address'] ?? '',
+                        'company_national_number' => $data['company_national_number'] ?? '',
+                        'nationality' => $client['client_nationality'] ?? '',
+                        'national_id' => $client['client_national_id'] ?? '',
                         'added_by' => Auth::id(),
                         'seen' => 0,
                     ]);
