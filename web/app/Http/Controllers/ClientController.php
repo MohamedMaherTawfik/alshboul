@@ -52,7 +52,7 @@ class ClientController extends Controller
     {
         $data = $request->validate([
             'name' => 'nullable',
-            'email' => 'nullable',
+            'email' => 'required|unique:users',
             'phone' => 'nullable',
             'address' => 'nullable',
             'national_id' => 'nullable|integer',
@@ -157,7 +157,6 @@ class ClientController extends Controller
         }
         return redirect()->route('client.action')->with('success', 'تم إضافة البيانات بنجاح');
     }
-
     /**
      * Show the form for editing the specified resource.
      */
@@ -171,8 +170,6 @@ class ClientController extends Controller
 
         return view('admin.mooakl.edit', compact('client', 'additionalClients'));
     }
-
-
     /**
      * Update the specified resource in storage.
      */
@@ -241,7 +238,6 @@ class ClientController extends Controller
 
         return redirect()->route('client.index')->with('success', 'تم تحديث البيانات بنجاح');
     }
-
     /**
      * Remove the specified resource from storage.
      */
