@@ -16,9 +16,9 @@ class admin
      */
     public function handle(Request $request, Closure $next): Response
     {
-        if (Auth::user()->role == 'superadmin' || Auth::user()->role == 'admin' || Auth::user()->role == 'Lawyer') {
+        if (in_array(strtolower(Auth::user()->role), ['superadmin', 'admin', 'lawyer'])) {
             return $next($request);
         }
-        abort(401, 'UnAuthorized Action');
+        abort(401, 'Unauthorized Action');
     }
 }
