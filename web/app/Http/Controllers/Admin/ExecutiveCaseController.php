@@ -121,7 +121,7 @@ class ExecutiveCaseController extends Controller
     public function store(Request $request, excutiveCasesMain $item)
     {
         $data = $request->all();
-        $client = Client::where('user_id', $data['client_id'])->first();
+        $client = Client::where('user_id', $data['user_id'])->first();
         $data['client_id'] = $client->id;
         $data['user_id'] = Auth::id();
         $data['excutive_cases_main_id'] = $item->id;
