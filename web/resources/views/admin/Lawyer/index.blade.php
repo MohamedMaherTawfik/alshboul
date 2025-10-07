@@ -20,9 +20,14 @@
 
                             <th> رقم </th>
                             <th>اسم </th>
-                            <th> العنوان </th>
+                            <th>البريد الالكتروني</th>
+                            <th>رقم الرخصه</th>
+                            <th>الرقم الوطني</th>
+                            <th>العنوان </th>
                             <th>هاتف </th>
                             <th>الحالة</th>
+                            <th>السيره الذاتيه</th>
+                            <th>الجنسيه</th>
                             <th>اضافة بواسطة</th>
                             <th>تعديل بواسطة</th>
                             <th>تاريخ التسجيل</th>
@@ -35,15 +40,26 @@
                         <tbody>
                             @foreach ($data as $info)
                                 <tr>
-                                    <td>{{ $info->id ?? 'غير محدد' }}</td>
-                                    <td>{{ $info->name ?? 'غير محدد' }}</td>
-                                    <td>{{ $info->address ?? 'غير محدد' }}</td>
-                                    <td>{{ $info->phone ?? 'غير محدد' }}</td>
-                                    <td>
+                                    <td class="text-center">{{ $info->id ?? 'غير محدد' }}</td>
+                                    <td class="text-center">{{ $info->name ?? 'غير محدد' }}</td>
+                                    <td class="text-center">{{ $info->user->email ?? 'غير محدد' }}</td>
+                                    <td class="text-center">{{ $info->license_number ?? 'غير محدد' }}</td>
+                                    <td class="text-center">{{ $info->id_number ?? 'غير محدد' }}</td>
+                                    <td class="text-center">{{ $info->address ?? 'غير محدد' }}</td>
+                                    <td class="text-center">{{ $info->phone ?? 'غير محدد' }}</td>
+                                    <td class="text-center">
                                         {{ optional($info->user)->active == 1 ? 'مفعل' : 'معطل' }}
                                     </td>
-                                    <td>{{ $info->addedby->name ?? 'غير محدد' }}</td>
-                                    <td>
+                                    <td class="text-center">
+                                        <a href="{{ asset('storage/' . $info->cv_file) }}" class="btn btn-info"
+                                            target="_blank"> السيره
+                                            الذاتيه</a>
+                                    </td>
+                                    <td class="text-center">
+                                        {{ $info->nationality ?? 'غير محدد' }}
+                                    </td>
+                                    <td class="text-center">{{ $info->addedby->name ?? 'غير محدد' }}</td>
+                                    <td class="text-center">
                                         @if (@isset($info->updateby->username))
                                             {{ $info->updateby->username ?? 'غير محدد' }}
                                         @else
@@ -51,11 +67,11 @@
                                         @endif
                                     </td>
 
-                                    <td>
+                                    <td class="text-center">
                                         {{ optional($info->user)->date ? optional($info->user)->date : 'غير محدد' }}
                                     </td>
                                     @if (Auth::user()->role == 'admin' || Auth::user()->role == 'superadmin')
-                                        <td>
+                                        <td class="text-center">
 
                                             <a href="{{ route('lawyer.edit', $info->id) }}"
                                                 class="btn btn-warning">تعديل</a>

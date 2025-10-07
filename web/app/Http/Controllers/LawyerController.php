@@ -41,55 +41,53 @@ class LawyerController extends Controller
 
         //   `cv_file`
         $request->validate([
-            'name' => 'required',
-            'email' => 'required|email|unique:users,email',
-            'phone' => 'required',
-            'address' => 'required',
-            'username' => 'required|unique:users,username',
-            'password' => 'required|min:8',
-            'id_number' => 'required|integer|unique:lawyers,id_number',
-            'nationality' => 'required|string',
-            'license_number' => 'required|unique:lawyers,license_number',
-            'bar_association' => 'required|string',
+            'name' => 'nullable',
+            'email' => 'nullable|email|unique:users,email',
+            'phone' => 'nullable',
+            'address' => 'nullable',
+            'username' => 'nullable|unique:users,username',
+            'password' => 'nullable|min:8',
+            'id_number' => 'nullable|integer|unique:lawyers,id_number',
+            'nationality' => 'nullable|string',
+            'license_number' => 'nullable|unique:lawyers,license_number',
+            'bar_association' => 'nullable|string',
             'specialization' => 'nullable|string',
             'license_issue_date' => 'nullable|date',
             'dob' => 'nullable|date',
             'cv_file' => 'nullable|file|mimes:pdf,doc,docx|max:2048',
         ]);
 
-        // dd($request->all());
 
         $user = new User();
-        $user->name = $request->username;
-        $user->username = $request->username;
-        $user->phone = $request->phone;
-        $user->password = bcrypt($request->password);
-        $user->email = $request->email;
-        $user->address = $request->address;
-        $user->date = now();
-        $user->role = 'Lawyer';
-        $user->added_by = Auth::id();
+        $user->name = $request->name ?? '';
+        $user->username = $request->username ?? '';
+        $user->phone = $request->phone ?? '';
+        $user->password = bcrypt($request->password) ?? '';
+        $user->email = $request->email ?? '';
+        $user->address = $request->address ?? '';
+        $user->date = now() ?? '';
+        $user->role = 'Lawyer' ?? '';
+        $user->added_by = Auth::id() ?? '';
         $user->save();
         $path = null;
         if ($request->hasFile('cv_file') && $request->file('cv_file')->isValid()) {
             $path = $request->file('cv_file')->store('upload_cv', 'public');
         }
         $Lawyer = new Lawyer();
-        $Lawyer->name = $request->name;
-        $Lawyer->phone = $request->phone;
-        $Lawyer->address = $request->address;
-        $Lawyer->specialization = $request->specialization ?? null;
-        $Lawyer->license_number = $request->license_number;
-        $Lawyer->license_issue_date = $request->license_issue_date ?? null;
-        $Lawyer->bar_association = $request->bar_association;
-        $Lawyer->dob = $request->dob ?? null;
+        $Lawyer->name = $request->name ?? '';
+        $Lawyer->phone = $request->phone ?? '';
+        $Lawyer->address = $request->address ?? '';
+        $Lawyer->specialization = $request->specialization ?? '';
+        $Lawyer->license_number = $request->license_number ?? '';
+        $Lawyer->license_issue_date = $request->license_issue_date ?? '';
+        $Lawyer->bar_association = $request->bar_association ?? '';
+        $Lawyer->dob = $request->dob ?? '';
         $Lawyer->cv_file = $path;
         $Lawyer->id_number = $request->id_number;
         $Lawyer->nationality = $request->nationality;
         $Lawyer->user_id = $user->id;
         $Lawyer->added_by = Auth::id();
         $Lawyer->save();
-
         return redirect()->route('lawyer.index')->with('success', 'تم إضافة البيانات بنجاح');
     }
 

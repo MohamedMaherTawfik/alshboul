@@ -15,12 +15,11 @@
             <div class="card-body">
                 <form action="{{ route('lawyer.store') }}" method="post" enctype="multipart/form-data">
                     @csrf
-                    {{-- <input type="hidden" name="updated_by" value="{{ auth()->user()->id }}"> --}}
                     <input type="hidden" name="added_by" value="{{ Auth::user()->id }}">
 
                     <div class="row">
                         <div class="form-group col-md-4">
-                            <label for="">الاسم </label>
+                            <label for="">الاسم</label>
                             <input type="text" name="name" value="{{ old('name') }}" class="form-control"
                                 placeholder="">
                             @error('name')
