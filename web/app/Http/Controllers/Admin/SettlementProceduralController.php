@@ -30,12 +30,9 @@ class SettlementProceduralController extends Controller
     public function storeProcedure(Request $request, Settlement $settlement)
     {
         $data = $request->except('_token', 'file');
-        $data['settlement_id'] = $settlement->id;
-        $data['created_by'] = Auth::user()->name;
         // إنشاء الإجراء
         $procedural = ProceduralRecord::create([
             'settlement_id' => $settlement->id,
-            'created_by' => $data['created_by'],
             'date' => $data['date'],
             'action' => $data['action'],
             'note' => $data['note'],

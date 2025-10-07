@@ -35,17 +35,17 @@
                         <tbody>
                             @foreach ($data as $info)
                                 <tr>
-                                    <td>{{ $info->id }}</td>
-                                    <td>{{ $info->name }}</td>
-                                    <td>{{ $info->address }}</td>
-                                    <td>{{ $info->phone }}</td>
+                                    <td>{{ $info->id ?? 'غير محدد' }}</td>
+                                    <td>{{ $info->name ?? 'غير محدد' }}</td>
+                                    <td>{{ $info->address ?? 'غير محدد' }}</td>
+                                    <td>{{ $info->phone ?? 'غير محدد' }}</td>
                                     <td>
                                         {{ optional($info->user)->active == 1 ? 'مفعل' : 'معطل' }}
                                     </td>
-                                    <td>{{ $info->addedby->name }}</td>
+                                    <td>{{ $info->addedby->name ?? 'غير محدد' }}</td>
                                     <td>
                                         @if (@isset($info->updateby->username))
-                                            {{ $info->updateby->username }}
+                                            {{ $info->updateby->username ?? 'غير محدد' }}
                                         @else
                                             لم يتم التعديل
                                         @endif

@@ -88,10 +88,10 @@
                     <tbody>
                         @forelse ($settlement->proceduralRedords as $duration)
                             <tr>
-                                <td>{{ $duration->created_by ?? '-' }}</td>
+                                <td>{{ $duration->userLawyer->name ?? '-' }}</td>
                                 <td>{{ $duration->user->name ?? '-' }}</td>
                                 <td>{{ $duration->created_at?->format('Y-m-d') ?? '-' }}</td>
-                                <td>{{ $duration->action }}</td>
+                                <td>{{ $duration->action ?? '-' }}</td>
                                 <td>
                                     @foreach ($duration->files as $item)
                                         <a href="{{ asset('storage/' . $item->file_path) }} "
