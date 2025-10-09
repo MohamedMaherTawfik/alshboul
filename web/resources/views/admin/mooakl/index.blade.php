@@ -10,7 +10,7 @@
         <div class="card">
             <div class="card-header">
                 <h3 class="card-title card_title_center">
-                    بيانات الموكلين
+                    عدد الموكلين : {{ count($data) }}
                     <a href="{{ route('client.create') }}" class="btn btn-success">إضافة جديد</a>
                 </h3>
             </div>
