@@ -20,6 +20,7 @@
 
                             <th> رقم الموكل</th>
                             <th>اسم الموكل</th>
+                            <th>البريد</th>
                             <th> العنوان </th>
                             <th>هاتف </th>
                             <th>الحالة</th>
@@ -35,6 +36,7 @@
                                 <tr>
                                     <td>{{ $loop->iteration ?? 'غير محدد' }}</td>
                                     <td>{{ $info->name ?? 'غير محدد' }}</td>
+                                    <td>{{ $info->user->email ?? 'غير محدد' }}</td>
                                     <td>{{ $info->address ?? 'غير محدد' }}</td>
                                     <td>{{ $info->phone ?? 'غير محدد' }}</td>
                                     <td>
