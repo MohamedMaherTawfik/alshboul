@@ -1,76 +1,63 @@
 @extends('layouts.admin')
-@section('title', 'الموكلين ')
-@section('main_title_content', ' قائمة الموكلين ')
-@section('title_content', 'أضافة')
+@section('title', 'الموكلين')
+@section('main_title_content', 'قائمة الموكلين')
+@section('title_content', 'إضافة')
 @section('link_content')
-    <a href="{{ route('client.index') }}"> موكلين</a>
+    <a href="{{ route('client.index') }}">موكلين</a>
 @endsection
+
 @section('content')
     <div class="col-12">
         <div class="card">
             <div class="card-header">
-                <h3 class="card-title card_title_center"> اضافة موكل جديد
-                </h3>
+                <h3 class="card-title card_title_center">إضافة موكل جديد</h3>
             </div>
             <div class="card-body">
                 <form action="{{ route('client.store') }}" method="post" id="clientForm">
                     @csrf
                     <input type="hidden" name="added_by" value="{{ Auth::user()->id }}">
 
-                    <div class="row ">
+                    <div class="row">
                         <div class="form-group col-md-4">
-                            <label for="">اسم الموكل </label>
-                            <input type="text" name="name" value="{{ old('name') }}" class="form-control"
-                                placeholder="">
+                            <label>اسم الموكل</label>
+                            <input type="text" name="name" value="{{ old('name') }}" class="form-control">
                             @error('name')
-                                <small id="helpId" class="text-muted text-danger">{{ $message }}</small>
+                                <small class="text-danger">{{ $message }}</small>
                             @enderror
                         </div>
+
                         <div class="form-group col-md-4">
-                            <label for="">البريد الالكتروني</label>
-                            <input type="text" id="email" name="email" value="{{ old('email') }}"
-                                class="form-control" placeholder="">
+                            <label>البريد الإلكتروني</label>
+                            <input type="text" name="email" value="{{ old('email') }}" class="form-control">
                         </div>
 
                         <div class="form-group col-md-4">
-                            <label for="">الرقم السري</label>
-                            <input type="password" id="password" name="password" value="{{ old('password') }}"
-                                class="form-control" placeholder="">
+                            <label>الرقم السري</label>
+                            <input type="password" name="password" value="{{ old('password') }}" class="form-control">
                         </div>
 
                         <div class="form-group col-md-4">
-                            <label for=""> الرقم الوطني </label>
-                            <input type="text" name="national_id" value="{{ old('national_id') }}" class="form-control"
-                                placeholder="">
+                            <label>الرقم الوطني</label>
+                            <input type="text" name="national_id" value="{{ old('national_id') }}" class="form-control">
                             @error('national_id')
-                                <small id="helpId" class="text-muted text-danger">{{ $message }}</small>
-                            @enderror
-                        </div>
-                        <div class="form-group col-md-4">
-                            <label for=""> الجنسية </label>
-                            <input type="text" name="nationality" value="{{ old('nationality') }}" class="form-control"
-                                placeholder="">
-                            @error('nationality')
-                                <small id="helpId" class="text-muted text-danger">{{ $message }}</small>
-                            @enderror
-                        </div>
-                        <div class="form-group col-md-4">
-                            <label for=""> عنوان </label>
-                            <input type="text" name="address" value="{{ old('address') }}" class="form-control"
-                                placeholder="">
-                            @error('address')
-                                <small id="helpId" class="text-muted text-danger">{{ $message }}</small>
-                            @enderror
-                        </div>
-                        <div class="form-group col-md-4">
-                            <label for="">هاتف </label>
-                            <input type="text" name="phone" value="{{ old('phone') }}" class="form-control"
-                                placeholder="">
-                            @error('phone')
-                                <small id="helpId" class="text-muted text-danger">{{ $message }}</small>
+                                <small class="text-danger">{{ $message }}</small>
                             @enderror
                         </div>
 
+                        <div class="form-group col-md-4">
+                            <label>الجنسية</label>
+                            <input type="text" name="nationality" value="{{ old('nationality') }}" class="form-control">
+                        </div>
+
+                        <div class="form-group col-md-4">
+                            <label>العنوان</label>
+                            <input type="text" name="address" value="{{ old('address') }}" class="form-control">
+                        </div>
+
+                        <div class="form-group col-md-4">
+                            <label>هاتف</label>
+                            <input type="text" name="phone" value="{{ old('phone') }}" class="form-control">
+                        </div>
                     </div>
 
                     <!-- قسم الموكلين الإضافيين -->
@@ -81,7 +68,6 @@
                                 <i class="fas fa-plus"></i> إضافة موكل
                             </button>
                         </div>
-
                         <div id="additionalClientsContainer">
                             <!-- سيتم إضافة الحقول الجديدة هنا -->
                         </div>
@@ -89,8 +75,8 @@
 
                     <hr>
 
-                    <div class="text-center col-md-12 mt-4">
-                        <button type="submit" class="btn btn-success">أضافة</button>
+                    <div class="text-center mt-4">
+                        <button type="submit" class="btn btn-success">إضافة</button>
                     </div>
                 </form>
             </div>
@@ -101,56 +87,38 @@
 @section('script')
     <script>
         document.addEventListener("DOMContentLoaded", function() {
-            const companyInput = document.getElementById("company_name");
-            const nationalWrapper = document.getElementById("company_national_wrapper");
             const addClientBtn = document.getElementById("addClientBtn");
             const container = document.getElementById("additionalClientsContainer");
             let clientCount = 0;
 
-            function toggleNationalField() {
-                if (companyInput.value.trim() !== "") {
-                    nationalWrapper.style.display = "block";
-                } else {
-                    nationalWrapper.style.display = "none";
-                }
-            }
-
-            companyInput.addEventListener("input", toggleNationalField);
-            toggleNationalField();
-
-            // إضافة موكل جديد
-            addClientBtn.addEventListener("click", function() {
-                clientCount++;
-                const clientDiv = document.createElement("div");
-                clientDiv.className = "client-group border p-3 mb-3 rounded";
-                clientDiv.innerHTML = `
+            if (addClientBtn && container) {
+                addClientBtn.addEventListener("click", function() {
+                    clientCount++;
+                    const clientDiv = document.createElement("div");
+                    clientDiv.className = "client-group border p-3 mb-3 rounded";
+                    clientDiv.innerHTML = `
                 <div class="row">
                     <div class="col-11">
                         <div class="row">
                             <div class="form-group col-md-3">
-                                <label for="client_name_${clientCount}">اسم الموكل</label>
-                                <input type="text" name="additional_clients[${clientCount}][client_name]"
-                                    class="form-control" id="client_name_${clientCount}">
+                                <label>اسم الموكل</label>
+                                <input type="text" name="additional_clients[${clientCount}][client_name]" class="form-control">
                             </div>
                             <div class="form-group col-md-3">
-                                <label for="client_phone_${clientCount}">هاتف الموكل</label>
-                                <input type="text" name="additional_clients[${clientCount}][client_phone]"
-                                    class="form-control" id="client_phone_${clientCount}">
+                                <label>هاتف الموكل</label>
+                                <input type="text" name="additional_clients[${clientCount}][client_phone]" class="form-control">
                             </div>
                             <div class="form-group col-md-3">
-                                <label for="client_nationality_${clientCount}">جنسية الموكل</label>
-                                <input type="text" name="additional_clients[${clientCount}][client_nationality]"
-                                    class="form-control" id="client_nationality_${clientCount}">
+                                <label>جنسية الموكل</label>
+                                <input type="text" name="additional_clients[${clientCount}][client_nationality]" class="form-control">
                             </div>
                             <div class="form-group col-md-3">
-                                <label for="client_national_id_${clientCount}">الرقم الوطني</label>
-                                <input type="text" name="additional_clients[${clientCount}][client_national_id]"
-                                    class="form-control" id="client_national_id_${clientCount}">
+                                <label>الرقم الوطني</label>
+                                <input type="text" name="additional_clients[${clientCount}][client_national_id]" class="form-control">
                             </div>
                             <div class="form-group col-md-6">
-                                <label for="client_address_${clientCount}">عنوان الموكل</label>
-                                <input type="text" name="additional_clients[${clientCount}][client_address]"
-                                    class="form-control" id="client_address_${clientCount}">
+                                <label>عنوان الموكل</label>
+                                <input type="text" name="additional_clients[${clientCount}][client_address]" class="form-control">
                             </div>
                         </div>
                     </div>
@@ -162,14 +130,15 @@
                 </div>
             `;
 
-                container.appendChild(clientDiv);
+                    container.appendChild(clientDiv);
 
-                // إضافة حدث لإزالة الموكل
-                const removeBtn = clientDiv.querySelector(".remove-client");
-                removeBtn.addEventListener("click", function() {
-                    container.removeChild(clientDiv);
+                    // زر الحذف
+                    const removeBtn = clientDiv.querySelector(".remove-client");
+                    removeBtn.addEventListener("click", function() {
+                        clientDiv.remove();
+                    });
                 });
-            });
+            }
         });
     </script>
 @endsection
