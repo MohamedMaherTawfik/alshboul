@@ -1,5 +1,5 @@
 @extends('layouts.admin')
-@section('title', 'تعديل الموكل ')
+@section('title', 'تعديل الموكل')
 @section('main_title_content', 'تعديل بيانات الموكل')
 @section('link_content')
     <a href="{{ route('client.index') }}">موكلين</a>
@@ -9,11 +9,12 @@
     <div class="col-12">
         <div class="card">
             <div class="card-header">
-                <h3 class="card-title card_title_center"> تعديل بيانات الموكل </h3>
+                <h3 class="card-title card_title_center">تعديل بيانات الموكل</h3>
             </div>
             <div class="card-body">
                 <form action="{{ route('client.update', $client->id) }}" method="post" id="clientForm">
                     @csrf
+                    @method('PUT')
 
                     <input type="hidden" name="added_by" value="{{ Auth::user()->id }}">
 
@@ -28,29 +29,32 @@
                         </div>
 
                         <div class="form-group col-md-4">
-                            <label>البريد الالكتروني</label>
-                            <input type="text" name="email" value="{{ old('email', $client->user->email) }}"
+                            <label>البريد الإلكتروني</label>
+                            <input type="text" name="email" value="{{ old('email', $client->user->email ?? '') }}"
                                 class="form-control">
                         </div>
 
                         <div class="form-group col-md-4">
-                            <label>اسم الشركة</label>
-                            <input type="text" id="company_name" name="company_name"
-                                value="{{ old('company_name', $client->company_name) }}" class="form-control">
-                        </div>
-
-                        <div class="form-group col-md-4" id="company_national_wrapper"
-                            style="{{ $client->company_name ? '' : 'display:none;' }}">
-                            <label>رقم الوطني للشركة</label>
-                            <input type="text" name="company_national_number"
-                                value="{{ old('company_national_number', $client->company_national_number) }}"
-                                class="form-control">
+                            <label>اسم الدخول</label>
+                            <input type="text" name="username"
+                                value="{{ old('username', $client->user->username ?? '') }}" class="form-control">
+                            @error('username')
+                                <small class="text-danger">{{ $message }}</small>
+                            @enderror
                         </div>
 
                         <div class="form-group col-md-4">
-                            <label>الرقم القومي</label>
+                            <label>كلمة المرور (اتركها فارغة إذا لا تريد تغييرها)</label>
+                            <input type="password" name="password" class="form-control">
+                        </div>
+
+                        <div class="form-group col-md-4">
+                            <label>الرقم الوطني</label>
                             <input type="text" name="national_id" value="{{ old('national_id', $client->national_id) }}"
                                 class="form-control">
+                            @error('national_id')
+                                <small class="text-danger">{{ $message }}</small>
+                            @enderror
                         </div>
 
                         <div class="form-group col-md-4">
@@ -66,7 +70,7 @@
                         </div>
 
                         <div class="form-group col-md-4">
-                            <label>الهاتف</label>
+                            <label>هاتف</label>
                             <input type="text" name="phone" value="{{ old('phone', $client->phone) }}"
                                 class="form-control">
                         </div>
@@ -106,13 +110,13 @@
                                                         value="{{ $addClient->nationality }}" class="form-control">
                                                 </div>
                                                 <div class="form-group col-md-3">
-                                                    <label>الرقم القومي</label>
+                                                    <label>الرقم الوطني</label>
                                                     <input type="text"
                                                         name="additional_clients[{{ $index }}][client_national_id]"
                                                         value="{{ $addClient->national_id }}" class="form-control">
                                                 </div>
                                                 <div class="form-group col-md-6">
-                                                    <label>العنوان</label>
+                                                    <label>عنوان الموكل</label>
                                                     <input type="text"
                                                         name="additional_clients[{{ $index }}][client_address]"
                                                         value="{{ $addClient->address }}" class="form-control">
@@ -142,24 +146,10 @@
 @section('script')
     <script>
         document.addEventListener("DOMContentLoaded", function() {
-            const companyInput = document.getElementById("company_name");
-            const nationalWrapper = document.getElementById("company_national_wrapper");
             const addClientBtn = document.getElementById("addClientBtn");
             const container = document.getElementById("additionalClientsContainer");
             let clientCount = {{ $additionalClients->count() }};
 
-            function toggleNationalField() {
-                if (companyInput.value.trim() !== "") {
-                    nationalWrapper.style.display = "block";
-                } else {
-                    nationalWrapper.style.display = "none";
-                }
-            }
-
-            companyInput.addEventListener("input", toggleNationalField);
-            toggleNationalField();
-
-            // إضافة موكل جديد
             addClientBtn.addEventListener("click", function() {
                 clientCount++;
                 const clientDiv = document.createElement("div");
@@ -181,11 +171,11 @@
                                 <input type="text" name="additional_clients[\${clientCount}][client_nationality]" class="form-control">
                             </div>
                             <div class="form-group col-md-3">
-                                <label>الرقم القومي</label>
+                                <label>الرقم الوطني</label>
                                 <input type="text" name="additional_clients[\${clientCount}][client_national_id]" class="form-control">
                             </div>
                             <div class="form-group col-md-6">
-                                <label>العنوان</label>
+                                <label>عنوان الموكل</label>
                                 <input type="text" name="additional_clients[\${clientCount}][client_address]" class="form-control">
                             </div>
                         </div>
@@ -195,18 +185,16 @@
                             <i class="fas fa-times"></i>
                         </button>
                     </div>
-                </div>
-            `;
+                </div>`;
                 container.appendChild(clientDiv);
 
-                // حذف الموكل
-                const removeBtn = clientDiv.querySelector(".remove-client");
-                removeBtn.addEventListener("click", function() {
-                    container.removeChild(clientDiv);
+                // حذف الموكل الجديد
+                clientDiv.querySelector(".remove-client").addEventListener("click", function() {
+                    clientDiv.remove();
                 });
             });
 
-            // تفعيل زرار الحذف للموجودين بالفعل
+            // حذف الموكلين الموجودين مسبقاً
             document.querySelectorAll(".remove-client").forEach(btn => {
                 btn.addEventListener("click", function() {
                     btn.closest(".client-group").remove();
@@ -215,3 +203,19 @@
         });
     </script>
 @endsection
+
+<style>
+    .client-group {
+        background-color: #f8f9fa;
+        transition: all 0.3s ease;
+    }
+
+    .client-group:hover {
+        background-color: #e9ecef;
+    }
+
+    .remove-client {
+        padding: 0.25rem 0.5rem;
+        font-size: 0.75rem;
+    }
+</style>
