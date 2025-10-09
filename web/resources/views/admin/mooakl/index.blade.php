@@ -17,13 +17,19 @@
 
             <div class="card-body">
                 {{-- 🔍 صف البحث --}}
-                <div class="mb-4 grid grid-cols-1 md:grid-cols-5 gap-3">
-                    <input type="text" id="search_name" class="form-control" placeholder="اسم الموكل">
-                    <input type="text" id="search_national" class="form-control" placeholder="الرقم الوطني">
-                    <input type="text" id="search_nationality" class="form-control" placeholder="الجنسية">
-                    <input type="text" id="search_username" class="form-control" placeholder="اسم الدخول">
-                    <input type="text" id="search_address" class="form-control" placeholder="العنوان">
+                <div class="mb-4 d-flex flex-wrap gap-2">
+                    <input type="text" id="search_name" class="form-control w-auto" placeholder="اسم الموكل"
+                        style="min-width: 180px;">
+                    <input type="text" id="search_national" class="form-control w-auto" placeholder="الرقم الوطني"
+                        style="min-width: 180px;">
+                    <input type="text" id="search_nationality" class="form-control w-auto" placeholder="الجنسية"
+                        style="min-width: 180px;">
+                    <input type="text" id="search_username" class="form-control w-auto" placeholder="اسم الدخول"
+                        style="min-width: 180px;">
+                    <input type="text" id="search_address" class="form-control w-auto" placeholder="العنوان"
+                        style="min-width: 180px;">
                 </div>
+
 
                 <div class="overflow-auto">
                     @if (@isset($data) and !@empty($data) and count($data) > 0)
