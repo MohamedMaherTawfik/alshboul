@@ -52,6 +52,7 @@ class ClientController extends Controller
     {
         $data = $request->validate([
             'name' => 'nullable',
+            'username' => 'nullable',
             'email' => 'required|unique:users',
             'phone' => 'nullable',
             'address' => 'nullable',
@@ -77,6 +78,7 @@ class ClientController extends Controller
         Client::create([
             'user_id' => $user->id,
             'name' => $data['name'] ?? '',
+            'username' => $data['username'] ?? '',
             'phone' => $data['phone'] ?? '',
             'address' => $data['address'] ?? '',
             'company_name' => '',

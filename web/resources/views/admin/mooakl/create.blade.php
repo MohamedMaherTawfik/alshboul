@@ -32,6 +32,14 @@
                         </div>
 
                         <div class="form-group col-md-4">
+                            <label>اسم الدخول</label>
+                            <input type="text" name="username" value="{{ old('username') }}" class="form-control">
+                            @error('username')
+                                <small class="text-danger">{{ $message }}</small>
+                            @enderror
+                        </div>
+
+                        <div class="form-group col-md-4">
                             <label>الرقم السري</label>
                             <input type="password" name="password" value="{{ old('password') }}" class="form-control">
                         </div>
