@@ -31,10 +31,10 @@
                     </div>
                 </div>
 
-                <!-- مربع البحث -->
-                <div class="flex justify-center items-center">
-                    <input type="text" id="searchInput" class="form-control w-full md:w-3/4"
-                        placeholder="ابحث عن اسم الموكل...">
+                <!-- خانات البحث -->
+                <div class="flex justify-center items-center gap-3">
+                    <input type="text" id="searchId" class="form-control w-1/2" placeholder="رقم الموكل">
+                    <input type="text" id="searchName" class="form-control w-1/2" placeholder="اسم الموكل">
                 </div>
             </div>
 
@@ -69,19 +69,28 @@
 
 @section('script')
     <script>
-        // فلترة البحث بالاسم
-        document.getElementById('searchInput').addEventListener('keyup', function() {
-            let query = this.value.toLowerCase();
-            let rows = document.querySelectorAll('#clientsTable tr');
+        // البحث برقم الموكل أو الاسم
+        const searchId = document.getElementById('searchId');
+        const searchName = document.getElementById('searchName');
+        const rows = document.querySelectorAll('#clientsTable tr');
+
+        function filterTable() {
+            const idQuery = searchId.value.toLowerCase();
+            const nameQuery = searchName.value.toLowerCase();
 
             rows.forEach(row => {
-                let name = row.cells[1]?.textContent.toLowerCase() || '';
-                if (name.includes(query)) {
+                const id = row.cells[0]?.textContent.toLowerCase() || '';
+                const name = row.cells[1]?.textContent.toLowerCase() || '';
+
+                if (id.includes(idQuery) && name.includes(nameQuery)) {
                     row.style.display = '';
                 } else {
                     row.style.display = 'none';
                 }
             });
-        });
+        }
+
+        searchId.addEventListener('keyup', filterTable);
+        searchName.addEventListener('keyup', filterTable);
     </script>
 @endsection
