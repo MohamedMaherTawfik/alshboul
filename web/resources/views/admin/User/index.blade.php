@@ -46,8 +46,8 @@
                                             ادمن
                                         @elseif ($info->role == 'superadmin')
                                             سوبر ادمن
-                                        @else
-                                            محامي
+                                        @elseif ($info->role == 'user')
+                                            مشترك
                                         @endif
                                     </td>
 
