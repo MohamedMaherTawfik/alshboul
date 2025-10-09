@@ -37,18 +37,9 @@
                             <input type="password" id="password" name="password" value="{{ old('password') }}"
                                 class="form-control" placeholder="">
                         </div>
+
                         <div class="form-group col-md-4">
-                            <label for="">اسم الشركة </label>
-                            <input type="text" id="company_name" name="company_name" value="{{ old('company_name') }}"
-                                class="form-control" placeholder="">
-                        </div>
-                        <div class="form-group col-md-4" id="company_national_wrapper" style="display: none;">
-                            <label for="">رقم الوطني للشركة </label>
-                            <input type="text" name="company_national_number"
-                                value="{{ old('company_national_number') }}" class="form-control" placeholder="">
-                        </div>
-                        <div class="form-group col-md-4">
-                            <label for=""> الرقم القومي </label>
+                            <label for=""> الرقم الوطني </label>
                             <input type="text" name="national_id" value="{{ old('national_id') }}" class="form-control"
                                 placeholder="">
                             @error('national_id')
@@ -152,7 +143,7 @@
                                     class="form-control" id="client_nationality_${clientCount}">
                             </div>
                             <div class="form-group col-md-3">
-                                <label for="client_national_id_${clientCount}">الرقم القومي</label>
+                                <label for="client_national_id_${clientCount}">الرقم الوطني</label>
                                 <input type="text" name="additional_clients[${clientCount}][client_national_id]"
                                     class="form-control" id="client_national_id_${clientCount}">
                             </div>
