@@ -54,7 +54,7 @@
                             <tbody>
                                 @foreach ($data as $info)
                                     <tr>
-                                        <td>{{ $loop->id ?? 'غير محدد' }}</td>
+                                        <td>{{ $info->id ?? 'غير محدد' }}</td>
                                         <td>{{ $info->name ?? 'غير محدد' }}</td>
                                         <td>{{ $info->national_id ?? 'غير محدد' }}</td>
                                         <td>{{ $info->nationality ?? 'غير محدد' }}</td>
