@@ -14,7 +14,6 @@
             <div class="card-body">
                 <form action="{{ route('client.update', $client->id) }}" method="post" id="clientForm">
                     @csrf
-                    @method('PUT')
 
                     <input type="hidden" name="added_by" value="{{ Auth::user()->id }}">
 
