@@ -37,8 +37,12 @@ class CheckNeglectedCases extends Command
                 continue;
             }
 
-            // لو الأيام = 0 نخليها 1
-            $daysLimit = max(1, $neglectConfig->days);
+            if ($neglectConfig->days == 0) {
+                continue;
+            }
+
+            $daysLimit = $neglectConfig->days;
+
 
             foreach ($cases as $case) {
                 $totalEvents = $case->courtSession()->count()

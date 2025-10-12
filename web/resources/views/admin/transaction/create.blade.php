@@ -9,104 +9,83 @@
 
 @section('content')
     <div class="col-12">
-        <div class="card">
+        <div class="card shadow">
             <div class="card-header">
-                <h3 class="card-title card_title_center">
+                <h3 class="card-title text-center">
                     إضافة معاملة جديدة - ({{ $transaction->name ?? '-' }})
                 </h3>
             </div>
             <div class="card-body">
-                <form action="{{ route('transactions.store', $transaction) }}" method="post">
+                <form action="{{ route('transactions.store', $transaction) }}" method="POST">
                     @csrf
 
                     <input type="hidden" name="transactions_main_id" value="{{ $transaction->id }}">
                     <input type="hidden" name="user_id" value="{{ auth()->id() }}">
 
                     <div class="row">
-                        <!-- المشترك -->
+                        <!-- 🟢 المشترك -->
                         <div class="form-group col-md-6 position-relative">
-                            <label for="subscriber_name">المشترك</label>
+                            <label class="fw-bold">المشترك</label>
                             <input type="text" id="subscriber_name" class="form-control" placeholder="اكتب اسم المشترك"
-                                autocomplete="off">
-                            <input type="hidden" name="subscriber_id" id="subscriber_id_hidden">
-                            <div id="subscriberSuggestions" class="list-group position-absolute w-100"
-                                style="z-index: 1000; max-height: 200px; overflow-y: auto; display: none;"></div>
-                            @error('subscriber_id')
-                                <small class="text-danger">{{ $message }}</small>
-                            @enderror
+                                autocomplete="off" required>
+                            <input type="hidden" name="subscriber_id" id="subscriber_id">
+                            <div id="subscriber_suggestions" class="list-group position-absolute w-100"
+                                style="z-index:1000; max-height:200px; overflow-y:auto; display:none;"></div>
                         </div>
 
-                        <!-- رقم الملف -->
+                        <!-- 🔢 رقم الملف -->
                         <div class="form-group col-md-6">
-                            <label for="file_number">رقم الملف</label>
-                            <input type="text" name="file_number" id="file_number" value="{{ $missing }}"
-                                class="form-control" readonly>
-                            @error('file_number')
-                                <small class="text-danger">{{ $message }}</small>
-                            @enderror
+                            <label class="fw-bold">رقم الملف</label>
+                            <input type="text" name="file_number" class="form-control" value="{{ $missing }}"
+                                readonly>
                         </div>
                     </div>
 
                     <div class="row">
-                        <!-- الموكل -->
+                        <!-- 🟡 الموكل -->
                         <div class="form-group col-md-6">
-                            <label for="client_id">الموكل</label>
-                            <select name="client_name" id="client_id" class="form-control" disabled>
-                                <option value="">اختر الموكل</option>
+                            <label class="fw-bold">الموكل</label>
+                            <select name="client_" id="client_id" class="form-select" required disabled>
+                                <option value="">-- اختر الموكل --</option>
                             </select>
-                            @error('client_id')
-                                <small class="text-danger">{{ $message }}</small>
-                            @enderror
                         </div>
 
-                        <!-- المنطقة -->
+                        <!-- 🏛️ المنطقة -->
                         <div class="form-group col-md-6">
-                            <label for="area_name">اسم الدائره المختصه</label>
-                            <input type="text" name="area_name" id="area_name" value="{{ old('area_name') }}"
-                                class="form-control">
-                            @error('area_name')
-                                <small class="text-danger">{{ $message }}</small>
-                            @enderror
+                            <label class="fw-bold">اسم الدائرة المختصة</label>
+                            <input type="text" name="area_name" class="form-control" value="{{ old('area_name') }}">
                         </div>
                     </div>
 
                     <div class="row">
-                        <!-- الوصف -->
+                        <!-- 📄 الوصف -->
                         <div class="form-group col-md-6">
-                            <label for="description">الوصف</label>
-                            <textarea name="description" id="description" class="form-control" rows="3">{{ old('description') }}</textarea>
-                            @error('description')
-                                <small class="text-danger">{{ $message }}</small>
-                            @enderror
+                            <label class="fw-bold">الوصف</label>
+                            <textarea name="description" class="form-control" rows="3">{{ old('description') }}</textarea>
                         </div>
 
-                        <!-- ملاحظات -->
+                        <!-- 🗒️ ملاحظات -->
                         <div class="form-group col-md-6">
-                            <label for="notes">الملاحظات</label>
-                            <textarea name="notes" id="notes" class="form-control" rows="3">{{ old('notes') }}</textarea>
-                            @error('notes')
-                                <small class="text-danger">{{ $message }}</small>
-                            @enderror
+                            <label class="fw-bold">الملاحظات</label>
+                            <textarea name="notes" class="form-control" rows="3">{{ old('notes') }}</textarea>
                         </div>
                     </div>
 
                     <div class="row">
-                        <!-- الحالة -->
+                        <!-- ⚙️ الحالة -->
                         <div class="form-group col-md-6">
-                            <label for="is_active">الحالة</label>
-                            <select name="is_active" id="is_active" class="form-control">
-                                <option value="1" {{ old('is_active', 1) == 1 ? 'selected' : '' }}>نشط</option>
+                            <label class="fw-bold">الحالة</label>
+                            <select name="is_active" class="form-select">
+                                <option value="1" selected>نشط</option>
                                 <option value="0" {{ old('is_active') == 0 ? 'selected' : '' }}>غير نشط</option>
                             </select>
-                            @error('is_active')
-                                <small class="text-danger">{{ $message }}</small>
-                            @enderror
                         </div>
                     </div>
 
+
                     <div class="text-center mt-3">
-                        <button type="submit" class="btn btn-success">حفظ</button>
-                        <a href="{{ route('transactions.all', $transaction) }}" class="btn btn-secondary">إلغاء</a>
+                        <button type="submit" class="btn btn-success px-4">حفظ</button>
+                        <a href="{{ route('transactions.all', $transaction) }}" class="btn btn-secondary px-4">إلغاء</a>
                     </div>
                 </form>
             </div>
@@ -114,68 +93,72 @@
     </div>
 @endsection
 
-<script>
-    document.addEventListener("DOMContentLoaded", function() {
-        const subscribers = @json($clients);
+@section('script')
+    <script>
+        document.addEventListener("DOMContentLoaded", function() {
+            const subscriberInput = document.getElementById("subscriber_name");
+            const subscriberHidden = document.getElementById("subscriber_id"); // هيخزن client.id
+            const suggestionsBox = document.getElementById("subscriber_suggestions");
+            const clientSelect = document.getElementById("client_id"); // هيبعت client.name
+            const users = @json($users);
 
-        const subscriberInput = document.getElementById("subscriber_name");
-        const subscriberHidden = document.getElementById("subscriber_id_hidden");
-        const suggestionsBox = document.getElementById("subscriberSuggestions");
+            // 🟢 عند الكتابة في حقل المشترك
+            subscriberInput.addEventListener("input", function() {
+                const query = this.value.toLowerCase();
+                suggestionsBox.innerHTML = "";
+                subscriberHidden.value = "";
+                clientSelect.innerHTML = '<option value="">-- اختر الموكل --</option>';
+                clientSelect.disabled = true;
 
-        const clientSelect = document.getElementById("client_id");
+                if (query.length < 1) return suggestionsBox.style.display = "none";
 
-        subscriberInput.addEventListener("input", function() {
-            const query = this.value.toLowerCase();
-            suggestionsBox.innerHTML = '';
-            subscriberHidden.value = '';
+                const filtered = users.filter(user => user.name.toLowerCase().includes(query));
+                if (!filtered.length) return suggestionsBox.style.display = "none";
 
-            if (query.length < 1) {
-                suggestionsBox.style.display = 'none';
-                return;
-            }
+                filtered.forEach(user => {
+                    const item = document.createElement("button");
+                    item.type = "button";
+                    item.className = "list-group-item list-group-item-action";
+                    item.textContent = user.name;
 
-            let filtered = subscribers.filter(sub => sub.name.toLowerCase().includes(query));
+                    item.onclick = () => {
+                        subscriberInput.value = user.name;
+                        suggestionsBox.style.display = "none";
+                        clientSelect.innerHTML = '<option value="">-- اختر الموكل --</option>';
+                        clientSelect.disabled = true;
 
-            if (filtered.length === 0) {
-                suggestionsBox.style.display = 'none';
-                return;
-            }
+                        // عرض الموكلين (clients)
+                        if (user.client?.length) {
+                            user.client.forEach(client => {
+                                const opt = document.createElement("option");
+                                opt.value = client
+                                .name; // الاسم هو اللي هيتبعت في client_
+                                opt.dataset.id = client.id; // نخزن id في data attribute
+                                opt.textContent = client.name;
+                                clientSelect.appendChild(opt);
+                            });
+                            clientSelect.disabled = false;
+                        }
+                    };
+                    suggestionsBox.appendChild(item);
+                });
 
-            filtered.forEach(sub => {
-                let item = document.createElement('button');
-                item.type = 'button';
-                item.className = 'list-group-item list-group-item-action';
-                item.textContent = sub.name;
-                item.onclick = function() {
-                    subscriberInput.value = sub.name;
-                    subscriberHidden.value = sub.id;
-
-                    // تفريغ الموكلين وإعادة ملؤهم
-                    clientSelect.innerHTML = '<option value="">اختر الموكل</option>';
-                    clientSelect.disabled = true;
-
-                    if (sub.user && sub.user.client && sub.user.client.length > 0) {
-                        sub.user.client.forEach(client => {
-                            let option = document.createElement("option");
-                            option.value = client.name;
-                            option.textContent = client.name;
-                            clientSelect.appendChild(option);
-                        });
-                        clientSelect.disabled = false;
-                    }
-
-                    suggestionsBox.style.display = 'none';
-                };
-                suggestionsBox.appendChild(item);
+                suggestionsBox.style.display = "block";
             });
 
-            suggestionsBox.style.display = 'block';
-        });
+            // 🟡 عند اختيار الموكل من القائمة
+            clientSelect.addEventListener("change", function() {
+                const selectedOption = this.options[this.selectedIndex];
+                const clientId = selectedOption.dataset.id; // ناخد id من data attribute
+                subscriberHidden.value = clientId; // نخزن id في hidden input
+            });
 
-        document.addEventListener('click', function(e) {
-            if (!subscriberInput.contains(e.target) && !suggestionsBox.contains(e.target)) {
-                suggestionsBox.style.display = 'none';
-            }
+            // 🧩 إغلاق الاقتراحات لما المستخدم يضغط خارجها
+            document.addEventListener('click', function(e) {
+                if (!subscriberInput.contains(e.target) && !suggestionsBox.contains(e.target)) {
+                    suggestionsBox.style.display = "none";
+                }
+            });
         });
-    });
-</script>
+    </script>
+@endsection

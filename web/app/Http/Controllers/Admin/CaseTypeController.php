@@ -7,9 +7,11 @@ use App\Models\cases;
 use App\Models\CaseType;
 use App\Models\excutiveCasesMain;
 use App\Models\ExecutiveCase;
+use App\Models\MainNav;
 use App\Models\NegligenceDays;
 use App\Models\Settlement;
 use App\Models\SettlementMain;
+use App\Models\subNav;
 use App\Models\trahsedDays;
 use App\Models\TransactionsMain;
 use Illuminate\Http\Request;
@@ -26,7 +28,9 @@ class CaseTypeController extends Controller
         $settlements = SettlementMain::select("*")->orderby('id', 'DESC')->get(10);
         $transactions = TransactionsMain::select("*")->orderby('id', 'DESC')->get(10);
         $excutiveCases = excutiveCasesMain::select("*")->orderby('id', 'DESC')->get(10);
-        return view('admin.CaseTypes.index', compact('data', 'settlements', 'transactions', 'excutiveCases'));
+        $subNavs = subNav::with('mainNav')->get();
+        $mainNavs = MainNav::with('subNav')->get();
+        return view('admin.CaseTypes.index', compact('data', 'settlements', 'transactions', 'excutiveCases', 'subNavs', 'mainNavs'));
     }
     public function show(CaseType $casetype)
     {
@@ -82,9 +86,6 @@ class CaseTypeController extends Controller
         }
 
 
-
-
-
         if ($settlements) {
             $more = $settlements->cases_id;
         }
@@ -97,7 +98,8 @@ class CaseTypeController extends Controller
      */
     public function create()
     {
-        return view('admin.CaseTypes.create');
+        $mains = MainNav::all();
+        return view('admin.CaseTypes.create', compact('mains'));
     }
 
     /**
@@ -105,12 +107,11 @@ class CaseTypeController extends Controller
      */
     public function store(Request $request)
     {
+        // dd($request->all());
         try {
             $data = $request->all();
-            // نبدأ تحقق من قيمة الـ name
             switch ($data['case_type']) {
                 case 'قضايا':
-
                     $casetype = CaseType::create([
                         'name' => $data['name'],
                         'added_by' => auth()->user()->id
@@ -156,7 +157,16 @@ class CaseTypeController extends Controller
                     break;
 
                 default:
-                    throw new \Exception("اسم غير معروف!");
+                    $main = subNav::create([
+                        'name' => $data['name'],
+                        'main_nav_id' => $data['case_type'],
+                    ]);
+                    NegligenceDays::create([
+                        'sub_nav_id' => $main->id,
+                        'days' => $data['days'],
+                        'column_name' => $data['name'],
+                    ]);
+                    break;
             }
 
             return redirect()->route('casetypes.index')->with(['success' => 'تم الحفظ بنجاح']);
@@ -244,4 +254,28 @@ class CaseTypeController extends Controller
         return redirect()->route('cases.show', $case ?? '')->with('success', 'تم تسجيل التسوية بنجاح');
     }
 
+    public function mains()
+    {
+        $main = MainNav::all();
+        return view('admin.main.index', compact('main'));
+    }
+
+    public function mainStore()
+    {
+        $data = request()->except('_token');
+        MainNav::create($data);
+        return redirect()->route('MainTypes.index')->with('success', 'تم الحفظ بنجاح');
+    }
+
+    public function mainDestroy(MainNav $main)
+    {
+        $main->delete();
+        return redirect()->route('MainTypes.index')->with('success', 'تم حذف البيانات بنجاح');
+    }
+
+    public function navDestroy(subNav $nav)
+    {
+        $nav->delete();
+        return redirect()->back()->with('success', 'تم حذف البيانات بنجاح');
+    }
 }

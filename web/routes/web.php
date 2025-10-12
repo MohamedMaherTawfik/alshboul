@@ -15,6 +15,7 @@ use App\Http\Controllers\Admin\CaseTypeController;
 use App\Http\Controllers\Admin\SettlementProceduralController;
 use App\Http\Controllers\Admin\SliderController;
 use App\Http\Controllers\Admin\CareerController;
+use App\Http\Controllers\admin\subNavController;
 use App\Http\Controllers\Admin\TransactionController;
 use App\Http\Controllers\Admin\TrashedController;
 use App\Http\Controllers\Admin\UserReportsController;
@@ -295,7 +296,18 @@ Route::group(['prefix' => 'admin', 'middleware' => ['auth', admin::class]], func
         return back()->with('success', 'تم تعليم الإشعار كمقروء.');
     })->name('notifications.read');
 
+    Route::get('/subNav/{nav}/index', [subNavController::class, 'index'])->name('subNav.index');
+    Route::get('/subNav/{nav}/create', [subNavController::class, 'create'])->name('subNav.create');
+    Route::post('/subNav/{nav}/store', [subNavController::class, 'store'])->name('subNav.store');
+    Route::get('/subNav/{nav}/edit', [subNavController::class, 'edit'])->name('subNav.edit');
+    Route::post('/subNav/{nav}/update', [subNavController::class, 'update'])->name('subNav.update');
+    Route::delete('/subNav/{nav}/delete', [subNavController::class, 'delete'])->name('subNav.delete');
+
     Route::get('/casetypes', [CaseTypeController::class, 'index'])->name('casetypes.index');
+    Route::get('/MainTypes', [CaseTypeController::class, 'mains'])->name('MainTypes.index');
+    Route::delete('/MainTypes/delete/{main}', [CaseTypeController::class, 'mainDestroy'])->name('MainTypes.destroy');
+    Route::post('/MainTypes/store', [CaseTypeController::class, 'mainStore'])->name('MainTypes.store');
+    Route::delete('/MainTypes/nav/{nav}/destroy', [CaseTypeController::class, 'navDestroy'])->name('MainTypes.nav.destroy');
     Route::get('/casetypes/create', [CaseTypeController::class, 'create'])->name('casetypes.create');
     Route::post('/casetypes', [CaseTypeController::class, 'store'])->name('casetypes.store');
     Route::get('/casetypes/{id}/edit', [CaseTypeController::class, 'edit'])->name('casetypes.edit');

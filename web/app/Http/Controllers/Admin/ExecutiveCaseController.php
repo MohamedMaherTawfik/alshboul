@@ -3,6 +3,7 @@
 namespace App\Http\Controllers\Admin;
 
 use App\Http\Controllers\Controller;
+use App\Models\CaseOpponents;
 use App\Models\Client;
 use App\Models\excutiveCasesMain;
 use App\Models\ExecutiveCase;
@@ -126,12 +127,50 @@ class ExecutiveCaseController extends Controller
         $data['user_id'] = Auth::id();
         $data['excutive_cases_main_id'] = $item->id;
         try {
-            ExecutiveCase::create($data);
-            return redirect()->route('executive-case.index', $item)->with('success', 'تم إضافة القضية التنفيذية بنجاح');
+            $executiveCase = ExecutiveCase::create([
+                'file_number' => $data['file_number'],
+                'client_name' => $data['client_name'],
+                'client_id' => $data['client_id'],
+                'user_id' => $data['user_id'],
+                'excutive_cases_main_id' => $data['excutive_cases_main_id'],
+                'subscriber_number' => $data['subscriber_number'],
+                'client_national_id' => $data['client_national_id'],
+                'case_number' => $data['case_number'],
+                'case_type' => $data['case_type'],
+                'case_status' => $data['case_status'],
+                'case_value' => $data['case_value'],
+                'judged_against' => $data['judged_against'],
+                'judged_for' => $data['judged_for'],
+                'execution_court' => $data['execution_court'],
+                'execution_document_number' => $data['execution_document_number'],
+                'execution_document_type' => $data['execution_document_type'],
+                'procedural_session_date' => $data['procedural_session_date'],
+            ]);
+
+            // ✅ حفظ الخصوم المتعددين
+            if ($request->has('opponents')) {
+                foreach ($request->opponents as $opponent) {
+                    if (!empty($opponent['name'])) {
+                        CaseOpponents::create([
+                            'executive_case_id' => $executiveCase->id,
+                            'case_opponent_name' => $opponent['name'],
+                            'case_opponent_national_number' => $opponent['national_id'] ?? '',
+                            'case_opponent_description' => '',
+                        ]);
+                    }
+                }
+            }
+
+            return redirect()->route('executive-case.index', $item)
+                ->with('success', 'تم إضافة القضية التنفيذية بنجاح');
         } catch (\Exception $th) {
-            return redirect()->back()->with('error', 'حدث خطأ أثناء الإضافة: ' . $th->getMessage())->withInput();
+            return redirect()->back()
+                ->with('error', 'حدث خطأ أثناء الإضافة: ' . $th->getMessage())
+                ->withInput();
         }
     }
+
+
 
     /**
      * Display the specified resource.

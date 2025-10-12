@@ -27,7 +27,12 @@
                             <th>اضافة بواسطة</th>
                             <th>تعديل بواسطة</th>
                             <th>تاريخ التسجيل</th>
-                            <th>التحكم</th>
+                            <th>تاريخ اخر تسجيل دخول</th>
+                            <th>تاريخ اخر تسجيل خروج </th>
+                            @if (Auth::user()->role == 'superadmin')
+                                <th>التحكم</th>
+                            @endif
+
 
                         </thead>
                         <tbody>
@@ -40,8 +45,8 @@
                                     <td>{{ $info->email }}</td>
                                     <td>{{ $info->phone }}</td>
                                     <td>
-                                        @if ($info->role == 'client')
-                                            وكيل
+                                        @if ($info->role == 'Lawyer')
+                                            محامي
                                         @elseif ($info->role == 'admin')
                                             ادمن
                                         @elseif ($info->role == 'superadmin')
@@ -60,11 +65,52 @@
                                         @endif
                                     </td>
                                     <td>{{ $info->date }}</td>
-                                    <td>
-                                        <a href="{{ route('user.edit', $info->id) }}" class="btn btn-warning">تعديل</a>
-                                        <a href="#" data-id="{{ $info->id }}" data-toggle="modal"
-                                            data-target="#delete_reason" class="btn btn-danger open-delete-modal">حذف</a>
+                                    <td class="px-6 py-3 text-center">
+                                        @php
+                                            // نحاول نجيب آخر سجل type = login
+                                            $lastLogin = $info->visitWeb
+                                                ? $info->visitWeb
+                                                    ->where('type', 'login')
+                                                    ->sortByDesc('created_at')
+                                                    ->first()
+                                                : null;
+                                        @endphp
+
+                                        @if ($lastLogin)
+                                            {{ $lastLogin->created_at->format('Y-m-d') }} -
+                                            {{ $lastLogin->created_at->format('H:i:s') }}
+                                        @else
+                                            0
+                                        @endif
                                     </td>
+                                    <td class="px-6 py-3 text-center">
+                                        @php
+                                            // نحاول نجيب آخر سجل type = login
+                                            $lastLogin = $info->visitWeb
+                                                ? $info->visitWeb
+                                                    ->where('type', 'logout')
+                                                    ->sortByDesc('created_at')
+                                                    ->first()
+                                                : null;
+                                        @endphp
+
+                                        @if ($lastLogin)
+                                            {{ $lastLogin->created_at->format('Y-m-d') }} -
+                                            {{ $lastLogin->created_at->format('H:i:s') }}
+                                        @else
+                                            0
+                                        @endif
+                                    </td>
+
+                                    @if (Auth::user()->role == 'superadmin')
+                                        <td>
+                                            <a href="{{ route('user.edit', $info->id) }}" class="btn btn-warning">تعديل</a>
+                                            <a href="#" data-id="{{ $info->id }}" data-toggle="modal"
+                                                data-target="#delete_reason"
+                                                class="btn btn-danger open-delete-modal">حذف</a>
+                                        </td>
+                                    @endif
+
                                 </tr>
                             @endforeach
 

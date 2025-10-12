@@ -26,8 +26,8 @@ class ClientController extends Controller
     }
     public function visit()
     {
-        $data = Client::with('user')->where('seen', 1)->where('active', 1)->orderBy('id', 'desc')->get();
-        return view('admin.mooakl.Visit', compact('data'));
+        $data = user::with('visitWeb')->where('active', 1)->get();
+        return view('admin.visit.new', compact('data'));
     }
 
     public function indexDelete()

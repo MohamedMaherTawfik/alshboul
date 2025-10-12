@@ -62,4 +62,9 @@ class ProceduralRecord extends Model
     {
         return $this->belongsTo(TransActions::class, 'trans_actions_id');
     }
+
+    public function subNav()
+    {
+        return $this->belongsTo(subNav::class, 'sub_nav_id');
+    }
 }

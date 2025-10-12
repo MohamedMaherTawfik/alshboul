@@ -1,14 +1,11 @@
 @extends('layouts.admin')
-
-@section('title', 'زيارات الموكلين')
+@section('title', 'الزيارات')
+@section('main_title_content', 'قائمة الزيارات')
 @section('title_content', 'عرض')
-@section('link_content')
-    <a href="{{ route('client.visit') }}">موكلين</a>
-@endsection
 
 @section('content')
-    <div class="min-h-screen bg-gray-50 p-6">
-        <div class="max-w-7xl mx-auto bg-white shadow-md rounded-2xl p-8 border border-gray-200">
+    <div class="fixed inset-0 bg-gray-50 flex flex-col overflow-auto z-0">
+        <div class="flex-1 w-full bg-white shadow-md rounded-none p-8 border border-gray-200 flex flex-col">
 
             <!-- ✅ رأس الصفحة -->
             <div class="flex flex-col md:flex-row justify-between items-center border-b pb-4 mb-6">
@@ -60,9 +57,9 @@
             </div>
 
             <!-- ✅ جدول عرض الموكلين -->
-            <div class="overflow-x-auto rounded-lg border border-gray-200">
+            <div class="overflow-auto rounded-lg border border-gray-200 flex-1">
                 <table class="min-w-full text-right text-sm text-gray-800">
-                    <thead class="bg-blue-600 text-white">
+                    <thead class="bg-blue-600 text-white sticky top-0">
                         <tr>
                             <th class="px-6 py-3 font-semibold text-sm">رقم الموكل</th>
                             <th class="px-6 py-3 font-semibold text-sm">اسم الموكل</th>
@@ -74,7 +71,14 @@
                             <tr class="hover:bg-gray-50 transition duration-150">
                                 <td class="px-6 py-3">{{ $client->id }}</td>
                                 <td class="px-6 py-3 font-medium">{{ $client->name }}</td>
-                                <td class="px-6 py-3 text-center">{{ $client->visit_count ?? 0 }}</td>
+                                <td class="px-6 py-3 text-center">
+                                    @if ($client->visitWeb && $client->visitWeb->isNotEmpty())
+                                        {{ $client->visitWeb->first()->created_at->format('Y-m-d') }} -
+                                        {{ $client->visitWeb->first()->created_at->format('H:i:s') }}
+                                    @else
+                                        0
+                                    @endif
+                                </td>
                             </tr>
                         @empty
                             <tr>
@@ -104,10 +108,8 @@
             rows.forEach(row => {
                 const id = row.cells[0]?.textContent.trim().toLowerCase() || '';
                 const name = row.cells[1]?.textContent.trim().toLowerCase() || '';
-
                 const match = (id.includes(idQuery) || idQuery === '') &&
                     (name.includes(nameQuery) || nameQuery === '');
-
                 row.style.display = match ? '' : 'none';
             });
         }

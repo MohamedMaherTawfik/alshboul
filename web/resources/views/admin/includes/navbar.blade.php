@@ -2,6 +2,8 @@
     use App\Models\CaseType;
     use App\Models\SettlementMain;
     use App\Models\excutiveCasesMain;
+    use App\Models\MainNav;
+    use App\Models\subNav;
     use App\Models\TransactionsMain;
 
     $message = \App\Models\Message::where('receiver_id', Auth::id())->where('seen', '0')->count();
@@ -15,7 +17,49 @@
     $excutive = excutiveCasesMain::get();
     $settlements = SettlementMain::get();
     $transactions = TransactionsMain::get();
+    $mains = MainNav::all();
+    $subNavs = subNav::all();
 @endphp
+<style>
+    /* تصغير حجم الخط والمسافات بين العناصر في النافبار */
+    .navbar .nav-link,
+    .navbar .dropdown-item {
+        font-size: 14px !important;
+        /* أصغر بحوالي 2px من الافتراضي */
+        padding: 4px 8px !important;
+        /* تقليل الحواف الداخلية */
+    }
+
+    /* تصغير الأيقونات والمسافات بينها */
+    .navbar .fa {
+        font-size: 14px !important;
+    }
+
+    /* تصغير شعار الموقع قليلاً */
+    .navbar-brand img {
+        width: 85px !important;
+        height: 40px !important;
+    }
+
+    /* تقليل التباعد بين القوائم */
+    .navbar-nav .nav-item {
+        margin-left: 4px !important;
+        margin-right: 4px !important;
+    }
+
+    /* تصغير القوائم المنسدلة */
+    .dropdown-menu {
+        font-size: 14px !important;
+        min-width: 160px !important;
+    }
+
+    /* تصغير الأزرار الصغيرة مثل الإشعارات */
+    .badge {
+        font-size: 10px !important;
+        padding: 2px 5px !important;
+    }
+</style>
+
 <nav class="navbar navbar-expand-lg navbar-dark bg-dark">
     <a class="navbar-brand d-flex align-items-center" href="{{ route('admin.dashboard') }}">
         <img src="{{ asset('assets/admin/imgs/logoFull.png') }}" style="width: 100px; height: 50px; opacity: .8"
@@ -77,6 +121,7 @@
                     </a>
                     <div class="dropdown-menu dropdown-menu-right" aria-labelledby="deletedItemsMenu">
                         <a class="dropdown-item" href="{{ route('casetypes.index') }}">اضافه نوع او حاله</a>
+                        <a class="dropdown-item" href="{{ route('MainTypes.index') }}">اضافه عنوان رئيسي </a>
                         <a class="dropdown-item" href="{{ route('visitors.index') }}">اراء الزوار بالنسبه للموقع</a>
                         <hr>
                         <a class="dropdown-item" href="{{ route('archive.index') }}">تسجيلات دخول الموبايل</a>
@@ -172,6 +217,25 @@
                     @endforeach
                 </div>
             </li>
+
+            {{-- الجديد --}}
+            @foreach ($mains as $info)
+                <li class="nav-item dropdown">
+                    <a class="nav-link dropdown-toggle {{ request()->is('admin/' . $info->title . '/*') ? 'active' : '' }}"
+                        href="#" id="settlementDropdown" role="button" data-toggle="dropdown"
+                        aria-haspopup="true" aria-expanded="false">
+                        {{ $info->title }}
+                    </a>
+                    <div class="dropdown-menu dropdown-menu-right" aria-labelledby="settlementDropdown">
+                        @foreach ($subNavs as $item)
+                            @if ($item->main_nav_id == $info->id)
+                                <a class="dropdown-item"
+                                    href="{{ route('subNav.index', $item) }}">{{ $item->name }}</a>
+                            @endif
+                        @endforeach
+                    </div>
+                </li>
+            @endforeach
 
             {{-- الوظائف --}}
             @if (Auth::user()->role == 'admin' || Auth::user()->role == 'superadmin')

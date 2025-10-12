@@ -137,9 +137,9 @@
                                 @else
                                     <a href="{{ route('cases.procedure.edit', $record) }}"
                                         class="btn btn-sm btn-warning">تعديل الإجراء</a>
-                                    <a href="{{ route('case.procedural.show', $record) }}"
+                                    {{-- <a href="{{ route('case.procedural.show', $record) }}"
                                         class="btn btn-sm btn-info">إجراء
-                                        فرعي</a>
+                                        فرعي</a> --}}
                                 @endif
 
                                 <form

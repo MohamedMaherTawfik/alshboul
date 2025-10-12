@@ -66,14 +66,12 @@ class TransactionController extends Controller
 
     public function create(TransactionsMain $transaction)
     {
-
         $clients = Client::with('user')->where('seen', 1)->where('active', 1)->orderBy('id', 'desc')->get();
-
+        $users = User::with('client')->where('role', 'user')->where('active', 1)->get();
         $numbers = $transaction->transactions()
+            ->where('file_number', '!=', '')
             ->pluck('file_number')
-            ->map(function ($num) {
-                return (int) $num;
-            })
+            ->map(fn($num) => (int) $num)
             ->sort()
             ->toArray();
 
@@ -86,9 +84,8 @@ class TransactionController extends Controller
             }
         }
 
-        return view('admin.transaction.create', compact('transaction', 'clients', 'missing'));
+        return view('admin.transaction.create', compact('transaction', 'clients', 'users', 'missing'));
     }
-
 
     public function store(Request $request, TransactionsMain $transaction)
     {
@@ -96,7 +93,7 @@ class TransactionController extends Controller
         TransActions::create([
             'transactions_main_id' => $transaction->id,
             'file_number' => $data['file_number'],
-            'client_name' => $data['client_name'],
+            'client_name' => $data['client_'],
             'client_id' => $data['subscriber_id'],
             'notes' => $data['notes'],
             'area_name' => $data['area_name'],

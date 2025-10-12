@@ -17,7 +17,7 @@ class UserController extends Controller
      */
     public function index()
     {
-        $data = User::get();
+        $data = User::with('visitWeb')->whereIn('role', ['admin', 'Lawyer', 'superadmin'])->get();
         return view('admin.User.index', compact('data'));
     }
     public function indexDelete()

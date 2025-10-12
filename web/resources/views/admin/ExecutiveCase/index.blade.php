@@ -4,7 +4,8 @@
 @section('main_title_content', 'القضايا التنفيذية')
 @section('title_content', 'عرض')
 @section('link_content')
-    <a href="{{ route('executive-case.index', $item) }}">قضايا تنفيذية</a>
+    <a href="{{ route('executive-case.index', $item) }}">
+        قضايا تنفيذية</a>
 @endsection
 
 @section('content')
@@ -69,14 +70,22 @@
                                     <td>{{ $case->client?->name }}</td>
                                     <td>{{ $case->client_name }}</td>
                                     <td>{{ $case->client_national_id }}</td>
-                                    <td>{{ $case->opponent_name }}</td>
-                                    <td>{{ $case->opponent_national_id }}</td>
+                                    <td>
+                                        @foreach ($case->opponents as $item)
+                                            {{ $item->case_opponent_name }} -
+                                        @endforeach
+                                    </td>
+                                    <td>
+                                        @foreach ($case->opponents as $item)
+                                            {{ $item->case_opponent_national_number }} -
+                                        @endforeach
+                                    </td>
                                     <td>{{ $case->case_number }}</td>
                                     <td>{{ $case->case_value }}</td>
                                     <td>{{ $case->file_number }}</td>
                                     <td>{{ $case->execution_court }}</td>
-                                    <td>{{ $case->judged_for_status }}</td>
-                                    <td>{{ $case->judged_against_status }}</td>
+                                    <td>{{ $case->judged_for }}</td>
+                                    <td>{{ $case->judged_against }}</td>
                                     <td>{{ $case->case_status }}</td>
                                     <td>{{ $case->execution_document_type }}</td>
                                     <td>{{ $case->execution_document_number }}</td>

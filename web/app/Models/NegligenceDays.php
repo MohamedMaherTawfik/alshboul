@@ -28,4 +28,9 @@ class NegligenceDays extends Model
     {
         return $this->belongsTo(TransactionsMain::class, 'transactions_main_id');
     }
+
+    public function subNav()
+    {
+        return $this->belongsTo(subNav::class);
+    }
 }

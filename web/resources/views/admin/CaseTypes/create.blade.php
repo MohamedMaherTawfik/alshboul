@@ -30,6 +30,10 @@
                                 </option>
                                 <option value="معاملات" {{ old('case_type') == 'معاملات' ? 'selected' : '' }}>معاملات
                                 </option>
+                                @foreach ($mains as $item)
+                                    <option value="{{ $item->id }}">{{ $item->title }}</option>
+                                @endforeach
+
                             </select>
                             @error('case_type')
                                 <small id="helpId" class="text-muted text-danger">{{ $message }}</small>

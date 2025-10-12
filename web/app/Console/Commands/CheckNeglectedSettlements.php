@@ -29,9 +29,12 @@ class CheckNeglectedSettlements extends Command
             if (!$neglectConfig) {
                 continue;
             }
+            if ($neglectConfig->days == 0) {
+                continue;
+            }
 
-            // لو الأيام = 0 نخليها 1
-            $daysLimit = max(1, $neglectConfig->days);
+            $daysLimit = $neglectConfig->days;
+
 
             foreach ($main->settlements as $settlement) {
                 $totalEvents = $settlement->actions()->count()

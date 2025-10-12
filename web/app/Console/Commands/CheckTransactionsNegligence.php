@@ -21,8 +21,11 @@ class CheckTransactionsNegligence extends Command
             $neglectConfig = NegligenceDays::where('transactions_main_id', $transaction->id)->first();
 
             if ($neglectConfig) {
-                // لو الأيام = 0 نخليها 1
-                $daysLimit = max(1, $neglectConfig->days);
+                if ($neglectConfig->days == 0) {
+                    continue;
+                }
+
+                $daysLimit = $neglectConfig->days;
 
                 foreach ($transactionsList as $tran) {
                     $totalEvents = $tran->procedural()->count();

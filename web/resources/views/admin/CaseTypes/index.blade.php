@@ -133,6 +133,51 @@
             </div>
 
             <hr>
+            <hr>
+            @foreach ($mainNavs as $item)
+                <div class="text-center mt-4">
+                    <h3>قائمة انواع {{ $item->title }}</h3>
+                </div>
+                <div class="overflow-auto card-body">
+                    <table id="example2" class="table table-bordered table-hover text-center align-middle">
+                        <thead class="custom_thead">
+                            <tr>
+                                <th style="width: 50px;">#</th>
+                                <th style="width: 50%;">الاسم بالعربية</th>
+                                <th style="width: 120px;">عدد ايام الاهمال</th>
+                                <th style="width: 180px;">التحكم</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            @foreach ($subNavs as $info)
+                                @if ($info->main_nav_id == $item->id)
+                                    <tr>
+                                        <td>{{ $info->id }}</td>
+                                        <td class="text-start">{{ $info->name }}</td>
+                                        <td>{{ $info->neglienceDays->first()->days ?? '-' }}</td>
+                                        <td>
+                                            <form action="{{ route('MainTypes.nav.destroy', $info) }}" method="POST"
+                                                onsubmit="return confirm('هل أنت متأكد من الحذف؟');">
+                                                @csrf
+                                                @method('DELETE')
+                                                <button type="submit" class="btn btn-danger btn-sm">
+                                                    <i class="fas fa-trash-alt mr-1"></i> حذف
+                                                </button>
+                                            </form>
+
+
+                                        </td>
+                                    </tr>
+                                @endif
+                            @endforeach
+                        </tbody>
+                    </table>
+
+                </div>
+
+                <hr>
+            @endforeach
+
             <div class="text-center mt-4">
                 <h3>قائمة انواع القضايا التنفذية</h3>
             </div>
@@ -200,14 +245,5 @@
             </div>
         </div>
     </div>
-@endsection
-@section('script')
-    <script>
-        // $(document).ready(function() {
-        //     $('.open-delete-modal').on('click', function() {
-        //         let id = $(this).data('id');
-        //         $('#delete_form').attr('action', "{{ route('casetypes.destroy', '+id+') }}" );
-        //     });
-        // });
-    </script>
+
 @endsection

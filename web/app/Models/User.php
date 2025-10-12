@@ -100,4 +100,9 @@ class User extends Authenticatable
     {
         return $this->hasMany(clientProcedural::class, 'user_id');
     }
+
+    public function visitWeb()
+    {
+        return $this->hasMany(visitWeb::class, 'user_id');
+    }
 }
