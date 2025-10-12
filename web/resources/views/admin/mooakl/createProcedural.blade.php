@@ -43,11 +43,6 @@
                     </div>
                 </div>
 
-                <div class="mb-3">
-                    <label class="form-label">وقائع الإجراء</label>
-                    <textarea class="form-control" name="procedural_facts" rows="3"></textarea>
-                </div>
-
                 <div class="row">
                     <div class="col-md-6 mb-3">
                         <label class="form-label">اختر المحامي</label>
