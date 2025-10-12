@@ -1,6 +1,5 @@
 <?php
 
-use App\Models\MainNav;
 use App\Models\subNav;
 use Illuminate\Database\Migrations\Migration;
 use Illuminate\Database\Schema\Blueprint;
