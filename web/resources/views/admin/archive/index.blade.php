@@ -259,11 +259,11 @@
                     @if ($archives->count() > 0)
                         @foreach ($archives as $archive)
                             <tr data-sub-menu-id="{{ $archive->archivesSubMenues->id ?? '' }}">
-                                <td>{{ $archive->file_number }}</td>
+                                <td>{{ $archive->file_number ?? 'لا يوجد' }}</td>
                                 <td>{{ $archive->user->name ?? 'غير معروف' }}</td>
                                 <td>{{ $archive->archivesSubMenues->archivesMainMenues->name ?? 'لا يوجد' }}</td>
                                 <td>{{ $archive->archivesSubMenues->name ?? 'لا يوجد' }}</td>
-                                <td>{{ $archive->client->name }}</td>
+                                <td>{{ $archive->client->name ?? 'لا يوجد' }}</td>
                                 <td>{{ Str::limit($archive->another_names ?? 'لا يوجد', 50, '...') }}</td>
                                 <td>
                                     @if ($archive->file)
