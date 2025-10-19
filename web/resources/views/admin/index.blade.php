@@ -155,8 +155,8 @@
                                 <th>اسم الخصم</th>
                                 <th>اسم المحكمة</th>
                                 <th>ملاحظات</th>
-                                <th>المعتمد الأول</th>
-                                <th>المعتمد الثاني</th>
+                                <th>المعتمد الأول | ساعه الاعتماد</th>
+                                <th>المعتمد الثاني | ساعه الاعتماد</th>
                                 @if (Auth::user()->role == 'admin' || Auth::user()->role == 'superadmin')
                                     <th>الانجاز</th>
                                 @endif
@@ -237,8 +237,10 @@
                                         </td>
                                         <td>{{ $case->court_name ?? '-' }}</td>
                                         <td>{{ Str::limit($duration->notes, 40, '...') ?? '-' }}</td>
-                                        <td>{{ $duration->firstSubmitter->name ?? '-' }}</td>
-                                        <td>{{ $duration->secondSubmitter->name ?? '-' }}</td>
+                                        <td>{{ $duration->firstSubmitter->name ?? '-' }} |
+                                            {{ $duration->firstSubmitter->created_at->format('Y-m-d H:i') }}</td>
+                                        <td>{{ $duration->secondSubmitter->name ?? '-' }} |
+                                            {{ $duration->secondSubmitter->created_at->format('Y-m-d H:i') }}</td>
                                         @if (Auth::user()->role == 'admin' || Auth::user()->role == 'superadmin')
                                             <td>
                                                 <form action="{{ route('case.duration.submit', $duration) }}"
@@ -314,8 +316,8 @@
                                 <th>اسم الخصم</th>
                                 <th>اسم المحكمة</th>
                                 <th>ملاحظات</th>
-                                <th>المعتمد الأول</th>
-                                <th>المعتمد الثاني</th>
+                                <th> المعتمد الأول | ساعه الاعتماد </th>
+                                <th>المعتمد الثاني | ساعه الاعتماد</th>
                                 @if (Auth::user()->role == 'admin' || Auth::user()->role == 'superadmin')
                                     <th>الانجاز</th>
                                 @endif
@@ -386,8 +388,10 @@
                                         </td>
                                         <td>{{ $case->court_name ?? '-' }}</td>
                                         <td>{{ Str::limit($note->notes, 40, '...') ?? '-' }}</td>
-                                        <td>{{ $note->firstSubmitter->name ?? '-' }}</td>
-                                        <td>{{ $note->secondSubmitter->name ?? '-' }}</td>
+                                        <td>{{ $note->firstSubmitter->name ?? '-' }} |
+                                            {{ $note->firstSubmitter->created_at->format('Y-m-d H:i') ?? '-' }}</td>
+                                        <td>{{ $note->secondSubmitter->name ?? '-' }} |
+                                            {{ $note->secondSubmitter->created_at->format('Y-m-d H:i') ?? '-' }}</td>
                                         @if (Auth::user()->role == 'admin' || Auth::user()->role == 'superadmin')
                                             <td>
                                                 <form action="{{ route('case.note.submit', $note) }}" method="POST">

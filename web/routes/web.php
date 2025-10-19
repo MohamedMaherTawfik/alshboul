@@ -29,7 +29,6 @@ use App\Http\Controllers\ProfileController;
 use App\Http\Controllers\UserController;
 use App\Http\Controllers\visitorReviewController;
 use App\Http\Middleware\admin;
-use App\Http\Middleware\roleMiddleware;
 use App\Http\Controllers\Message;
 use App\Http\Controllers\Admin\MoveBarController;
 use App\Http\Controllers\Admin\SocialLinkController;
@@ -95,7 +94,7 @@ Route::middleware('auth')->group(function () {
 
 
 Route::group(['prefix' => 'admin', 'middleware' => ['auth', admin::class]], function () {
-    Route::get('/dashboard', [DashboardController::class, 'index'])->name('admin.dashboard');
+    Route::get('/dashboard', [DashboardController::class, 'inxde'])->name('admin.dashboard');
     Route::get('/logout', [LoginController::class, 'logout'])->name('admin.logout');
 
     Route::get('/clients', [ClientController::class, 'index'])->name('client.index');
@@ -111,8 +110,9 @@ Route::group(['prefix' => 'admin', 'middleware' => ['auth', admin::class]], func
     Route::post('/action-clients/client/{client}/store', [ClientController::class, 'clientstoreProcedural'])->name('client.procedural.store');
     Route::post('/action-clients/client/{client}/store/file/add', [ClientController::class, 'addFile'])->name('Client.procedural.add.file');
     Route::delete('/action-clients/client/{client}/store/file/add/deleteFile', [ClientController::class, 'deleteFile'])->name('Client.procedural.delete.file');
-    Route::post('/action-clients/client/{client}/update', [ClientController::class, 'clientUpdateProcedural'])->name('client.procedural.update');
     Route::delete('/action-clients/client/{client}/delete', [ClientController::class, 'clientDeleteProcedural'])->name('client.procedural.delete');
+    Route::get('/action-clients/client/{client}/edit', [ClientController::class, 'clienteditProcedural'])->name('client.procedural.edit');
+    Route::post('/action-clients/client/{client}/update', [ClientController::class, 'clientupdateProcedural'])->name('client.procedural.update');
     Route::delete('/action-client/delete', [ClientController::class, 'destroy1'])->name('client.action.delete');
     Route::POST('/action-client/store', [ClientController::class, 'store1'])->name('client.action.store');
     Route::post('/action-client/action/{id}', [ClientController::class, 'update1'])->name('client.action.update');

@@ -13,10 +13,10 @@
             $query->where('first_lawyer_id', $lawyerId)->orWhere('second_lawyer_id', $lawyerId);
         })
         ->count();
-    $cases = CaseType::get();
-    $excutive = excutiveCasesMain::get();
-    $settlements = SettlementMain::get();
-    $transactions = TransactionsMain::get();
+    $cases = CaseType::where('is_active', 1)->get();
+    $excutive = excutiveCasesMain::where('is_active', 1)->get();
+    $settlements = SettlementMain::where('is_active', 1)->get();
+    $transactions = TransactionsMain::where('is_active', 1)->get();
     $mains = MainNav::all();
     $subNavs = subNav::all();
 @endphp
@@ -262,7 +262,7 @@
                 <div class="dropdown-menu dropdown-menu-right">
                     <a class="dropdown-item" href="{{ route('chat.with') }}">دردشة الإدارة</a>
                     <a class="dropdown-item" href="{{ route('chat.with1') }}">دردشة المحامين</a>
-                    <a class="dropdown-item" href="{{ route('chat.with2') }}">دردشة المستخدمين</a>
+                    <a class="dropdown-item" href="{{ route('chat.with2') }}">دردشة الموكلين</a>
                 </div>
             </li>
 

@@ -107,11 +107,10 @@
                                             </td>
                                             @if (Auth::user()->role == 'admin' || Auth::user()->role == 'superadmin')
                                                 <td class="text-center">
-                                                    <button type="button" class="btn btn-sm btn-outline-primary"
-                                                        data-bs-toggle="modal"
-                                                        data-bs-target="#editProceduralModal{{ $procedural->id }}">
+                                                    <a href="{{ route('client.procedural.edit', $procedural) }}"
+                                                        class="btn btn-sm btn-outline-primary">
                                                         تعديل الاجراء
-                                                    </button>
+                                                    </a>
                                                     <form action="{{ route('client.procedural.delete', $procedural) }}"
                                                         method="POST" class="d-inline">
                                                         @csrf

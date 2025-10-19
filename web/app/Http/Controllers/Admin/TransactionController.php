@@ -24,41 +24,41 @@ class TransactionController extends Controller
 
         $neglectConfig = NegligenceDays::where('transactions_main_id', $transaction->id)->first();
 
-        if ($neglectConfig) {
-            foreach ($transactionsList as $tran) {
-                $totalEvents = $tran->procedural()->count();
+        // if ($neglectConfig) {
+        //     foreach ($transactionsList as $tran) {
+        //         $totalEvents = $tran->procedural()->count();
 
 
-                $trashed = trahsedDays::where('trans_actions_id', $tran->id)->first();
+        //         $trashed = trahsedDays::where('trans_actions_id', $tran->id)->first();
 
-                if ($trashed) {
-                    if ($totalEvents == $trashed->counts) {
-                        $daysDiff = now()->diffInDays($trashed->updated_at);
+        //         if ($trashed) {
+        //             if ($totalEvents == $trashed->counts) {
+        //                 $daysDiff = now()->diffInDays($trashed->updated_at);
 
-                        if ($daysDiff >= 1) {
-                            $trashed->increment('days_passed', $daysDiff);
-                        }
+        //                 if ($daysDiff >= 1) {
+        //                     $trashed->increment('days_passed', $daysDiff);
+        //                 }
 
-                        if ($trashed->days_passed >= $neglectConfig->days) {
-                            $trashed->update(['is_seen' => 1]);
-                        }
-                    } elseif ($totalEvents > $trashed->counts) {
-                        $trashed->update([
-                            'counts' => $totalEvents,
-                            'days_passed' => 0,
-                            'is_seen' => 0,
-                        ]);
-                    }
-                } else {
-                    trahsedDays::create([
-                        'trans_actions_id' => $tran->id,
-                        'counts' => $totalEvents,
-                        'days_passed' => 0,
-                        'is_seen' => 0,
-                    ]);
-                }
-            }
-        }
+        //                 if ($trashed->days_passed >= $neglectConfig->days) {
+        //                     $trashed->update(['is_seen' => 1]);
+        //                 }
+        //             } elseif ($totalEvents > $trashed->counts) {
+        //                 $trashed->update([
+        //                     'counts' => $totalEvents,
+        //                     'days_passed' => 0,
+        //                     'is_seen' => 0,
+        //                 ]);
+        //             }
+        //         } else {
+        //             trahsedDays::create([
+        //                 'trans_actions_id' => $tran->id,
+        //                 'counts' => $totalEvents,
+        //                 'days_passed' => 0,
+        //                 'is_seen' => 0,
+        //             ]);
+        //         }
+        //     }
+        // }
 
         return view('admin.transaction.index', compact('transaction', 'transactionsList'));
     }

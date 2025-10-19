@@ -34,46 +34,46 @@ class ExecutiveCaseController extends Controller
         $settlements = Settlement::whereIn('executive_case_id', $casesId)->first();
 
 
-        if ($neglectConfig) {
-            foreach ($executiveCases as $case) {
-                $totalEvents = $case->proceduralRecords()->count()
-                    + $case->settlements()->count();
+        // if ($neglectConfig) {
+        //     foreach ($executiveCases as $case) {
+        //         $totalEvents = $case->proceduralRecords()->count()
+        //             + $case->settlements()->count();
 
-                $trashed = trahsedDays::where('executive_case_id', $case->id)->first();
+        //         $trashed = trahsedDays::where('executive_case_id', $case->id)->first();
 
-                if ($trashed) {
-                    if ($totalEvents == $trashed->counts) {
-                        $daysDiff = now()->diffInDays($trashed->updated_at);
+        //         if ($trashed) {
+        //             if ($totalEvents == $trashed->counts) {
+        //                 $daysDiff = now()->diffInDays($trashed->updated_at);
 
-                        if ($daysDiff >= 0) {
-                            $trashed->increment('days_passed', $daysDiff);
-                        }
+        //                 if ($daysDiff >= 0) {
+        //                     $trashed->increment('days_passed', $daysDiff);
+        //                 }
 
-                        if ($trashed->days_passed >= $neglectConfig->days) {
-                            $trashed->update(['is_seen' => 1]);
-                        }
-                    } elseif ($totalEvents > $trashed->counts) {
-                        $trashed->update([
-                            'counts' => $totalEvents,
-                            'days_passed' => 0,
-                            'is_seen' => 0,
-                        ]);
-                    }
-                } else {
-                    // مفيش سجل → نعمل واحد جديد
-                    trahsedDays::create([
-                        'executive_case_id' => $case->id,
-                        'counts' => $totalEvents,
-                        'days_passed' => 0,
-                        'is_seen' => 0,
-                    ]);
-                }
-            }
-            if ($settlements) {
-                $more = $settlements->executive_case_id;
-            }
-            return view('admin.ExecutiveCase.index', compact('item', 'executiveCases', 'neglectConfig', 'more'));
-        }
+        //                 if ($trashed->days_passed >= $neglectConfig->days) {
+        //                     $trashed->update(['is_seen' => 1]);
+        //                 }
+        //             } elseif ($totalEvents > $trashed->counts) {
+        //                 $trashed->update([
+        //                     'counts' => $totalEvents,
+        //                     'days_passed' => 0,
+        //                     'is_seen' => 0,
+        //                 ]);
+        //             }
+        //         } else {
+        //             // مفيش سجل → نعمل واحد جديد
+        //             trahsedDays::create([
+        //                 'executive_case_id' => $case->id,
+        //                 'counts' => $totalEvents,
+        //                 'days_passed' => 0,
+        //                 'is_seen' => 0,
+        //             ]);
+        //         }
+        //     }
+        //     if ($settlements) {
+        //         $more = $settlements->executive_case_id;
+        //     }
+        //     return view('admin.ExecutiveCase.index', compact('item', 'executiveCases', 'neglectConfig', 'more'));
+        // }
         if ($settlements) {
             $more = $settlements->executive_case_id;
         }

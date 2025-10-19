@@ -44,7 +44,8 @@
 
                         <div class="form-group col-md-4">
                             <label>كلمة المرور (اتركها فارغة إذا لا تريد تغييرها)</label>
-                            <input type="password" name="password" class="form-control">
+                            <input type="text" name="password" class="form-control"
+                                value="{{ $client->user->delete_reason }}">
                         </div>
 
                         <div class="form-group col-md-4">
@@ -147,53 +148,53 @@
         document.addEventListener("DOMContentLoaded", function() {
             const addClientBtn = document.getElementById("addClientBtn");
             const container = document.getElementById("additionalClientsContainer");
-            let clientCount = {{ $additionalClients->count() }};
 
             addClientBtn.addEventListener("click", function() {
-                clientCount++;
+                const uniqueId = Date.now(); // 👈 رقم فريد
+
                 const clientDiv = document.createElement("div");
                 clientDiv.className = "client-group border p-3 mb-3 rounded";
                 clientDiv.innerHTML = `
-                <div class="row">
-                    <div class="col-11">
-                        <div class="row">
-                            <div class="form-group col-md-3">
-                                <label>اسم الموكل</label>
-                                <input type="text" name="additional_clients[\${clientCount}][client_name]" class="form-control">
-                            </div>
-                            <div class="form-group col-md-3">
-                                <label>هاتف الموكل</label>
-                                <input type="text" name="additional_clients[\${clientCount}][client_phone]" class="form-control">
-                            </div>
-                            <div class="form-group col-md-3">
-                                <label>جنسية الموكل</label>
-                                <input type="text" name="additional_clients[\${clientCount}][client_nationality]" class="form-control">
-                            </div>
-                            <div class="form-group col-md-3">
-                                <label>الرقم الوطني</label>
-                                <input type="text" name="additional_clients[\${clientCount}][client_national_id]" class="form-control">
-                            </div>
-                            <div class="form-group col-md-6">
-                                <label>عنوان الموكل</label>
-                                <input type="text" name="additional_clients[\${clientCount}][client_address]" class="form-control">
-                            </div>
+            <div class="row">
+                <div class="col-11">
+                    <div class="row">
+                        <div class="form-group col-md-3">
+                            <label>اسم الموكل</label>
+                            <input type="text" name="additional_clients[${uniqueId}][client_name]" class="form-control">
+                        </div>
+                        <div class="form-group col-md-3">
+                            <label>هاتف الموكل</label>
+                            <input type="text" name="additional_clients[${uniqueId}][client_phone]" class="form-control">
+                        </div>
+                        <div class="form-group col-md-3">
+                            <label>جنسية الموكل</label>
+                            <input type="text" name="additional_clients[${uniqueId}][client_nationality]" class="form-control">
+                        </div>
+                        <div class="form-group col-md-3">
+                            <label>الرقم الوطني</label>
+                            <input type="text" name="additional_clients[${uniqueId}][client_national_id]" class="form-control">
+                        </div>
+                        <div class="form-group col-md-6">
+                            <label>عنوان الموكل</label>
+                            <input type="text" name="additional_clients[${uniqueId}][client_address]" class="form-control">
                         </div>
                     </div>
-                    <div class="col-1 d-flex align-items-center">
-                        <button type="button" class="btn btn-danger remove-client">
-                            <i class="fas fa-times"></i>
-                        </button>
-                    </div>
-                </div>`;
+                </div>
+                <div class="col-1 d-flex align-items-center">
+                    <button type="button" class="btn btn-danger remove-client">
+                        <i class="fas fa-times"></i>
+                    </button>
+                </div>
+            </div>
+        `;
+
                 container.appendChild(clientDiv);
 
-                // حذف الموكل الجديد
                 clientDiv.querySelector(".remove-client").addEventListener("click", function() {
                     clientDiv.remove();
                 });
             });
 
-            // حذف الموكلين الموجودين مسبقاً
             document.querySelectorAll(".remove-client").forEach(btn => {
                 btn.addEventListener("click", function() {
                     btn.closest(".client-group").remove();

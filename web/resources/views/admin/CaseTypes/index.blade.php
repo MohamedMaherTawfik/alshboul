@@ -36,8 +36,8 @@
                                     <td>
                                         <a href="{{ route('casetypes.edit.new', $info->id) }}"
                                             class="btn btn-warning btn-sm">تعديل</a>
-                                        <a href="{{ route('casetypes.destroy.new', $info->id) }}"
-                                            class="btn btn-danger btn-sm">حذف</a>
+                                        {{-- <a href="{{ route('casetypes.destroy.new', $info->id) }}"
+                                            class="btn btn-danger btn-sm">حذف</a> --}}
                                     </td>
                                 </tr>
                             @endforeach
@@ -76,8 +76,8 @@
                                     <td>
                                         <a href="{{ route('settlements.edit.new', $info->id) }}"
                                             class="btn btn-warning btn-sm">تعديل</a>
-                                        <a href="{{ route('settlements.destroy.new', $info->id) }}"
-                                            class="btn btn-danger btn-sm">حذف</a>
+                                        {{-- <a href="{{ route('settlements.destroy.new', $info->id) }}"
+                                            class="btn btn-danger btn-sm">حذف</a> --}}
                                     </td>
                                 </tr>
                             @endforeach
@@ -116,8 +116,8 @@
                                     <td>
                                         <a href="{{ route('transactions.edit.new', $info->id) }}"
                                             class="btn btn-warning btn-sm">تعديل</a>
-                                        <a href="{{ route('transactions.destroy.new', $info->id) }}"
-                                            class="btn btn-danger btn-sm">حذف</a>
+                                        {{-- <a href="{{ route('transactions.destroy.new', $info->id) }}"
+                                            class="btn btn-danger btn-sm">حذف</a> --}}
                                     </td>
                                 </tr>
                             @endforeach
@@ -156,14 +156,14 @@
                                         <td class="text-start">{{ $info->name }}</td>
                                         <td>{{ $info->neglienceDays->first()->days ?? '-' }}</td>
                                         <td>
-                                            <form action="{{ route('MainTypes.nav.destroy', $info) }}" method="POST"
+                                            {{-- <form action="{{ route('MainTypes.nav.destroy', $info) }}" method="POST"
                                                 onsubmit="return confirm('هل أنت متأكد من الحذف؟');">
                                                 @csrf
                                                 @method('DELETE')
                                                 <button type="submit" class="btn btn-danger btn-sm">
                                                     <i class="fas fa-trash-alt mr-1"></i> حذف
                                                 </button>
-                                            </form>
+                                            </form> --}}
 
 
                                         </td>
@@ -201,8 +201,8 @@
                                     <td>
                                         <a href="{{ route('excutiveCases.edit.new', $info->id) }}"
                                             class="btn btn-warning btn-sm">تعديل</a>
-                                        <a href="{{ route('excutiveCases.destroy.new', $info->id) }}"
-                                            class="btn btn-danger btn-sm">حذف</a>
+                                        {{-- <a href="{{ route('excutiveCases.destroy.new', $info->id) }}"
+                                            class="btn btn-danger btn-sm">حذف</a> --}}
                                     </td>
                                 </tr>
                             @endforeach

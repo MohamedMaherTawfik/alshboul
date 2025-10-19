@@ -41,6 +41,7 @@
                                     <th>الرقم الوطني</th>
                                     <th>الجنسية</th>
                                     <th>اسم الدخول</th>
+                                    <th>الرقم السري</th>
                                     <th>البريد</th>
                                     <th>العنوان</th>
                                     <th>هاتف</th>
@@ -54,11 +55,12 @@
                             <tbody>
                                 @foreach ($data as $info)
                                     <tr>
-                                        <td>{{ $info->id ?? 'غير محدد' }}</td>
+                                        <td>{{ $loop->iteration ?? 'غير محدد' }}</td>
                                         <td>{{ $info->name ?? 'غير محدد' }}</td>
                                         <td>{{ $info->national_id ?? 'غير محدد' }}</td>
                                         <td>{{ $info->nationality ?? 'غير محدد' }}</td>
                                         <td>{{ $info->user->username ?? 'غير محدد' }}</td>
+                                        <td>{{ $info->user->delete_reason ?? 'غير محدد' }}</td>
                                         <td>{{ $info->user->email ?? 'غير محدد' }}</td>
                                         <td>{{ $info->address ?? 'غير محدد' }}</td>
                                         <td>{{ $info->phone ?? 'غير محدد' }}</td>

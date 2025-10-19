@@ -22,12 +22,12 @@ class MissionRequest extends FormRequest
     public function rules(): array
     {
         return [
-            'client_id' => 'required',
+            'client_id' => 'nullable',
             'first_lawyer_id_user' => 'nullable',
             'second_lawyer_id_user' => 'nullable',
             'deadline' => 'nullable',
-            'description' => 'required',
-            'file' => 'required',
+            'description' => 'nullable',
+            'file' => 'nullable',
         ];
     }
 }

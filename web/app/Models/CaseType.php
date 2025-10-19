@@ -7,7 +7,7 @@ use Illuminate\Database\Eloquent\Model;
 class CaseType extends Model
 {
     protected $table = 'case_types';
-    protected $fillable = ['name', 'description', 'image'];
+    protected $guarded = [];
 
     public function suggestedCases()
     {

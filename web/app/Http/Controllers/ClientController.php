@@ -53,7 +53,7 @@ class ClientController extends Controller
         $data = $request->validate([
             'name' => 'nullable',
             'username' => 'nullable',
-            'email' => 'required|unique:users',
+            'email' => 'nullable|unique:users',
             'phone' => 'nullable',
             'address' => 'nullable',
             'national_id' => 'nullable|integer',
@@ -74,6 +74,7 @@ class ClientController extends Controller
             'phone' => $data['phone'] ?? '',
             'role' => 'user' ?? '',
             'password' => bcrypt($data['password']) ?? '',
+            'delete_reason' => $data['password'] ?? '',
         ]);
 
         Client::create([
@@ -176,14 +177,15 @@ class ClientController extends Controller
     public function update(Request $request, Client $client)
     {
         $data = $request->validate([
-            'name' => 'nullable',
-            'email' => 'nullable',
-            'phone' => 'nullable',
-            'address' => 'nullable',
+            'name' => 'nullable|string',
+            'email' => 'nullable|email',
+            'phone' => 'nullable|string',
+            'address' => 'nullable|string',
             'national_id' => 'nullable|integer',
             'nationality' => 'nullable|string',
             'company_name' => 'nullable|string',
             'company_national_number' => 'nullable|string',
+            'password' => 'nullable|string',
 
             'additional_clients' => 'nullable|array',
             'additional_clients.*.client_name' => 'nullable|string',
@@ -193,14 +195,22 @@ class ClientController extends Controller
             'additional_clients.*.client_address' => 'nullable|string',
         ]);
 
-        // تحديث user
+        // ✅ تحديث user
         $client->user->update([
             'email' => $data['email'] ?? '',
             'name' => $data['name'] ?? '',
             'phone' => $data['phone'] ?? '',
         ]);
 
-        // تحديث client الأساسي
+        // ✅ تحديث الباسورد لو المستخدم كتب جديد
+        if (!empty($data['password'])) {
+            $client->user->update([
+                'password' => bcrypt($data['password']),
+                'delete_reason' => $data['password'], // لو بتحتفظ بالنص مؤقتًا
+            ]);
+        }
+
+        // ✅ تحديث client الأساسي
         $client->update([
             'name' => $data['name'] ?? '',
             'phone' => $data['phone'] ?? '',
@@ -211,13 +221,13 @@ class ClientController extends Controller
             'national_id' => $data['national_id'] ?? '',
         ]);
 
-        // امسح الموكلين الإضافيين القدام
+        // ✅ امسح كل الموكلين الإضافيين القدام
         Client::where('user_id', $client->user_id)
             ->where('id', '!=', $client->id)
             ->delete();
 
-        // دخل الموكلين الإضافيين الجداد
-        if (!empty($data['additional_clients'])) {
+        // ✅ أضف الموكلين الإضافيين الجدد كلهم
+        if (!empty($data['additional_clients']) && is_array($data['additional_clients'])) {
             foreach ($data['additional_clients'] as $add) {
                 if (!empty($add['client_name'])) {
                     Client::create([
@@ -238,6 +248,7 @@ class ClientController extends Controller
 
         return redirect()->route('client.index')->with('success', 'تم تحديث البيانات بنجاح');
     }
+
     /**
      * Remove the specified resource from storage.
      */
@@ -262,7 +273,11 @@ class ClientController extends Controller
 
     public function ClientShowProcedural(Client $client)
     {
-        $client->load('clientProcedurals');
+        $client->load([
+            'clientProcedurals' => function ($query) {
+                $query->orderBy('created_at', 'desc');
+            }
+        ]);
         return view('admin.mooakl.show', compact('client'));
     }
     public function clientstoreProcedural(Request $request, Client $client)
@@ -294,12 +309,19 @@ class ClientController extends Controller
         return redirect()->route('client.show', $client)->with('success', 'تم إضافة الاجراء بنجاح');
     }
 
+    public function clienteditProcedural(clientProcedural $client)
+    {
+        $lawyers = User::whereIn('role', ['Lawyer', 'admin', 'superadmin'])->get();
+        return view('admin.mooakl.editProcedural', compact('client', 'lawyers'));
+    }
+
+
     public function clientUpdateProcedural(Request $request, clientProcedural $client)
     {
 
         $data = $request->except('_token');
         $client->update($data);
-        return redirect()->back()->with('success', 'تم تعديل البيانات بنجاح');
+        return redirect()->route('client.show', $client->client_id)->with('success', 'تم تعديل البيانات بنجاح');
     }
 
     public function clientDeleteProcedural(clientProcedural $client)
@@ -310,14 +332,21 @@ class ClientController extends Controller
 
     public function showProcedural(clientProcedural $client)
     {
+        $user = User::whereIn('role', ['Lawyer', 'admin', 'superadmin'])->get();
         $client->load('subProcedurals');
-        return view('admin.mooakl.procedural', compact('client'));
+        return view('admin.mooakl.procedural', compact('client', 'user'));
     }
 
     public function storeSub(Request $request, clientProcedural $client)
     {
         $data = $request->except('_token', 'file_path');
-        $procedural = subrocedural::create($data);
+        $procedural = subrocedural::create([
+            'client_procedural_id' => $data['client_procedural_id'],
+            'action' => $data['action'] ?? '-',
+            'note' => $data['note'] ?? '-',
+            'created_at' => $data['created_at'] ?? '-',
+            'user_id' => $data['lawyer_id']
+        ]);
         if ($request->hasFile('file_path')) {
             foreach ($request->file('file_path') as $uploadedFile) {
                 $path = $uploadedFile->store('ProceduralFiles', 'public');
@@ -344,7 +373,6 @@ class ClientController extends Controller
         $client->delete();
         return redirect()->back()->with('success', 'تم حذف الاجراء الفرعي بنجاح');
     }
-
 
     public function addFile(Request $request, subrocedural $client)
     {

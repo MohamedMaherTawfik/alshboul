@@ -41,6 +41,24 @@
                     </div>
 
                     <div class="row">
+                        <div class="form-group col-md-6">
+                            <label for="is_active">الحالة</label>
+                            <select name="is_active" id="is_active" class="form-control">
+                                <option value="">
+                                    @if ($type->is_active == 1)
+                                        فعال
+                                    @else
+                                        مجمدة
+                                    @endif
+                                </option>
+                                <option value="1" {{ $type->is_active == 1 ? 'selected' : '' }}>فعال</option>
+                                <option value="0" {{ $type->is_active == 0 ? 'selected' : '' }}>مجمدة</option>
+                            </select>
+                        </div>
+                    </div>
+
+
+                    <div class="row">
                         <!-- مدة الإهمال -->
                         <div class="form-group col-md-6">
                             <label for="days"> مدة الإهمال ان وجدت</label>

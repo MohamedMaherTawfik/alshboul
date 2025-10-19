@@ -12,7 +12,8 @@ class UserReportsController extends Controller
 {
     public function index()
     {
-        return view('admin.reports.index');
+        $lawyers = User::whereIn('role', ['Lawyer', 'admin', 'superadmin'])->get();
+        return view('admin.reports.index', compact('lawyers'));
     }
 
     public function search(Request $request)
@@ -48,6 +49,7 @@ class UserReportsController extends Controller
             ->get();
 
         $clientProcedurals = clientProcedural::with(['clientProceduralFiles'])->where('user_id', $user->id)->whereBetween('created_at', [$request->from_date, $request->to_date])->get();
-        return view('admin.reports.index', compact('procedurals', 'casesProcedurals', 'settlementProcedurals', 'transactionProcedurals', 'executiveProcedurals', 'clientProcedurals'));
+        $lawyers = User::whereIn('role', ['Lawyer', 'admin', 'superadmin'])->get();
+        return view('admin.reports.index', compact('lawyers', 'procedurals', 'casesProcedurals', 'settlementProcedurals', 'transactionProcedurals', 'executiveProcedurals', 'clientProcedurals'));
     }
 }

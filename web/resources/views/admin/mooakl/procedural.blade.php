@@ -63,6 +63,7 @@
                             <table class="table table-bordered table-hover">
                                 <thead class="table-light">
                                     <tr>
+                                        <th class="text-center">المدخل</th>
                                         <th class="text-center">الإجراء</th>
                                         <th class="text-center">ملاحظات</th>
                                         <th class="text-center">المستندات</th>
@@ -73,6 +74,7 @@
                                 <tbody>
                                     @forelse($client->subProcedurals as $sub)
                                         <tr>
+                                            <td class="text-center">{{ $sub->user->name }}</td>
                                             <td class="text-center">{{ $sub->action }}</td>
                                             <td class="text-center"
                                                 style="white-space: pre-wrap; word-wrap: break-word; max-width: 400px;">
@@ -249,8 +251,23 @@
                         <input type="hidden" name="client_procedural_id" value="{{ $client->id }}">
 
                         <div class="mb-3">
+                            <label class="form-label">تاريخ الادخال</label>
+                            <input type="date" class="form-control" name="created_at"
+                                value="{{ now()->format('Y-m-d') }}">
+                        </div>
+
+                        <div class="mb-3">
                             <label class="form-label">الإجراء</label>
                             <input type="text" class="form-control" name="action" required>
+                        </div>
+
+                        <div class="mb-3">
+                            <label class="form-label">المحامي</label>
+                            <select name="lawyer_id" id="">
+                                @foreach ($user as $item)
+                                    <option value="{{ $item->id }}">{{ $item->name }}</option>
+                                @endforeach
+                            </select>
                         </div>
 
                         <div class="mb-3">
@@ -258,11 +275,7 @@
                             <textarea class="form-control" name="note" rows="3"></textarea>
                         </div>
 
-                        <div class="col-md-6 mb-3">
-                            <label for="file_path" class="form-label">المستندات</label>
-                            <input type="file" name="file_path[]" id="file_path" class="form-control" multiple>
-                            <small class="text-muted">يمكنك اختيار أكثر من ملف</small>
-                        </div>
+
                     </div>
                     <div class="modal-footer">
                         <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">إلغاء</button>

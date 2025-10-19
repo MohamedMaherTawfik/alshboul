@@ -18,7 +18,11 @@ class editController extends Controller
 
     public function updateCaseType(Request $request, CaseType $type)
     {
-        $type->update(['name' => $request->name]);
+        $data = $request->except('_token');
+        $type->update([
+            'name' => $data['name'],
+            'is_active' => $data['is_active'],
+        ]);
         $type->NegligenceDays()->update(['days' => $request->days]);
         return redirect()->route('casetypes.index')->with('success', 'تم التعديل بنجاح');
     }
@@ -36,7 +40,7 @@ class editController extends Controller
 
     public function updateSettlement(Request $request, SettlementMain $type)
     {
-        $type->update(['name' => $request->name]);
+        $type->update(['name' => $request->name, 'is_active' => $request->is_active]);
         $type->NegligenceDays()->update(['days' => $request->days]);
         return redirect()->route('casetypes.index')->with('success', 'تم التعديل بنجاح');
     }
@@ -55,7 +59,7 @@ class editController extends Controller
 
     public function updateTransaction(Request $request, TransactionsMain $type)
     {
-        $type->update(['name' => $request->name]);
+        $type->update(['name' => $request->name, 'is_active' => $request->is_active]);
         $type->NegligenceDays()->update(['days' => $request->days]);
         return redirect()->route('casetypes.index')->with('success', 'تم التعديل بنجاح');
     }
@@ -74,7 +78,7 @@ class editController extends Controller
 
     public function updateExcutiveCase(Request $request, excutiveCasesMain $type)
     {
-        $type->update(['name' => $request->name]);
+        $type->update(['name' => $request->name, 'is_active' => $request->is_active]);
         $type->NegligenceDays()->update(['days' => $request->days]);
         return redirect()->route('casetypes.index')->with('success', 'تم التعديل بنجاح');
     }

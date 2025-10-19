@@ -36,7 +36,7 @@ class DatabaseSeeder extends Seeder
             'active' => true,
             'date' => time(),
         ]);
-        $this->call(lawyerSeeder::class);
+        // $this->call(lawyerSeeder::class);
 
 
     }

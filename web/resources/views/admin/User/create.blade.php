@@ -64,8 +64,8 @@
                             <label for="الحالة">نوع المستخدم</label>
                             <select class="form-control" name="role">
                                 <option value="Lawyer" {{ old('role') == 'Lawyer' ? 'selected' : '' }}>محامي</option>
-                                <option value="admin" {{ old('role') == 'admin' ? 'selected' : '' }}>أدمن</option>
-                                <option value="superadmin" {{ old('role') == 'superadmin' ? 'selected' : '' }}>سوبر أدمن
+                                <option value="admin" {{ old('role') == 'admin' ? 'selected' : '' }}>أدمن فرعي</option>
+                                <option value="superadmin" {{ old('role') == 'superadmin' ? 'selected' : '' }}> ادمن رئيسي
                                 </option>
                             </select>
                             @error('active')
