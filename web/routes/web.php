@@ -94,7 +94,7 @@ Route::middleware('auth')->group(function () {
 
 
 Route::group(['prefix' => 'admin', 'middleware' => ['auth', admin::class]], function () {
-    Route::get('/dashboard', [DashboardController::class, 'inxde'])->name('admin.dashboard');
+    Route::get('/dashboard', [DashboardController::class, 'index'])->name('admin.dashboard');
     Route::get('/logout', [LoginController::class, 'logout'])->name('admin.logout');
 
     Route::get('/clients', [ClientController::class, 'index'])->name('client.index');
