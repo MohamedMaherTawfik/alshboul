@@ -166,8 +166,14 @@
                                 </td>
                                 <td>{{ $case->court_name ?? '-' }}</td>
                                 <td>{{ Str::limit($duration->notes, 40, '...') ?? '-' }}</td>
-                                <td>{{ $duration->firstSubmitter->name ?? '-' }}</td>
-                                <td>{{ $duration->secondSubmitter->name ?? '-' }}</td>
+                                <td>
+                                    {{ optional($duration->firstSubmitter)->name ?? '-' }} |
+                                    {{ $duration->first_time ?? '-' }}
+                                </td>
+                                <td>
+                                    {{ optional($duration->secondSubmitter)->name ?? '-' }} |
+                                    {{ $duration->second_time ?? '-' }}
+                                </td>
                                 @if (Auth::user()->role == 'admin' || Auth::user()->role == 'superadmin')
                                     <td>
                                         <form action="{{ route('case.duration.submit', $duration) }}" method="POST">

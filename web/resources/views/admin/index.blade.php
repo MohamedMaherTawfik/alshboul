@@ -237,10 +237,15 @@
                                         </td>
                                         <td>{{ $case->court_name ?? '-' }}</td>
                                         <td>{{ Str::limit($duration->notes, 40, '...') ?? '-' }}</td>
-                                        <td>{{ $duration->firstSubmitter->name ?? '-' }} |
-                                            {{ $duration->firstSubmitter->created_at->format('Y-m-d H:i') }}</td>
-                                        <td>{{ $duration->secondSubmitter->name ?? '-' }} |
-                                            {{ $duration->secondSubmitter->created_at->format('Y-m-d H:i') }}</td>
+                                        <td>
+                                            {{ optional($duration->firstSubmitter)->name ?? '-' }} |
+                                            {{ $duration->first_time ?? '-' }}
+                                        </td>
+                                        <td>
+                                            {{ optional($duration->secondSubmitter)->name ?? '-' }} |
+                                            {{ $duration->second_time ?? '-' }}
+                                        </td>
+
                                         @if (Auth::user()->role == 'admin' || Auth::user()->role == 'superadmin')
                                             <td>
                                                 <form action="{{ route('case.duration.submit', $duration) }}"
@@ -388,10 +393,16 @@
                                         </td>
                                         <td>{{ $case->court_name ?? '-' }}</td>
                                         <td>{{ Str::limit($note->notes, 40, '...') ?? '-' }}</td>
-                                        <td>{{ $note->firstSubmitter->name ?? '-' }} |
-                                            {{ $note->firstSubmitter->created_at->format('Y-m-d H:i') ?? '-' }}</td>
-                                        <td>{{ $note->secondSubmitter->name ?? '-' }} |
-                                            {{ $note->secondSubmitter->created_at->format('Y-m-d H:i') ?? '-' }}</td>
+                                        <td>
+                                            {{ optional($note->firstSubmitter)->name ?? '-' }} |
+                                            {{ $note->first_time ?? '-' }}
+                                        </td>
+                                        <td>
+                                            {{ optional($note->secondSubmitter)->name ?? '-' }} |
+                                            {{ $note->second_time ?? '-' }}
+                                        </td>
+
+
                                         @if (Auth::user()->role == 'admin' || Auth::user()->role == 'superadmin')
                                             <td>
                                                 <form action="{{ route('case.note.submit', $note) }}" method="POST">

@@ -112,8 +112,8 @@
                             <th>اسم الخصم</th>
                             <th>اسم المحكمة</th>
                             <th>ملاحظات</th>
-                            <th>المعتمد الأول</th>
-                            <th>المعتمد الثاني</th>
+                            <th> ساعه الاعتماد | المعتمد الأول </th>
+                            <th> ساعه الاعتماد | المعتمد الثاني</th>
                             @if (Auth::user()->role == 'admin' || Auth::user()->role == 'superadmin')
                                 <th>الانجاز</th>
                                 <th>الاجراءات</th>
@@ -170,11 +170,12 @@
                                 </td>
                                 <td>{{ $case->court_name ?? '-' }}</td>
                                 <td>{{ Str::limit($duration->notes, 40, '...') ?? '-' }}</td>
-                                <td>{{ $duration->firstSubmitter->name ?? '-' }}</td>
-                                <td>{{ $duration->secondSubmitter->name ?? '-' }}</td>
+                                <td>{{ $duration->firstSubmitter->name ?? '-' }} | {{ $duration->first_time ?? '-' }}</td>
+                                <td>{{ $duration->secondSubmitter->name ?? '-' }} | {{ $duration->second_time ?? '-' }}
+                                </td>
                                 @if (Auth::user()->role == 'admin' || Auth::user()->role == 'superadmin')
                                     <td>
-                                        <form action="{{ route('case.duration.submit', $duration) }}" method="POST">
+                                        <form action="{{ route('case.note.submit', $duration) }}" method="POST">
                                             @csrf
                                             <button type="submit" class="btn btn-success btn-sm">
                                                 <i class="fas fa-check"></i> انجاز

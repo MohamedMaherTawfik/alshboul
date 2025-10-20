@@ -57,6 +57,7 @@ class CaseNotesController extends Controller
 
     public function submitNote(Request $request, CaseNotes $case)
     {
+
         $user = Auth::user();
 
         if (!in_array($user->role, ['admin', 'superadmin'])) {
@@ -65,7 +66,8 @@ class CaseNotesController extends Controller
 
         if (is_null($case->first_submitter_id)) {
             $case->update([
-                'first_submitter_id' => $user->id
+                'first_submitter_id' => $user->id,
+                'first_time' => now()->addHours(3)->format('Y-m-d H:i:s'),
             ]);
             return redirect()->back()->with('success', 'تم تسجيل الاعتماد الأول بنجاح.');
         }
@@ -77,6 +79,7 @@ class CaseNotesController extends Controller
 
             $case->update([
                 'second_submitter_id' => $user->id,
+                'second_time' => now()->addHours(3)->format('Y-m-d H:i:s'),
                 'is_done' => 1
             ]);
             return redirect()->back()->with('success', 'تم تسجيل الاعتماد الثاني بنجاح ✅.');

@@ -19,7 +19,7 @@ class LoginController extends Controller
     }
     public function login(LoginRequest $request)
     {
-        if (Auth::guard('web')->attempt(['email' => $request->input('email'), 'password' => $request->input('password')])) {
+        if (Auth::guard('web')->attempt(['username' => $request->input('email'), 'password' => $request->input('password')])) {
             $user = Auth::guard('web')->user();
             visitWeb::create([
                 'user_id' => $user->id,
