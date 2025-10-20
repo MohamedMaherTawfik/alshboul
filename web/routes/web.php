@@ -356,7 +356,7 @@ Route::group(['prefix' => 'admin', 'middleware' => ['auth', admin::class]], func
     Route::get('/{case}/memos/memocase', [CaseController::class, 'memos'])->name('cases.memos');
     Route::get('/search/cases/searchCase', [CaseController::class, 'searchPage'])->name('cases.search');
     Route::get('/search/cases/search/find', [CaseController::class, 'search'])->name('cases.search.find');
-    Route::get('/{case}/log', [CaseController::class, 'log'])->name('cases.logs');
+    Route::get('/{case}/log/case', [CaseController::class, 'log'])->name('cases.log');
     Route::post('/{case}/update', [CaseController::class, 'update'])->name('cases.update');
     Route::delete('/{case}/delete', [CaseController::class, 'destroy'])->name('cases.destroy');
     Route::get('/indexDelete', [CaseController::class, 'indexDelete'])->name('cases.indexDelete');
@@ -373,6 +373,7 @@ Route::group(['prefix' => 'admin', 'middleware' => ['auth', admin::class]], func
     Route::post('/{case}/settlement', [CaseController::class, 'storeSettlement'])->name('cases.storeSettlement');
     Route::get('/{case}/expenses', [CaseController::class, 'expenses'])->name('cases.expenses');
     Route::post('/{case}/expenses', [CaseController::class, 'storeExpenses'])->name('cases.storeExpenses');
+    Route::delete('/{case}/expenses/delete', [CaseController::class, 'destroyExpense'])->name('expenses.destroy');
 
     Route::get('/dashboard/durations/all', [DurationController::class, 'index'])->name('duration.all');
     Route::get('/search/dashboard/durations', [DurationController::class, 'search'])->name('duration.search');

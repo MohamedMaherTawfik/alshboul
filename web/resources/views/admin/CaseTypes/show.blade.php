@@ -368,12 +368,18 @@
                                         @if (Auth::user()->role == 'admin' || Auth::user()->role == 'superadmin')
                                             <a href="{{ route('cases.edit', $case) }}"
                                                 class="btn btn-lg btn-warning w-100">تعديل</a>
+
                                             <form action="{{ route('cases.destroy', $case) }}" method="POST"
-                                                onsubmit="return confirm('هل أنت متأكد من الحذف؟');" class="w-100">
+                                                onsubmit="return confirm('هل أنت متأكد من الحذف؟');" class="w-100 mb-2">
                                                 @csrf
                                                 @method('DELETE')
                                                 <button type="submit" class="btn btn-lg btn-danger w-100">حذف</button>
                                             </form>
+
+                                            <!-- زرار سجل القضية -->
+                                            <a href="{{ route('cases.log', $case) }}"
+                                                class="btn btn-lg btn-success w-100 mb-2">سجل القضية</a>
+
                                             <div class="d-flex flex-column gap-2">
                                                 <a href="{{ route('cases.settlement.all', $case) }}"
                                                     class="btn btn-lg btn-info w-100">+ تسويه</a>
@@ -382,6 +388,7 @@
                                             </div>
                                         @endif
                                     </td>
+
                                 </tr>
                             @endforeach
                         </tbody>

@@ -14,6 +14,10 @@ class cases extends Model
         return $this->belongsTo(Client::class);
     }
 
+    public function expenses()
+    {
+        return $this->hasMany(expenses::class);
+    }
     public function suggestedCases()
     {
         return $this->belongsTo(CaseType::class, 'suggested_case_id');

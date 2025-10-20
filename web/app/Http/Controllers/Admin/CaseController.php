@@ -10,6 +10,7 @@ use App\Models\cases;
 use App\Models\CaseType;
 use App\Models\Client;
 use App\Models\court_session_date;
+use App\Models\expenses;
 use App\Models\Lawyer;
 use App\Models\LegalPeriods;
 use App\Models\Missions;
@@ -282,21 +283,33 @@ class CaseController extends Controller
         if ($years > 0) {
             $amount += $case->case_amount * (0.09 * $years);
         }
-
+        $case->load('expenses');
         return view('admin.cases.expenses', compact('case', 'amount'));
     }
 
 
     public function storeExpenses(Request $request, Cases $case)
     {
-        return redirect()->route('admin.cases.all')->with('success', 'تم احتساب المصاريف');
+        $data = $request->except('_token');
+        $data['cases_id'] = $case->id;
+        if (!$data['date']) {
+            $data['date'] = now()->format('Y-m-d');
+        }
+        expenses::create($data);
+        return redirect()->back()->with('success', 'تم احتساب المصاريف');
+    }
+
+    public function destroyExpense(expenses $case)
+    {
+        $case->delete();
+        return redirect()->back()->with('success', 'تم حذف المصاريف');
     }
 
     // سجل القضية
     public function log(Cases $case)
     {
-        $logs = $case->logs ?? [];
-        return view('admin.cases.log', compact('case', 'logs'));
+        $case->load('legalPeriods', 'caseNotes', 'proceduralRedords');
+        return view('admin.cases.log', compact('case'));
     }
 
     public function show(Cases $case)
