@@ -14,6 +14,7 @@ use App\Models\Settlement;
 use App\Models\SettlementMain;
 use App\Models\subrocedural;
 use App\Models\trahsedDays;
+use App\Models\User;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\DB;
@@ -79,14 +80,13 @@ class ExecutiveCaseController extends Controller
         }
         return view('admin.ExecutiveCase.index', compact('item', 'executiveCases', 'more'));
     }
-
     /**
      * Show the form for creating a new resource.
      */
     public function create(excutiveCasesMain $item)
     {
         $allClients = Client::with('user')->where('seen', 1)->where('active', 1)->orderBy('id', 'desc')->get();
-
+        $users = User::with('client')->where('role', 'user')->where('active', 1)->get();
         $selectedClientId = old('client_id');
         $clients = $allClients;
 
@@ -97,8 +97,7 @@ class ExecutiveCaseController extends Controller
             }
         }
 
-        // حساب أول رقم فاضي (missing number) للـ executive cases
-        $numbers = $item->excutiveCases()->pluck('office_file_number')->sort()->toArray();
+        $numbers = $item->excutiveCases()->pluck('file_number')->sort()->toArray();
 
         $missing = 1;
         foreach ($numbers as $num) {
@@ -113,6 +112,7 @@ class ExecutiveCaseController extends Controller
             'clients',
             'allClients',
             'selectedClientId',
+            'users',
             'missing'
         ));
     }
@@ -169,8 +169,6 @@ class ExecutiveCaseController extends Controller
                 ->withInput();
         }
     }
-
-
 
     /**
      * Display the specified resource.

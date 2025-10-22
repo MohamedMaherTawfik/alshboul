@@ -341,11 +341,13 @@ class ClientController extends Controller
     {
         $data = $request->except('_token', 'file_path');
         $procedural = subrocedural::create([
-            'client_procedural_id' => $data['client_procedural_id'],
+            'client_procedural_id' => $client->id,
             'action' => $data['action'] ?? '-',
             'note' => $data['note'] ?? '-',
             'created_at' => $data['created_at'] ?? '-',
-            'user_id' => $data['lawyer_id']
+            'user_id' => auth()->id(),
+            'lawyer_id' => $data['lawyer_id'] ?? '-',
+            'to' => $data['to']
         ]);
         if ($request->hasFile('file_path')) {
             foreach ($request->file('file_path') as $uploadedFile) {

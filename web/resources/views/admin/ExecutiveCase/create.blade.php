@@ -277,69 +277,93 @@
         </div>
     </div>
 
-    <!-- سكريبت البحث عن المشترك -->
     <script>
-        const users = @json($clients->groupBy('user_id')->map->first());
-        const allClients = @json($clients);
+        document.addEventListener("DOMContentLoaded", function() {
+            const subscriberInput = document.getElementById("subscriber_name");
+            const subscriberHidden = document.getElementById("user_id");
+            const subscriberNumber = document.getElementById("subscriber_number");
+            const suggestionsBox = document.getElementById("subscriber_suggestions");
+            const clientSelect = document.getElementById("client_name");
+            const clientNationalId = document.getElementById("client_national_id");
 
-        const subscriberInput = document.getElementById("subscriber_name");
-        const subscriberHidden = document.getElementById("user_id");
-        const subscriberNumber = document.getElementById("subscriber_number");
-        const suggestionsBox = document.getElementById("subscriber_suggestions");
-        const clientSelect = document.getElementById("client_name");
-        const clientNationalId = document.getElementById("client_national_id");
+            // 🟩 استدعاء المستخدمين من السيرفر (جاية من الكنترولر)
+            const users = @json($users);
 
-        subscriberInput.addEventListener("input", function() {
-            let query = this.value.toLowerCase();
-            suggestionsBox.innerHTML = "";
-            subscriberHidden.value = "";
-            subscriberNumber.value = "";
+            // 🔍 البحث التلقائي عن المشتركين
+            subscriberInput.addEventListener("input", function() {
+                const query = this.value.toLowerCase();
+                suggestionsBox.innerHTML = "";
+                subscriberHidden.value = "";
+                subscriberNumber.value = "";
+                clientSelect.innerHTML = '<option value="">اختر الموكل</option>';
+                clientNationalId.value = "";
 
-            if (query.length < 1) {
-                suggestionsBox.style.display = "none";
-                return;
-            }
-
-            let filtered = Object.values(users).filter(user => user.name.toLowerCase().includes(query));
-
-            if (filtered.length === 0) {
-                suggestionsBox.style.display = "none";
-                return;
-            }
-
-            filtered.forEach(user => {
-                let item = document.createElement("button");
-                item.type = "button";
-                item.className = "list-group-item list-group-item-action";
-                item.textContent = user.name;
-                item.onclick = function() {
-                    subscriberInput.value = user.name;
-                    subscriberHidden.value = user.user_id;
-                    subscriberNumber.value = user.id;
+                if (query.length < 1) {
                     suggestionsBox.style.display = "none";
+                    return;
+                }
 
-                    // تحميل الموكلين
-                    let filteredClients = allClients.filter(c => c.user_id == user.user_id);
-                    clientSelect.innerHTML = '<option value="">اختر الموكل</option>';
-                    filteredClients.forEach(c => {
-                        let opt = document.createElement("option");
-                        opt.value = c.name;
-                        opt.textContent = c.name;
-                        opt.dataset.nationalId = c.national_id;
-                        clientSelect.appendChild(opt);
-                    });
-                };
-                suggestionsBox.appendChild(item);
+                const filtered = users.filter(user => user.name.toLowerCase().includes(query));
+                if (!filtered.length) {
+                    suggestionsBox.style.display = "none";
+                    return;
+                }
+
+                filtered.forEach(user => {
+                    const item = document.createElement("button");
+                    item.type = "button";
+                    item.className = "list-group-item list-group-item-action";
+                    item.textContent = user.name;
+                    item.onclick = () => {
+                        // ✅ عند اختيار مشترك
+                        subscriberInput.value = user.name;
+                        subscriberHidden.value = user.id;
+                        subscriberNumber.value = user.id; // رقم المشترك مثلاً ID
+                        suggestionsBox.style.display = "none";
+
+                        // تصفير الحقول القديمة
+                        clientSelect.innerHTML = '<option value="">اختر الموكل</option>';
+                        clientNationalId.value = "";
+
+                        // تحميل الموكلين المرتبطين بالمشترك
+                        if (user.client && user.client.length) {
+                            user.client.forEach(client => {
+                                const opt = document.createElement("option");
+                                opt.value = client.name;
+                                opt.textContent = client.name;
+                                opt.setAttribute("data-national-id", client
+                                .national_id);
+                                clientSelect.appendChild(opt);
+                            });
+                        }
+                    };
+                    suggestionsBox.appendChild(item);
+                });
+
+                suggestionsBox.style.display = "block";
             });
 
-            suggestionsBox.style.display = "block";
-        });
+            // 🟨 عند اختيار الموكل
+            clientSelect.addEventListener("change", function() {
+                const selectedOption = this.options[this.selectedIndex];
+                const nationalId = selectedOption?.getAttribute("data-national-id");
 
-        clientSelect.addEventListener("change", function() {
-            let nationalId = this.options[this.selectedIndex].dataset.nationalId || "";
-            clientNationalId.value = nationalId;
+                if (nationalId) {
+                    clientNationalId.value = nationalId;
+                } else {
+                    clientNationalId.value = "";
+                }
+            });
+
+            // 🔻 إخفاء قائمة الاقتراحات عند الضغط خارجها
+            document.addEventListener("click", function(e) {
+                if (!subscriberInput.contains(e.target) && !suggestionsBox.contains(e.target)) {
+                    suggestionsBox.style.display = "none";
+                }
+            });
         });
     </script>
+
 
     <!-- سكريبت الخصوم -->
     <script>

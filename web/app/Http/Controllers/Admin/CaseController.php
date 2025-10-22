@@ -316,8 +316,11 @@ class CaseController extends Controller
     {
         $more = 0;
         $case->load([
-            'proceduralRedords'
+            'proceduralRedords' => function ($query) {
+                $query->orderBy('created_at', 'desc');
+            }
         ]);
+
 
         $lawyers = User::whereIn('role', ['Lawyer', 'admin', 'superadmin'])->where('active', 1)->get();
         $settlements = Settlement::where('cases_id', $case->id)->first();

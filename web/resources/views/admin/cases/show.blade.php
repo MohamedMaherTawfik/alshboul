@@ -97,6 +97,7 @@
             <table class="table table-bordered table-striped text-center align-middle">
                 <thead class="table-dark">
                     <tr>
+                        <th>رقم الاجراء</th>
                         <th>اسم المدخل</th>
                         <th>المحامي</th>
                         <th>تاريخ الإدخال</th>
@@ -109,11 +110,12 @@
                     </tr>
                 </thead>
                 <tbody id="sessionsTable">
-                    @forelse ($case->proceduralRedords->sortByDesc('id') as $record)
+                    @forelse ($case->proceduralRedords->sortByDesc('created_at') as $record)
                         @php
                             $type = $record->date ? 'جلسة' : 'إجراء';
                         @endphp
                         <tr data-type="{{ $type === 'جلسة' ? 'session' : 'procedure' }}">
+                            <td>{{ $loop->iteration }}</td>
                             <td>{{ $record->userLawyer->name ?? '-' }}</td>
                             <td>{{ $record->user->name ?? '-' }}</td>
                             <td>{{ $record->created_at ? $record->created_at->format('d/m/Y') : '-' }}</td>

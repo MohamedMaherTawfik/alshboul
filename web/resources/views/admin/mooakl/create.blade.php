@@ -77,7 +77,58 @@
                             </button>
                         </div>
                         <div id="additionalClientsContainer">
-                            <!-- سيتم إضافة الحقول الجديدة هنا -->
+                            @if (old('additional_clients'))
+                                @foreach (old('additional_clients') as $index => $oldClient)
+                                    <div class="client-group border p-3 mb-3 rounded">
+                                        <div class="row">
+                                            <div class="col-11">
+                                                <div class="row">
+                                                    <div class="form-group col-md-3">
+                                                        <label>اسم الموكل</label>
+                                                        <input type="text"
+                                                            name="additional_clients[{{ $index }}][client_name]"
+                                                            class="form-control"
+                                                            value="{{ $oldClient['client_name'] ?? '' }}">
+                                                    </div>
+                                                    <div class="form-group col-md-3">
+                                                        <label>هاتف الموكل</label>
+                                                        <input type="text"
+                                                            name="additional_clients[{{ $index }}][client_phone]"
+                                                            class="form-control"
+                                                            value="{{ $oldClient['client_phone'] ?? '' }}">
+                                                    </div>
+                                                    <div class="form-group col-md-3">
+                                                        <label>جنسية الموكل</label>
+                                                        <input type="text"
+                                                            name="additional_clients[{{ $index }}][client_nationality]"
+                                                            class="form-control"
+                                                            value="{{ $oldClient['client_nationality'] ?? '' }}">
+                                                    </div>
+                                                    <div class="form-group col-md-3">
+                                                        <label>الرقم الوطني</label>
+                                                        <input type="text"
+                                                            name="additional_clients[{{ $index }}][client_national_id]"
+                                                            class="form-control"
+                                                            value="{{ $oldClient['client_national_id'] ?? '' }}">
+                                                    </div>
+                                                    <div class="form-group col-md-6">
+                                                        <label>عنوان الموكل</label>
+                                                        <input type="text"
+                                                            name="additional_clients[{{ $index }}][client_address]"
+                                                            class="form-control"
+                                                            value="{{ $oldClient['client_address'] ?? '' }}">
+                                                    </div>
+                                                </div>
+                                            </div>
+                                            <div class="col-1 d-flex align-items-center">
+                                                <button type="button" class="btn btn-danger remove-client">
+                                                    <i class="fas fa-times"></i>
+                                                </button>
+                                            </div>
+                                        </div>
+                                    </div>
+                                @endforeach
+                            @endif
                         </div>
                     </div>
 
@@ -97,7 +148,7 @@
         document.addEventListener("DOMContentLoaded", function() {
             const addClientBtn = document.getElementById("addClientBtn");
             const container = document.getElementById("additionalClientsContainer");
-            let clientCount = 0;
+            let clientCount = {{ old('additional_clients') ? count(old('additional_clients')) : 0 }};
 
             if (addClientBtn && container) {
                 addClientBtn.addEventListener("click", function() {
@@ -137,13 +188,20 @@
                     </div>
                 </div>
             `;
-
                     container.appendChild(clientDiv);
 
                     // زر الحذف
                     const removeBtn = clientDiv.querySelector(".remove-client");
                     removeBtn.addEventListener("click", function() {
                         clientDiv.remove();
+                    });
+                });
+
+                // إضافة زر الحذف للموكلين الحاليين بعد التحميل
+                const existingRemoveBtns = document.querySelectorAll(".remove-client");
+                existingRemoveBtns.forEach(btn => {
+                    btn.addEventListener("click", function() {
+                        btn.closest(".client-group").remove();
                     });
                 });
             }

@@ -42,7 +42,7 @@
                                 <th>اسم المدخل </th>
                                 <th>رقم الملف</th>
                                 <th>اسم الدائره المختصه</th>
-                                <th>نوع المعامله</th>
+                                <th>وصف المعامله</th>
                                 <th>اسم المشترك</th>
                                 <th>اسم الموكل</th>
                                 @if (Auth::user()->role == 'admin' || Auth::user()->role == 'superadmin')
@@ -59,7 +59,7 @@
                                     <td>{{ $item->user?->name ?? '-' }}</td>
                                     <td>{{ $item->file_number ?? '-' }}</td>
                                     <td>{{ $item->area_name ?? '-' }}</td>
-                                    <td>{{ $transaction->name ?? '-' }}</td>
+                                    <td>{{ $item->description ?? '-' }}</td>
                                     <td>{{ $item->client?->name ?? '-' }}</td>
                                     <td>{{ $item->client_name ?? '-' }}</td>
                                     @if (Auth::user()->role == 'admin' || Auth::user()->role == 'superadmin')

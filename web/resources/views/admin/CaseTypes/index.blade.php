@@ -24,6 +24,7 @@
                                 <th style="width: 50px;">#</th>
                                 <th style="width: 50%;">الاسم بالعربية</th>
                                 <th style="width: 120px;">عدد ايام الاهمال</th>
+                                <th style="width: 120px;"> فعاله ام مجمده</th>
                                 <th style="width: 180px;">التحكم</th>
                             </tr>
                         </thead>
@@ -33,6 +34,7 @@
                                     <td>{{ $info->id }}</td>
                                     <td class="text-start">{{ $info->name }}</td>
                                     <td>{{ $info->NegligenceDays->first()->days ?? '-' }}</td>
+                                    <td>{{ $info->is_active == 1 ? 'فعاله' : 'مجمده' }}</td>
                                     <td>
                                         <a href="{{ route('casetypes.edit.new', $info->id) }}"
                                             class="btn btn-warning btn-sm">تعديل</a>
@@ -64,6 +66,8 @@
                                 <th style="width: 50px;">#</th>
                                 <th style="width: 50%;">الاسم بالعربية</th>
                                 <th style="width: 120px;">عدد ايام الاهمال</th>
+
+                                <th style="width: 120px;"> فعاله ام مجمده</th>
                                 <th style="width: 180px;">التحكم</th>
                             </tr>
                         </thead>
@@ -73,6 +77,8 @@
                                     <td>{{ $info->id }}</td>
                                     <td class="text-start">{{ $info->name }}</td>
                                     <td>{{ $info->NegligenceDays->first()->days ?? '-' }}</td>
+
+                                    <td>{{ $info->is_active == 1 ? 'فعاله' : 'مجمده' }}</td>
                                     <td>
                                         <a href="{{ route('settlements.edit.new', $info->id) }}"
                                             class="btn btn-warning btn-sm">تعديل</a>
@@ -104,6 +110,8 @@
                                 <th style="width: 50px;">#</th>
                                 <th style="width: 50%;">الاسم بالعربية</th>
                                 <th style="width: 120px;">عدد ايام الاهمال</th>
+
+                                <th style="width: 120px;"> فعاله ام مجمده</th>
                                 <th style="width: 180px;">التحكم</th>
                             </tr>
                         </thead>
@@ -113,6 +121,8 @@
                                     <td>{{ $info->id }}</td>
                                     <td class="text-start">{{ $info->name }}</td>
                                     <td>{{ $info->NegligenceDays->first()->days ?? '-' }}</td>
+
+                                    <td>{{ $info->is_active == 1 ? 'فعاله' : 'مجمده' }}</td>
                                     <td>
                                         <a href="{{ route('transactions.edit.new', $info->id) }}"
                                             class="btn btn-warning btn-sm">تعديل</a>
@@ -155,6 +165,8 @@
                                         <td>{{ $info->id }}</td>
                                         <td class="text-start">{{ $info->name }}</td>
                                         <td>{{ $info->neglienceDays->first()->days ?? '-' }}</td>
+
+                                        <td>{{ $info->is_active == 1 ? 'فعاله' : 'مجمده' }}</td>
                                         <td>
                                             {{-- <form action="{{ route('MainTypes.nav.destroy', $info) }}" method="POST"
                                                 onsubmit="return confirm('هل أنت متأكد من الحذف؟');">
@@ -189,6 +201,8 @@
                                 <th style="width: 50px;">#</th>
                                 <th style="width: 50%;">الاسم بالعربية</th>
                                 <th style="width: 120px;">عدد ايام الاهمال</th>
+
+                                <th style="width: 120px;"> فعاله ام مجمده</th>
                                 <th style="width: 180px;">التحكم</th>
                             </tr>
                         </thead>
@@ -198,6 +212,8 @@
                                     <td>{{ $info->id }}</td>
                                     <td class="text-start">{{ $info->name }}</td>
                                     <td>{{ $info->NegligenceDays->first()->days ?? '-' }}</td>
+
+                                    <td>{{ $info->is_active == 1 ? 'فعاله' : 'مجمده' }}</td>
                                     <td>
                                         <a href="{{ route('excutiveCases.edit.new', $info->id) }}"
                                             class="btn btn-warning btn-sm">تعديل</a>
