@@ -35,62 +35,72 @@ class CaseTypeController extends Controller
     public function show(CaseType $casetype)
     {
         $more = 0;
+
         $cases = Cases::with('caseOpponents')
             ->where('suggested_case_id', $casetype->id)
             ->where('active', 1)
             ->get()
             ->sortBy('case_number');
+
         $casesId = $cases->pluck('id')->toArray();
         $settlements = Settlement::whereIn('cases_id', $casesId)->first();
 
-        // $neglectConfig = NegligenceDays::where('case_type_id', $casetype->id)->first();
+        $neglectConfig = NegligenceDays::where('case_type_id', $casetype->id)->first();
 
-        // if ($neglectConfig) {
-        //     foreach ($cases as $case) {
-        //         $totalEvents = $case->courtSession()->count()
-        //             + $case->legalPeriods()->count()
-        //             + $case->caseNotes()->count()
-        //             + $case->proceduralRedords()->count();
-        //         $trashed = trahsedDays::where('cases_id', $case->id)->first();
-        //         if ($trashed) {
-        //             $daysDiff = now()->diffInDays($trashed->created_at);
+        if ($neglectConfig) {
 
-        //             if ($totalEvents == $trashed->counts) {
-        //                 if ($daysDiff >= 1) {
-        //                     $trashed->increment('days_passed', $daysDiff);
-        //                 }
+            // لو days = 0 نعمل تجاهل للإهمال
+            if ($neglectConfig->days == 0) {
+                if ($settlements) {
+                    $more = $settlements->cases_id;
+                }
+                return view('admin.CaseTypes.show', compact('casetype', 'cases', 'more'));
+            }
 
-        //                 if ($trashed->days_passed >= $neglectConfig->days) {
-        //                     $trashed->update(['is_seen' => 1]);
-        //                 }
-        //             } elseif ($totalEvents > $trashed->counts) {
-        //                 $trashed->update([
-        //                     'counts' => $totalEvents,
-        //                     'days_passed' => 0,
-        //                     'is_seen' => 0,
-        //                 ]);
-        //             }
-        //         } else {
-        //             trahsedDays::create([
-        //                 'cases_id' => $case->id,
-        //                 'counts' => $totalEvents,
-        //                 'days_passed' => 0,
-        //                 'is_seen' => 0,
-        //             ]);
-        //         }
-        //     }
-        // if ($settlements) {
-        //     $more = $settlements->cases_id;
-        // }
-        // return view('admin.CaseTypes.show', compact('casetype', 'cases', 'more'));
-        // }
+            foreach ($cases as $case) {
+                $totalEvents = $case->courtSession()->count()
+                    + $case->legalPeriods()->count()
+                    + $case->caseNotes()->count()
+                    + $case->proceduralRedords()->count();
 
+                // إنشاء سجل trash لو مش موجود
+                $trashed = trahsedDays::firstOrCreate(
+                    ['cases_id' => $case->id],
+                    [
+                        'counts' => $totalEvents,
+                        'days_passed' => 0,
+                        'is_seen' => 0,
+                    ]
+                );
+
+                // تحديث سجل الاهمال
+                $daysDiff = now()->diffInDays($trashed->created_at);
+
+                if ($totalEvents == $trashed->counts) {
+                    if ($daysDiff >= 1) {
+                        $trashed->increment('days_passed', $daysDiff);
+                    }
+
+                    if ($trashed->days_passed >= $neglectConfig->days) {
+                        $trashed->update(['is_seen' => 1]);
+                    }
+                } elseif ($totalEvents > $trashed->counts) {
+                    $trashed->update([
+                        'counts' => $totalEvents,
+                        'days_passed' => 0,
+                        'is_seen' => 0,
+                    ]);
+                }
+            }
+        }
 
         if ($settlements) {
             $more = $settlements->cases_id;
         }
+
         return view('admin.CaseTypes.show', compact('casetype', 'cases', 'more'));
     }
+
 
 
     /**

@@ -27,59 +27,65 @@ class ExecutiveCaseController extends Controller
     public function index(excutiveCasesMain $item)
     {
         $executiveCases = ExecutiveCase::where('excutive_cases_main_id', $item->id)->get();
-
         $casesId = $executiveCases->pluck('id')->toArray();
-        $neglectConfig = NegligenceDays::where('excutive_cases_main_id', $item->id)->first();
 
+        $neglectConfig = NegligenceDays::where('excutive_cases_main_id', $item->id)->first();
         $more = 0;
         $settlements = Settlement::whereIn('executive_case_id', $casesId)->first();
 
+        if ($neglectConfig) {
 
-        // if ($neglectConfig) {
-        //     foreach ($executiveCases as $case) {
-        //         $totalEvents = $case->proceduralRecords()->count()
-        //             + $case->settlements()->count();
+            // لو days = 0 → تجاهل منطق الإهمال
+            if ($neglectConfig->days != 0) {
+                foreach ($executiveCases as $case) {
+                    $totalEvents = $case->proceduralRecords()->count()
+                        + $case->settlements()->count();
 
-        //         $trashed = trahsedDays::where('executive_case_id', $case->id)->first();
+                    // إنشاء سجل trash لو مش موجود
+                    $trashed = trahsedDays::firstOrCreate(
+                        ['executive_case_id' => $case->id],
+                        [
+                            'counts' => $totalEvents,
+                            'days_passed' => 0,
+                            'is_seen' => 0,
+                        ]
+                    );
 
-        //         if ($trashed) {
-        //             if ($totalEvents == $trashed->counts) {
-        //                 $daysDiff = now()->diffInDays($trashed->updated_at);
+                    // تحديث سجل الإهمال
+                    $daysDiff = now()->diffInDays($trashed->updated_at);
 
-        //                 if ($daysDiff >= 0) {
-        //                     $trashed->increment('days_passed', $daysDiff);
-        //                 }
+                    if ($totalEvents == $trashed->counts) {
+                        if ($daysDiff >= 1) {
+                            $trashed->increment('days_passed', $daysDiff);
+                        }
 
-        //                 if ($trashed->days_passed >= $neglectConfig->days) {
-        //                     $trashed->update(['is_seen' => 1]);
-        //                 }
-        //             } elseif ($totalEvents > $trashed->counts) {
-        //                 $trashed->update([
-        //                     'counts' => $totalEvents,
-        //                     'days_passed' => 0,
-        //                     'is_seen' => 0,
-        //                 ]);
-        //             }
-        //         } else {
-        //             // مفيش سجل → نعمل واحد جديد
-        //             trahsedDays::create([
-        //                 'executive_case_id' => $case->id,
-        //                 'counts' => $totalEvents,
-        //                 'days_passed' => 0,
-        //                 'is_seen' => 0,
-        //             ]);
-        //         }
-        //     }
-        //     if ($settlements) {
-        //         $more = $settlements->executive_case_id;
-        //     }
-        //     return view('admin.ExecutiveCase.index', compact('item', 'executiveCases', 'neglectConfig', 'more'));
-        // }
+                        if ($trashed->days_passed >= $neglectConfig->days) {
+                            $trashed->update(['is_seen' => 1]);
+                        }
+                    } elseif ($totalEvents > $trashed->counts) {
+                        $trashed->update([
+                            'counts' => $totalEvents,
+                            'days_passed' => 0,
+                            'is_seen' => 0,
+                        ]);
+                    }
+                }
+            }
+
+            if ($settlements) {
+                $more = $settlements->executive_case_id;
+            }
+
+            return view('admin.ExecutiveCase.index', compact('item', 'executiveCases', 'neglectConfig', 'more'));
+        }
+
         if ($settlements) {
             $more = $settlements->executive_case_id;
         }
+
         return view('admin.ExecutiveCase.index', compact('item', 'executiveCases', 'more'));
     }
+
     /**
      * Show the form for creating a new resource.
      */

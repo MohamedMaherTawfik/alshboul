@@ -18,49 +18,49 @@ class SettlementController extends Controller
     public function index(SettlementMain $settlements)
     {
         $settlements->load('settlements');
-
         $settlementsList = $settlements->settlements;
 
         $neglectConfig = NegligenceDays::where('settlement_main_id', $settlements->id)->first();
 
-        // if ($neglectConfig) {
-        //     foreach ($settlementsList as $settlement) {
-        //         $totalEvents = $settlement->actions()->count()
-        //             + $settlement->proceduralRedords()->count();
+        if ($neglectConfig && $neglectConfig->days != 0) {
+            foreach ($settlementsList as $settlement) {
+                $totalEvents = $settlement->actions()->count()
+                    + $settlement->proceduralRedords()->count();
 
-        //         $trashed = trahsedDays::where('settlement_id', $settlement->id)->first();
+                // إنشاء سجل trash لو مش موجود
+                $trashed = trahsedDays::firstOrCreate(
+                    ['settlement_id' => $settlement->id],
+                    [
+                        'counts' => $totalEvents,
+                        'days_passed' => 0,
+                        'is_seen' => 0,
+                    ]
+                );
 
-        //         if ($trashed) {
-        //             if ($totalEvents == $trashed->counts) {
-        //                 $daysDiff = now()->diffInDays($trashed->updated_at);
+                // تحديث سجل الإهمال
+                $daysDiff = now()->diffInDays($trashed->updated_at);
 
-        //                 if ($daysDiff >= 1) {
-        //                     $trashed->increment('days_passed', $daysDiff);
-        //                 }
+                if ($totalEvents == $trashed->counts) {
+                    if ($daysDiff >= 1) {
+                        $trashed->increment('days_passed', $daysDiff);
+                    }
 
-        //                 if ($trashed->days_passed >= $neglectConfig->days) {
-        //                     $trashed->update(['is_seen' => 1]);
-        //                 }
-        //             } elseif ($totalEvents > $trashed->counts) {
-        //                 $trashed->update([
-        //                     'counts' => $totalEvents,
-        //                     'days_passed' => 0,
-        //                     'is_seen' => 0,
-        //                 ]);
-        //             }
-        //         } else {
-        //             trahsedDays::create([
-        //                 'settlement_id' => $settlement->id,
-        //                 'counts' => $totalEvents,
-        //                 'days_passed' => 0,
-        //                 'is_seen' => 0,
-        //             ]);
-        //         }
-        //     }
-        // }
+                    if ($trashed->days_passed >= $neglectConfig->days) {
+                        $trashed->update(['is_seen' => 1]);
+                    }
+                } elseif ($totalEvents > $trashed->counts) {
+                    $trashed->update([
+                        'counts' => $totalEvents,
+                        'days_passed' => 0,
+                        'is_seen' => 0,
+                    ]);
+                }
+            }
+        }
 
         return view('admin.Settlement.index', compact('settlements', 'settlementsList'));
     }
+
 
     public function all()
     {
