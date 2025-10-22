@@ -114,14 +114,10 @@ class ProceduralRecordController extends Controller
 
     public function actions(ExecutiveCase $executiveCase)
     {
-        $more = 0;
         $settlements = Settlement::where('executive_case_id', $executiveCase->id)->first();
-        if ($settlements) {
-            $more = $settlements->id;
-        }
         $executiveCase->load('proceduralRecords');
         $lawyers = User::whereIn('role', ['Lawyer', 'admin', 'superadmin'])->where('active', 1)->get();
-        return view('admin.procedural-record.index', compact('executiveCase', 'lawyers', 'more'));
+        return view('admin.procedural-record.index', compact('executiveCase', 'lawyers', 'settlements'));
     }
 
 

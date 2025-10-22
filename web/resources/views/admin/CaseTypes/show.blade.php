@@ -3,12 +3,11 @@
 @section('main_title_content', 'قائمة أنواع القضايا')
 @section('title_content', 'إضافة')
 @section('link_content')
-    <a href="{{ route('cases.all') }}">
-        جميع القضايا</a>
+    <a href="{{ route('cases.all') }}">جميع القضايا</a>
 @endsection
 
 <style>
-    /* --- نفس التنسيقات اللي عندك بالظبط --- */
+    /* --- التنسيقات كما هي --- */
     .action-group {
         display: flex;
         gap: 8px;
@@ -248,7 +247,6 @@
         }
     }
 </style>
-
 @section('content')
     <div class="container-fluid my-4">
         <div class="card shadow-lg border-0">
@@ -266,30 +264,18 @@
 
             <div class="card-body p-0">
                 <div class="table-responsive">
-
-                    {{-- ✅ صف البحث --}}
                     <div class="p-3 border-bottom" style="background-color: var(--primary-color);">
                         <div class="row g-2">
-                            <div class="col-md-2">
-                                <input type="text" id="search-subscriber" class="form-control border-0"
-                                    placeholder="بحث باسم المشترك">
-                            </div>
-                            <div class="col-md-2">
-                                <input type="text" id="search-client" class="form-control border-0"
-                                    placeholder="بحث باسم الموكل">
-                            </div>
-                            <div class="col-md-2">
-                                <input type="text" id="search-opponent" class="form-control border-0"
-                                    placeholder="بحث باسم الخصم">
-                            </div>
-                            <div class="col-md-2">
-                                <input type="text" id="search-case-number" class="form-control border-0"
-                                    placeholder="بحث برقم الدعوي">
-                            </div>
-                            <div class="col-md-2">
-                                <input type="text" id="search-court" class="form-control border-0"
-                                    placeholder="بحث بالمحكمة">
-                            </div>
+                            <div class="col-md-2"><input type="text" id="search-subscriber" class="form-control border-0"
+                                    placeholder="بحث باسم المشترك"></div>
+                            <div class="col-md-2"><input type="text" id="search-client" class="form-control border-0"
+                                    placeholder="بحث باسم الموكل"></div>
+                            <div class="col-md-2"><input type="text" id="search-opponent" class="form-control border-0"
+                                    placeholder="بحث باسم الخصم"></div>
+                            <div class="col-md-2"><input type="text" id="search-case-number"
+                                    class="form-control border-0" placeholder="بحث برقم الدعوي"></div>
+                            <div class="col-md-2"><input type="text" id="search-court" class="form-control border-0"
+                                    placeholder="بحث بالمحكمة"></div>
                         </div>
                     </div>
 
@@ -340,21 +326,24 @@
                                     <td>{{ $case->jubge_name ?? '-' }}</td>
                                     <td>{{ $case->proceduralRedords->last()?->created_at?->format('Y-m-d') ?? 'لا يوجد نشاط' }}
                                     </td>
+                                    <td>{{ $case->proceduralRedords->where('type', 'جلسه')->last()?->date ?? '-' }}</td>
+                                    <td>{{ $case->proceduralRedords->last()?->action ?? 'لا يوجد وقائع' }}</td>
+
+                                    {{-- ✅ تحقق الالتزام بالتسويات --}}
+                                    @php
+                                        $settlements = $case->settlements ?? collect();
+                                        $allCommitted = $settlements->every(fn($s) => $s->obligation == 'ملتزم');
+                                    @endphp
+
                                     <td>
-                                        @php
-                                            $lastSession = $case->proceduralRedords->where('type', 'جلسه')->last();
-                                        @endphp
-                                        {{ $lastSession ? $lastSession->date : '-' }}
+                                        @if ($allCommitted)
+                                            <a href="{{ route('cases.show', $case) }}" class="">تم
+                                                تحويل القضيه الي جميع التسويات</a>
+                                        @else
+                                            <a href="{{ route('cases.show', $case) }}" class="btn btn-sm btn-info">وقائع
+                                                الدعوي</a>
+                                        @endif
                                     </td>
-                                    <td>{{ $case->proceduralRedords->last()->action ?? 'لا يوجد وقائع' }}</td>
-                                    @if ($more == $case->id)
-                                        <td><a href="{{ route('cases.show', $case) }}" class=""> تم
-                                                تحويل القضيه اللي جميع التسويات
-                                            </a></td>
-                                    @else
-                                        <td><a href="{{ route('cases.show', $case) }}" class="btn btn-sm btn-info">وقائع
-                                                الدعوي</a></td>
-                                    @endif
 
                                     <td>
                                         <div class="dual-buttons d-flex gap-2">
@@ -364,8 +353,9 @@
                                                 class="btn btn-lg btn-outline-secondary flex-fill">المذكرات</a>
                                         </div>
                                     </td>
-                                    <td>
-                                        @if (Auth::user()->role == 'admin' || Auth::user()->role == 'superadmin')
+
+                                    @if (Auth::user()->role == 'admin' || Auth::user()->role == 'superadmin')
+                                        <td>
                                             <a href="{{ route('cases.edit', $case) }}"
                                                 class="btn btn-lg btn-warning w-100">تعديل</a>
 
@@ -376,7 +366,6 @@
                                                 <button type="submit" class="btn btn-lg btn-danger w-100">حذف</button>
                                             </form>
 
-                                            <!-- زرار سجل القضية -->
                                             <a href="{{ route('cases.log', $case) }}"
                                                 class="btn btn-lg btn-success w-100 mb-2">سجل القضية</a>
 
@@ -386,9 +375,8 @@
                                                 <a href="{{ route('cases.expenses', $case) }}"
                                                     class="btn btn-lg btn-dark w-100">المصاريف</a>
                                             </div>
-                                        @endif
-                                    </td>
-
+                                        </td>
+                                    @endif
                                 </tr>
                             @endforeach
                         </tbody>
@@ -423,7 +411,6 @@
                 for (let row of rows) {
                     const cells = row.getElementsByTagName("td");
                     let show = true;
-
                     if (searchValues.subscriber && !cells[0].innerText.toLowerCase().includes(searchValues
                             .subscriber)) show = false;
                     if (searchValues.client && !cells[1].innerText.toLowerCase().includes(searchValues.client))
@@ -434,7 +421,6 @@
                             .caseNumber)) show = false;
                     if (searchValues.court && !cells[8].innerText.toLowerCase().includes(searchValues.court)) show =
                         false;
-
                     row.style.display = show ? "" : "none";
                 }
             }

@@ -326,9 +326,9 @@ class CaseController extends Controller
         $settlements = Settlement::where('cases_id', $case->id)->first();
         if ($settlements) {
             $more = $settlements->id;
-            return view('admin.cases.show', compact('case', 'lawyers', 'more'));
+            return view('admin.cases.show', compact('case', 'lawyers', 'more', 'settlements'));
         }
-        return view('admin.cases.show', compact('case', 'lawyers', 'more'));
+        return view('admin.cases.show', compact('case', 'lawyers', 'more', 'settlements'));
     }
     public function showDurations(Cases $case)
     {

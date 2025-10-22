@@ -91,15 +91,24 @@
                                     <td>{{ $case->execution_document_number }}</td>
                                     <td>{{ $case->procedural_session_date }}</td>
                                     <td>
-                                        @if ($more == $case->id)
-                                            <a href="{{ route('procedural-record.index', $case) }}" class="">تم تحويل
-                                                القضيه الي جميع التسويات</a>
+                                        @php
+                                            $settlements = $case->settlements ?? collect();
+                                            $allCommitted = $settlements->every(fn($s) => $s->obligation == 'ملتزم');
+                                        @endphp
+
+                                        @if ($allCommitted && $settlements->count() > 0)
+                                            <a href="{{ route('procedural-record.index', $case) }}" class="">
+                                                تم تحويل القضية إلى جميع التسويات
+                                            </a>
                                         @else
                                             <a href="{{ route('procedural-record.index', $case) }}"
-                                                class="btn btn-info btn-sm mb-1">الإجراءات</a>
+                                                class="btn btn-info btn-sm mb-1">
+                                                وقائع الدعوي
+                                            </a>
                                         @endif
-
                                     </td>
+
+
                                     <td>
                                         @if (Auth::user()->role == 'admin' || Auth::user()->role == 'superadmin')
                                             <a href="{{ route('executive-case.edit', $case) }}"

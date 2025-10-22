@@ -72,4 +72,9 @@ class cases extends Model
     {
         return $this->hasMany(ProceduralRecord::class, 'cases_id');
     }
+
+    public function settlements()
+    {
+        return $this->hasMany(Settlement::class, 'cases_id');
+    }
 }
