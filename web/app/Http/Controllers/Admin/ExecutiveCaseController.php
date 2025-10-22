@@ -310,34 +310,20 @@ class ExecutiveCaseController extends Controller
 
         try {
             DB::beginTransaction();
-            // نجيب كل أرقام الملفات الخاصة بالـ Main Settlement
-            $numbers = Settlement::where('settlement_main_id', $data['settlement_main_id'])
-                ->where('id', '!=', $settlement->id) // نستثني نفس السجل
-                ->pluck('file_number')
-                ->sort()
-                ->toArray();
 
-            // نحدد أول رقم ناقص
-            $missing = 1;
-            foreach ($numbers as $num) {
-                if ($num == $missing) {
-                    $missing++;
-                } elseif ($num > $missing) {
-                    break;
-                }
-            }
-
-            // نحدد رقم الملف الجديد
-            $data['file_number'] = $missing;
-
-            // نحدث السداد
             $settlement->update($data);
 
             DB::commit();
 
+            if ($settlement->cases_id) {
+                return redirect()
+                    ->route('cases.settlement.all', $settlement->cases_id)
+                    ->with('success', 'تم تعديل السداد بنجاح، رقم الملف هو: ');
+            }
+
             return redirect()
-                ->route('settlement.index', $settlement->settlementMain)
-                ->with('success', 'تم تعديل السداد بنجاح، رقم الملف هو: ' . $data['file_number']);
+                ->route('executive-case.settlement', $settlement->executive_case_id)
+                ->with('success', 'تم تعديل السداد بنجاح، رقم الملف هو: ');
 
         } catch (\Exception $e) {
             DB::rollBack();

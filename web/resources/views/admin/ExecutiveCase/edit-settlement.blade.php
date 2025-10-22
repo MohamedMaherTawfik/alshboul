@@ -13,18 +13,7 @@
             <div class="form-section">
                 <h2 class="section-title">إعدادات التسوية</h2>
                 <div class="form-row">
-                    <div class="form-group">
-                        <label for="settlement_main_id">نوع التسوية</label>
-                        <select name="settlement_main_id" id="settlement_main_id" required>
-                            <option value="">-- اختر نوع الدعوي --</option>
-                            @foreach ($settlements as $s)
-                                <option value="{{ $s->id }}"
-                                    {{ $settlement->settlement_main_id == $s->id ? 'selected' : '' }}>
-                                    {{ $s->name }}
-                                </option>
-                            @endforeach
-                        </select>
-                    </div>
+
                     <div class="form-group">
                         <label for="obligation">الالتزام</label>
                         <select id="obligation" name="obligation" required>

@@ -332,18 +332,21 @@
                                     {{-- ✅ تحقق الالتزام بالتسويات --}}
                                     @php
                                         $settlements = $case->settlements ?? collect();
-                                        $allCommitted = $settlements->every(fn($s) => $s->obligation == 'ملتزم');
+                                        $hasSettlements = $settlements->isNotEmpty();
+                                        $allCommitted =
+                                            $hasSettlements && $settlements->every(fn($s) => $s->obligation == 'ملتزم');
                                     @endphp
 
                                     <td>
                                         @if ($allCommitted)
-                                            <a href="{{ route('cases.show', $case) }}" class="">تم
-                                                تحويل القضيه الي جميع التسويات</a>
+                                            <a href="{{ route('cases.show', $case) }}" class="">تم تحويل القضيه الي
+                                                جميع التسويات</a>
                                         @else
                                             <a href="{{ route('cases.show', $case) }}" class="btn btn-sm btn-info">وقائع
                                                 الدعوي</a>
                                         @endif
                                     </td>
+
 
                                     <td>
                                         <div class="dual-buttons d-flex gap-2">

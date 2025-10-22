@@ -199,7 +199,7 @@
                         <div class="mb-3">
                             <label class="form-label">تاريخ الإدخال</label>
                             <input type="date" class="form-control" name="created_at"
-                                value="{{ now()->format('Y-m-d ') }}">
+                                value="{{ now()->format('Y-m-d') }}">
                         </div>
 
                         <div class="mb-3">
