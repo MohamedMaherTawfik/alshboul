@@ -1,8 +1,4 @@
 <!DOCTYPE html>
-<!--
-This is a starter template page. Use this page to start your new project from
-scratch. This page gets rid of all links and provides the needed markup only.
--->
 <html lang="ar">
 
 <head>
@@ -12,15 +8,64 @@ scratch. This page gets rid of all links and provides the needed markup only.
 
     <title>@yield('title', 'Dashboard')</title>
     <!-- Font Awesome Icons -->
-    <link rel="stylesheet" href="{{ asset('assets/admin/plugins/fontawesome-free/css/all.min.css') }} ">
+    <link rel="stylesheet" href="{{ asset('assets/admin/plugins/fontawesome-free/css/all.min.css') }}">
     <!-- Theme style -->
-    <link rel="stylesheet" href="{{ asset('assets/admin/dist/adminlte.min.css') }} ">
+    <link rel="stylesheet" href="{{ asset('assets/admin/dist/adminlte.min.css') }}">
     <!-- Google Font: Source Sans Pro -->
-    <link rel="stylesheet" href="{{ asset('assets/admin/fonts/SansPro/SansPro.min.css') }} ">
-    <link rel="stylesheet" href="{{ asset('assets/admin/css/bootstrap_rtl-v4.2.1/bootstrap.min.css') }} ">
-    <link rel="stylesheet" href="{{ asset('assets/admin/css/bootstrap_rtl-v4.2.1/custom_rtl.css') }} ">
+    <link rel="stylesheet" href="{{ asset('assets/admin/fonts/SansPro/SansPro.min.css') }}">
+    <link rel="stylesheet" href="{{ asset('assets/admin/css/bootstrap_rtl-v4.2.1/bootstrap.min.css') }}">
+    <link rel="stylesheet" href="{{ asset('assets/admin/css/bootstrap_rtl-v4.2.1/custom_rtl.css') }}">
     <link rel="stylesheet"
         href="{{ asset('assets/admin/css/mycustomstyle.css') }}?v={{ filemtime(public_path('assets/admin/css/mycustomstyle.css')) }}">
+
+    <style>
+        /* Hide everything by default when printing */
+        @media print {
+            body * {
+                visibility: hidden;
+            }
+
+            /* Show only the content wrapper */
+            .printer,
+            .printer * {
+                visibility: visible;
+            }
+
+            /* Position the content at the top-left corner */
+            .printer {
+                position: absolute;
+                left: 0;
+                top: 0;
+                width: 100%;
+            }
+
+            /* Show logo only during printing and make it full width */
+            .printer .print-logo {
+                display: block;
+                width: 100%;
+                height: auto;
+                margin-top: 30px;
+                /* فاصلة بسيطة بين التاريخ واللوجو */
+                margin-bottom: 5px;
+            }
+
+            /* Show date only during printing */
+            .print-date {
+                display: block;
+                text-align: right;
+                /* على اليمين */
+                margin-bottom: 0;
+                font-weight: bold;
+                font-size: 16px;
+            }
+        }
+
+        /* Hide logo and date on screen */
+        .print-logo,
+        .print-date {
+            display: none;
+        }
+    </style>
 
     @yield('css')
 </head>
@@ -31,14 +76,20 @@ scratch. This page gets rid of all links and provides the needed markup only.
         <!-- Navbar -->
         @include('admin.includes.navbar')
         <!-- /.navbar -->
-        <!-- Main Sidebar Container -->
-
 
         <!-- Content Wrapper. Contains page content -->
-        @include('admin.includes.content')
-        <!-- /.content-wrapper -->
+        <div class="printer">
+            <!-- Date for printing only -->
+            <div class="print-date">
+                {{ \Carbon\Carbon::now()->format('Y-m-d') }}
+            </div>
 
+            <!-- Logo for printing only -->
+            <img src="{{ asset('images/logo.jpg') }}" alt="Logo" class="print-logo">
 
+            @include('admin.includes.content')
+        </div>
+        <!-- /.printer -->
 
         <!-- Main Footer -->
         @include('admin.includes.footer')
@@ -50,7 +101,6 @@ scratch. This page gets rid of all links and provides the needed markup only.
     <!-- jQuery -->
     <script src="{{ asset('assets/admin/plugins/jquery/jquery.min.js') }}"></script>
     <!-- Bootstrap 4 -->
-    {{-- <script src="{{ asset('assets/admin/js/jquery-3.7.1.js')}}"></script> --}}
     <script src="{{ asset('assets/admin/plugins/bootstrap/js/bootstrap.bundle.min.js') }}"></script>
     <!-- AdminLTE App -->
     <script src="{{ asset('assets/admin/dist/js/adminlte.min.js') }}"></script>
