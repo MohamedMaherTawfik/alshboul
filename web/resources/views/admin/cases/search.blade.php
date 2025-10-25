@@ -49,31 +49,46 @@
                     <table class="table table-bordered text-center">
                         <thead class="table-light">
                             <tr>
-                                <th>رقم الملف</th>
-                                <th>رقم القضية</th>
+                                <th>المحامي</th>
                                 <th>اسم القاضي</th>
                                 <th>اسم المحكمة أو الدائرة</th>
+                                <th>اسم المدخل</th>
+                                <th>الملاحظات</th>
                                 <th>تاريخ الجلسة</th>
                                 <th>الوقائع</th>
+                                <th>تاريخ الادخال</th>
+                                <th>رقم الدعوي</th>
+                                <th>رقم الملف</th>
+                                <th>اسم الخصم</th>
+                                <th>اسم الموكل</th>
                                 <th>المستندات</th>
-                                <th>المحامي</th>
-                                <th>الملاحظات</th>
                             </tr>
                         </thead>
                         <tbody>
                             @foreach ($normalCases as $session)
                                 <tr>
-                                    <td>{{ $session->cases->case_number ?? '-' }}</td>
+
+                                    <td>{{ $session->user->name ?? '-' }}</td>
+                                    <td>{{ $session->cases?->jubge_name ?? 'بلا' }}</td>
+                                    <td>{{ $session->cases->court_name ?? '-' }}</td>
+                                    <td>{{ $session->userLawyer->name ?? '-' }}</td>
+                                    <td>{{ $session->note ?? '-' }}</td>
+                                    <td>{{ $session->date ?? '-' }}</td>
+                                    <td>{{ $session->action ?? '-' }}</td>
+                                    <td>{{ $session->created_at->format('d/m/Y') ?? '-' }}</td>
                                     <td>
                                         {{ $session->cases->file_number ?? '-' }}
                                         <a href="{{ route('cases.show', $session->cases) }}">
                                             <i class="fa fa-eye text-dark ms-1"></i>
                                         </a>
                                     </td>
-                                    <td>{{ $session->cases?->jubge_name ?? 'بلا' }}</td>
-                                    <td>{{ $session->cases->court_name ?? '-' }}</td>
-                                    <td>{{ $session->date ?? '-' }}</td>
-                                    <td>{{ $session->action ?? '-' }}</td>
+                                    <td>{{ $session->cases->case_number ?? '-' }}</td>
+                                    <td>
+                                        @foreach ($session->cases->caseOpponents as $item)
+                                            {{ $item->case_opponent_name ?? '-' }}
+                                        @endforeach
+                                    </td>
+                                    <td>{{ $session->cases->subscriber->name ?? '-' }}</td>
                                     <td>
                                         @foreach ($files as $item)
                                             @if ($item->procedural_record_id == $session->id)
@@ -82,8 +97,7 @@
                                             @endif
                                         @endforeach
                                     </td>
-                                    <td>{{ $session->user->name ?? '-' }}</td>
-                                    <td>{{ $session->note ?? '-' }}</td>
+
                                 </tr>
                             @endforeach
                         </tbody>
@@ -98,29 +112,44 @@
                     <table class="table table-bordered text-center">
                         <thead class="table-light">
                             <tr>
-                                <th>رقم الملف</th>
-                                <th>رقم القضية</th>
+                                <th>المحامي</th>
                                 <th>اسم المحكمة أو الدائرة</th>
+                                <th>اسم المدخل</th>
+                                <th>الملاحظات</th>
                                 <th>تاريخ الجلسة</th>
                                 <th>الوقائع</th>
+                                <th>تاريخ الادخال</th>
+                                <th>رقم الدعوي</th>
+                                <th>رقم الملف</th>
+                                <th>اسم الخصم</th>
+                                <th>اسم الموكل</th>
                                 <th>المستندات</th>
-                                <th>المحامي</th>
-                                <th>الملاحظات</th>
                             </tr>
                         </thead>
                         <tbody>
                             @foreach ($executiveCases as $session)
                                 <tr>
-                                    <td>{{ $session->case->file_number ?? '-' }}</td>
+
+                                    <td>{{ $session->user->name ?? '-' }}</td>
+                                    <td>{{ $session->case->execution_court ?? '-' }}</td>
+                                    <td>{{ $session->userLawyer->name ?? '-' }}</td>
+                                    <td>{{ $session->note ?? '-' }}</td>
+                                    <td>{{ $session->date ?? '-' }}</td>
+                                    <td>{{ $session->action ?? '-' }}</td>
+                                    <td>{{ $session->created_at->format('d/m/Y') ?? '-' }}</td>
                                     <td>
                                         {{ $session->case->case_number ?? '-' }}
                                         <a href="{{ route('procedural-record.index', $session->case) }}">
                                             <i class="fa fa-eye text-dark ms-1"></i>
                                         </a>
                                     </td>
-                                    <td>{{ $session->case->execution_court ?? '-' }}</td>
-                                    <td>{{ $session->date ?? '-' }}</td>
-                                    <td>{{ $session->action ?? '-' }}</td>
+                                    <td>{{ $session->case->file_number ?? '-' }}</td>
+                                    <td>
+                                        @foreach ($session->case->opponents as $item)
+                                            {{ $item->case_opponent_name ?? '-' }}
+                                        @endforeach
+                                    </td>
+                                    <td>{{ $session->case->client->name ?? '-' }}</td>
                                     <td>
                                         @foreach ($files as $item)
                                             @if ($item->procedural_record_id == $session->id)
@@ -129,8 +158,7 @@
                                             @endif
                                         @endforeach
                                     </td>
-                                    <td>{{ $session->user->name ?? '-' }}</td>
-                                    <td>{{ $session->note ?? '-' }}</td>
+
                                 </tr>
                             @endforeach
                         </tbody>
