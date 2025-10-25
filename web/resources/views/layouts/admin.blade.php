@@ -45,9 +45,13 @@
                 width: 100%;
                 height: auto;
                 margin-top: 30px;
-                /* فاصلة بسيطة بين التاريخ واللوجو */
                 margin-bottom: 5px;
+                object-fit: cover;
+                /* يضمن أن الصورة تملأ العرض بدون تمدد غريب */
+                position: relative;
+                left: 0;
             }
+
 
             /* Show date only during printing */
             .print-date {

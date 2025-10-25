@@ -42,7 +42,7 @@
 
     <!-- إضافة جلسة أو إجراء -->
     <div class="d-flex justify-content-between mb-3">
-        @if ($settlements->obligation == 'غير ملتزم')
+        @if ($settlements && $settlements->obligation == 'غير ملتزم')
             <a href="{{ route('procedural-record.create', $executiveCase) }}"
                 class="btn btn-dark btn-sm px-3 text-white d-flex align-items-center">
                 <i class="bi bi-plus-circle me-1"></i> إضافة جلسة أو إجراء
