@@ -86,7 +86,7 @@
                         </tr>
                     </thead>
                     <tbody>
-                        @forelse ($settlement->proceduralRedords as $duration)
+                        @forelse ($settlement->proceduralRedords->sortByDesc('created_at') as $duration)
                             <tr>
                                 <td>{{ $duration->userLawyer->name ?? '-' }}</td>
                                 <td>{{ $duration->user->name ?? '-' }}</td>
