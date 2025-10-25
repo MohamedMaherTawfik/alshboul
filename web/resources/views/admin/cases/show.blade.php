@@ -102,7 +102,8 @@
                         <th>تاريخ الإدخال</th>
                         <th>الوقائع</th>
                         <th>ملاحظات</th>
-                        <th>تاريخ الجلسة / الإجراء</th>
+                        <th>تاريخ الجلسه</th>
+                        <th>تاريخ الجلسة / الإجراء القادمة</th>
                         <th>الملفات</th>
                         <th>النوع</th>
                         <th>إجراءات</th>
@@ -121,6 +122,7 @@
                             <td>{{ $record->action ?? '-' }}</td>
                             <td>{{ $record->note ?? '-' }}</td>
                             <td>{{ $record->date ?? '-' }}</td>
+                            <td>{{ $record->next_action ?? '-' }} -- {{ $record->next_action_date }}</td>
                             <td>
                                 @foreach ($record->files as $file)
                                     <a href="{{ asset('storage/' . ($file->file_path ?? $file->file)) }}"

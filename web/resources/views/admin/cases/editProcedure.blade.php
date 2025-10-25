@@ -98,11 +98,33 @@
                         </div>
                     </div>
 
+                    {{-- <!-- نوع الإجراء -->
+                    <div class="row mb-3">
+                        <div class="col-md-6">
+                            <label for="type" class="form-label required-field"> الإجراء القادم</label>
+                            <input type="text" name="next_action" id="type" class="form-control"
+                                value="{{ $case->next_action }}">
+                        </div>
+
+                        {{-- <div class="col-md-6">
+                            <label for="date" class="form-label required-field">تاريخ الاجراء القادم</label>
+                            <input type="date" name="next_action_date" id="date" class="form-control"
+                                value="{{ $case->next_action_date }}">
+                        </div> --}}
+                    {{-- </div>  --}}
+
                     <!-- تفاصيل الإجراء -->
                     <div class="mb-3">
                         <label for="action" class="form-label required-field">تفاصيل الإجراء</label>
                         <input type="text" name="action" id="action" class="form-control"
                             value="{{ old('action', $case->action) }}" placeholder="أدخل تفاصيل الإجراء...">
+
+                    </div>
+
+                    <div class="col-md-6">
+                        <label for="date" class="form-label required-field">تاريخ الادخال</label>
+                        <input type="date" name="date" id="date" class="form-control"
+                            value="{{ old('date', $case->created_at->format('Y-m-d')) }}">
                     </div>
 
                     <!-- الملاحظات -->
@@ -133,7 +155,8 @@
                             <ul class="list-group">
                                 @foreach ($case->files as $file)
                                     <li class="list-group-item d-flex justify-content-between align-items-center">
-                                        <a href="{{ asset('storage/' . $file->file_path) }}" target="_blank">عرض المستند</a>
+                                        <a href="{{ asset('storage/' . $file->file_path) }}" target="_blank">عرض
+                                            المستند</a>
                                         <form action="{{ route('cases.procedure.file.delete', $file->id) }}" method="POST"
                                             onsubmit="return confirm('هل أنت متأكد من حذف هذا الملف؟')">
                                             @csrf

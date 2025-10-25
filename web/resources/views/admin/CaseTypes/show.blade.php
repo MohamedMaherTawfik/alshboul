@@ -340,7 +340,7 @@
                                     <td>
                                         @if ($allCommitted)
                                             <a href="{{ route('cases.show', $case) }}" class="">تم تحويل القضيه الي
-                                                جميع التسويات</a>
+                                                قسم التسويات</a>
                                         @else
                                             <a href="{{ route('cases.show', $case) }}" class="btn btn-sm btn-info">وقائع
                                                 الدعوي</a>
