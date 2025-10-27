@@ -98,7 +98,7 @@
                         </div>
                     </div>
 
-                    {{-- <!-- نوع الإجراء -->
+                    <!-- نوع الإجراء -->
                     <div class="row mb-3">
                         <div class="col-md-6">
                             <label for="type" class="form-label required-field"> الإجراء القادم</label>
@@ -106,12 +106,12 @@
                                 value="{{ $case->next_action }}">
                         </div>
 
-                        {{-- <div class="col-md-6">
+                        <div class="col-md-6">
                             <label for="date" class="form-label required-field">تاريخ الاجراء القادم</label>
                             <input type="date" name="next_action_date" id="date" class="form-control"
                                 value="{{ $case->next_action_date }}">
-                        </div> --}}
-                    {{-- </div>  --}}
+                        </div>
+                    </div>
 
                     <!-- تفاصيل الإجراء -->
                     <div class="mb-3">
@@ -123,7 +123,7 @@
 
                     <div class="col-md-6">
                         <label for="date" class="form-label required-field">تاريخ الادخال</label>
-                        <input type="date" name="date" id="date" class="form-control"
+                        <input type="date" name="created_at" id="date" class="form-control"
                             value="{{ old('date', $case->created_at->format('Y-m-d')) }}">
                     </div>
 
@@ -148,33 +148,31 @@
                     </div>
 
 
-                    <!-- الملفات الحالية -->
-                    @if ($case->files && $case->files->count())
-                        <div class="mb-4">
-                            <h6 class="fw-bold"><i class="bi bi-file-earmark-text me-2"></i>الملفات الحالية:</h6>
-                            <ul class="list-group">
-                                @foreach ($case->files as $file)
-                                    <li class="list-group-item d-flex justify-content-between align-items-center">
-                                        <a href="{{ asset('storage/' . $file->file_path) }}" target="_blank">عرض
-                                            المستند</a>
-                                        <form action="{{ route('cases.procedure.file.delete', $file->id) }}" method="POST"
-                                            onsubmit="return confirm('هل أنت متأكد من حذف هذا الملف؟')">
-                                            @csrf
-                                            @method('DELETE')
-                                            <button type="submit" class="btn btn-sm btn-danger">حذف</button>
-                                        </form>
-                                    </li>
-                                @endforeach
-                            </ul>
-                        </div>
-                    @endif
-
                     <!-- الأزرار -->
                     <div class="d-flex justify-content-end gap-2">
-                        <a href="{{ url()->previous() }}" class="btn btn-secondary">إلغاء</a>
+                        {{-- <a href="{{ url()->previous() }}" class="btn btn-secondary">إلغاء</a> --}}
                         <button type="submit" class="btn btn-warning">تحديث</button>
                     </div>
                 </form>
+                @if ($case->files && $case->files->count())
+                    <div class="mb-4">
+                        <h6 class="fw-bold"><i class="bi bi-file-earmark-text me-2"></i>الملفات الحالية:</h6>
+                        <ul class="list-group">
+                            @foreach ($case->files as $file)
+                                <li class="list-group-item d-flex justify-content-between align-items-center">
+                                    <a href="{{ asset('storage/' . $file->file_path) }}" target="_blank">عرض
+                                        المستند</a>
+                                    <form action="{{ route('cases.procedure.file.delete', $file->id) }}" method="POST"
+                                        onsubmit="return confirm('هل أنت متأكد من حذف هذا الملف؟')">
+                                        @csrf
+                                        @method('DELETE')
+                                        <button type="submit" class="btn btn-sm btn-danger">حذف</button>
+                                    </form>
+                                </li>
+                            @endforeach
+                        </ul>
+                    </div>
+                @endif
             </div>
         </div>
     </div>

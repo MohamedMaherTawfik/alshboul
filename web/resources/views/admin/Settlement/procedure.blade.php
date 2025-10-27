@@ -62,9 +62,11 @@
 
     {{-- زرار إنشاء إجراء --}}
     <div class="d-flex justify-content-end mb-3">
-        <a href="{{ route('settlements.procedure.create', $settlement) }}" class="btn btn-primary">
-            + انشاء اجراء
-        </a>
+        @if ($settlement->obligation == 'ملتزم')
+            <a href="{{ route('settlements.procedure.create', $settlement) }}" class="btn btn-primary">
+                + انشاء اجراء
+            </a>
+        @endif
     </div>
 
     <div class="card">
@@ -79,7 +81,6 @@
                             <th>وقائع الاجراء</th>
                             <th>مستندات</th>
                             <th>ملاحظات</th>
-                            <th>اجراءات فرعيه</th>
                             @if (Auth::user()->role == 'admin' || Auth::user()->role == 'superadmin')
                                 <th>الاجراءات</th>
                             @endif
@@ -130,10 +131,7 @@
                                     </div>
                                 </td>
                                 <td>{{ $duration->note ?? ' لا يوجد ملاحظات' }}</td>
-                                <td>
-                                    <a href="{{ route('settlement.procedural.show', $duration) }}"
-                                        class="btn btn-sm btn-info">اجراء فرعي</a>
-                                </td>
+
                                 @if (Auth::user()->role == 'admin' || Auth::user()->role == 'superadmin')
                                     <td>
                                         <a href="{{ route('settlement.procedural.edit', $duration) }}"

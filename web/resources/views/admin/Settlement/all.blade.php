@@ -47,8 +47,9 @@
                             <th>قيمة الدين</th>
                             <th>قيمة القسط</th>
                             <th>نوع القسط</th>
+                            <th>الاجراءات</th>
                             @if (Auth::user()->role == 'admin' || Auth::user()->role == 'superadmin')
-                                <th>الاجراءات</th>
+                                <th>التحكم</th>
                             @endif
 
                         </tr>
@@ -72,6 +73,17 @@
                                         {{ $settlemen->week_3 }} - {{ $settlemen->week_4 }}
                                     @endif
                                 </td>
+                                <td>
+                                    @if ($settlemen->obligation == 'غير ملتزم')
+                                        <a href="{{ route('settlements.procedure', $settlemen) }}">
+                                            تم اتخاذ اجراء قضائي لعدم الالتزام
+                                        </a>
+                                    @else
+                                        <a href="{{ route('settlements.procedure', $settlemen) }}"
+                                            class="btn btn-info btn-sm">
+                                            <i class="fas fa-cogs"></i> إجراء
+                                        </a>
+                                    @endif
                                 </td>
                                 <td>
                                     @if (Auth::user()->role == 'admin' || Auth::user()->role == 'superadmin')
@@ -89,11 +101,6 @@
                                                     <i class="fas fa-trash"></i> حذف
                                                 </button>
                                             </form>
-
-                                            <a href="{{ route('settlements.procedure', $settlemen) }}"
-                                                class="btn btn-info btn-sm">
-                                                <i class="fas fa-cogs"></i> إجراء
-                                            </a>
                                         </div>
                                     @endif
 

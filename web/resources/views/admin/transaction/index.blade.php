@@ -43,6 +43,7 @@
                                 <th>رقم الملف</th>
                                 <th>اسم الدائره المختصه</th>
                                 <th>وصف المعامله</th>
+                                <th>الملاحظات</th>
                                 <th>اسم المشترك</th>
                                 <th>اسم الموكل</th>
                                 @if (Auth::user()->role == 'admin' || Auth::user()->role == 'superadmin')
@@ -54,13 +55,14 @@
                             </tr>
                         </thead>
                         <tbody>
-                            @foreach ($transaction->transactions as $index => $item)
+                            @foreach ($transaction->transactions->sortBy('file_number') as $index => $item)
                                 <tr>
                                     <td>{{ $item->user?->name ?? '-' }}</td>
                                     <td>{{ $item->file_number ?? '-' }}</td>
                                     <td>{{ $item->area_name ?? '-' }}</td>
                                     <td>{{ $item->description ?? '-' }}</td>
-                                    <td>{{ $item->client?->name ?? '-' }}</td>
+                                    <td>{{ $item->notes ?? '-' }}</td>
+                                    <td>{{ $item->subscriber->name ?? '-' }}</td>
                                     <td>{{ $item->client_name ?? '-' }}</td>
                                     @if (Auth::user()->role == 'admin' || Auth::user()->role == 'superadmin')
                                         <td>

@@ -45,7 +45,7 @@
                         <!-- 🟡 الموكل -->
                         <div class="form-group col-md-6">
                             <label class="fw-bold">الموكل</label>
-                            <select name="client_" id="client_id" class="form-select" required disabled>
+                            <select name="client_name" id="client_id" class="form-select" required disabled>
                                 <option value="">-- اختر الموكل --</option>
                             </select>
                         </div>
@@ -82,7 +82,6 @@
                         </div>
                     </div>
 
-
                     <div class="text-center mt-3">
                         <button type="submit" class="btn btn-success px-4">حفظ</button>
                         <a href="{{ route('transactions.all', $transaction) }}" class="btn btn-secondary px-4">إلغاء</a>
@@ -97,12 +96,12 @@
     <script>
         document.addEventListener("DOMContentLoaded", function() {
             const subscriberInput = document.getElementById("subscriber_name");
-            const subscriberHidden = document.getElementById("subscriber_id"); // هيخزن client.id
+            const subscriberHidden = document.getElementById("subscriber_id"); // 🟢 id المشترك
             const suggestionsBox = document.getElementById("subscriber_suggestions");
-            const clientSelect = document.getElementById("client_id"); // هيبعت client.name
+            const clientSelect = document.getElementById("client_id"); // 🟡 الموكل (name)
             const users = @json($users);
 
-            // 🟢 عند الكتابة في حقل المشترك
+            // عند الكتابة في حقل المشترك
             subscriberInput.addEventListener("input", function() {
                 const query = this.value.toLowerCase();
                 suggestionsBox.innerHTML = "";
@@ -123,7 +122,10 @@
 
                     item.onclick = () => {
                         subscriberInput.value = user.name;
+                        subscriberHidden.value = user.id; // 🟢 نخزن id المشترك
                         suggestionsBox.style.display = "none";
+
+                        // امسح الموكلين القديمة
                         clientSelect.innerHTML = '<option value="">-- اختر الموكل --</option>';
                         clientSelect.disabled = true;
 
@@ -131,9 +133,7 @@
                         if (user.client?.length) {
                             user.client.forEach(client => {
                                 const opt = document.createElement("option");
-                                opt.value = client
-                                .name; // الاسم هو اللي هيتبعت في client_
-                                opt.dataset.id = client.id; // نخزن id في data attribute
+                                opt.value = client.name; // 🟡 الموكل يبعِت الاسم فقط
                                 opt.textContent = client.name;
                                 clientSelect.appendChild(opt);
                             });
@@ -146,14 +146,7 @@
                 suggestionsBox.style.display = "block";
             });
 
-            // 🟡 عند اختيار الموكل من القائمة
-            clientSelect.addEventListener("change", function() {
-                const selectedOption = this.options[this.selectedIndex];
-                const clientId = selectedOption.dataset.id; // ناخد id من data attribute
-                subscriberHidden.value = clientId; // نخزن id في hidden input
-            });
-
-            // 🧩 إغلاق الاقتراحات لما المستخدم يضغط خارجها
+            // إغلاق الاقتراحات عند الضغط بالخارج
             document.addEventListener('click', function(e) {
                 if (!subscriberInput.contains(e.target) && !suggestionsBox.contains(e.target)) {
                     suggestionsBox.style.display = "none";

@@ -18,13 +18,13 @@
                 <table class="table table-bordered table-hover text-center align-middle">
                     <thead class="custom_thead">
                         <tr>
-                            <th>المستخدم (Created By)</th>
-                            <th>العميل</th>
+                            <th>المستخدم</th>
+                            <th>المشترك</th>
                             <th>رقم الملف</th>
                             <th>الحالة</th>
-                            <th>الاسم</th>
+                            <th>الموكل</th>
                             <th>الوصف</th>
-                            <th>المنطقة</th>
+                            <th>الدائره المختصه</th>
                             <th>ملاحظات</th>
                         </tr>
                     </thead>
@@ -32,7 +32,7 @@
 
                         <tr>
                             <td>{{ $transaction->user?->name ?? '-' }}</td>
-                            <td>{{ $transaction->client?->name ?? '-' }}</td>
+                            <td>{{ $transaction->subscriber?->name ?? '-' }}</td>
                             <td>{{ $transaction->file_number ?? '-' }}</td>
                             <td>
                                 @if ($transaction->is_active)
@@ -78,7 +78,7 @@
                         </tr>
                     </thead>
                     <tbody>
-                        @forelse ($transaction->procedural->sortByDesc('id') as $procedural)
+                        @forelse ($transaction->procedural->sortByDesc('created_at') as $procedural)
                             <tr>
                                 <td>{{ $procedural->user?->name ?? '-' }}</td>
                                 <td>{{ $procedural->action ?? '-' }}</td>

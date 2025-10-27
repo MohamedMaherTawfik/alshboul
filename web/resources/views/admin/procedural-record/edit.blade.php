@@ -19,7 +19,6 @@
                         <form action="{{ route('procedural-record.update', $executiveCase) }}" method="POST"
                             enctype="multipart/form-data">
                             @csrf
-                            @method('PUT')
 
                             <input type="hidden" name="type" value="إجراء" readonly>
 

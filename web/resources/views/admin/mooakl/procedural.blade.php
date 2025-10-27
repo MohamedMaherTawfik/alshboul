@@ -63,6 +63,8 @@
                                         <th class="text-center">المدخل</th>
                                         <th class="text-center">المحامي</th>
                                         <th class="text-center">الإجراء الرئيسي</th>
+                                        <th class="text-center">الإجراء القادم</th>
+                                        <th class="text-center"> تاريخ الإجراء القادم</th>
                                         <th class="text-center">الجهة</th>
                                         <th class="text-center">ملاحظات</th>
                                         <th class="text-center">تاريخ الإدخال</th>
@@ -70,13 +72,15 @@
                                     </tr>
                                 </thead>
                                 <tbody>
-                                    @forelse($client->subProcedurals->sortByDesc(function($sub){ return $sub->created_at; })->values() as $sub)
+                                    @forelse($client->subProcedurals->sortBy('created_at') as $sub)
                                         <tr>
                                             <td class="text-center">{{ $loop->iteration ?? 'غير محدد' }}</td>
                                             <td class="text-center">{{ $sub->user->name ?? 'غير محدد' }}</td>
                                             <td class="text-center">{{ $sub->lawyer->name ?? 'غير محدد' }}</td>
                                             <td class="text-center">{{ $sub->action ?? 'غير محدد' }}</td>
-                                            <td class="text-center">{{ $sub->to ?? 'غير محدد' }}</td>
+                                            <td class="text-center">{{ $sub->next_action ?? 'غير محدد' }}</td>
+                                            <td class="text-center">{{ $sub->next_action_date ?? 'غير محدد' }}</td>
+                                            <td class="text-center">{{ $client->side ?? 'غير محدد' }}</td>
                                             <td class="text-center"
                                                 style="white-space: pre-wrap; word-wrap: break-word; max-width: 400px;">
                                                 {{ $sub->note }}
@@ -166,7 +170,7 @@
                                         </div>
                                     @empty
                                         <tr>
-                                            <td colspan="7" class="text-center text-muted py-3">
+                                            <td colspan="10" class="text-center text-muted py-3">
                                                 لا توجد إجراءات فرعية مسجلة
                                             </td>
                                         </tr>
@@ -208,8 +212,12 @@
                         </div>
 
                         <div class="mb-3">
-                            <label class="form-label">الجهة</label>
-                            <input type="text" class="form-control" name="to" required>
+                            <label class="form-label">الإجراء القادم</label>
+                            <input type="text" class="form-control" name="next_action" required>
+                        </div>
+                        <div class="mb-3">
+                            <label class="form-label"> تاريخ الإجراء القادم </label>
+                            <input type="date" class="form-control" name="next_action_date" required>
                         </div>
 
                         <div class="mb-3">

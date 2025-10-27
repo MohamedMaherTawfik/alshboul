@@ -84,7 +84,7 @@
                                     </tr>
                                 </thead>
                                 <tbody>
-                                    @forelse($client->clientProcedurals->sortByDesc('id') as $procedural)
+                                    @forelse($client->clientProcedurals->sortByDesc('created_at') as $procedural)
                                         <tr>
                                             <td class="text-center">{{ $procedural->user->name ?? 'غير محدد' }}</td>
                                             <td class="text-center">

@@ -76,8 +76,6 @@ class ExecutiveCaseController extends Controller
         return view('admin.ExecutiveCase.index', compact('item', 'executiveCases', 'neglectConfig', 'more'));
     }
 
-
-
     /**
      * Show the form for creating a new resource.
      */
@@ -182,9 +180,9 @@ class ExecutiveCaseController extends Controller
      */
     public function edit(ExecutiveCase $executiveCase)
     {
-
+        $mainCases = excutiveCasesMain::all();
         $clients = Client::with('user')->where('seen', 1)->where('active', 1)->orderBy('id', 'desc')->get();
-        return view('admin.ExecutiveCase.edit', compact('executiveCase', 'clients'));
+        return view('admin.ExecutiveCase.edit', compact('executiveCase', 'clients', 'mainCases'));
     }
 
     /**
@@ -192,22 +190,51 @@ class ExecutiveCaseController extends Controller
      */
     public function update(Request $request, ExecutiveCase $executiveCase)
     {
-        $data = $request->except('_token');
-        // dd($data);
+        $request->validate([
+            'client_name' => 'required|string|max:255',
+            'client_national_id' => 'nullable|string|max:20',
+            'excutive_cases_main_id' => 'required',
+            'case_number' => 'nullable|string|max:255',
+            'case_type' => 'nullable|string|max:255',
+            'case_status' => 'nullable|string|max:255',
+            'case_value' => 'nullable|numeric',
+            'execution_court' => 'nullable|string|max:255',
+            'execution_document_type' => 'nullable|string|max:255',
+            'judged_for_status' => 'nullable|string|max:255',
+            'judged_against_status' => 'nullable|string|max:255',
+            'registration_date' => 'nullable|date',
+            'execution_document_number' => 'nullable|string|max:255',
+            'procedural_session_date' => 'nullable|date',
+        ]);
+
         try {
             DB::beginTransaction();
 
             $oldMainCaseId = $executiveCase->excutive_cases_main_id;
 
-            $executiveCase->update($data);
+            $executiveCase->update([
+                'client_name' => $request->client_name,
+                'client_national_id' => $request->client_national_id,
+                'excutive_cases_main_id' => $request->excutive_cases_main_id,
+                'case_number' => $request->case_number,
+                'case_type' => $request->case_type,
+                'case_status' => $request->case_status,
+                'case_value' => $request->case_value,
+                'execution_court' => $request->execution_court,
+                'execution_document_type' => $request->execution_document_type,
+                'judged_for_status' => $request->judged_for_status,
+                'judged_against_status' => $request->judged_against_status,
+                'registration_date' => $request->registration_date,
+                'execution_document_number' => $request->execution_document_number,
+                'procedural_session_date' => $request->procedural_session_date,
+            ]);
 
-            if ($oldMainCaseId != $executiveCase->excutive_cases_main_id) {
-                $numbers = ExecutiveCase::where('excutive_cases_main_id', $executiveCase->excutive_cases_main_id)
+            if ($oldMainCaseId != $request->excutive_cases_main_id) {
+                $numbers = ExecutiveCase::where('excutive_cases_main_id', $request->excutive_cases_main_id)
                     ->pluck('file_number')
                     ->sort()
                     ->toArray();
 
-                // نحدد أول رقم ناقص
                 $missing = 1;
                 foreach ($numbers as $num) {
                     if ($num == $missing) {
@@ -217,23 +244,44 @@ class ExecutiveCaseController extends Controller
                     }
                 }
 
-                // نحدث رقم القضية بالرقم الجديد
                 $executiveCase->update(['file_number' => $missing]);
             }
 
-            $maincase = excutiveCasesMain::find($executiveCase->excutive_cases_main_id);
+            // ✅ تحديث الخصوم (opponents)
+            if ($request->has('opponents')) {
+                // احذف الخصوم القدام
+                $executiveCase->opponents()->delete();
+
+                // أضف الخصوم الجداد
+                foreach ($request->opponents as $opponent) {
+                    if (!empty($opponent['name'])) {
+                        CaseOpponents::create([
+                            'executive_case_id' => $executiveCase->id,
+                            'case_opponent_name' => $opponent['name'],
+                            'case_opponent_national_number' => $opponent['national_id'] ?? '',
+                            'case_opponent_description' => '',
+                        ]);
+                    }
+                }
+            }
 
             DB::commit();
-            return redirect()->route('executive-case.index', $maincase)
-                ->with('success', 'تم تعديل القضية التنفيذية بنجاح، رقم الملف هو: ' . $executiveCase->file_number);
 
+            $maincase = excutiveCasesMain::find($request->excutive_cases_main_id);
+
+            return redirect()
+                ->route('executive-case.index', $maincase)
+                ->with('success', 'تم تعديل القضية التنفيذية بنجاح، رقم الملف هو: ' . $executiveCase->file_number);
         } catch (\Exception $th) {
             DB::rollBack();
-            return redirect()->back()
+            return redirect()
+                ->back()
                 ->with('error', 'حدث خطأ أثناء التعديل: ' . $th->getMessage())
                 ->withInput();
         }
     }
+
+
 
     /**
      * Remove the specified resource from storage.
@@ -311,29 +359,65 @@ class ExecutiveCaseController extends Controller
         try {
             DB::beginTransaction();
 
-            $settlement->update($data);
+            $oldMainId = $settlement->settlement_main_id; // نحفظ القيمة القديمة
+
+            // لو اتغيرت الـ settlement_main_id فقط نحسب رقم جديد
+            if (isset($data['settlement_main_id']) && $oldMainId != $data['settlement_main_id']) {
+                $numbers = Settlement::where('settlement_main_id', $data['settlement_main_id'])
+                    ->pluck('file_number')
+                    ->sort()
+                    ->toArray();
+
+                $missing = 1;
+                foreach ($numbers as $num) {
+                    if ($num == $missing) {
+                        $missing++;
+                    } elseif ($num > $missing) {
+                        break;
+                    }
+                }
+
+                $newFileNumber = $missing;
+            } else {
+                $newFileNumber = $settlement->file_number; // نحافظ على القديم
+            }
+
+            // نعمل تحديث
+            $settlement->update(array_merge($data, [
+                'file_number' => $newFileNumber,
+                'user_id' => Auth::id(),
+            ]));
 
             DB::commit();
 
+            // نرجع برسالة حسب نوع التسوية
             if ($settlement->cases_id) {
                 return redirect()
                     ->route('cases.settlement.all', $settlement->cases_id)
-                    ->with('success', 'تم تعديل السداد بنجاح، رقم الملف هو: ');
+                    ->with('success', $oldMainId != $settlement->settlement_main_id
+                        ? "تم تعديل السداد بنجاح. رقم الملف الجديد هو: {$newFileNumber}"
+                        : "تم تعديل السداد بنجاح.");
+            } elseif ($settlement->executive_case_id) {
+                return redirect()
+                    ->route('executive-case.settlement', $settlement->executive_case_id)
+                    ->with('success', $oldMainId != $settlement->settlement_main_id
+                        ? "تم تعديل السداد بنجاح. رقم الملف الجديد هو: {$newFileNumber}"
+                        : "تم تعديل السداد بنجاح.");
             }
 
             return redirect()
-                ->route('executive-case.settlement', $settlement->executive_case_id)
-                ->with('success', 'تم تعديل السداد بنجاح، رقم الملف هو: ');
+                ->route('settlement.index', $settlement->settlement_main_id)
+                ->with('success', $oldMainId != $settlement->settlement_main_id
+                    ? "تم تعديل السداد بنجاح. رقم الملف الجديد هو: {$newFileNumber}"
+                    : "تم تعديل السداد بنجاح.");
 
         } catch (\Exception $e) {
             DB::rollBack();
             return redirect()->back()
-                ->with('error', 'حصل خطأ أثناء التعديل: ' . $e->getMessage())
+                ->with('error', 'حدث خطأ أثناء التعديل: ' . $e->getMessage())
                 ->withInput();
         }
     }
-
-
 
 
     public function deleteSettlement(Settlement $settlement)

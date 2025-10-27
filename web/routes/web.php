@@ -334,7 +334,7 @@ Route::group(['prefix' => 'admin', 'middleware' => ['auth', admin::class]], func
     Route::get('/{case}/show/showcase/procedure/create', [CaseController::class, 'createProcedure'])->name('cases.procedure.create');
     Route::post('/{case}/show/showcase/procedure/store', [CaseController::class, 'storeProcedure'])->name('cases.procedure.store');
     Route::get('/{case}/show/showcase/procedure/edit/case/go', [CaseController::class, 'editProcedure'])->name('cases.procedure.edit');
-    Route::post('/{case}/show/showcase/procedure/update/case', [CaseController::class, 'updateProcedure'])->name('cases.procedure.update');
+    Route::post('/{case}/show/showcase/procedure/update/case/go', [CaseController::class, 'updateProcedure'])->name('cases.procedure.update');
     Route::delete('/{case}/show/showcase/procedure/delete/case', [CaseController::class, 'deleteProcedure'])->name('cases.procedure.delete');
     Route::post('/{case}/show/showcase/procedure/add/file', [CaseController::class, 'addFile'])->name('procedural.add.file');
 

@@ -190,7 +190,7 @@
 
                             <div class="col-md-4">
                                 <div class="form-group">
-                                    <label for="judged_for" class="form-label">المحكوم له</label>
+                                    <label for="judged_for" class="form-label"> صفه المحكوم له</label>
                                     <input type="text" name="judged_for" class="form-control"
                                         value="{{ old('judged_for') }}" placeholder="المحكوم له">
                                 </div>
@@ -199,7 +199,7 @@
                             <!-- الصف الثاني -->
                             <div class="col-md-4">
                                 <div class="form-group">
-                                    <label for="judged_against" class="form-label">المحكوم عليه</label>
+                                    <label for="judged_against" class="form-label"> صفه المحكوم عليه</label>
                                     <input type="text" name="judged_against" class="form-control"
                                         value="{{ old('judged_against') }}" placeholder="المحكوم عليه">
                                 </div>
@@ -332,7 +332,7 @@
                                 opt.value = client.name;
                                 opt.textContent = client.name;
                                 opt.setAttribute("data-national-id", client
-                                .national_id);
+                                    .national_id);
                                 clientSelect.appendChild(opt);
                             });
                         }

@@ -19,17 +19,11 @@
                     @csrf
                     <div class="row g-3">
 
-                        <!-- نوع الإجراء -->
-                        <div class="col-md-6">
-                            <label for="type" class="form-label fw-bold">نوع الإجراء</label>
-                            <input type="text" name="type" id="type" class="form-control">
-                        </div>
-
                         <!-- تاريخ الإجراء -->
                         <div class="col-md-6">
-                            <label for="date" class="form-label fw-bold">تاريخ الإجراء</label>
-                            <input type="date" name="date" id="date" class="form-control"
-                                value="{{ old('date', now()->toDateString()) }}">
+                            <label for="created_at" class="form-label fw-bold">تاريخ الادخال</label>
+                            <input type="date" name="created_at" id="created_at" class="form-control"
+                                value="{{ old('created_at', now()->toDateString()) }}">
                         </div>
 
                         <!-- الإجراء -->

@@ -19,6 +19,10 @@ class TransActions extends Model
         return $this->belongsTo(Client::class);
     }
 
+    public function subscriber()
+    {
+        return $this->belongsTo(user::class, 'subscriber_id');
+    }
     public function user()
     {
         return $this->belongsTo(User::class);

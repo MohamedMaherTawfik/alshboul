@@ -347,12 +347,13 @@ class ClientController extends Controller
             'created_at' => $data['created_at'] ?? '-',
             'user_id' => auth()->id(),
             'lawyer_id' => $data['lawyer_id'] ?? '-',
-            'to' => $data['to']
+            'to' => '-',
+            'next_action' => $data['next_action'] ?? '-',
+            'next_action_date' => $data['next_action_date'] ?? '-'
         ]);
         if ($request->hasFile('file_path')) {
             foreach ($request->file('file_path') as $uploadedFile) {
                 $path = $uploadedFile->store('ProceduralFiles', 'public');
-
                 clientProceduralFiles::create([
                     'subrocedural_id' => $procedural->id,
                     'file' => $path,

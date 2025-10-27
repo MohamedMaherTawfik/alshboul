@@ -97,23 +97,35 @@ class CaseController extends Controller
         $caseTypes = CaseType::all();
         return view('admin.cases.edit', compact('case', 'clients', 'users', 'caseTypes'));
     }
-    public function update(Request $request, cases $case)
+    public function update(Request $request, Cases $case)
     {
         try {
             $data = $request->except('_token');
-            $numbers = Cases::where('suggested_case_id', $data['suggested_case_id'])
-                ->pluck('case_number')
-                ->sort()
-                ->toArray();
 
-            $missing = 1;
-            foreach ($numbers as $num) {
-                if ($num == $missing) {
-                    $missing++;
-                } elseif ($num > $missing) {
-                    break;
+            $oldSuggestedId = $case->suggested_case_id; // نحتفظ بالقيمة القديمة
+
+            // لو تغيرت suggested_case_id فقط نحسب رقم جديد
+            if ($oldSuggestedId != $data['suggested_case_id']) {
+                $numbers = Cases::where('suggested_case_id', $data['suggested_case_id'])
+                    ->pluck('case_number')
+                    ->sort()
+                    ->toArray();
+
+                $missing = 1;
+                foreach ($numbers as $num) {
+                    if ($num == $missing) {
+                        $missing++;
+                    } elseif ($num > $missing) {
+                        break;
+                    }
                 }
+
+                $newCaseNumber = $missing;
+            } else {
+                // لو ما تغيرتش نحافظ على الرقم القديم
+                $newCaseNumber = $case->case_number;
             }
+
             // نعمل تحديث للقضية
             $case->update([
                 'client_id' => $data['client_id'] ?? '',
@@ -123,7 +135,7 @@ class CaseController extends Controller
                 'third_national_id' => $data['third_national_id'] ?? '',
                 'suggested_case_id' => $data['suggested_case_id'] ?? '',
                 'case_type' => $data['case_type'] ?? '',
-                'case_number' => $missing, // الرقم الجديد
+                'case_number' => $newCaseNumber, // الرقم الجديد أو القديم حسب الحالة
                 'court_name' => $data['court_name'] ?? '',
                 'case_amount' => $data['case_amount'] ?? '',
                 'benefit_date' => $data['benefit_date'] ?? '',
@@ -135,9 +147,10 @@ class CaseController extends Controller
                 'added_by_id' => auth()->id(),
             ]);
 
+            // نحذف الخصوم القدام
             CaseOpponents::where('cases_id', $case->id)->delete();
 
-            // نضيف الخصوم من جديد
+            // نضيف الخصوم الجدد
             if (!empty($data['opponent_name'])) {
                 foreach ($data['opponent_name'] as $index => $name) {
                     CaseOpponents::create([
@@ -153,13 +166,16 @@ class CaseController extends Controller
             return redirect()
                 ->route('casetypes.show', $case->suggestedCases)
                 ->with([
-                    'success' => "تم تعديل القضية بنجاح. رقم الملف الجديد هو: {$missing}"
+                    'success' => $oldSuggestedId != $data['suggested_case_id']
+                        ? "تم تعديل القضية بنجاح. رقم الملف الجديد هو: {$newCaseNumber}"
+                        : "تم تعديل القضية بنجاح."
                 ]);
 
         } catch (\Throwable $th) {
             return back()->with('error', $th->getMessage());
         }
     }
+
 
     public function destroy(Cases $case)
     {
@@ -581,11 +597,10 @@ class CaseController extends Controller
     public function updateProcedure(Request $request, ProceduralRecord $case)
     {
         $data = $request->except('_token', 'file');
-
         $data['type'] = 'اجراء';
         $case->update($data);
         return redirect()->route('cases.show', $case->cases)
-            ->with('success', 'تم تسجيل الاجراء بنجاح');
+            ->with('success', 'تم تعديل الاجراء بنجاح');
     }
 
     public function deleteSessionFile(sessionfiles $session)

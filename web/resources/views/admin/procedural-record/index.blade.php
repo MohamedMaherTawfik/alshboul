@@ -15,24 +15,48 @@
                 <table class="table table-bordered table-striped text-center align-middle mb-0">
                     <thead class="table-dark">
                         <tr>
-                            <th>اسم المشترك</th>
+                            <th>اسم مشترك</th>
                             <th>اسم الموكل</th>
-                            <th>الرقم الوطني</th>
+                            <th>الرقم الوطني </th>
                             <th>اسم الخصم</th>
-                            <th>رقم الدعوى</th>
+                            <th>الرقم الوطني للخصم</th>
+                            <th>رقم الدعوي</th>
+                            <th>قيمه الدعوي</th>
                             <th>رقم الملف</th>
-                            <th>حالة الدعوى</th>
+                            <th>الدائره</th>
+                            <th>المحكوم له</th>
+                            <th>المحكوم عليه</th>
+                            <th>حالة الدعوي</th>
+                            <th>نوع السند التنفيذي</th>
+                            <th>رقم السند التنفيذي</th>
+                            <th>تاريخ الجلسة الإجرائية</th>
                         </tr>
                     </thead>
                     <tbody>
                         <tr>
-                            <td>{{ $executiveCase->client?->name ?? '-' }}</td>
-                            <td>{{ $executiveCase->client_name ?? '-' }}</td>
-                            <td>{{ $executiveCase->client_national_id ?? '-' }}</td>
-                            <td>{{ $executiveCase->opponent_name ?? '-' }}</td>
-                            <td>{{ $executiveCase->case_number ?? '-' }}</td>
-                            <td>{{ $executiveCase->file_number ?? '-' }}</td>
-                            <td>{{ $executiveCase->case_status ?? '-' }}</td>
+                            <td>{{ $executiveCase->client?->name }}</td>
+                            <td>{{ $executiveCase->client_name }}</td>
+                            <td>{{ $executiveCase->client_national_id }}</td>
+                            <td>
+                                @foreach ($executiveCase->opponents as $item)
+                                    {{ $item->case_opponent_name }} -
+                                @endforeach
+                            </td>
+                            <td>
+                                @foreach ($executiveCase->opponents as $item)
+                                    {{ $item->case_opponent_national_number }} -
+                                @endforeach
+                            </td>
+                            <td>{{ $executiveCase->case_number }}</td>
+                            <td>{{ $executiveCase->case_value }}</td>
+                            <td>{{ $executiveCase->file_number }}</td>
+                            <td>{{ $executiveCase->execution_court }}</td>
+                            <td>{{ $executiveCase->judged_for }}</td>
+                            <td>{{ $executiveCase->judged_against }}</td>
+                            <td>{{ $executiveCase->case_status }}</td>
+                            <td>{{ $executiveCase->execution_document_type }}</td>
+                            <td>{{ $executiveCase->execution_document_number }}</td>
+                            <td>{{ $executiveCase->procedural_session_date }}</td>
                         </tr>
                     </tbody>
                 </table>
@@ -87,7 +111,7 @@
                     </tr>
                 </thead>
                 <tbody id="sessionsTable">
-                    @forelse ($executiveCase->proceduralRecords->sortByDesc('id') as $record)
+                    @forelse ($executiveCase->proceduralRecords->sortByDesc('created_at') as $record)
                         <tr data-type="{{ $record->type }}">
                             <td>{{ $record->userLawyer?->name ?? '-' }}</td>
                             <td>{{ $record->user?->name ?? 'بلا' }}</td>
@@ -112,12 +136,12 @@
                                 <a href="{{ route('procedural-record.edit', $record->id) }}"
                                     class="btn btn-sm btn-warning">تعديل</a>
 
-                                {{-- زرار إجراء فرعي يظهر فقط لو النوع إجراء --}}
+                                {{-- زرار إجراء فرعي يظهر فقط لو النوع إجراء
                                 @if ($record->type === 'اجراء')
                                     <a href="{{ route('case.procedural.show', $record) }}"
                                         class="btn btn-sm btn-secondary">إجراء
                                         فرعي</a>
-                                @endif
+                                @endif --}}
 
                                 <form action="{{ route('procedural-record.delete', $record->id) }}" method="POST"
                                     style="display:inline-block;">

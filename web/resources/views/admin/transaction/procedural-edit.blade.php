@@ -25,7 +25,7 @@
 
                     <!-- تاريخ الإجراء -->
                     <div class="col-md-6 mb-3">
-                        <label class="form-label">تاريخ الإجراء</label>
+                        <label class="form-label">تاريخ الادخال</label>
                         <input type="date" name="created_at" class="form-control"
                             value="{{ old('created_at', $transaction->created_at->format('Y-m-d')) }}">
                         @error('created_at')

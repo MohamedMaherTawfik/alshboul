@@ -27,7 +27,6 @@ class SettlementController extends Controller
                 $totalEvents = $settlement->actions()->count()
                     + $settlement->proceduralRedords()->count();
 
-                // إنشاء سجل trash لو مش موجود
                 $trashed = trahsedDays::firstOrCreate(
                     ['settlement_id' => $settlement->id],
                     [

@@ -13,6 +13,7 @@ use App\Models\TransactionsMain;
 use App\Models\User;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
+use Illuminate\Support\Facades\DB;
 
 class TransactionController extends Controller
 {
@@ -61,8 +62,6 @@ class TransactionController extends Controller
         return view('admin.transaction.index', compact('transaction', 'transactionsList'));
     }
 
-
-
     public function create(TransactionsMain $transaction)
     {
         $clients = Client::with('user')->where('seen', 1)->where('active', 1)->orderBy('id', 'desc')->get();
@@ -92,14 +91,13 @@ class TransactionController extends Controller
         TransActions::create([
             'transactions_main_id' => $transaction->id,
             'file_number' => $data['file_number'],
-            'client_name' => $data['client_'],
-            'client_id' => $data['subscriber_id'],
+            'client_name' => $data['client_name'],
+            'subscriber_id' => $data['subscriber_id'],
             'notes' => $data['notes'],
             'area_name' => $data['area_name'],
             'description' => $data['description'],
             'user_id' => auth()->user()->id,
             'is_active' => $data['is_active'],
-
         ]);
         return redirect()->route('transactions.all', $transaction)->with('success', 'تم اضافة المعاملة بنجاح');
     }
@@ -107,16 +105,58 @@ class TransactionController extends Controller
     public function edit(TransActions $transaction)
     {
         $transzctionsmains = TransactionsMain::all();
-        return view('admin.transaction.edit', compact('transaction', 'transzctionsmains'));
+        $clients = Client::with('user')->where('seen', 1)->where('active', 1)->orderBy('id', 'desc')->get();
+        $users = User::with('client')->where('role', 'user')->where('active', 1)->get();
+
+        // حساب رقم الملف المفقود بناءً على الـ main الحالي
+        $numbers = $transaction->transactionsMain->transactions()
+            ->where('file_number', '!=', '')
+            ->pluck('file_number')
+            ->map(fn($num) => (int) $num)
+            ->sort()
+            ->toArray();
+
+        $missing = 1;
+        foreach ($numbers as $num) {
+            if ($num == $missing) {
+                $missing++;
+            } elseif ($num > $missing) {
+                break;
+            }
+        }
+
+        return view('admin.transaction.edit', compact('transaction', 'transzctionsmains', 'clients', 'users', 'missing'));
     }
 
     public function update(Request $request, TransActions $transaction)
     {
-
-
         $data = $request->except('_token');
+
+        // لو main اتغير، نحدث رقم الملف بناءً على المفقود الجديد
+        if ($transaction->transactions_main_id != $data['transactions_main_id']) {
+            $numbers = TransActions::where('transactions_main_id', $data['transactions_main_id'])
+                ->where('file_number', '!=', '')
+                ->pluck('file_number')
+                ->map(fn($num) => (int) $num)
+                ->sort()
+                ->toArray();
+
+            $missing = 1;
+            foreach ($numbers as $num) {
+                if ($num == $missing) {
+                    $missing++;
+                } elseif ($num > $missing) {
+                    break;
+                }
+            }
+            $data['file_number'] = $missing;
+        }
+
         $transaction->update($data);
-        return redirect()->route('transactions.all', $transaction->transactionsMain)->with('success', 'Transaction updated successfully');
+
+        return redirect()
+            ->route('transactions.all', $transaction->transactionsMain)
+            ->with('success', 'تم تعديل المعاملة بنجاح');
     }
 
     public function destroy(TransActions $transaction)
@@ -177,6 +217,7 @@ class TransactionController extends Controller
             'action' => 'required|string',
             'note' => 'nullable|string',
             'user_lawyer_id' => 'required|exists:users,id',
+            'created_at' => 'required'
         ]);
         $transaction->update($data);
         return redirect()->route('transactions.procedural.create', $transaction->transactions)->with('success', 'تم تحديث الإجراء بنجاح');

@@ -57,7 +57,7 @@
                         </tr>
                     </thead>
                     <tbody>
-                        @forelse ($settlementsList as $settlemen)
+                        @forelse ($settlementsList->sortBy('file_number') as $settlemen)
                             <tr>
                                 <td>{{ $settlemen->user->name ?? 'غير متوفر' }}</td>
                                 <td>{{ $settlemen->client_name ?? 'غير متوفر' }}</td>

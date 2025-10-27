@@ -134,7 +134,7 @@
                         </div>
                         <div class="col-md-4 mb-3">
                             <label class="form-label fw-bold">المبلغ</label>
-                            <input type="number" name="case_amount" class="form-control">
+                            <input type="text" name="case_amount" class="form-control">
                         </div>
                         <div class="col-md-4 mb-3">
                             <label class="form-label fw-bold">اسم القاضي</label>
@@ -264,7 +264,7 @@
                                 opt.value = client.id;
                                 opt.textContent = client.name;
                                 opt.setAttribute("data-national-id", client
-                                .national_id);
+                                    .national_id);
                                 clientSelect.appendChild(opt);
                             });
                             clientSelect.disabled = false;

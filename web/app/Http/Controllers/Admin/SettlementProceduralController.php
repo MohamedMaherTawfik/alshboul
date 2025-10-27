@@ -33,10 +33,8 @@ class SettlementProceduralController extends Controller
         // إنشاء الإجراء
         $procedural = ProceduralRecord::create([
             'settlement_id' => $settlement->id,
-            'date' => $data['date'],
             'action' => $data['action'],
             'note' => $data['note'],
-            'type' => $data['type'],
             'created_at' => $data['created_at'],
             'user_lawyer_id' => Auth::user()->id,
             'user_id' => $data['user_id'],

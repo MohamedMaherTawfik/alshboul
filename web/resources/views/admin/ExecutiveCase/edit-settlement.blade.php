@@ -9,18 +9,39 @@
         <form action="{{ route('executive-case.settlement.update', $settlement) }}" method="POST">
             @csrf
 
-            <!-- نوع التسوية والالتزام -->
+            <!-- نوع التسوية -->
             <div class="form-section">
-                <h2 class="section-title">إعدادات التسوية</h2>
-                <div class="form-row">
+                <h2 class="section-title">نوع التسوية</h2>
+                @if ($settlement->settlement_main_id)
+                    <div class="form-row">
+                        <div class="form-group">
+                            <label for="settlement_main_id">اختيار نوع التسوية</label>
+                            <select id="settlement_main_id" name="settlement_main_id" required>
+                                <option value="">-- اختر نوع التسوية --</option>
+                                @foreach ($settlements as $main)
+                                    <option value="{{ $main->id }}"
+                                        {{ $settlement->settlement_main_id == $main->id ? 'selected' : '' }}>
+                                        {{ $main->name }}
+                                    </option>
+                                @endforeach
+                            </select>
+                        </div>
+                    </div>
+                @endif
 
+            </div>
+
+            <!-- الالتزام -->
+            <div class="form-section">
+                <h2 class="section-title">الالتزام</h2>
+                <div class="form-row">
                     <div class="form-group">
                         <label for="obligation">الالتزام</label>
                         <select id="obligation" name="obligation" required>
                             <option value="">-- اختر الالتزام --</option>
                             <option value="ملتزم" {{ $settlement->obligation == 'ملتزم' ? 'selected' : '' }}>ملتزم</option>
-                            <option value="غير ملتزم" {{ $settlement->obligation == 'غير ملتزم' ? 'selected' : '' }}>غير
-                                ملتزم</option>
+                            <option value="غير ملتزم" {{ $settlement->obligation == 'غير ملتزم' ? 'selected' : '' }}>
+                                غير ملتزم</option>
                         </select>
                     </div>
                 </div>
@@ -31,9 +52,18 @@
                 <h2 class="section-title">بيانات التسوية</h2>
                 <div class="form-row">
                     <div class="form-group">
+                        <label for="opponent_name">اسم الخصم</label>
+                        <input type="text" id="opponent_name" name="opponent_name"
+                            value="{{ $settlement->opponent_name }}">
+                    </div>
+                    <div class="form-group">
                         <label for="opponent_phone">هاتف الخصم</label>
                         <input type="text" id="opponent_phone" name="opponent_phone"
                             value="{{ $settlement->opponent_phone }}">
+                    </div>
+                    <div class="form-group">
+                        <label for="client_name">اسم الموكل</label>
+                        <input type="text" id="client_name" name="client_name" value="{{ $settlement->client_name }}">
                     </div>
                     <div class="form-group">
                         <label for="client_status">صفة الموكل</label>
@@ -44,15 +74,6 @@
                         <label for="opponent_status">صفة الخصم</label>
                         <input type="text" id="opponent_status" name="opponent_status"
                             value="{{ $settlement->opponent_status }}">
-                    </div>
-                    <div class="form-group">
-                        <label for="opponent_name">اسم الخصم</label>
-                        <input type="text" id="opponent_name" name="opponent_name"
-                            value="{{ $settlement->opponent_name }}">
-                    </div>
-                    <div class="form-group">
-                        <label for="client_name">اسم الموكل</label>
-                        <input type="text" id="client_name" name="client_name" value="{{ $settlement->client_name }}">
                     </div>
                 </div>
             </div>
@@ -74,7 +95,6 @@
                     <div class="form-group">
                         <label for="payment_terms">شروط السداد</label>
                         <select id="payment_terms" name="payment_terms" required>
-                            <option value="{{ $settlement->payment_terms }}">{{ $settlement->payment_terms }}</option>
                             <option value="شهري" {{ $settlement->payment_terms == 'شهري' ? 'selected' : '' }}>شهري
                             </option>
                             <option value="أسبوعي" {{ $settlement->payment_terms == 'أسبوعي' ? 'selected' : '' }}>أسبوعي
@@ -101,7 +121,6 @@
         </form>
     </div>
 
-    {{-- نفس CSS & JS بتاع الفورم الأول --}}
     <style>
         .settlement-form-container {
             max-width: 1000px;

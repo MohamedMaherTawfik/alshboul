@@ -44,7 +44,7 @@
 
             {{-- 🟩 جدول القضايا العادية --}}
             @if ($normalCases->count() > 0)
-                <h2 class="mt-3 mb-3 text-dark text-center">القضايا العادية</h2>
+                <h2 class="mt-3 mb-3 text-dark text-center">القضايا المنظوره</h2>
                 <div class="table-responsive mb-5">
                     <table class="table table-bordered text-center">
                         <thead class="table-light">

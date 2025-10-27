@@ -19,18 +19,13 @@
                     @csrf
                     <div class="row g-3">
 
-                        <!-- نوع الإجراء -->
-                        <div class="col-md-6">
-                            <label for="type" class="form-label fw-bold">نوع الإجراء</label>
-                            <input type="text" name="type" id="type" class="form-control"
-                                value="{{ old('type', $settlement->type) }}">
-                        </div>
+
 
                         <!-- تاريخ الإجراء -->
                         <div class="col-md-6">
-                            <label for="date" class="form-label fw-bold">تاريخ الإجراء</label>
-                            <input type="date" name="date" id="date" class="form-control"
-                                value="{{ $settlement->date }}">
+                            <label for="date" class="form-label fw-bold">تاريخ الادخال</label>
+                            <input type="date" name="created_at" id="created_at" class="form-control"
+                                value="{{ $settlement->created_at->format('Y-m-d') }}">
                         </div>
 
                         <!-- الإجراء -->

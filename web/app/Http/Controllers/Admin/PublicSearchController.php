@@ -42,7 +42,8 @@ class PublicSearchController extends Controller
         }
 
         if ($data['case']) {
-            $case = cases::with('courtSession', 'legalPeriods', 'caseNotes', 'proceduralRedords')->where('file_number', $data['case'])->first();
+            $case = cases::with('courtSession', 'legalPeriods', 'caseNotes', 'proceduralRedords')->where('file_number', 'like', '%' . $data['case'] . '%')
+                ->first();
             return view('admin.public.showcases', compact('case'));
         }
 
