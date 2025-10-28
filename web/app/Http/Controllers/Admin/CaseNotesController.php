@@ -4,6 +4,7 @@ namespace App\Http\Controllers\Admin;
 
 use App\Http\Controllers\Controller;
 use App\Models\CaseNotes;
+use App\Models\caseRecords;
 use App\Models\cases;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
@@ -24,6 +25,11 @@ class CaseNotesController extends Controller
     public function store(Request $request, cases $case)
     {
         $data = $request->except('_token', 'case_number', 'case_type', 'client_name', 'opponent_name');
+        caseRecords::create([
+            'cases_id' => $case->id,
+            'user_id' => auth()->id(),
+            'type' => 'تم انشاء مذكره جديده بواسطه',
+        ]);
         $data['cases_id'] = $case->id;
         $data['user_id'] = auth()->user()->id;
         CaseNotes::create($data);

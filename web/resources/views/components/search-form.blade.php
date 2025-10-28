@@ -10,14 +10,21 @@
 
               <div class="row">
                   {{-- بحث المشترك --}}
-                  <div class="col-md-6 mb-3">
+                  <div class="col-md-4 mb-3">
                       <label class="form-label fw-bold">بحث المشترك</label>
                       <input type="text" name="client_name" class="form-control form-control-lg"
                           placeholder="ادخل اسم المشترك">
                   </div>
 
+                  {{-- بحث الموكل --}}
+                  <div class="col-md-4 mb-3">
+                      <label class="form-label fw-bold">بحث الموكل</label>
+                      <input type="text" name="client_belong" class="form-control form-control-lg"
+                          placeholder="ادخل اسم الموكل">
+                  </div>
+
                   {{-- بحث الخصم --}}
-                  <div class="col-md-6
+                  <div class="col-md-4
                           mb-3">
                       <label class="form-label fw-bold">بحث الخصم</label>
                       <input type="text" name="opponent_name" class="form-control form-control-lg"

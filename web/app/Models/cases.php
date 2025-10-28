@@ -77,4 +77,9 @@ class cases extends Model
     {
         return $this->hasMany(Settlement::class, 'cases_id');
     }
+
+    public function caseRecords()
+    {
+        return $this->hasMany(caseRecords::class, 'cases_id');
+    }
 }

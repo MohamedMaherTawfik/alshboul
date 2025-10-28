@@ -12,7 +12,6 @@ class PublicSearchController extends Controller
 {
     public function index()
     {
-
         return view('admin.public.publicSearch', );
     }
 
@@ -31,6 +30,20 @@ class PublicSearchController extends Controller
                 ->where('name', 'like', '%' . $data['client_name'] . '%')
                 ->first();
 
+            return view('admin.public.publicSearch', compact('client'));
+        }
+
+        if ($data['client_belong']) {
+            $client = Client::with([
+                'archives',
+                'missions',
+                'cases',
+                'executiveCases',
+                'transactions',
+                'clientProcedurals'
+            ])
+                ->where('name', 'like', '%' . $data['client_belong'] . '%')
+                ->first();
             return view('admin.public.publicSearch', compact('client'));
         }
 

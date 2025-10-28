@@ -3,6 +3,7 @@
 namespace App\Http\Controllers\Admin;
 
 use App\Http\Controllers\Controller;
+use App\Models\caseRecords;
 use App\Models\cases;
 use App\Models\court_session_date;
 use App\Models\LegalPeriods;
@@ -25,6 +26,11 @@ class DurationController extends Controller
     public function storeDuration(Request $request, cases $case)
     {
         $data = $request->except('_token', 'case_number', 'case_type', 'client_name', 'opponent_name');
+        caseRecords::create([
+            'cases_id' => $case->id,
+            'user_id' => auth()->id(),
+            'type' => 'تم اضافة مده جديده بواسطه',
+        ]);
         $data['cases_id'] = $case->id;
         $data['user_id'] = auth()->user()->id;
         LegalPeriods::create($data);

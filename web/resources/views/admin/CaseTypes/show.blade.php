@@ -329,7 +329,6 @@
                                     <td>{{ $case->proceduralRedords->where('type', 'جلسه')->last()?->date ?? '-' }}</td>
                                     <td>{{ $case->proceduralRedords->last()?->action ?? 'لا يوجد وقائع' }}</td>
 
-                                    {{-- ✅ تحقق الالتزام بالتسويات --}}
                                     @php
                                         $settlements = $case->settlements ?? collect();
                                         $hasSettlements = $settlements->isNotEmpty();

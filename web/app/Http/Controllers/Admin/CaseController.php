@@ -6,12 +6,12 @@ use App\Http\Controllers\Controller;
 use App\Http\Requests\CaseRequest;
 use App\Models\CaseNotes;
 use App\Models\CaseOpponents;
+use App\Models\caseRecords;
 use App\Models\cases;
 use App\Models\CaseType;
 use App\Models\Client;
 use App\Models\court_session_date;
 use App\Models\expenses;
-use App\Models\Lawyer;
 use App\Models\LegalPeriods;
 use App\Models\Missions;
 use App\Models\ProceduralFile;
@@ -82,6 +82,11 @@ class CaseController extends Controller
                     'case_opponent_description' => $data['opponent_description'][$index] ?? '',
                 ]);
             }
+            caseRecords::create([
+                'user_id' => Auth::user()->id,
+                'cases_id' => $case->id,
+                'type' => 'createCase',
+            ]);
             return redirect()
                 ->route('casetypes.show', $case->suggestedCases)
                 ->with(['success' => 'تم اضافة القضية بنجاح']);
@@ -102,9 +107,13 @@ class CaseController extends Controller
         try {
             $data = $request->except('_token');
 
-            $oldSuggestedId = $case->suggested_case_id; // نحتفظ بالقيمة القديمة
+            caseRecords::create([
+                'user_id' => Auth::user()->id,
+                'cases_id' => $case->id,
+                'type' => 'تم تعديل القضية بواسطه',
+            ]);
+            $oldSuggestedId = $case->suggested_case_id;
 
-            // لو تغيرت suggested_case_id فقط نحسب رقم جديد
             if ($oldSuggestedId != $data['suggested_case_id']) {
                 $numbers = Cases::where('suggested_case_id', $data['suggested_case_id'])
                     ->pluck('case_number')
@@ -175,8 +184,6 @@ class CaseController extends Controller
             return back()->with('error', $th->getMessage());
         }
     }
-
-
     public function destroy(Cases $case)
     {
         $case->update(['active' => 0]);
@@ -218,7 +225,11 @@ class CaseController extends Controller
                 'next_action' => $validated['next_action'] ?? null,
                 'next_action_date' => $validated['next_action_date'] ?? null
             ]);
-
+            caseRecords::create([
+                'cases_id' => $case->id,
+                'user_id' => auth()->id(),
+                'type' => 'تم انشاء اجراء جديد بواسطه',
+            ]);
             if ($request->hasFile('file_path')) {
                 foreach ($request->file('file_path') as $uploadedFile) {
                     $path = $uploadedFile->store('ProceduralFiles', 'public');
@@ -244,6 +255,11 @@ class CaseController extends Controller
                 'created_at' => $validated['created_at'] ?? null,
                 'next_action' => $validated['next_action'] ?? null,
                 'next_action_date' => $validated['next_action_date'] ?? null
+            ]);
+            caseRecords::create([
+                'cases_id' => $case->id,
+                'user_id' => auth()->id(),
+                'type' => 'تم انشاء جلسه جديد بواسطه',
             ]);
 
             if ($request->hasFile('file_path')) {
@@ -284,6 +300,11 @@ class CaseController extends Controller
     public function storeSettlement(Request $request, Cases $case)
     {
         $data = $request->except('_token', 'lawsuit_type', 'lawsuit_number');
+        caseRecords::create([
+            'cases_id' => $case->id,
+            'user_id' => auth()->id(),
+            'type' => 'تم انشاء تسويه جديده بواسطه',
+        ]);
         $data['cases_id'] = $case->id;
         Settlement::create($data);
         return redirect()->route('cases.settlement.all', $case ?? '')->with('success', 'تم تسجيل التسوية بنجاح');
@@ -307,6 +328,20 @@ class CaseController extends Controller
     public function storeExpenses(Request $request, Cases $case)
     {
         $data = $request->except('_token');
+        if ($data['type'] == 'صرف') {
+            caseRecords::create([
+                'cases_id' => $case->id,
+                'user_id' => auth()->id(),
+                'type' => 'تم انشاء صرف جديد بواسطه',
+            ]);
+        }
+        if ($data['type'] == 'قبض') {
+            caseRecords::create([
+                'cases_id' => $case->id,
+                'user_id' => auth()->id(),
+                'type' => 'تم انشاء قبض جديد بواسطه',
+            ]);
+        }
         $data['cases_id'] = $case->id;
         if (!$data['date']) {
             $data['date'] = now()->format('Y-m-d');
@@ -324,19 +359,19 @@ class CaseController extends Controller
     // سجل القضية
     public function log(Cases $case)
     {
-        $case->load('legalPeriods', 'caseNotes', 'proceduralRedords');
+        $case->load('caseRecords');
         return view('admin.cases.log', compact('case'));
     }
 
     public function show(Cases $case)
     {
+
         $more = 0;
         $case->load([
             'proceduralRedords' => function ($query) {
                 $query->orderBy('created_at', 'desc');
             }
         ]);
-
 
         $lawyers = User::whereIn('role', ['Lawyer', 'admin', 'superadmin'])->where('active', 1)->get();
         $settlements = Settlement::where('cases_id', $case->id)->first();
@@ -360,12 +395,22 @@ class CaseController extends Controller
     public function updateDurations(Request $request, LegalPeriods $case)
     {
         $data = $request->except('_token');
+        caseRecords::create([
+            'cases_id' => $case->cases_id,
+            'user_id' => auth()->id(),
+            'type' => 'تم تعديل المدة بواسطه',
+        ]);
         $case->update($data);
         return redirect()->route('cases.show.durations', $case->case)->with('success', 'تم التحديث بنجاح');
     }
 
     public function deleteDurations(LegalPeriods $case)
     {
+        caseRecords::create([
+            'cases_id' => $case->cases_id,
+            'user_id' => auth()->id(),
+            'type' => 'تم حذف المدة بواسطه',
+        ]);
         $case->delete();
         return redirect()->route('cases.show.durations', $case->case)->with('success', 'تم الحذف بنجاح');
     }
@@ -378,12 +423,22 @@ class CaseController extends Controller
     public function updateNotes(Request $request, CaseNotes $case)
     {
         $data = $request->except('_token');
+        caseRecords::create([
+            'cases_id' => $case->cases_id,
+            'user_id' => auth()->id(),
+            'type' => 'تم تعديل المذكره بواسطه',
+        ]);
         $case->update($data);
         return redirect()->route('cases.show.notes', $case->case)->with('success', 'تم التحديث بنجاح');
     }
 
     public function deleteNotes(CaseNotes $case)
     {
+        caseRecords::create([
+            'cases_id' => $case->cases_id,
+            'user_id' => auth()->id(),
+            'type' => 'تم حذف المذكره بواسطه',
+        ]);
         $case->delete();
         return redirect()->route('cases.show.notes', $case->case)->with('success', 'تم الحذف بنجاح');
     }
@@ -597,6 +652,20 @@ class CaseController extends Controller
     public function updateProcedure(Request $request, ProceduralRecord $case)
     {
         $data = $request->except('_token', 'file');
+        if (!$data['date']) {
+            caseRecords::create([
+                'cases_id' => $case->id,
+                'user_id' => auth()->id(),
+                'type' => 'تم تعديل الاجراء بواسطه',
+            ]);
+        }
+        if ($data['date']) {
+            caseRecords::create([
+                'cases_id' => $case->id,
+                'user_id' => auth()->id(),
+                'type' => 'تم تعديل الجلسه بواسطه',
+            ]);
+        }
         $data['type'] = 'اجراء';
         $case->update($data);
         return redirect()->route('cases.show', $case->cases)
@@ -611,6 +680,20 @@ class CaseController extends Controller
     }
     public function deleteProcedure(ProceduralRecord $case)
     {
+        if ($case->type == 'اجراء') {
+            caseRecords::create([
+                'cases_id' => $case->cases_id,
+                'user_id' => auth()->id(),
+                'type' => 'تم حذف الاجراء بواسطه',
+            ]);
+        }
+        if ($case->type == 'جلسه') {
+            caseRecords::create([
+                'cases_id' => $case->cases_id,
+                'user_id' => auth()->id(),
+                'type' => 'تم حذف الجلسه بواسطه',
+            ]);
+        }
         $case->delete();
         return redirect()->back()
             ->with('success', 'تم حذف الاجراء بنجاح');
