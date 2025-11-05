@@ -30,6 +30,8 @@
                                 </option>
                                 <option value="معاملات" {{ old('case_type') == 'معاملات' ? 'selected' : '' }}>معاملات
                                 </option>
+                                <option value="وكالات" {{ old('case_type') == 'وكالات' ? 'selected' : '' }}>وكالات
+                                </option>
                                 @foreach ($mains as $item)
                                     <option value="{{ $item->id }}">{{ $item->title }}</option>
                                 @endforeach
@@ -58,7 +60,7 @@
                         <div class="form-group col-md-6">
                             <label for="days"> مدة الإهمال ان وجدت</label>
                             <input type="text" name="days" id="days" value="{{ old('days') }}"
-                                class="form-control" required>
+                                class="form-control">
                             @error('days')
                                 <small id="helpId" class="text-muted text-danger">{{ $message }}</small>
                             @enderror

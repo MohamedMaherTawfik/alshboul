@@ -9,6 +9,73 @@
 
         <x-search-form />
 
+        @if (!empty($ClientCase))
+            <div class="card-body p-0">
+                <div class="table-responsive">
+                    <table class="table table-bordered table-striped table-hover mb-0 text-center align-middle"
+                        style="font-size: 1.1rem; direction: rtl;">
+                        <thead class="table-dark text-white">
+                            <tr>
+                                <th>اسم المشترك</th>
+                                <th>اسم الموكل</th>
+                                <th>الرقم الوطني</th>
+                                <th>اسم الخصم</th>
+                                <th>الرقم الوطني للخصم</th>
+                                <th>رقم الدعوى</th>
+                                <th>قيمة الدعوى</th>
+                                <th>رقم الملف</th>
+                                <th>المحكمة</th>
+                                <th>اسم القاضي</th>
+                                <th>تاريخ الجلسة القادمة</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            @php
+                                $lastSession = $ClientCase->courtSession->first();
+                                $hoursLeft = null;
+                                if ($lastSession && !empty($lastSession->date)) {
+                                    $hoursLeft = \Carbon\Carbon::now()->diffInHours(
+                                        \Carbon\Carbon::parse($lastSession->date),
+                                        false,
+                                    );
+                                }
+                            @endphp
+                            <tr>
+                                <td>{{ $ClientCase->subscriber->name ?? '-' }}</td>
+                                <td>{{ $ClientCase->client->name ?? '-' }}</td>
+                                <td>{{ $ClientCase->first_national_id ?? '-' }}</td>
+                                <td>
+                                    @forelse ($ClientCase->caseOpponents as $item)
+                                        {{ $item->case_opponent_name ?? '-' }} <br>
+                                    @empty
+                                        -
+                                    @endforelse
+                                </td>
+                                <td>
+                                    @forelse ($ClientCase->caseOpponents as $item)
+                                        {{ $item->case_opponent_national_number ?? '-' }} <br>
+                                    @empty
+                                        -
+                                    @endforelse
+                                </td>
+                                <td>
+                                    {{ $ClientCase->file_number ?? '-' }}
+                                    <a href="{{ route('cases.show', $ClientCase->id) }}" class=" text-white">
+                                        <i class="fas fa-eye text-info"></i></a>
+                                </td>
+                                <td>{{ $ClientCase->case_amount ?? '-' }}</td>
+                                <td>{{ $ClientCase->case_number ?? '-' }}</td>
+                                <td>{{ $ClientCase->court_name ?? '-' }}</td>
+                                <td>{{ $ClientCase->jubge_name ?? '-' }}</td>
+                                <td>{{ $ClientCase->courtSession->last()->date ?? 'لا يوجد جلسات' }}</td>
+                            </tr>
+                        </tbody>
+                    </table>
+                </div>
+            </div>
+        @endif
+
+
         {{-- نتائج البحث الخاصة بالموكل --}}
         @if (isset($client) && request()->routeIs('public.search.find'))
             <div class="mt-5">
@@ -59,7 +126,11 @@
                                                 {{ $item->case_opponent_national_number }}<br>
                                             @endforeach
                                         </td>
-                                        <td>{{ $case->case_number }}</td>
+                                        <td>{{ $case->case_number }}
+                                            {{-- eye icon --}}
+
+                                            </a>
+                                        </td>
                                         <td>{{ $case->suggestedCases->name ?? '-' }}</td>
                                         <td>{{ $case->court_name }}</td>
                                         <td>{{ $case->case_amount }}</td>
@@ -72,10 +143,10 @@
                                                     fill="currentColor" class="bi bi-eye" viewBox="0 0 16 16">
                                                     <path
                                                         d="M16 8s-3-5.5-8-5.5S0 8
-                                                                                                         0 8s3 5.5 8 5.5S16 8 16 8z" />
+                                                                                                                                                                                                 0 8s3 5.5 8 5.5S16 8 16 8z" />
                                                     <path
                                                         d="M8 5.5a2.5 2.5 0 1 0
-                                                                                                         0 5 2.5 2.5 0 0 0 0-5z" />
+                                                                                                                                                                                                 0 5 2.5 2.5 0 0 0 0-5z" />
                                                 </svg>
                                             </a>
                                         </td>

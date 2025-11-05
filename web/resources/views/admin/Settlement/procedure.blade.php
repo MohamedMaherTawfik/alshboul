@@ -91,44 +91,13 @@
                             <tr>
                                 <td>{{ $duration->userLawyer->name ?? '-' }}</td>
                                 <td>{{ $duration->user->name ?? '-' }}</td>
-                                <td>{{ $duration->created_at?->format('Y-m-d') ?? '-' }}</td>
+                                <td>{{ $duration->created_at?->format('Y-m-d H:i') ?? '-' }}</td>
                                 <td>{{ $duration->action ?? '-' }}</td>
                                 <td>
-                                    @foreach ($duration->files as $item)
-                                        <a href="{{ asset('storage/' . $item->file_path) }} "
-                                            class="btn btn-sm btn-primary mb-1" target="_blank">📄 مستند</a>
-                                    @endforeach
-                                    <button type="button" class="btn btn-sm btn-success" data-bs-toggle="modal"
-                                        data-bs-target="#addFileModal-{{ $duration->id }}">
-                                        + إضافة
-                                    </button>
-                                    {{-- Modal --}}
-                                    <div class="modal fade" id="addFileModal-{{ $duration->id }}" tabindex="-1"
-                                        aria-labelledby="addFileModalLabel" aria-hidden="true">
-                                        <div class="modal-dialog">
-                                            <div class="modal-content">
-                                                <form action="{{ route('settlement.procedural.add.file', $duration) }}"
-                                                    method="POST" enctype="multipart/form-data">
-                                                    @csrf
-                                                    <div class="modal-header">
-                                                        <h5 class="modal-title">إضافة ملفات جديدة</h5>
-                                                        <button type="button" class="btn-close" data-bs-dismiss="modal"
-                                                            aria-label="إغلاق"></button>
-                                                    </div>
-                                                    <div class="modal-body">
-                                                        <label for="file_path" class="form-label">اختر الملفات</label>
-                                                        <input type="file" name="file_path[]" id="file_path"
-                                                            class="form-control" multiple required>
-                                                    </div>
-                                                    <div class="modal-footer">
-                                                        <button type="submit" class="btn btn-primary">حفظ</button>
-                                                        <button type="button" class="btn btn-secondary"
-                                                            data-bs-dismiss="modal">إلغاء</button>
-                                                    </div>
-                                                </form>
-                                            </div>
-                                        </div>
-                                    </div>
+                                    <a href="{{ route('proceduralfiles.index', $duration) }}">
+                                        (عدد المستندات : <span
+                                            class="text-success fs-5">{{ count($duration->files) }}</span>)
+                                    </a>
                                 </td>
                                 <td>{{ $duration->note ?? ' لا يوجد ملاحظات' }}</td>
 

@@ -118,18 +118,16 @@
                             <td>{{ $loop->iteration }}</td>
                             <td>{{ $record->userLawyer->name ?? '-' }}</td>
                             <td>{{ $record->user->name ?? '-' }}</td>
-                            <td>{{ $record->created_at ? $record->created_at->format('d/m/Y') : '-' }}</td>
+                            <td>{{ $record->created_at ? $record->created_at->format('d/m/Y H:i') : '-' }}</td>
                             <td>{{ $record->action ?? '-' }}</td>
                             <td>{{ $record->note ?? '-' }}</td>
                             <td>{{ $record->date ?? '-' }}</td>
                             <td>{{ $record->next_action ?? '-' }} -- {{ $record->next_action_date }}</td>
                             <td>
-                                @foreach ($record->files as $file)
-                                    <a href="{{ asset('storage/' . ($file->file_path ?? $file->file)) }}"
-                                        class="btn btn-sm btn-info mb-1" target="_blank">عرض</a>
-                                @endforeach
-                                <button class="btn btn-sm btn-success" data-bs-toggle="modal"
-                                    data-bs-target="#addFileModal-{{ $record->id }}">+</button>
+                                <a href="{{ route('proceduralfiles.index', $record) }}">
+                                    (عدد المستندات : <span class="text-success fs-5">{{ count($record->files) }}</span>)
+                                </a>
+
                             </td>
                             <td>{{ $type }}</td>
                             <td>
@@ -140,9 +138,6 @@
                                 @else
                                     <a href="{{ route('cases.procedure.edit', $record) }}"
                                         class="btn btn-sm btn-warning">تعديل الإجراء</a>
-                                    {{-- <a href="{{ route('case.procedural.show', $record) }}"
-                                        class="btn btn-sm btn-info">إجراء
-                                        فرعي</a> --}}
                                 @endif
 
                                 <form
@@ -156,31 +151,7 @@
                             </td>
                         </tr>
 
-                        <!-- مودال رفع ملفات -->
-                        <div class="modal fade" id="addFileModal-{{ $record->id }}" tabindex="-1" aria-hidden="true">
-                            <div class="modal-dialog">
-                                <div class="modal-content">
-                                    <form method="POST"
-                                        action="{{ $case->type === 'جلسة' ? route('procedural.add.file', $record) : route('procedural.add.file', $record) }}"
-                                        enctype="multipart/form-data">
-                                        @csrf
-                                        <div class="modal-header">
-                                            <h5 class="modal-title">رفع مستندات ({{ $type }})</h5>
-                                            <button type="button" class="btn-close" data-bs-dismiss="modal"
-                                                aria-label="إغلاق"></button>
-                                        </div>
-                                        <div class="modal-body">
-                                            <input type="file" name="files[]" class="form-control" multiple required>
-                                        </div>
-                                        <div class="modal-footer">
-                                            <button type="button" class="btn btn-secondary"
-                                                data-bs-dismiss="modal">إلغاء</button>
-                                            <button type="submit" class="btn btn-primary">رفع</button>
-                                        </div>
-                                    </form>
-                                </div>
-                            </div>
-                        </div>
+
                     @empty
                         <tr>
                             <td colspan="9" class="text-center">لا توجد بيانات</td>
@@ -190,19 +161,4 @@
             </table>
         </div>
     </div>
-@endsection
-
-@section('script')
-    <script>
-        function filterSessions(type) {
-            let rows = document.querySelectorAll("#sessionsTable tr");
-            rows.forEach(row => {
-                if (type === 'all' || row.dataset.type === type) {
-                    row.style.display = '';
-                } else {
-                    row.style.display = 'none';
-                }
-            });
-        }
-    </script>
 @endsection

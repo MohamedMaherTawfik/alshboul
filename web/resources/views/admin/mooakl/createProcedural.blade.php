@@ -28,7 +28,9 @@
                     </div>
                     <div class="col-md-6 mb-3">
                         <label class="form-label">تاريخ إدخال الإجراء</label>
-                        <input type="date" class="form-control" name="created_at" value="{{ now()->format('Y-m-d') }}">
+                        <input type="datetime-local" class="form-control" id="created_at" name="created_at"
+                            value="{{ old('created_at', now()->format('Y-m-d\TH:i')) }}">
+
                     </div>
                 </div>
 

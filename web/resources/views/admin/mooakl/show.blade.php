@@ -88,7 +88,7 @@
                                         <tr>
                                             <td class="text-center">{{ $procedural->user->name ?? 'غير محدد' }}</td>
                                             <td class="text-center">
-                                                {{ $procedural->created_at->format('Y-m-d') ?: 'غير محدد' }}</td>
+                                                {{ $procedural->created_at->format('Y-m-d H:i') ?: 'غير محدد' }}</td>
                                             <td class="text-center procedural-col">
                                                 {{ $procedural->procedural ?? 'غير محدد' }}</td>
                                             <td class="text-center">{{ $procedural->lawyer->name ?? 'غير محدد' }}</td>

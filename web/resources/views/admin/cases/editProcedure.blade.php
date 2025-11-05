@@ -80,15 +80,15 @@
             </div>
 
             <div class="card-body">
-                <form action="{{ route('cases.procedure.update', $case) }}" method="POST" enctype="multipart/form-data">
+                <form action="{{ route('cases.mainprocedure.update', $case) }}" method="POST"
+                    enctype="multipart/form-data">
                     @csrf
-
                     <!-- نوع الإجراء -->
                     <div class="row mb-3">
                         <div class="col-md-6">
                             <label for="type" class="form-label required-field">نوع الإجراء</label>
                             <input type="text" name="type" id="type" class="form-control"
-                                value="{{ old('type', 'إجراء') }}" readonly>
+                                value="{{ old('type', $case->type) }}" readonly>
                         </div>
 
                         <div class="col-md-6">
@@ -123,8 +123,8 @@
 
                     <div class="col-md-6">
                         <label for="date" class="form-label required-field">تاريخ الادخال</label>
-                        <input type="date" name="created_at" id="date" class="form-control"
-                            value="{{ old('date', $case->created_at->format('Y-m-d')) }}">
+                        <input type="datetime-local" class="form-control" id="created_at" name="created_at"
+                            value="{{ old('created_at', now()->format('Y-m-d\TH:i')) }}">
                     </div>
 
                     <!-- الملاحظات -->

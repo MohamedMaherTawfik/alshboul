@@ -18,6 +18,12 @@ class PublicSearchController extends Controller
     public function search(Request $request)
     {
         $data = $request->except('_token');
+
+        $client = null;
+        $ClientCase = null;
+        $opponent = null;
+        $case = null;
+        $cases = null;
         if ($data['client_name']) {
             $client = Client::with([
                 'archives',
@@ -34,17 +40,9 @@ class PublicSearchController extends Controller
         }
 
         if ($data['client_belong']) {
-            $client = Client::with([
-                'archives',
-                'missions',
-                'cases',
-                'executiveCases',
-                'transactions',
-                'clientProcedurals'
-            ])
-                ->where('name', 'like', '%' . $data['client_belong'] . '%')
-                ->first();
-            return view('admin.public.publicSearch', compact('client'));
+            $client = Client::where('name', 'like', '%' . $data['client_belong'] . '%')->first();
+            $ClientCase = cases::where('client_id', $client->id)->first();
+            return view('admin.public.publicSearch', compact('ClientCase'));
         }
 
         if ($data['opponent_name']) {

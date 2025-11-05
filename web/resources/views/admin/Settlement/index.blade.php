@@ -9,14 +9,11 @@
     <div class="card">
         <div class="card-header">
             <h3 class="card-title card_title_center fs-2 fw-bold" style="font-size: 30px;font-weight: bold;">
-                قائمة التسويات {{ $settlements->name }} :
+                عدد ({{ $settlements->name }}) :
                 {{ count($settlements->settlements) }}
                 <br>
                 <a href="{{ route('settlement.create', $settlements) }}" class="btn btn-success mt-2">إضافة جديد</a>
             </h3>
-
-
-
         </div>
         <div class="card-body">
             <div class="mb-3 row">

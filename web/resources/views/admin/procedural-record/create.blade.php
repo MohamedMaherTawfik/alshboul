@@ -32,8 +32,9 @@
                                 <!-- تاريخ الإدخال -->
                                 <div class="col-md-6 mb-3">
                                     <label for="created_at" class="form-label required-field">تاريخ الإدخال</label>
-                                    <input type="date" class="form-control" id="created_at" name="created_at"
-                                        value="{{ now()->format('Y-m-d') }}">
+                                    <input type="datetime-local" class="form-control" id="created_at" name="created_at"
+                                        value="{{ old('created_at', now()->format('Y-m-d\TH:i')) }}">
+
                                 </div>
 
 

@@ -23,13 +23,12 @@ return new class extends Migration {
             $table->string('client_national_id')->nullable();      // الرقم الوطني له
             $table->string('opponent_name')->nullable();           // اسم الخصم
             $table->string('opponent_national_id')->nullable();    // الرقم الوطني للخصم
-
             $table->string('office_file_number')->nullable();      // رقم الملف المكتبي
             $table->string('case_number')->nullable();             // رقم الدعوى
             $table->string('file_number')->nullable();             // رقم الملف
             $table->string('case_type')->nullable();               // نوع القضايا التنفيذية
             $table->string('case_status')->nullable();             // حالة القضية
-            $table->decimal('case_value', 15, 2)->nullable(); // قيمة الدعوى
+            $table->string('case_value')->nullable(); // قيمة الدعوى
             $table->string('execution_court')->nullable();         // الدائرة التنفيذية
             $table->string('execution_document_type')->nullable(); // نوع السند التنفيذي
             $table->string('judged_for')->nullable();              // المحكوم له

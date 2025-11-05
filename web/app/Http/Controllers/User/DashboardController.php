@@ -14,11 +14,10 @@ class DashboardController extends Controller
     //
     public function index()
     {
-        $countLawyer = Lawyer::count();
-        $countClient = Client::count();
+        $countClient = Client::where('seen', 1)->count();
         $countClientRequest = ClientRequest::count();
         $countUser = User::count();
 
-        return view('user.index',  compact('countLawyer', 'countClient', 'countClientRequest', 'countUser'));
+        return view('user.index', compact('countLawyer', 'countClient', 'countClientRequest', 'countUser'));
     }
 }

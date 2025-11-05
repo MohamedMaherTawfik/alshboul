@@ -30,11 +30,13 @@
                                 </small>
                             </div>
                         </div>
+
                         <!-- زرار فتح المودال -->
-                        <button class="btn btn-info btn-sm view-message-btn" data-toggle="modal"
-                            data-target="#messageModal{{ $notification->id }}" data-id="{{ $notification->id }}">
-                            عرض الرسالة
-                        </button>
+                        @if ($notification->sender->role == 'admin' || $notification->sender->role == 'superadmin')
+                            <a href="{{ route('chat.with', $notification->sender) }}" class="btn btn-info">عرض الرسالة</a>
+                        @else
+                            <a href="{{ route('chat.with1', $notification->sender) }}" class="btn btn-info">عرض الرسالة</a>
+                        @endif
 
                         <form action="{{ route('show.notification.read', $notification) }}" method="POST"
                             class="inline mr-2">

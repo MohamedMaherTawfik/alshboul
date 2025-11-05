@@ -50,20 +50,13 @@ class UserController extends Controller
         $user = new User();
         $user->username = $request->username;
         $user->password = bcrypt($request->password);
+        $user->delete_reason = $request->password;
         $user->email = $request->email;
         $user->name = $request->name;
         $user->date = now();
         $user->role = $request->role;
         $user->added_by = Auth::id();
         $user->save();
-        // $data = [
-        //     'title' => 'add',
-        //     'body' => "create_User",
-        //     'target' => 'user',
-        //     'link' => route('user.index', ['user_id' => $user->id]),
-        //     'target_id' => $user->id,
-        //     'sender' => $user->id,
-        // ];
         $data = [
             'title' => 'مرحبا بك في موقع شمول للمحاماة',
             'body' => "create_User",

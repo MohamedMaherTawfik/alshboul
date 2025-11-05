@@ -43,7 +43,7 @@
                         <table class="table table-bordered table-hover align-middle table-striped mb-0">
                             <thead class="table-dark">
                                 <tr>
-                                    <th>رقم القضية</th>
+                                    <th>رقم الدعوى</th>
                                     <th>رقم الملف</th>
                                     <th>اسم المدخل</th>
                                     <th>تاريخ الإدخال</th>
@@ -73,8 +73,10 @@
                                             $rowClass = $isOverdue ? 'status-overdue' : '';
                                         @endphp
                                         <tr class="{{ $rowClass }}">
+                                            <td>{{ $duration->case->file_number ?? '-' }} <a
+                                                    href="{{ route('cases.show.durations', $duration->cases_id) }}">
+                                                    <i class="fas fa-eye text-info"></i></a></td>
                                             <td>{{ $duration->case->case_number ?? '-' }}</td>
-                                            <td>{{ $duration->case->file_number ?? '-' }}</td>
                                             <td>{{ $duration->user->name ?? '-' }}</td>
                                             <td>{{ $duration->created_at?->format('Y-m-d') ?? '-' }}</td>
                                             <td>{{ Str::limit($duration->period_facts, 50, '...') }}</td>
@@ -94,7 +96,12 @@
                                                 @endif
                                             </td>
                                             <td>{{ $duration->case->client->name ?? '-' }}</td>
-                                            <td>{{ $duration->case->opponent_name ?? '-' }}</td>
+
+                                            <td>
+                                                @foreach ($duration->case->caseOpponents as $item)
+                                                    {{ $item->case_opponent_name ?? '-' }} -
+                                                @endforeach
+                                            </td>
                                             <td>{{ $duration->case->court_name ?? '-' }}</td>
                                             <td>{{ Str::limit($duration->notes, 40, '...') ?? '-' }}</td>
                                         </tr>

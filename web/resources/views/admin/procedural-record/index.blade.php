@@ -34,29 +34,29 @@
                     </thead>
                     <tbody>
                         <tr>
-                            <td>{{ $executiveCase->client?->name }}</td>
-                            <td>{{ $executiveCase->client_name }}</td>
-                            <td>{{ $executiveCase->client_national_id }}</td>
+                            <td>{{ $executiveCase->client?->name ?? 'غير محدد' }}</td>
+                            <td>{{ $executiveCase->client_name ?? 'غير محدد' }}</td>
+                            <td>{{ $executiveCase->client_national_id ?? 'غير محدد' }}</td>
                             <td>
                                 @foreach ($executiveCase->opponents as $item)
-                                    {{ $item->case_opponent_name }} -
+                                    {{ $item->case_opponent_name ?? '-' }} -
                                 @endforeach
                             </td>
                             <td>
                                 @foreach ($executiveCase->opponents as $item)
-                                    {{ $item->case_opponent_national_number }} -
+                                    {{ $item->case_opponent_national_number ?? '-' }} -
                                 @endforeach
                             </td>
-                            <td>{{ $executiveCase->case_number }}</td>
-                            <td>{{ $executiveCase->case_value }}</td>
-                            <td>{{ $executiveCase->file_number }}</td>
-                            <td>{{ $executiveCase->execution_court }}</td>
-                            <td>{{ $executiveCase->judged_for }}</td>
-                            <td>{{ $executiveCase->judged_against }}</td>
-                            <td>{{ $executiveCase->case_status }}</td>
-                            <td>{{ $executiveCase->execution_document_type }}</td>
-                            <td>{{ $executiveCase->execution_document_number }}</td>
-                            <td>{{ $executiveCase->procedural_session_date }}</td>
+                            <td>{{ $executiveCase->case_number ?? '-' }}</td>
+                            <td>{{ $executiveCase->case_value ?? '-' }}</td>
+                            <td>{{ $executiveCase->file_number ?? '-' }}</td>
+                            <td>{{ $executiveCase->execution_court ?? '-' }}</td>
+                            <td>{{ $executiveCase->judged_for ?? '-' }}</td>
+                            <td>{{ $executiveCase->judged_against ?? '-' }}</td>
+                            <td>{{ $executiveCase->case_status ?? '-' }}</td>
+                            <td>{{ $executiveCase->execution_document_type ?? '-' }}</td>
+                            <td>{{ $executiveCase->execution_document_number ?? '-' }}</td>
+                            <td>{{ $executiveCase->procedural_session_date ?? '-' }}</td>
                         </tr>
                     </tbody>
                 </table>
@@ -119,29 +119,17 @@
                             <td>{{ $record->action ?? '-' }}</td>
                             <td>{{ $record->note ?? '-' }}</td>
                             <td>{{ $record->date ? date('d/m/Y', strtotime($record->date)) : '-' }}</td>
-                            <td>{{ $record->created_at ? $record->created_at->format('d/m/Y') : '-' }}</td>
+                            <td>{{ $record->created_at ? $record->created_at->format('d/m/Y h:i') : '-' }}</td>
                             <td>{{ $record->next_action_date ? $record->next_action . ' (' . $record->next_action_date . ')' : '-' }}
                             </td>
                             <td>
-                                @forelse ($record->files as $file)
-                                    <a href="{{ asset('storage/' . $file->file_path) }}" target="_blank"
-                                        class="btn btn-sm btn-info mb-1">عرض</a>
-                                @empty
-                                    <span class="text-muted">لا يوجد</span>
-                                @endforelse
-                                <button class="btn btn-sm btn-success" data-bs-toggle="modal"
-                                    data-bs-target="#addFileModal-{{ $record->id }}">+</button>
+                                <a href="{{ route('proceduralfiles.index', $record) }}">
+                                    (عدد المستندات : <span class="text-success fs-5">{{ count($record->files) }}</span>)
+                                </a>
                             </td>
                             <td>
                                 <a href="{{ route('procedural-record.edit', $record->id) }}"
                                     class="btn btn-sm btn-warning">تعديل</a>
-
-                                {{-- زرار إجراء فرعي يظهر فقط لو النوع إجراء
-                                @if ($record->type === 'اجراء')
-                                    <a href="{{ route('case.procedural.show', $record) }}"
-                                        class="btn btn-sm btn-secondary">إجراء
-                                        فرعي</a>
-                                @endif --}}
 
                                 <form action="{{ route('procedural-record.delete', $record->id) }}" method="POST"
                                     style="display:inline-block;">

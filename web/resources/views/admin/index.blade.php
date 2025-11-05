@@ -9,7 +9,7 @@
     <div class="col-12">
         <h5 class="mt-4 mb-2 text-center">إحصائيات</h5>
         <div class="row">
-            <div class="col-lg-3 col-6">
+            <div class="col-lg-4 col-6">
                 <!-- small card -->
                 <div class="small-box bg-warning">
                     <div class="inner">
@@ -25,24 +25,7 @@
                     </a>
                 </div>
             </div>
-            <!-- ./col -->
-            <div class="col-lg-3 col-6">
-                <!-- small card -->
-                <div class="small-box bg-danger">
-                    <div class="inner">
-                        <h3>{{ $countLawyer }}</h3>
-
-                        <p>إجمالي المحامين </p>
-                    </div>
-                    <div class="icon">
-                        <i class="fas fa-user-plus"></i>
-                    </div>
-                    <a href="{{ route('lawyer.index') }}" class="small-box-footer">
-                        المحامين <i class="fas fa-arrow-circle-right"></i>
-                    </a>
-                </div>
-            </div>
-            <div class="col-lg-3 col-6">
+            <div class="col-lg-4 col-6">
                 <!-- small card -->
                 <div class="small-box bg-success">
                     <div class="inner">
@@ -59,7 +42,7 @@
                 </div>
             </div>
             <!-- ./col -->
-            <div class="col-lg-3 col-6">
+            <div class="col-lg-4 col-6">
                 <!-- small card -->
                 <div class="small-box bg-info">
                     <div class="inner">
@@ -155,8 +138,8 @@
                                 <th>اسم الخصم</th>
                                 <th>اسم المحكمة</th>
                                 <th>ملاحظات</th>
-                                <th>المعتمد الأول | ساعه الاعتماد</th>
-                                <th>المعتمد الثاني | ساعه الاعتماد</th>
+                                <th>المعتمد الأول</th>
+                                <th>المعتمد الثاني</th>
                                 @if (Auth::user()->role == 'admin' || Auth::user()->role == 'superadmin')
                                     <th>الانجاز</th>
                                 @endif
@@ -321,8 +304,8 @@
                                 <th>اسم الخصم</th>
                                 <th>اسم المحكمة</th>
                                 <th>ملاحظات</th>
-                                <th> المعتمد الأول | ساعه الاعتماد </th>
-                                <th>المعتمد الثاني | ساعه الاعتماد</th>
+                                <th> المعتمد الأول </th>
+                                <th>المعتمد الثاني</th>
                                 @if (Auth::user()->role == 'admin' || Auth::user()->role == 'superadmin')
                                     <th>الانجاز</th>
                                 @endif
@@ -424,8 +407,7 @@
                                                     </a>
 
                                                     <!-- زر حذف -->
-                                                    <form action="{{ route('cases.notes.delete', $note) }}"
-                                                        method="POST"
+                                                    <form action="{{ route('cases.notes.delete', $note) }}" method="POST"
                                                         onsubmit="return confirm('هل أنت متأكد من حذف هذه المدة؟');">
                                                         @csrf
                                                         @method('DELETE')

@@ -197,7 +197,7 @@ class ExecutiveCaseController extends Controller
             'case_number' => 'nullable|string|max:255',
             'case_type' => 'nullable|string|max:255',
             'case_status' => 'nullable|string|max:255',
-            'case_value' => 'nullable|numeric',
+            'case_value' => 'nullable',
             'execution_court' => 'nullable|string|max:255',
             'execution_document_type' => 'nullable|string|max:255',
             'judged_for_status' => 'nullable|string|max:255',

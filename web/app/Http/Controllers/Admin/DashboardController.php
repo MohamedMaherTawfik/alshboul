@@ -22,8 +22,7 @@ class DashboardController extends Controller
     //
     public function index()
     {
-        $countLawyer = Lawyer::count();
-        $countClient = Client::where('active', 1)->count();
+        $countClient = Client::where('seen', 1)->count();
         $countClientRequest = ClientRequest::count();
         $countUser = User::count();
         $caseTypes = CaseType::with('suggestedCases')->get();
@@ -103,6 +102,6 @@ class DashboardController extends Controller
                 ];
             }));
 
-        return view('admin.index', compact('allData', 'countLawyer', 'countClient', 'missions', 'countClientRequest', 'countUser', 'durations', 'notes', 'caseTypes'));
+        return view('admin.index', compact('allData', 'countClient', 'missions', 'countClientRequest', 'countUser', 'durations', 'notes', 'caseTypes'));
     }
 }

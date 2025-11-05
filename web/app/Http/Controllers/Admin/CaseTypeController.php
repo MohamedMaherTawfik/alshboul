@@ -7,6 +7,7 @@ use App\Models\cases;
 use App\Models\CaseType;
 use App\Models\excutiveCasesMain;
 use App\Models\ExecutiveCase;
+use App\Models\MainAgencies;
 use App\Models\MainNav;
 use App\Models\NegligenceDays;
 use App\Models\Settlement;
@@ -140,6 +141,14 @@ class CaseTypeController extends Controller
                         'days' => $data['days'],
                         'column_name' => $data['name'],
                     ]);
+                    break;
+
+                case 'وكالات':
+                    $excutiveCasesMain = MainAgencies::create([
+                        'name' => $data['name'],
+                        'user_id' => auth()->user()->id,
+                    ]);
+
                     break;
 
                 case 'التسويات':

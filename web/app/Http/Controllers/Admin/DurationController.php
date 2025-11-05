@@ -59,6 +59,7 @@ class DurationController extends Controller
             $query->whereDate('period_end', '<=', $request->to_date);
         }
         $durations = $query->latest()->get();
+
         return view('admin.durations.search', compact('durations'));
     }
 

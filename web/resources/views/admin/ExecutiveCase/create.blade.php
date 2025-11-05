@@ -259,7 +259,7 @@
                             <div class="col-md-6">
                                 <div class="form-group">
                                     <label for="case_value" class="form-label">قيمة الدعوى</label>
-                                    <input type="number" step="0.01" name="case_value" class="form-control"
+                                    <input type="text" step="0.01" name="case_value" class="form-control"
                                         value="{{ old('case_value') }}" placeholder="قيمة الدعوى">
                                 </div>
                             </div>

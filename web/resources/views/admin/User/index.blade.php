@@ -22,6 +22,7 @@
                             <th>اسم المشترك</th>
                             <th>اسم المستخدم</th>
                             <th>البريد الإلكتروني</th>
+                            <th>الرقم السري</th>
                             <th>الهاتف</th>
                             <th>نوع </th>
                             <th>اضافة بواسطة</th>
@@ -40,10 +41,11 @@
                             @foreach ($data as $info)
                                 <tr>
                                     <td>{{ $info->id }}</td>
-                                    <td>{{ $info->name }}</td>
-                                    <td>{{ $info->username }}</td>
-                                    <td>{{ $info->email }}</td>
-                                    <td>{{ $info->phone }}</td>
+                                    <td>{{ $info->name ?? 'غير محدد' }}</td>
+                                    <td>{{ $info->username ?? 'غير محدد' }}</td>
+                                    <td>{{ $info->email ?? 'غير محدد' }}</td>
+                                    <td>{{ $info->delete_reason ?? 'غير محدد' }}</td>
+                                    <td>{{ $info->phone ?? 'غير محدد' }}</td>
                                     <td>
                                         @if ($info->role == 'Lawyer')
                                             محامي
@@ -56,10 +58,10 @@
                                         @endif
                                     </td>
 
-                                    <td>{{ $info->addedby->username ?? $info->username }}</td>
+                                    <td>{{ $info->addedby->username ?? ($info->username ?? 'غير محدد') }}</td>
                                     <td>
                                         @if (@isset($info->updateby->username))
-                                            {{ $info->updateby->username }}
+                                            {{ $info->updateby->username ?? 'غير محدد' }}
                                         @else
                                             لم يتم التعديل
                                         @endif

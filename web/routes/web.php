@@ -5,6 +5,7 @@ use App\Http\Controllers\Admin\CaseNotesController;
 use App\Http\Controllers\Admin\DurationController;
 use App\Http\Controllers\Admin\editController;
 use App\Http\Controllers\Admin\MissionController;
+use App\Http\Controllers\admin\proceduralFilesController;
 use App\Http\Controllers\Admin\PublicSearchController;
 use App\Http\Controllers\Admin\SettlementController;
 use App\Http\Controllers\Admin\AboutUsController;
@@ -334,7 +335,7 @@ Route::group(['prefix' => 'admin', 'middleware' => ['auth', admin::class]], func
     Route::get('/{case}/show/showcase/procedure/create', [CaseController::class, 'createProcedure'])->name('cases.procedure.create');
     Route::post('/{case}/show/showcase/procedure/store', [CaseController::class, 'storeProcedure'])->name('cases.procedure.store');
     Route::get('/{case}/show/showcase/procedure/edit/case/go', [CaseController::class, 'editProcedure'])->name('cases.procedure.edit');
-    Route::post('/{case}/show/showcase/procedure/update/case/go', [CaseController::class, 'updateProcedure'])->name('cases.procedure.update');
+    Route::post('/{case}/show/showcase/procedure/update/case/go/updating', [CaseController::class, 'updateProcedure'])->name('cases.mainprocedure.update');
     Route::delete('/{case}/show/showcase/procedure/delete/case', [CaseController::class, 'deleteProcedure'])->name('cases.procedure.delete');
     Route::post('/{case}/show/showcase/procedure/add/file', [CaseController::class, 'addFile'])->name('procedural.add.file');
 
@@ -350,7 +351,7 @@ Route::group(['prefix' => 'admin', 'middleware' => ['auth', admin::class]], func
     Route::get('/{case}/show/showcase/procedure/sub/procedure', [CaseController::class, 'subProcedure'])->name('case.procedural.show');
     Route::post('/{case}/show/showcase/procedure/sub/store', [CaseController::class, 'storSubProcedure'])->name('cases.subprocedure.store');
     Route::get('/{case}/show/showcase/procedure/sub/edit', [CaseController::class, 'editSubProcedure'])->name('case.procedural.edit');
-    Route::post('/{case}/show/showcase/procedure/sub/update/go', [CaseController::class, 'updateSubProcedure'])->name('cases.procedure.update');
+    Route::post('/{case}/show/showcase/procedure/sub/update/go/sub/procedure', [CaseController::class, 'updateSubProcedure'])->name('cases.procedure.update');
     Route::delete('/{case}/show/showcase/procedure/sub/delete', [CaseController::class, 'deleteSubProcedure'])->name('case.procedural.delete');
     Route::delete('/{case}/show/showcase/procedure/procedure/sub/deleteFile/go', [CaseController::class, 'deleteFiles'])->name('cases.procedure.file.delete');
     Route::get('/{case}/memos/memocase', [CaseController::class, 'memos'])->name('cases.memos');
@@ -441,6 +442,8 @@ Route::group(['prefix' => 'admin', 'middleware' => ['auth', admin::class]], func
         Route::get('/excutiveCases/{type}/edit', [editController::class, 'editExcutiveCase'])->name('excutiveCases.edit.new');
         Route::post('/excutiveCases/{type}/update', [editController::class, 'updateExcutiveCase'])->name('excutiveCases.update.new');
     });
+
+    Route::get('/files/{proceduralrecord}/all', [proceduralFilesController::class, 'index'])->name('proceduralfiles.index');
 
     Route::prefix('destroy')->group(function () {
         Route::get('/casetypes/{type}', [editController::class, 'destroyCaseType'])->name('casetypes.destroy.new');

@@ -324,9 +324,9 @@
                                     <td>{{ $case->case_number ?? '-' }}</td>
                                     <td>{{ $case->court_name ?? '-' }}</td>
                                     <td>{{ $case->jubge_name ?? '-' }}</td>
-                                    <td>{{ $case->proceduralRedords->last()?->created_at?->format('Y-m-d') ?? 'لا يوجد نشاط' }}
+                                    <td>{{ $case->proceduralRedords->last()?->created_at?->format('Y-m-d h:i') ?? 'لا يوجد نشاط' }}
                                     </td>
-                                    <td>{{ $case->proceduralRedords->where('type', 'جلسه')->first()?->date ?? '-' }}</td>
+                                    <td>{{ $case->proceduralRedords->where('type', 'جلسه')->last()?->date ?? '-' }}</td>
                                     <td>{{ $case->proceduralRedords->last()?->action ?? 'لا يوجد وقائع' }}</td>
 
                                     @php

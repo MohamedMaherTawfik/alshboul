@@ -5,6 +5,7 @@
     use App\Models\MainNav;
     use App\Models\subNav;
     use App\Models\TransactionsMain;
+    use App\Models\MainAgencies;
 
     $message = \App\Models\Message::where('receiver_id', Auth::id())->where('seen', '0')->count();
     $lawyerId = Auth::user()->id;
@@ -19,6 +20,7 @@
     $transactions = TransactionsMain::where('is_active', 1)->get();
     $mains = MainNav::all();
     $subNavs = subNav::all();
+    $agencies = MainAgencies::where('is_active', 1)->get();
 @endphp
 <style>
     /* تصغير حجم الخط والمسافات بين العناصر في النافبار */
@@ -131,22 +133,24 @@
             @endif
 
             {{-- المستخدمين --}}
-            @if (Auth::user()->role == 'admin' || Auth::user()->role == 'superadmin')
-                <!-- إدارة المستخدمين -->
-                <li class="nav-item dropdown">
-                    <a class="nav-link dropdown-toggle {{ request()->is('admin/user*') || request()->is('admin/lawyer*') || request()->is('admin/client*') || request()->is('admin/request*') || request()->is('admin/action*') || request()->is('admin/visit*') ? 'active' : '' }}"
-                        href="#" data-toggle="dropdown">
-                        إدارة المستخدمين
-                    </a>
-                    <div class="dropdown-menu dropdown-menu-right">
+
+            <!-- إدارة المستخدمين -->
+            <li class="nav-item dropdown">
+                <a class="nav-link dropdown-toggle {{ request()->is('admin/user*') || request()->is('admin/lawyer*') || request()->is('admin/client*') || request()->is('admin/request*') || request()->is('admin/action*') || request()->is('admin/visit*') ? 'active' : '' }}"
+                    href="#" data-toggle="dropdown">
+                    إدارة المستخدمين
+                </a>
+                <div class="dropdown-menu dropdown-menu-right">
+
+                    @if (Auth::user()->role == 'admin' || Auth::user()->role == 'superadmin')
                         <a class="dropdown-item" href="{{ route('user.index') }}">المستخدمين</a>
                         <a class="dropdown-item" href="{{ route('client.index') }}">الموكلين</a>
-                        <a class="dropdown-item" href="{{ route('request.index') }}">طلبات الموكلين</a>
-                        <a class="dropdown-item" href="{{ route('client.action.index') }}">إجراءات الموكلين</a>
-                        <a class="dropdown-item" href="{{ route('client.visit') }}">زيارات الموكلين</a>
-                    </div>
-                </li>
-            @endif
+                    @endif
+                    <a class="dropdown-item" href="{{ route('request.index') }}">طلبات الموكلين</a>
+                    <a class="dropdown-item" href="{{ route('client.action.index') }}">إجراءات الموكلين</a>
+                    <a class="dropdown-item" href="{{ route('client.visit') }}">زيارات الموكلين</a>
+                </div>
+            </li>
 
 
             {{-- القضايا --}}
@@ -182,24 +186,22 @@
             </li>
 
             {{-- التسويات --}}
-            @if (Auth::user()->role == 'admin' || Auth::user()->role == 'superadmin')
-                {{-- التسويات --}}
-                <li class="nav-item dropdown">
-                    <a class="nav-link dropdown-toggle {{ request()->is('admin/settlement*') ? 'active' : '' }}"
-                        href="#" id="settlementDropdown" role="button" data-toggle="dropdown"
-                        aria-haspopup="true" aria-expanded="false">
-                        إدارة التسويات
-                    </a>
-                    <div class="dropdown-menu dropdown-menu-right" aria-labelledby="settlementDropdown">
-                        @foreach ($settlements as $type)
-                            <a class="dropdown-item" href="{{ route('settlement.index', $type) }}">
-                                {{ $type->name }}
-                            </a>
-                        @endforeach
-                        <a class="dropdown-item" href="{{ route('settlement.all') }}">جميع التسويات</a>
-                    </div>
-                </li>
-            @endif
+            {{-- التسويات --}}
+            <li class="nav-item dropdown">
+                <a class="nav-link dropdown-toggle {{ request()->is('admin/settlement*') ? 'active' : '' }}"
+                    href="#" id="settlementDropdown" role="button" data-toggle="dropdown"
+                    aria-haspopup="true" aria-expanded="false">
+                    إدارة التسويات
+                </a>
+                <div class="dropdown-menu dropdown-menu-right" aria-labelledby="settlementDropdown">
+                    @foreach ($settlements as $type)
+                        <a class="dropdown-item" href="{{ route('settlement.index', $type) }}">
+                            {{ $type->name }}
+                        </a>
+                    @endforeach
+                    <a class="dropdown-item" href="{{ route('settlement.all') }}">جميع التسويات</a>
+                </div>
+            </li>
 
 
             {{-- المعاملات --}}
@@ -211,6 +213,21 @@
                 </a>
                 <div class="dropdown-menu dropdown-menu-right" aria-labelledby="settlementDropdown">
                     @foreach ($transactions as $type)
+                        <a class="dropdown-item" href="{{ route('transactions.all', $type) }}">
+                            {{ $type->name }}
+                        </a>
+                    @endforeach
+                </div>
+            </li>
+
+            <li class="nav-item dropdown">
+                <a class="nav-link dropdown-toggle {{ request()->is('admin/Agencies*') ? 'active' : '' }}"
+                    href="#" id="settlementDropdown" role="button" data-toggle="dropdown"
+                    aria-haspopup="true" aria-expanded="false">
+                    وكالات واتفاقيات
+                </a>
+                <div class="dropdown-menu dropdown-menu-right" aria-labelledby="settlementDropdown">
+                    @foreach ($agencies as $type)
                         <a class="dropdown-item" href="{{ route('transactions.all', $type) }}">
                             {{ $type->name }}
                         </a>

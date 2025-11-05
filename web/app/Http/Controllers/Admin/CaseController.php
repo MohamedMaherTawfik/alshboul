@@ -654,19 +654,18 @@ class CaseController extends Controller
         $data = $request->except('_token', 'file');
         if (!$data['date']) {
             caseRecords::create([
-                'cases_id' => $case->id,
+                'cases_id' => $case->cases_id,
                 'user_id' => auth()->id(),
                 'type' => 'تم تعديل الاجراء بواسطه',
             ]);
         }
         if ($data['date']) {
             caseRecords::create([
-                'cases_id' => $case->id,
+                'cases_id' => $case->cases_id,
                 'user_id' => auth()->id(),
                 'type' => 'تم تعديل الجلسه بواسطه',
             ]);
         }
-        $data['type'] = 'اجراء';
         $case->update($data);
         return redirect()->route('cases.show', $case->cases)
             ->with('success', 'تم تعديل الاجراء بنجاح');

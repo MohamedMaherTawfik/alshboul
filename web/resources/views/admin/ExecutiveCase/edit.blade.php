@@ -9,21 +9,47 @@
         <div class="card-body">
             <h4 class="text-center mb-4 fw-bold text-primary">تعديل القضية التنفيذية</h4>
 
+            {{-- ✅ عرض أخطاء الفالديشن --}}
+            @if ($errors->any())
+                <div class="alert alert-danger">
+                    <h5 class="fw-bold mb-2"><i class="bi bi-exclamation-triangle"></i> يوجد بعض الأخطاء:</h5>
+                    <ul class="mb-0">
+                        @foreach ($errors->all() as $error)
+                            <li>{{ $error }}</li>
+                        @endforeach
+                    </ul>
+                </div>
+            @endif
+
+
             <form action="{{ route('executive-case.update', $executiveCase->id) }}" method="POST">
                 @csrf
+
+                {{-- بيانات المشترك --}}
+                <div class="row mb-4">
+                    <div class="col-md-6 mb-3">
+                        <label class="form-label fw-bold">اسم المشترك</label>
+                        <input type="text" value="{{ $executiveCase->client->name ?? 'غير محدد' }}" class="form-control"
+                            readonly>
+                    </div>
+                    <div class="col-md-6 mb-3">
+                        <label class="form-label fw-bold">رقم المشترك</label>
+                        <input type="text" value="{{ $executiveCase->client->id ?? '-' }}" class="form-control" readonly>
+                    </div>
+                </div>
 
                 {{-- بيانات العميل --}}
                 <div class="row mb-4">
                     <div class="col-md-6 mb-3">
                         <label class="form-label">اسم العميل</label>
-                        <input type="text" name="client_name" value="{{ old('client_name', $executiveCase->client_name) }}"
-                            class="form-control" required>
+                        <input type="text" name="client_name"
+                            value="{{ old('client_name', $executiveCase->client_name) }}" class="form-control" readonly>
                     </div>
                     <div class="col-md-6 mb-3">
                         <label class="form-label">الرقم القومي للعميل</label>
                         <input type="text" name="client_national_id"
-                            value="{{ old('client_national_id', $executiveCase->client_national_id) }}"
-                            class="form-control">
+                            value="{{ old('client_national_id', $executiveCase->client_national_id) }}" class="form-control"
+                            readonly>
                     </div>
                 </div>
 
@@ -90,8 +116,8 @@
                     </div>
 
                     <div class="col-md-6 mb-3">
-                        <label class="form-label">قيمة القضية</label>
-                        <input type="number" step="0.01" name="case_value"
+                        <label class="form-label">قيمة الدعوى</label>
+                        <input type="text" step="0.01" name="case_value"
                             value="{{ old('case_value', $executiveCase->case_value) }}" class="form-control">
                     </div>
 
@@ -111,7 +137,8 @@
                     <div class="col-md-6 mb-3">
                         <label class="form-label">الحكم لصالح</label>
                         <input type="text" name="judged_for_status"
-                            value="{{ old('judged_for_status', $executiveCase->judged_for_status) }}" class="form-control">
+                            value="{{ old('judged_for_status', $executiveCase->judged_for_status) }}"
+                            class="form-control">
                     </div>
 
                     <div class="col-md-6 mb-3">
