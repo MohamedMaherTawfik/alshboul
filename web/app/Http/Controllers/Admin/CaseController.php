@@ -294,12 +294,38 @@ class CaseController extends Controller
 
     public function settlement(Cases $case)
     {
-        return view('admin.cases.settlement', compact('case'));
+        $settlements = Settlement::whereNull('settlement_main_id')
+            ->orderBy('file_number')
+            ->pluck('file_number') // نجيب القيم بس
+            ->filter() // نتأكد إنها مش null
+            ->map(fn($n) => (int) $n) // نحولها لأرقام صحيحة
+            ->values(); // نرتبهم بالترتيب الصحيح
+
+        // نحسب أول رقم ناقص
+        $missingNumber = null;
+        if ($settlements->isNotEmpty()) {
+            $max = $settlements->max();
+            for ($i = 1; $i <= $max + 1; $i++) {
+                if (!$settlements->contains($i)) {
+                    $missingNumber = $i;
+                    break;
+                }
+            }
+        } else {
+            // لو مفيش أي رقم في الداتا، نخلي أول رقم 1
+            $missingNumber = 1;
+        }
+
+        // ابعت الرقم والبيانات للـ Blade
+        return view('admin.cases.settlement', compact('case', 'settlements', 'missingNumber'));
     }
+
 
     public function storeSettlement(Request $request, Cases $case)
     {
         $data = $request->except('_token', 'lawsuit_type', 'lawsuit_number');
+
+
         caseRecords::create([
             'cases_id' => $case->id,
             'user_id' => auth()->id(),

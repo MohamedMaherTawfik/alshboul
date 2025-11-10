@@ -43,6 +43,7 @@
                             <th>رقم الوطني للموكل</th>
                             <th>اسم الخصم</th>
                             <th>رقم الوطني للخصم</th>
+                            <th>رقم الملف</th>
                             <th>تفاصيل التسوية</th>
                             <th>قيمة الدين</th>
                             <th>قيمة القسط</th>
@@ -55,13 +56,14 @@
                         </tr>
                     </thead>
                     <tbody>
-                        @forelse ($settlements as $settlemen)
+                        @forelse ($settlements->sortBy('file_number') as $settlemen)
                             <tr>
                                 <td>{{ $settlemen->user->name ?? 'غير متوفر' }}</td>
                                 <td>{{ $settlemen->client_name ?? 'غير متوفر' }}</td>
                                 <td>{{ $settlemen->client_national_id ?? 'غير متوفر' }}</td>
                                 <td>{{ $settlemen->opponent_name ?? 'غير مرتبط بقضيه' }}</td>
                                 <td>{{ $settlemen->opponent_national_id ?? 'غير مرتبط بقضيه' }}</td>
+                                <td>{{ $settlemen->file_number ?? 'غير مرتبط بقضيه' }}</td>
                                 <td>{{ $settlemen->partner_name ?? 'لا توجد ملاحظات' }}</td>
                                 <td>{{ $settlemen->amount ?? 'غير متوفر' }}</td>
                                 <td>{{ $settlemen->payment_value ?? 'غير متوفر' }}

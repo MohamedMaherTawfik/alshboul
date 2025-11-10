@@ -147,14 +147,24 @@
                                     value="{{ $case->client->national_id }}" readonly>
                             </div>
 
-                            <!-- الالتزام -->
-                            <div class="col-md-12 mb-3 mt-2">
-                                <label class="form-label mt-2">الالتزام</label>
-                                <select class="form-select mt-2" name="obligation" required>
-                                    <option value="">-- اختر الالتزام --</option>
-                                    <option value="ملتزم">ملتزم</option>
-                                    <option value="غير ملتزم">غير ملتزم</option>
-                                </select>
+                            <div class="row">
+                                <!-- الالتزام -->
+                                <div class="col-md-6 mb-3 mt-2">
+                                    <label class="form-label mt-2">الالتزام</label>
+                                    <select class="form-select mt-2" name="obligation" required>
+                                        <option value="">-- اختر الالتزام --</option>
+                                        <option value="ملتزم">ملتزم</option>
+                                        <option value="غير ملتزم">غير ملتزم</option>
+                                    </select>
+                                </div>
+
+                                <div class="col-md-6 mb-3 mt-2 d-flex align-items-center">
+                                    <label class="form-label mb-0 me-2 ml-2" style="white-space: nowrap; ">رقم
+                                        الملف:</label>
+                                    <input type="text" class="form-control" name="file_number"
+                                        value="{{ $missingNumber }}" readonly style="max-width: 150px;">
+                                </div>
+
                             </div>
 
                             <!-- وقائع التسوية -->

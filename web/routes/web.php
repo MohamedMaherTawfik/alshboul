@@ -1,4 +1,5 @@
 <?php
+use App\Http\Controllers\admin\AgenciesController;
 use App\Http\Controllers\Admin\ArchiveController;
 use App\Http\Controllers\Admin\CaseController;
 use App\Http\Controllers\Admin\CaseNotesController;
@@ -212,6 +213,13 @@ Route::group(['prefix' => 'admin', 'middleware' => ['auth', admin::class]], func
     Route::get('/executive-case/{id}/restore', [ExecutiveCaseController::class, 'restore'])->name('executive-case.restore');
     Route::get('/executive-cases/{id}', [ExecutiveCaseController::class, 'show'])->name('executive-case.show');
 
+
+    Route::get('/agencies/{main}', [AgenciesController::class, 'index'])->name('agencies.index');
+    Route::get('/agencies/{main}/create', [AgenciesController::class, 'create'])->name('agencies.create');
+    Route::post('/agencies/{main}/store', [AgenciesController::class, 'store'])->name('agencies.store');
+    Route::get('/agencies/{main}/edit', [AgenciesController::class, 'edit'])->name('agencies.edit');
+    Route::post('/agencies/{main}/update', [AgenciesController::class, 'update'])->name('agencies.update');
+    Route::delete('/agencies/{main}/delete', [AgenciesController::class, 'delete'])->name('agencies.delete');
     // ProceduralRecord admin routes
     Route::get('/procedural-records/{executiveCase}/action', [ProceduralRecordController::class, 'actions'])->name('procedural-record.index');
     Route::get('/procedural-records/create/{executiveCase}', [ProceduralRecordController::class, 'create'])->name('procedural-record.create');

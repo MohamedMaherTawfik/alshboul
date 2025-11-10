@@ -62,15 +62,28 @@
                                             value="{{ $executiveCase->client_national_id }}" readonly>
                                     </div>
 
-                                    <!-- الالتزام -->
-                                    <div class="col-md-6">
-                                        <label class="form-label">الالتزام</label>
-                                        <select class="form-select" name="obligation" required>
-                                            <option value="">-- اختر الالتزام --</option>
-                                            <option value="ملتزم">ملتزم</option>
-                                            <option value="غير ملتزم">غير ملتزم</option>
-                                        </select>
+                                    <div class="row align-items-center mb-3 mt-5">
+                                        <!-- الالتزام -->
+                                        <div class="col-md-6 d-flex align-items-center">
+                                            <label class="form-label mb-0 me-2"
+                                                style="white-space: nowrap;">الالتزام:</label>
+                                            <select class="form-select" name="obligation" required
+                                                style="max-width: 250px;">
+                                                <option value="">-- اختر الالتزام --</option>
+                                                <option value="ملتزم">ملتزم</option>
+                                                <option value="غير ملتزم">غير ملتزم</option>
+                                            </select>
+                                        </div>
+
+                                        <!-- رقم الملف -->
+                                        <div class="col-md-6 d-flex align-items-center">
+                                            <label class="form-label mb-0 me-2" style="white-space: nowrap;">رقم
+                                                الملف:</label>
+                                            <input type="text" class="form-control" name="file_number"
+                                                value="{{ $missingNumber }}" readonly style="max-width: 150px;">
+                                        </div>
                                     </div>
+
 
                                     <!-- وقائع التسوية -->
                                     <div class="col-md-12">

@@ -327,8 +327,29 @@ class ExecutiveCaseController extends Controller
 
     public function createSettlement(ExecutiveCase $executiveCase)
     {
-        $settlements = SettlementMain::all();
-        return view('admin.ExecutiveCase.create-settlement', compact('executiveCase', 'settlements'));
+        $settlements = Settlement::whereNull('settlement_main_id')
+            ->orderBy('file_number')
+            ->pluck('file_number') // نجيب القيم بس
+            ->filter() // نتأكد إنها مش null
+            ->map(fn($n) => (int) $n) // نحولها لأرقام صحيحة
+            ->values(); // نرتبهم بالترتيب الصحيح
+
+        // نحسب أول رقم ناقص
+        $missingNumber = null;
+        if ($settlements->isNotEmpty()) {
+            $max = $settlements->max();
+            for ($i = 1; $i <= $max + 1; $i++) {
+                if (!$settlements->contains($i)) {
+                    $missingNumber = $i;
+                    break;
+                }
+            }
+        } else {
+            $missingNumber = 1; // أول رقم لو مفيش داتا
+        }
+
+        // ابعتهم للـ Blade
+        return view('admin.ExecutiveCase.create-settlement', compact('executiveCase', 'settlements', 'missingNumber'));
     }
 
     public function storeSettlement(Request $request, ExecutiveCase $executiveCase)

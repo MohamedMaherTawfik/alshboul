@@ -132,8 +132,6 @@
                 </li>
             @endif
 
-            {{-- المستخدمين --}}
-
             <!-- إدارة المستخدمين -->
             <li class="nav-item dropdown">
                 <a class="nav-link dropdown-toggle {{ request()->is('admin/user*') || request()->is('admin/lawyer*') || request()->is('admin/client*') || request()->is('admin/request*') || request()->is('admin/action*') || request()->is('admin/visit*') ? 'active' : '' }}"
@@ -186,7 +184,6 @@
             </li>
 
             {{-- التسويات --}}
-            {{-- التسويات --}}
             <li class="nav-item dropdown">
                 <a class="nav-link dropdown-toggle {{ request()->is('admin/settlement*') ? 'active' : '' }}"
                     href="#" id="settlementDropdown" role="button" data-toggle="dropdown"
@@ -221,14 +218,14 @@
             </li>
 
             <li class="nav-item dropdown">
-                <a class="nav-link dropdown-toggle {{ request()->is('admin/Agencies*') ? 'active' : '' }}"
+                <a class="nav-link dropdown-toggle {{ request()->is('admin/agencies*') ? 'active' : '' }}"
                     href="#" id="settlementDropdown" role="button" data-toggle="dropdown"
                     aria-haspopup="true" aria-expanded="false">
                     وكالات واتفاقيات
                 </a>
                 <div class="dropdown-menu dropdown-menu-right" aria-labelledby="settlementDropdown">
                     @foreach ($agencies as $type)
-                        <a class="dropdown-item" href="{{ route('transactions.all', $type) }}">
+                        <a class="dropdown-item" href="{{ route('agencies.index', $type) }}">
                             {{ $type->name }}
                         </a>
                     @endforeach
