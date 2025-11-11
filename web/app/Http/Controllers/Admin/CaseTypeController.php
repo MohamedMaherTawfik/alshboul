@@ -65,7 +65,7 @@ class CaseTypeController extends Controller
 
                     $trashed = trahsedDays::where('cases_id', $case->id)->first();
                     if (!$trashed) {
-                        trahsedDays::create([
+                        $trashed = trahsedDays::create([
                             'cases_id' => $case->id,
                             'counts' => $totalEvents,
                             'days_passed' => 0,
@@ -74,6 +74,7 @@ class CaseTypeController extends Controller
                             'updated_at' => now()->format('Y-m-d')
                         ]);
                     }
+
 
                     if ($totalEvents > $trashed->counts) {
                         $trashed->update([
