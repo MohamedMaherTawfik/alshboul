@@ -10,6 +10,7 @@ use App\Models\SettlementMain;
 use App\Models\trahsedDays;
 use App\Models\User;
 use Illuminate\Http\Request;
+use Illuminate\Support\Carbon;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\DB;
 
@@ -20,45 +21,69 @@ class SettlementController extends Controller
         $settlements->load('settlements');
         $settlementsList = $settlements->settlements;
 
+        $more = [];
+
+        // إعدادات الإهمال
         $neglectConfig = NegligenceDays::where('settlement_main_id', $settlements->id)->first();
 
-        if ($neglectConfig && $neglectConfig->days != 0) {
-            foreach ($settlementsList as $settlement) {
-                $totalEvents = $settlement->actions()->count()
-                    + $settlement->proceduralRedords()->count();
+        if ($neglectConfig) {
 
-                $trashed = trahsedDays::firstOrCreate(
-                    ['settlement_id' => $settlement->id],
-                    [
-                        'counts' => $totalEvents,
-                        'days_passed' => 0,
-                        'is_seen' => 0,
-                    ]
-                );
+            if ($neglectConfig->days > 0) {
 
-                // تحديث سجل الإهمال
-                $daysDiff = now()->diffInDays($trashed->updated_at);
+                foreach ($settlementsList as $settlement) {
+                    // حساب إجمالي الأحداث (إجراءات + سجلات)
+                    $totalEvents = $settlement->actions()->count()
+                        + $settlement->proceduralRedords()->count();
 
-                if ($totalEvents == $trashed->counts) {
-                    if ($daysDiff >= 1) {
-                        $trashed->increment('days_passed', $daysDiff);
+                    // جلب أو إنشاء سجل الإهمال
+                    $trashed = trahsedDays::where('settlement_id', $settlement->id)->first();
+
+                    // لو مفيش سجل، أنشئ جديد
+                    if (!$trashed) {
+                        $trashed = trahsedDays::create([
+                            'settlement_id' => $settlement->id,
+                            'counts' => $totalEvents,
+                            'days_passed' => 0,
+                            'is_seen' => 0,
+                            'day' => now()->format('Y-m-d'),
+                            'updated_at' => now()->format('Y-m-d')
+                        ]);
                     }
 
-                    if ($trashed->days_passed >= $neglectConfig->days) {
-                        $trashed->update(['is_seen' => 1]);
+                    // لو عدد الأحداث زاد → إعادة تهيئة القيم
+                    if ($totalEvents > $trashed->counts) {
+                        $trashed->update([
+                            'counts' => $totalEvents,
+                            'days_passed' => 0,
+                            'is_seen' => 0,
+                            'day' => now()->format('Y-m-d'),
+                            'updated_at' => now()->format('Y-m-d')
+                        ]);
+
+                        // لو عدد الأحداث ثابت → احسب الفرق بالأيام
+                    } elseif ($totalEvents == $trashed->counts) {
+
+                        if ($trashed->day && $trashed->updated_at) {
+
+                            $day = Carbon::parse($trashed->day);
+                            $updated = Carbon::parse($trashed->updated_at);
+
+                            $diffInDays = abs(ceil($updated->diffInDays($day)));
+
+                            if ($diffInDays == $neglectConfig->days) {
+                                $trashed->update([
+                                    'is_seen' => 1
+                                ]);
+                            }
+                        }
                     }
-                } elseif ($totalEvents > $trashed->counts) {
-                    $trashed->update([
-                        'counts' => $totalEvents,
-                        'days_passed' => 0,
-                        'is_seen' => 0,
-                    ]);
                 }
             }
         }
 
         return view('admin.Settlement.index', compact('settlements', 'settlementsList'));
     }
+
 
 
     public function all()

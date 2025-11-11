@@ -7,6 +7,7 @@ use App\Models\ExecutiveCase;
 use App\Models\excutiveCasesMain;
 use App\Models\NegligenceDays;
 use App\Models\trahsedDays;
+use Illuminate\Support\Carbon;
 
 class CheckNeglectedExecutiveCases extends Command
 {
@@ -18,59 +19,58 @@ class CheckNeglectedExecutiveCases extends Command
     /**
      * وصف الكوماند
      */
-    protected $description = 'Check for neglected executive cases and update trashedDays table accordingly';
+    protected $description = 'Check for neglected executive cases and update trahsedDays table accordingly';
 
     public function handle()
     {
         $mainCases = excutiveCasesMain::all();
 
         foreach ($mainCases as $mainCase) {
-            $executiveCases = ExecutiveCase::where('excutive_cases_main_id', $mainCase->id)->get();
+            $executiveCases = ExecutiveCase::where('excutive_cases_main_id', $mainCase->id)
+                ->where('active', 1)
+                ->get()
+                ->sortBy('case_number');
 
             $neglectConfig = NegligenceDays::where('excutive_cases_main_id', $mainCase->id)->first();
 
-            if (!$neglectConfig) {
-                continue;
-            }
+            if ($neglectConfig && $neglectConfig->days > 0) {
 
-            if ($neglectConfig->days == 0) {
-                continue;
-            }
+                foreach ($executiveCases as $case) {
+                    $totalEvents = $case->proceduralRecords()->count()
+                        + $case->settlements()->count();
 
-            $daysLimit = $neglectConfig->days;
+                    $trashed = trahsedDays::where('executive_case_id', $case->id)->first();
 
-
-            foreach ($executiveCases as $case) {
-                $totalEvents = $case->proceduralRecords()->count()
-                    + $case->settlements()->count();
-
-                $trashed = trahsedDays::where('executive_case_id', $case->id)->first();
-
-                if ($trashed) {
-                    $daysDiff = now()->diffInDays($trashed->updated_at);
-
-                    if ($totalEvents == $trashed->counts) {
-                        if ($daysDiff >= 0) {
-                            $trashed->increment('days_passed', 1);
-                        }
-
-                        if ($trashed->days_passed >= $daysLimit) {
-                            $trashed->update(['is_seen' => 1]);
-                        }
+                    if (!$trashed) {
+                        trahsedDays::create([
+                            'executive_case_id' => $case->id,
+                            'counts' => $totalEvents,
+                            'days_passed' => 0,
+                            'is_seen' => 0,
+                            'day' => now()->format('Y-m-d'),
+                            'updated_at' => now()->format('Y-m-d')
+                        ]);
                     } elseif ($totalEvents > $trashed->counts) {
                         $trashed->update([
                             'counts' => $totalEvents,
                             'days_passed' => 0,
                             'is_seen' => 0,
+                            'day' => now()->format('Y-m-d'),
+                            'updated_at' => now()->format('Y-m-d')
                         ]);
+                    } elseif ($totalEvents == $trashed->counts) {
+                        if ($trashed->day && $trashed->updated_at) {
+                            $day = Carbon::parse($trashed->day);
+                            $updated = Carbon::parse($trashed->updated_at);
+                            $diffInDays = abs(ceil($updated->diffInDays($day)));
+
+                            if ($diffInDays == $neglectConfig->days) {
+                                $trashed->update([
+                                    'is_seen' => 1
+                                ]);
+                            }
+                        }
                     }
-                } else {
-                    trahsedDays::create([
-                        'executive_case_id' => $case->id,
-                        'counts' => $totalEvents,
-                        'days_passed' => 0,
-                        'is_seen' => 0,
-                    ]);
                 }
             }
         }

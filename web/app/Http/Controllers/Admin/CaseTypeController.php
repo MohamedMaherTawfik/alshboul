@@ -16,6 +16,7 @@ use App\Models\subNav;
 use App\Models\trahsedDays;
 use App\Models\TransactionsMain;
 use Illuminate\Http\Request;
+use Illuminate\Support\Carbon;
 use Illuminate\Support\Facades\DB;
 
 class CaseTypeController extends Controller
@@ -35,7 +36,7 @@ class CaseTypeController extends Controller
     }
     public function show(CaseType $casetype)
     {
-        $more = []; // مصفوفة لتخزين IDs القضايا اللي ليها تسويات
+        $more = [];
 
         $cases = Cases::with('caseOpponents')
             ->where('suggested_case_id', $casetype->id)
@@ -45,7 +46,6 @@ class CaseTypeController extends Controller
 
         $casesId = $cases->pluck('id')->toArray();
 
-        // جلب كل التسويات المتعلقة بالقضايا
         $settlements = Settlement::whereIn('cases_id', $casesId)->get();
         if ($settlements->count()) {
             $more = $settlements->pluck('cases_id')->toArray();
@@ -55,7 +55,6 @@ class CaseTypeController extends Controller
 
         if ($neglectConfig) {
 
-            // لو days = 0 نعمل تجاهل للإهمال
             if ($neglectConfig->days > 0) {
 
                 foreach ($cases as $case) {
@@ -64,43 +63,50 @@ class CaseTypeController extends Controller
                         + $case->caseNotes()->count()
                         + $case->proceduralRedords()->count();
 
-                    // إنشاء سجل trash لو مش موجود
-                    $trashed = trahsedDays::firstOrCreate(
-                        ['cases_id' => $case->id],
-                        [
+                    $trashed = trahsedDays::where('cases_id', $case->id)->first();
+                    if (!$trashed) {
+                        trahsedDays::create([
+                            'cases_id' => $case->id,
                             'counts' => $totalEvents,
                             'days_passed' => 0,
                             'is_seen' => 0,
-                        ]
-                    );
+                            'day' => now()->format('Y-m-d'),
+                            'updated_at' => now()->format('Y-m-d')
+                        ]);
+                    }
 
-                    // تحديث سجل الإهمال
-                    $daysDiff = now()->diffInDays($trashed->created_at);
-
-                    if ($totalEvents == $trashed->counts) {
-                        if ($daysDiff >= 1) {
-                            $trashed->increment('days_passed', $daysDiff);
-                        }
-
-                        if ($trashed->days_passed >= $neglectConfig->days) {
-                            $trashed->update(['is_seen' => 1]);
-                        }
-                    } elseif ($totalEvents > $trashed->counts) {
+                    if ($totalEvents > $trashed->counts) {
                         $trashed->update([
                             'counts' => $totalEvents,
                             'days_passed' => 0,
                             'is_seen' => 0,
+                            'day' => now()->format('Y-m-d'),
+                            'updated_at' => now()->format('Y-m-d')
                         ]);
+                    } elseif ($totalEvents == $trashed->counts) { {
+
+                            if ($trashed->day && $trashed->updated_at) {
+
+                                $day = Carbon::parse($trashed->day);
+                                $updated = Carbon::parse($trashed->updated_at);
+
+                                $diffInDays = abs(ceil($updated->diffInDays($day)));
+
+
+                                if ($diffInDays == $neglectConfig->days) {
+                                    $trashed->update([
+                                        'is_seen' => 1
+                                    ]);
+                                }
+                            }
+                        }
                     }
                 }
             }
+
+            return view('admin.CaseTypes.show', compact('casetype', 'cases', 'more'));
         }
-
-        return view('admin.CaseTypes.show', compact('casetype', 'cases', 'more'));
     }
-
-
-
 
     /**
      * Show the form for creating a new resource.

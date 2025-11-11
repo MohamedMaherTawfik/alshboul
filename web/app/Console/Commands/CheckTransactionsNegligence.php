@@ -6,62 +6,68 @@ use Illuminate\Console\Command;
 use App\Models\TransactionsMain;
 use App\Models\NegligenceDays;
 use App\Models\trahsedDays;
+use Illuminate\Support\Carbon;
 
 class CheckTransactionsNegligence extends Command
 {
-    protected $signature = 'check:transactions';
-    protected $description = 'Check negligence for transactions';
+    /**
+     * اسم الكوماند اللي ممكن تشغله يدويًا
+     */
+    protected $signature = 'transactions:check-neglected';
+
+    /**
+     * وصف الكوماند
+     */
+    protected $description = 'Check for neglected transactions and update trahsedDays table accordingly';
 
     public function handle()
     {
         $transactionsMains = TransactionsMain::with('transactions')->get();
 
-        foreach ($transactionsMains as $transaction) {
-            $transactionsList = $transaction->transactions;
-            $neglectConfig = NegligenceDays::where('transactions_main_id', $transaction->id)->first();
+        foreach ($transactionsMains as $main) {
+            $neglectConfig = NegligenceDays::where('transactions_main_id', $main->id)->first();
 
-            if ($neglectConfig) {
-                if ($neglectConfig->days == 0) {
-                    continue;
-                }
+            if ($neglectConfig && $neglectConfig->days > 0) {
 
-                $daysLimit = $neglectConfig->days;
+                foreach ($main->transactions as $transaction) {
+                    $totalEvents = $transaction->procedural()->count();
 
-                foreach ($transactionsList as $tran) {
-                    $totalEvents = $tran->procedural()->count();
+                    $trashed = trahsedDays::where('trans_actions_id', $transaction->id)->first();
 
-                    $trashed = trahsedDays::where('trans_actions_id', $tran->id)->first();
-
-                    if ($trashed) {
-                        $daysDiff = now()->diffInDays($trashed->updated_at);
-
-                        if ($totalEvents == $trashed->counts) {
-                            if ($daysDiff >= 0) {
-                                $trashed->increment('days_passed', 1);
-                            }
-
-                            if ($trashed->days_passed >= $daysLimit) {
-                                $trashed->update(['is_seen' => 1]);
-                            }
-                        } elseif ($totalEvents > $trashed->counts) {
-                            $trashed->update([
-                                'counts' => $totalEvents,
-                                'days_passed' => 0,
-                                'is_seen' => 0,
-                            ]);
-                        }
-                    } else {
+                    if (!$trashed) {
                         trahsedDays::create([
-                            'trans_actions_id' => $tran->id,
+                            'trans_actions_id' => $transaction->id,
                             'counts' => $totalEvents,
                             'days_passed' => 0,
                             'is_seen' => 0,
+                            'day' => now()->format('Y-m-d'),
+                            'updated_at' => now()->format('Y-m-d')
                         ]);
+                    } elseif ($totalEvents > $trashed->counts) {
+                        $trashed->update([
+                            'counts' => $totalEvents,
+                            'days_passed' => 0,
+                            'is_seen' => 0,
+                            'day' => now()->format('Y-m-d'),
+                            'updated_at' => now()->format('Y-m-d')
+                        ]);
+                    } elseif ($totalEvents == $trashed->counts) {
+                        if ($trashed->day && $trashed->updated_at) {
+                            $day = Carbon::parse($trashed->day);
+                            $updated = Carbon::parse($trashed->updated_at);
+                            $diffInDays = abs(ceil($updated->diffInDays($day)));
+
+                            if ($diffInDays == $neglectConfig->days) {
+                                $trashed->update([
+                                    'is_seen' => 1
+                                ]);
+                            }
+                        }
                     }
                 }
             }
         }
 
-        $this->info('Transaction negligence check complete ✅');
+        $this->info('Neglected transactions checked successfully!');
     }
 }

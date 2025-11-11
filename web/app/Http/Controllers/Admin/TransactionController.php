@@ -12,8 +12,8 @@ use App\Models\TransActions;
 use App\Models\TransactionsMain;
 use App\Models\User;
 use Illuminate\Http\Request;
+use Illuminate\Support\Carbon;
 use Illuminate\Support\Facades\Auth;
-use Illuminate\Support\Facades\DB;
 
 class TransactionController extends Controller
 {
@@ -24,43 +24,63 @@ class TransactionController extends Controller
 
         $neglectConfig = NegligenceDays::where('transactions_main_id', $transaction->id)->first();
 
-        if ($neglectConfig && $neglectConfig->days != 0) {
-            foreach ($transactionsList as $tran) {
-                $totalEvents = $tran->procedural()->count();
+        if ($neglectConfig) {
 
-                // إنشاء سجل trash لو مش موجود
-                $trashed = trahsedDays::firstOrCreate(
-                    ['trans_actions_id' => $tran->id],
-                    [
-                        'counts' => $totalEvents,
-                        'days_passed' => 0,
-                        'is_seen' => 0,
-                    ]
-                );
+            if ($neglectConfig->days > 0) {
 
-                // تحديث سجل الإهمال
-                $daysDiff = now()->diffInDays($trashed->updated_at);
+                foreach ($transactionsList as $tran) {
+                    // حساب إجمالي الأحداث (الإجرائية فقط هنا)
+                    $totalEvents = $tran->procedural()->count();
 
-                if ($totalEvents == $trashed->counts) {
-                    if ($daysDiff >= 1) {
-                        $trashed->increment('days_passed', $daysDiff);
+                    // جلب أو إنشاء سجل الإهمال
+                    $trashed = trahsedDays::where('trans_actions_id', $tran->id)->first();
+
+                    // لو مفيش سجل → أنشئ واحد جديد
+                    if (!$trashed) {
+                        $trashed = trahsedDays::create([
+                            'trans_actions_id' => $tran->id,
+                            'counts' => $totalEvents,
+                            'days_passed' => 0,
+                            'is_seen' => 0,
+                            'day' => now()->format('Y-m-d'),
+                            'updated_at' => now()->format('Y-m-d')
+                        ]);
                     }
 
-                    if ($trashed->days_passed >= $neglectConfig->days) {
-                        $trashed->update(['is_seen' => 1]);
+                    // لو عدد الأحداث زاد → إعادة تهيئة السجل
+                    if ($totalEvents > $trashed->counts) {
+                        $trashed->update([
+                            'counts' => $totalEvents,
+                            'days_passed' => 0,
+                            'is_seen' => 0,
+                            'day' => now()->format('Y-m-d'),
+                            'updated_at' => now()->format('Y-m-d')
+                        ]);
+
+                        // لو عدد الأحداث ثابت → احسب الفرق بالأيام
+                    } elseif ($totalEvents == $trashed->counts) {
+
+                        if ($trashed->day && $trashed->updated_at) {
+
+                            $day = Carbon::parse($trashed->day);
+                            $updated = Carbon::parse($trashed->updated_at);
+
+                            $diffInDays = abs(ceil($updated->diffInDays($day)));
+
+                            if ($diffInDays == $neglectConfig->days) {
+                                $trashed->update([
+                                    'is_seen' => 1
+                                ]);
+                            }
+                        }
                     }
-                } elseif ($totalEvents > $trashed->counts) {
-                    $trashed->update([
-                        'counts' => $totalEvents,
-                        'days_passed' => 0,
-                        'is_seen' => 0,
-                    ]);
                 }
             }
         }
 
         return view('admin.transaction.index', compact('transaction', 'transactionsList'));
     }
+
 
     public function create(TransactionsMain $transaction)
     {
