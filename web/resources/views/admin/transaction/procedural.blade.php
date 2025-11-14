@@ -71,7 +71,7 @@
                             <th>المستندات</th>
                             <th>المحامي المسئول</th>
                             <th>تاريخ الإدخال</th>
-                            @if (Auth::user()->role == 'admin' || Auth::user()->role == 'superadmin')
+                            @if (Auth::user()->role == 'admin' || Auth::user()->role == 'superadmin' || Auth::user()->role == 'doctor')
                                 <th>التحكم</th>
                             @endif
 
@@ -92,19 +92,21 @@
                                 <td>{{ $procedural->userLawyer?->name ?? '-' }}</td>
                                 <td>{{ $procedural->created_at->format('Y-m-d h:i') }}</td>
                                 <td>
-                                    @if (Auth::user()->role == 'admin' || Auth::user()->role == 'superadmin')
+                                    @if (Auth::user()->role == 'admin' || Auth::user()->role == 'superadmin' || Auth::user()->role == 'doctor')
                                         <a href="{{ route('transactions.procedural.edit', $procedural->id) }}"
                                             class="btn btn-warning">
                                             تعديل</a>
-                                        <form action="{{ route('transactions.procedural.destroy', $procedural->id) }}"
-                                            method="POST" class="d-inline">
-                                            @csrf
-                                            @method('DELETE')
-                                            <button type="submit" class="btn btn-danger"
-                                                onclick="return confirm('هل أنت متأكد من الحذف؟')">
-                                                حذف
-                                            </button>
-                                        </form>
+                                        @if (Auth::user()->role == 'superadmin' || Auth::user()->role == 'doctor')
+                                            <form action="{{ route('transactions.procedural.destroy', $procedural->id) }}"
+                                                method="POST" class="d-inline">
+                                                @csrf
+                                                @method('DELETE')
+                                                <button type="submit" class="btn btn-danger"
+                                                    onclick="return confirm('هل أنت متأكد من الحذف؟')">
+                                                    حذف
+                                                </button>
+                                            </form>
+                                        @endif
                                     @endif
                                 </td>
                             </tr>

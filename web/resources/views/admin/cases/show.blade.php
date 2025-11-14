@@ -106,7 +106,9 @@
                         <th>تاريخ الجلسة / الإجراء القادمة</th>
                         <th>الملفات</th>
                         <th>النوع</th>
-                        <th>إجراءات</th>
+                        @if (Auth::user()->role == 'admin' || Auth::user()->role == 'superadmin' || Auth::user()->role == 'doctor')
+                            <th>إجراءات</th>
+                        @endif
                     </tr>
                 </thead>
                 <tbody id="sessionsTable">
@@ -130,25 +132,29 @@
 
                             </td>
                             <td>{{ $type }}</td>
-                            <td>
-                                @if ($record->date)
-                                    <a href="{{ route('cases.procedure.edit', $record) }}"
-                                        class="btn btn-sm btn-warning">تعديل
-                                        الجلسة</a>
-                                @else
-                                    <a href="{{ route('cases.procedure.edit', $record) }}"
-                                        class="btn btn-sm btn-warning">تعديل الإجراء</a>
-                                @endif
+                            @if (Auth::user()->role == 'admin' || Auth::user()->role == 'superadmin' || Auth::user()->role == 'doctor')
+                                <td>
+                                    @if ($record->date)
+                                        <a href="{{ route('cases.procedure.edit', $record) }}"
+                                            class="btn btn-sm btn-warning">تعديل
+                                            الجلسة</a>
+                                    @else
+                                        <a href="{{ route('cases.procedure.edit', $record) }}"
+                                            class="btn btn-sm btn-warning">تعديل الإجراء</a>
+                                    @endif
+                                    @if (Auth::user()->role == 'superadmin' || Auth::user()->role == 'doctor')
+                                        <form
+                                            action="{{ $record->type === 'جلسة' ? route('cases.procedure.delete', $record) : route('cases.procedure.delete', $record) }}"
+                                            method="POST" style="display:inline-block;">
+                                            @csrf
+                                            @method('DELETE')
+                                            <button type="submit" class="btn btn-sm btn-danger"
+                                                onclick="return confirm('هل أنت متأكد من الحذف؟')">حذف</button>
+                                        </form>
+                                    @endif
+                                </td>
+                            @endif
 
-                                <form
-                                    action="{{ $record->type === 'جلسة' ? route('cases.procedure.delete', $record) : route('cases.procedure.delete', $record) }}"
-                                    method="POST" style="display:inline-block;">
-                                    @csrf
-                                    @method('DELETE')
-                                    <button type="submit" class="btn btn-sm btn-danger"
-                                        onclick="return confirm('هل أنت متأكد من الحذف؟')">حذف</button>
-                                </form>
-                            </td>
                         </tr>
 
 

@@ -140,11 +140,11 @@
                                 <th>ملاحظات</th>
                                 <th>المعتمد الأول</th>
                                 <th>المعتمد الثاني</th>
-                                @if (Auth::user()->role == 'admin' || Auth::user()->role == 'superadmin')
+                                @if (Auth::user()->role == 'doctor' || Auth::user()->role == 'superadmin')
                                     <th>الانجاز</th>
                                 @endif
 
-                                @if (Auth::user()->role == 'admin' || Auth::user()->role == 'superadmin')
+                                @if (Auth::user()->role == 'doctor' || Auth::user()->role == 'superadmin' || Auth::user()->role == 'admin')
                                     <th>الاجراءات</th>
                                 @endif
 
@@ -229,7 +229,7 @@
                                             {{ $duration->second_time ?? '-' }}
                                         </td>
 
-                                        @if (Auth::user()->role == 'admin' || Auth::user()->role == 'superadmin')
+                                        @if (Auth::user()->role == 'doctor' || Auth::user()->role == 'superadmin')
                                             <td>
                                                 <form action="{{ route('case.duration.submit', $duration) }}"
                                                     method="POST">
@@ -240,7 +240,7 @@
                                                 </form>
                                             </td>
                                         @endif
-                                        @if (Auth::user()->role == 'admin' || Auth::user()->role == 'superadmin')
+                                        @if (Auth::user()->role == 'admin' || Auth::user()->role == 'superadmin' || Auth::user()->role == 'doctor')
                                             <td class="text-center">
                                                 <div class="d-flex justify-content-center gap-2">
 
@@ -306,10 +306,10 @@
                                 <th>ملاحظات</th>
                                 <th> المعتمد الأول </th>
                                 <th>المعتمد الثاني</th>
-                                @if (Auth::user()->role == 'admin' || Auth::user()->role == 'superadmin')
+                                @if (Auth::user()->role == 'admin' || Auth::user()->role == 'superadmin' || Auth::user()->role == 'doctor')
                                     <th>الانجاز</th>
                                 @endif
-                                @if (Auth::user()->role == 'admin' || Auth::user()->role == 'superadmin')
+                                @if (Auth::user()->role == 'admin' || Auth::user()->role == 'superadmin' || Auth::user()->role == 'doctor')
                                     <th>الاجراءات</th>
                                 @endif
                             </tr>
@@ -386,7 +386,7 @@
                                         </td>
 
 
-                                        @if (Auth::user()->role == 'admin' || Auth::user()->role == 'superadmin')
+                                        @if (Auth::user()->role == 'admin' || Auth::user()->role == 'superadmin' || Auth::user()->role == 'doctor')
                                             <td>
                                                 <form action="{{ route('case.note.submit', $note) }}" method="POST">
                                                     @csrf
@@ -396,7 +396,7 @@
                                                 </form>
                                             </td>
                                         @endif
-                                        @if (Auth::user()->role == 'admin' || Auth::user()->role == 'superadmin')
+                                        @if (Auth::user()->role == 'admin' || Auth::user()->role == 'superadmin' || Auth::user()->role == 'doctor')
                                             <td class="text-center">
                                                 <div class="d-flex justify-content-center gap-2">
 

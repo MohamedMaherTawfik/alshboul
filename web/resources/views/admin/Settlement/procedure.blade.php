@@ -81,7 +81,7 @@
                             <th>وقائع الاجراء</th>
                             <th>مستندات</th>
                             <th>ملاحظات</th>
-                            @if (Auth::user()->role == 'admin' || Auth::user()->role == 'superadmin')
+                            @if (Auth::user()->role == 'admin' || Auth::user()->role == 'superadmin' || Auth::user()->role == 'doctor')
                                 <th>الاجراءات</th>
                             @endif
                         </tr>
@@ -101,17 +101,19 @@
                                 </td>
                                 <td>{{ $duration->note ?? ' لا يوجد ملاحظات' }}</td>
 
-                                @if (Auth::user()->role == 'admin' || Auth::user()->role == 'superadmin')
+                                @if (Auth::user()->role == 'admin' || Auth::user()->role == 'superadmin' || Auth::user()->role == 'doctor')
                                     <td>
                                         <a href="{{ route('settlement.procedural.edit', $duration) }}"
                                             class="btn btn-sm btn-warning">تعديل</a>
-                                        <form action="{{ route('settlement.procedural.destroy', $duration) }}"
-                                            method="POST" onsubmit="return confirm('هل أنت متأكد من الحذف؟');"
-                                            class="d-inline">
-                                            @csrf
-                                            @method('DELETE')
-                                            <button type="submit" class="btn btn-sm btn-danger">حذف</button>
-                                        </form>
+                                        @if (Auth::user()->role == 'superadmin' || Auth::user()->role == 'doctor')
+                                            <form action="{{ route('settlement.procedural.destroy', $duration) }}"
+                                                method="POST" onsubmit="return confirm('هل أنت متأكد من الحذف؟');"
+                                                class="d-inline">
+                                                @csrf
+                                                @method('DELETE')
+                                                <button type="submit" class="btn btn-sm btn-danger">حذف</button>
+                                            </form>
+                                        @endif
                                     </td>
                                 @endif
                             </tr>

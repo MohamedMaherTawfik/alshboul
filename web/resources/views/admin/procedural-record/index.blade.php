@@ -107,7 +107,9 @@
                         <th>تاريخ الإدخال</th>
                         <th>الإجراء القادم</th>
                         <th>الملفات</th>
-                        <th>عمليات</th>
+                        @if (Auth::user()->role = 'doctor' || (Auth::user()->role = 'superadmin' || (Auth::user()->role = 'admin')))
+                            <th>عمليات</th>
+                        @endif
                     </tr>
                 </thead>
                 <tbody id="sessionsTable">
@@ -127,17 +129,24 @@
                                     (عدد المستندات : <span class="text-success fs-5">{{ count($record->files) }}</span>)
                                 </a>
                             </td>
-                            <td>
-                                <a href="{{ route('procedural-record.edit', $record->id) }}"
-                                    class="btn btn-sm btn-warning">تعديل</a>
+                            @if (Auth::user()->role = 'doctor' || (Auth::user()->role = 'superadmin' || (Auth::user()->role = 'admin')))
+                                <td>
+                                    <a href="{{ route('procedural-record.edit', $record->id) }}"
+                                        class="btn btn-sm btn-warning">تعديل</a>
 
-                                <form action="{{ route('procedural-record.delete', $record->id) }}" method="POST"
-                                    style="display:inline-block;">
-                                    @csrf @method('DELETE')
-                                    <button type="submit" class="btn btn-sm btn-danger"
-                                        onclick="return confirm('هل أنت متأكد من الحذف؟')">حذف</button>
-                                </form>
-                            </td>
+                                    @if (Auth::user()->role = 'doctor' || (Auth::user()->role = 'superadmin'))
+                                        <form action="{{ route('procedural-record.delete', $record->id) }}" method="POST"
+                                            style="display:inline-block;">
+                                            @csrf @method('DELETE')
+                                            <button type="submit" class="btn btn-sm btn-danger"
+                                                onclick="return confirm('هل أنت متأكد من الحذف؟')">حذف</button>
+                                        </form>
+                                    @endif
+
+
+                                </td>
+                            @endif
+
 
                         </tr>
 

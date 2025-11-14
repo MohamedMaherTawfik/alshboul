@@ -49,7 +49,10 @@
                                     <th>اضافة بواسطة</th>
                                     <th>تعديل بواسطة</th>
                                     <th>تاريخ التسجيل</th>
-                                    <th>التحكم</th>
+                                    @if (Auth::user()->role == 'doctor' || Auth::user()->role == 'superadmin')
+                                        <th>التحكم</th>
+                                    @endif
+
                                 </tr>
                             </thead>
                             <tbody>
@@ -80,18 +83,21 @@
                                             @endif
                                         </td>
                                         <td>{{ optional($info->user)->created_at ?? 'غير محدد' }}</td>
-                                        <td>
-                                            <a href="{{ route('client.edit', $info) }}" class="btn btn-warning">تعديل</a>
-                                            <form action="{{ route('client.delete', $info) }}" method="POST"
-                                                style="display:inline;">
-                                                @csrf
-                                                @method('DELETE')
-                                                <button type="submit" class="btn btn-danger"
-                                                    onclick="return confirm('هل أنت متأكد من الحذف؟')">
-                                                    حذف
-                                                </button>
-                                            </form>
-                                        </td>
+                                        @if (Auth::user()->role == 'doctor' || Auth::user()->role == 'superadmin')
+                                            <td>
+                                                <a href="{{ route('client.edit', $info) }}"
+                                                    class="btn btn-warning">تعديل</a>
+                                                <form action="{{ route('client.delete', $info) }}" method="POST"
+                                                    style="display:inline;">
+                                                    @csrf
+                                                    @method('DELETE')
+                                                    <button type="submit" class="btn btn-danger"
+                                                        onclick="return confirm('هل أنت متأكد من الحذف؟')">
+                                                        حذف
+                                                    </button>
+                                                </form>
+                                            </td>
+                                        @endif
                                     </tr>
                                 @endforeach
                             </tbody>

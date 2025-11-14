@@ -59,7 +59,7 @@
                                 <th>رقم السند التنفيذي</th>
                                 <th>تاريخ الجلسة الإجرائية</th>
                                 <th> الاجراءات</th>
-                                @if (Auth::user()->role == 'admin' || Auth::user()->role == 'superadmin')
+                                @if (Auth::user()->role == 'admin' || Auth::user()->role == 'superadmin' || Auth::user()->role == 'doctor')
                                     <th>العمليات</th>
                                 @endif
                             </tr>
@@ -110,7 +110,7 @@
 
 
                                     <td>
-                                        @if (Auth::user()->role == 'admin' || Auth::user()->role == 'superadmin')
+                                        @if (Auth::user()->role == 'admin' || Auth::user()->role == 'superadmin' || Auth::user()->role == 'doctor')
                                             <a href="{{ route('executive-case.edit', $case) }}"
                                                 class="btn btn-warning btn-sm mb-1">تعديل</a>
 
@@ -123,12 +123,12 @@
                                                     حذف
                                                 </button>
                                             </form>
-                                        @endif
-                                        <a href="{{ route('executive-case.settlement', $case) }}"
-                                            class="btn btn-success btn-sm mb-1">إضافة تسوية</a>
+                                            <a href="{{ route('executive-case.settlement', $case) }}"
+                                                class="btn btn-success btn-sm mb-1">إضافة تسوية</a>
 
-                                        <a href="{{ route('executive-case.expenses', $case) }}"
-                                            class="btn btn-secondary btn-sm mb-1">احتساب المصاريف</a>
+                                            <a href="{{ route('executive-case.expenses', $case) }}"
+                                                class="btn btn-secondary btn-sm mb-1">احتساب المصاريف</a>
+                                        @endif
                                     </td>
                                 </tr>
                             @empty

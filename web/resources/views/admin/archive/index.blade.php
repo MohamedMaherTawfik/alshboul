@@ -280,13 +280,12 @@
                                 <td>{{ $archive->time }}</td>
                                 <td>
                                     <!-- زر تعديل -->
-                                    @if (Auth::user()->role == 'superadmin' || Auth::user()->role == 'admin')
+                                    @if (Auth::user()->role == 'superadmin' || Auth::user()->role == 'admin' || Auth::user()->role == 'doctor')
                                         <a href="{{ route('archive.edit', $archive) }}" class="text-primary ml-2 me-2">
                                             <i class="fas fa-edit fa-lg"></i>
                                         </a>
                                     @endif
-                                    @if (Auth::user()->role == 'superadmin')
-                                        <!-- زر حذف -->
+                                    @if (Auth::user()->role == 'doctor')
                                         <!-- زرار الحذف -->
                                         <button type="button" class="btn btn-link text-danger p-0 m-0"
                                             data-bs-toggle="modal" data-bs-target="#confirmDeleteModal{{ $archive->id }}">

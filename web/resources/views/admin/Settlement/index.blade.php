@@ -47,7 +47,7 @@
                             <th>نوع القسط</th>
                             <th>قيمة القسط</th>
                             <th>تفاصيل التسوية</th>
-                            @if (Auth::user()->role == 'admin' || Auth::user()->role == 'superadmin')
+                            @if (Auth::user()->role == 'admin' || Auth::user()->role == 'superadmin' || Auth::user()->role == 'doctor')
                                 <th>الاجراءات</th>
                             @endif
 
@@ -77,7 +77,7 @@
                                 <td>{{ $settlemen->notes ?? 'لا توجد ملاحظات' }}</td>
 
                                 <td>
-                                    @if (Auth::user()->role == 'admin' || Auth::user()->role == 'superadmin')
+                                    @if (Auth::user()->role == 'admin' || Auth::user()->role == 'superadmin' || Auth::user()->role == 'doctor')
                                         <div class="d-flex flex-wrap gap-2 mb-2">
                                             <a href="{{ route('executive-case.settlement.edit', $settlemen) }}"
                                                 class="btn btn-warning btn-sm">

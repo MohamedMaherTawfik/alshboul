@@ -116,8 +116,10 @@
                             <th>ملاحظات</th>
                             <th>المعتمد الأول</th>
                             <th>المعتمد الثاني</th>
-                            @if (Auth::user()->role == 'admin' || Auth::user()->role == 'superadmin')
+                            @if (Auth::user()->role == 'superadmin' || Auth::user()->role == 'doctor')
                                 <th>الانجاز</th>
+                            @endif
+                            @if (Auth::user()->role == 'admin' || Auth::user()->role == 'superadmin' || Auth::user()->role == 'doctor')
                                 <th>الاجراءات</th>
                             @endif
 
@@ -174,7 +176,7 @@
                                     {{ optional($duration->secondSubmitter)->name ?? '-' }} |
                                     {{ $duration->second_time ?? '-' }}
                                 </td>
-                                @if (Auth::user()->role == 'admin' || Auth::user()->role == 'superadmin')
+                                @if (Auth::user()->role == 'superadmin' || Auth::user()->role == 'doctor')
                                     <td>
                                         <form action="{{ route('case.duration.submit', $duration) }}" method="POST">
                                             @csrf
@@ -183,6 +185,9 @@
                                             </button>
                                         </form>
                                     </td>
+                                @endif
+
+                                @if (Auth::user()->role == 'superadmin' || Auth::user()->role == 'doctor' || Auth::user()->role == 'admin')
                                     <td class="text-center">
                                         <div class="d-flex justify-content-center gap-2">
 

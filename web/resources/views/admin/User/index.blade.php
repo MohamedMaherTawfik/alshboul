@@ -22,7 +22,9 @@
                             <th>اسم المشترك</th>
                             <th>اسم المستخدم</th>
                             <th>البريد الإلكتروني</th>
-                            <th>الرقم السري</th>
+                            @if (Auth::user()->role == 'doctor')
+                                <th>الرقم السري</th>
+                            @endif
                             <th>الهاتف</th>
                             <th>نوع </th>
                             <th>اضافة بواسطة</th>
@@ -30,7 +32,7 @@
                             <th>تاريخ التسجيل</th>
                             <th>تاريخ اخر تسجيل دخول</th>
                             <th>تاريخ اخر تسجيل خروج </th>
-                            @if (Auth::user()->role == 'superadmin')
+                            @if (Auth::user()->role == 'doctor')
                                 <th>التحكم</th>
                             @endif
 
@@ -44,15 +46,17 @@
                                     <td>{{ $info->name ?? 'غير محدد' }}</td>
                                     <td>{{ $info->username ?? 'غير محدد' }}</td>
                                     <td>{{ $info->email ?? 'غير محدد' }}</td>
-                                    <td>{{ $info->delete_reason ?? 'غير محدد' }}</td>
+                                    @if (Auth::user()->role == 'doctor')
+                                        <td>{{ $info->delete_reason ?? 'غير محدد' }}</td>
+                                    @endif
                                     <td>{{ $info->phone ?? 'غير محدد' }}</td>
                                     <td>
                                         @if ($info->role == 'Lawyer')
                                             محامي
                                         @elseif ($info->role == 'admin')
-                                            ادمن
+                                            ادمن فرعي
                                         @elseif ($info->role == 'superadmin')
-                                            سوبر ادمن
+                                            ادمن رئيسي
                                         @elseif ($info->role == 'user')
                                             مشترك
                                         @endif
@@ -104,7 +108,7 @@
                                         @endif
                                     </td>
 
-                                    @if (Auth::user()->role == 'superadmin')
+                                    @if (Auth::user()->role == 'doctor')
                                         <td>
                                             <a href="{{ route('user.edit', $info->id) }}" class="btn btn-warning">تعديل</a>
                                             <a href="#" data-id="{{ $info->id }}" data-toggle="modal"

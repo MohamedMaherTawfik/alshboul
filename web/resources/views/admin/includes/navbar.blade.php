@@ -98,7 +98,7 @@
             @endif
 
             <!-- إعدادات الموقع -->
-            @if (Auth::user()->role == 'admin' || Auth::user()->role == 'superadmin')
+            @if (Auth::user()->role == 'admin' || Auth::user()->role == 'superadmin' || Auth::user()->role == 'doctor')
                 <li class="nav-item dropdown">
                     <a class="nav-link dropdown-toggle {{ request()->is('admin/about*') || request()->is('admin/move-bars*') || request()->is('admin/casetypes*') || request()->is('admin/social-links*') || request()->is('admin/sliders*') ? 'active' : '' }}"
                         href="#" data-toggle="dropdown">
@@ -114,7 +114,7 @@
             @endif
 
             {{-- اعدادات الادمن --}}
-            @if (Auth::user()->role == 'superadmin')
+            @if (Auth::user()->role == 'superadmin' || Auth::user()->role == 'doctor')
                 <li class="nav-item dropdown">
                     <a class="nav-link dropdown-toggle {{ request()->is('admin/*setting*') ? 'active' : '' }}"
                         href="#" id="deletedItemsMenu" role="button" data-toggle="dropdown" aria-haspopup="true"
@@ -140,7 +140,7 @@
                 </a>
                 <div class="dropdown-menu dropdown-menu-right">
 
-                    @if (Auth::user()->role == 'admin' || Auth::user()->role == 'superadmin')
+                    @if (Auth::user()->role == 'admin' || Auth::user()->role == 'superadmin' || Auth::user()->role == 'doctor')
                         <a class="dropdown-item" href="{{ route('user.index') }}">المستخدمين</a>
                         <a class="dropdown-item" href="{{ route('client.index') }}">الموكلين</a>
                     @endif
@@ -217,20 +217,22 @@
                 </div>
             </li>
 
-            <li class="nav-item dropdown">
-                <a class="nav-link dropdown-toggle {{ request()->is('admin/agencies*') ? 'active' : '' }}"
-                    href="#" id="settlementDropdown" role="button" data-toggle="dropdown"
-                    aria-haspopup="true" aria-expanded="false">
-                    وكالات واتفاقيات
-                </a>
-                <div class="dropdown-menu dropdown-menu-right" aria-labelledby="settlementDropdown">
-                    @foreach ($agencies as $type)
-                        <a class="dropdown-item" href="{{ route('agencies.index', $type) }}">
-                            {{ $type->name }}
-                        </a>
-                    @endforeach
-                </div>
-            </li>
+            @if (Auth::user()->role == 'admin' || Auth::user()->role == 'superadmin' || Auth::user()->role == 'doctor')
+                <li class="nav-item dropdown">
+                    <a class="nav-link dropdown-toggle {{ request()->is('admin/agencies*') ? 'active' : '' }}"
+                        href="#" id="settlementDropdown" role="button" data-toggle="dropdown"
+                        aria-haspopup="true" aria-expanded="false">
+                        وكالات واتفاقيات
+                    </a>
+                    <div class="dropdown-menu dropdown-menu-right" aria-labelledby="settlementDropdown">
+                        @foreach ($agencies as $type)
+                            <a class="dropdown-item" href="{{ route('agencies.index', $type) }}">
+                                {{ $type->name }}
+                            </a>
+                        @endforeach
+                    </div>
+                </li>
+            @endif
 
             {{-- الجديد --}}
             @foreach ($mains as $info)
@@ -252,7 +254,7 @@
             @endforeach
 
             {{-- الوظائف --}}
-            @if (Auth::user()->role == 'admin' || Auth::user()->role == 'superadmin')
+            @if (Auth::user()->role == 'admin' || Auth::user()->role == 'superadmin' || Auth::user()->role == 'doctor')
                 <!-- إدارة الوظائف -->
                 <li class="nav-item dropdown">
                     <a class="nav-link dropdown-toggle {{ request()->is('admin/careers*') || request()->is('admin/apply-careers*') ? 'active' : '' }}"
@@ -300,7 +302,7 @@
             </li>
 
             {{-- المحذوفات --}}
-            @if (Auth::user()->role == 'admin' || Auth::user()->role == 'superadmin')
+            @if (Auth::user()->role == 'admin' || Auth::user()->role == 'superadmin' || Auth::user()->role == 'doctor')
                 <li class="nav-item dropdown">
                     <a class="nav-link dropdown-toggle {{ request()->is('admin/*Delete*') ? 'active' : '' }}"
                         href="#" id="deletedItemsMenu" role="button" data-toggle="dropdown"
@@ -340,7 +342,7 @@
             </li>
 
             {{-- الارشيف --}}
-            @if (Auth::user()->role == 'superadmin' || Auth::user()->role == 'admin')
+            @if (Auth::user()->role == 'superadmin' || Auth::user()->role == 'doctor')
                 <li class="nav-item dropdown">
                     <a class="nav-link dropdown-toggle {{ request()->is('admin/*archive*') ? 'active' : '' }}"
                         href="#" id="deletedItemsMenu" role="button" data-toggle="dropdown"

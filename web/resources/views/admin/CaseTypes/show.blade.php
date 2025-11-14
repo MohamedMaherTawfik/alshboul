@@ -255,7 +255,7 @@
                 <h5 class="m-0 flex-grow-1" style="font-size: 1.6rem; font-weight: bold;">
                     جميع القضايا {{ $casetype->name }} : {{ count($casetype->suggestedCases) }}
                 </h5>
-                @if (Auth::user()->role == 'admin' || Auth::user()->role == 'superadmin')
+                @if (Auth::user()->role == 'admin' || Auth::user()->role == 'superadmin' || Auth::user()->role == 'doctor')
                     <a href="{{ route('casetypes.create.case', request('casetype')) }}" class="btn btn-light btn-lg ms-auto">
                         <i class="fas fa-plus"></i> انشاء قضية جديدة
                     </a>
@@ -298,7 +298,7 @@
                                 <th>الوقائع</th>
                                 <th>وقائع الدعوي</th>
                                 <th>المدة</th>
-                                @if (Auth::user()->role == 'admin' || Auth::user()->role == 'superadmin')
+                                @if (Auth::user()->role == 'admin' || Auth::user()->role == 'superadmin' || Auth::user()->role == 'doctor')
                                     <th>الاجراءات</th>
                                 @endif
                             </tr>
@@ -356,7 +356,7 @@
                                         </div>
                                     </td>
 
-                                    @if (Auth::user()->role == 'admin' || Auth::user()->role == 'superadmin')
+                                    @if (Auth::user()->role == 'admin' || Auth::user()->role == 'superadmin' || Auth::user()->role == 'doctor')
                                         <td>
                                             <a href="{{ route('cases.edit', $case) }}"
                                                 class="btn btn-lg btn-warning w-100">تعديل</a>

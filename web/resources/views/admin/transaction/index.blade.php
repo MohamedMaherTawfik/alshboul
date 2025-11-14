@@ -46,10 +46,10 @@
                                 <th>الملاحظات</th>
                                 <th>اسم المشترك</th>
                                 <th>اسم الموكل</th>
-                                @if (Auth::user()->role == 'admin' || Auth::user()->role == 'superadmin')
+                                @if (Auth::user()->role == 'admin' || Auth::user()->role == 'superadmin' || Auth::user()->role == 'doctor')
                                     <th>اجراءات</th>
                                 @endif
-                                @if (Auth::user()->role == 'admin' || Auth::user()->role == 'superadmin')
+                                @if (Auth::user()->role == 'admin' || Auth::user()->role == 'superadmin' || Auth::user()->role == 'doctor')
                                     <th>التحكم</th>
                                 @endif
                             </tr>
@@ -64,7 +64,7 @@
                                     <td>{{ $item->notes ?? '-' }}</td>
                                     <td>{{ $item->subscriber->name ?? '-' }}</td>
                                     <td>{{ $item->client_name ?? '-' }}</td>
-                                    @if (Auth::user()->role == 'admin' || Auth::user()->role == 'superadmin')
+                                    @if (Auth::user()->role == 'admin' || Auth::user()->role == 'superadmin' || Auth::user()->role == 'doctor')
                                         <td>
                                             <a href="{{ route('transactions.procedural.create', $item) }}"
                                                 class="btn btn-info px-4 py-2 text-lg" style="min-width: 120px;">
@@ -73,7 +73,7 @@
                                         </td>
                                     @endif
 
-                                    @if (Auth::user()->role == 'admin' || Auth::user()->role == 'superadmin')
+                                    @if (Auth::user()->role == 'admin' || Auth::user()->role == 'superadmin' || Auth::user()->role == 'doctor')
                                         <td class="d-flex">
                                             <a href="{{ route('transactions.edit', $item) }}" class="btn btn-warning me-2"
                                                 style="min-width: 100px; padding: 8px 16px;">

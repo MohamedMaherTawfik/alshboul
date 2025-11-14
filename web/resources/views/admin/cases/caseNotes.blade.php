@@ -114,7 +114,7 @@
                             <th>ملاحظات</th>
                             <th> ساعه الاعتماد | المعتمد الأول </th>
                             <th> ساعه الاعتماد | المعتمد الثاني</th>
-                            @if (Auth::user()->role == 'admin' || Auth::user()->role == 'superadmin')
+                            @if (Auth::user()->role == 'admin' || Auth::user()->role == 'superadmin' || Auth::user()->role == 'doctor')
                                 <th>الانجاز</th>
                                 <th>الاجراءات</th>
                             @endif
@@ -173,7 +173,7 @@
                                 <td>{{ $duration->firstSubmitter->name ?? '-' }} | {{ $duration->first_time ?? '-' }}</td>
                                 <td>{{ $duration->secondSubmitter->name ?? '-' }} | {{ $duration->second_time ?? '-' }}
                                 </td>
-                                @if (Auth::user()->role == 'admin' || Auth::user()->role == 'superadmin')
+                                @if (Auth::user()->role == 'admin' || Auth::user()->role == 'superadmin' || Auth::user()->role == 'doctor')
                                     <td>
                                         <form action="{{ route('case.note.submit', $duration) }}" method="POST">
                                             @csrf
